@@ -1,0 +1,119 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="absl-py" />
+          <option value="apturl" />
+          <option value="astunparse" />
+          <option value="bcrypt" />
+          <option value="blinker" />
+          <option value="Brlapi" />
+          <option value="certifi" />
+          <option value="chardet" />
+          <option value="click" />
+          <option value="colorama" />
+          <option value="command-not-found" />
+          <option value="cryptography" />
+          <option value="cupshelpers" />
+          <option value="dbus-python" />
+          <option value="defer" />
+          <option value="distro" />
+          <option value="distro-info" />
+          <option value="duplicity" />
+          <option value="fasteners" />
+          <option value="flatbuffers" />
+          <option value="future" />
+          <option value="gast" />
+          <option value="google-pasta" />
+          <option value="grpcio" />
+          <option value="gyp" />
+          <option value="h5py" />
+          <option value="httplib2" />
+          <option value="idna" />
+          <option value="importlib-metadata" />
+          <option value="jeepney" />
+          <option value="keras" />
+          <option value="keyring" />
+          <option value="language-selector" />
+          <option value="launchpadlib" />
+          <option value="lazr.restfulclient" />
+          <option value="lazr.uri" />
+          <option value="libclang" />
+          <option value="lockfile" />
+          <option value="louis" />
+          <option value="macaroonbakery" />
+          <option value="Mako" />
+          <option value="Markdown" />
+          <option value="markdown-it-py" />
+          <option value="MarkupSafe" />
+          <option value="mdurl" />
+          <option value="ml-dtypes" />
+          <option value="monotonic" />
+          <option value="more-itertools" />
+          <option value="namex" />
+          <option value="netifaces" />
+          <option value="numpy" />
+          <option value="oauthlib" />
+          <option value="olefile" />
+          <option value="opt_einsum" />
+          <option value="optree" />
+          <option value="packaging" />
+          <option value="paramiko" />
+          <option value="pexpect" />
+          <option value="Pillow" />
+          <option value="protobuf" />
+          <option value="ptyprocess" />
+          <option value="pycairo" />
+          <option value="pycups" />
+          <option value="Pygments" />
+          <option value="PyGObject" />
+          <option value="PyJWT" />
+          <option value="pymacaroons" />
+          <option value="PyNaCl" />
+          <option value="pyparsing" />
+          <option value="pyRFC3339" />
+          <option value="python-apt" />
+          <option value="python-dateutil" />
+          <option value="python-debian" />
+          <option value="python-version" />
+          <option value="pytz" />
+          <option value="pyxdg" />
+          <option value="PyYAML" />
+          <option value="reportlab" />
+          <option value="requests" />
+          <option value="rich" />
+          <option value="SecretStorage" />
+          <option value="six" />
+          <option value="systemd-python" />
+          <option value="tensorboard" />
+          <option value="tensorboard-data-server" />
+          <option value="tensorflow" />
+          <option value="tensorflow-io-gcs-filesystem" />
+          <option value="termcolor" />
+          <option value="typing_extensions" />
+          <option value="ubuntu-drivers-common" />
+          <option value="ubuntu-pro-client" />
+          <option value="ufw" />
+          <option value="unattended-upgrades" />
+          <option value="urllib3" />
+          <option value="usb-creator" />
+          <option value="wadllib" />
+          <option value="Werkzeug" />
+          <option value="wrapt" />
+          <option value="xdg" />
+          <option value="xkit" />
+          <option value="zipp" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="imdb.movies.models.Rating.objects" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
