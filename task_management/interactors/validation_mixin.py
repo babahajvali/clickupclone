@@ -114,11 +114,23 @@ class ValidationMixin:
     @staticmethod
     def validate_field_config_and_default(field_type: FieldTypeEnum,
                                           config: dict):
-        default_value = config.get("default_value")
-        if field_type not in FIELD_TYPE_RULES:
-            raise UnexpectedFieldTypeFoundException(field_type=field_type)
 
-        rules = FIELD_TYPE_RULES[field_type]
+        if isinstance(field_type, FieldTypeEnum):
+            normalized_field_type = field_type
+        else:
+            try:
+                normalized_field_type = FieldTypeEnum(field_type)
+            except ValueError:
+                raise UnexpectedFieldTypeFoundException(field_type=field_type)
+
+        default_value = config.get("default")
+
+        if normalized_field_type not in FIELD_TYPE_RULES:
+            raise UnexpectedFieldTypeFoundException(
+                field_type=normalized_field_type.value
+            )
+
+        rules = FIELD_TYPE_RULES[normalized_field_type]
 
         allowed_keys = rules["config_keys"]
         invalid_keys = set(config.keys()) - allowed_keys

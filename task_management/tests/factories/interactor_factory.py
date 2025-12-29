@@ -14,7 +14,6 @@ class CreateFieldFactory(factory.Factory):
     field_type = factory.iterator([x.value for x in FieldTypeEnum])
     order = factory.sequence(lambda n: n + 1)
     is_required = factory.boolean(default=False)
-    default_value = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker("uuid4")
 
 
@@ -29,5 +28,4 @@ class FieldDTOFactory(factory.Factory):
     field_type = factory.iterator([x.value for x in FieldTypeEnum])
     order = factory.sequence(lambda n: n + 1)
     is_required = factory.boolean(default=False)
-    default_value = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker("uuid4")

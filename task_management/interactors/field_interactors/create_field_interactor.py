@@ -27,8 +27,6 @@ class CreateFieldInteractor(ValidationMixin):
                       if isinstance(create_field_data.field_type,FieldTypeEnum)
                       else create_field_data.field_type)
 
-        self.validate_field_config_and_default(field_type=field_type,
-                                               config=create_field_data.config)
         self.check_user_exist(user_id=create_field_data.created_by,
                               user_storage=self.user_storage)
         self.check_template_exist(template_id=create_field_data.template_id,
@@ -45,6 +43,8 @@ class CreateFieldInteractor(ValidationMixin):
         self.check_field_order_is_valid(field_order=create_field_data.order,
                                         template_id=create_field_data.template_id,
                                         field_storage=self.field_storage)
+        self.validate_field_config_and_default(field_type=field_type,
+                                               config=create_field_data.config)
 
         return self.field_storage.create_field(
             create_field_data=create_field_data)

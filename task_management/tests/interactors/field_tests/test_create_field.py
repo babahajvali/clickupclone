@@ -38,7 +38,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            default_value="High",
             created_by="user_1"
         )
 
@@ -72,7 +71,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            default_value="High",
             created_by="user_1"
         )
 
@@ -108,7 +106,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="invalid_user"
         )
 
@@ -142,7 +139,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="user_1"
         )
 
@@ -179,7 +175,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="user_1"
         )
 
@@ -216,7 +211,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="user_1"
         )
 
@@ -257,7 +251,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="user_1"
         )
 
@@ -299,7 +292,6 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            default_value="",
             created_by="user_1"
         )
 
