@@ -1,4 +1,5 @@
-from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
+from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO, \
+    FieldTypeEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \
@@ -22,6 +23,10 @@ class UpdateFieldInteractor(ValidationMixin):
         self.template_storage = template_storage
 
     def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
+        field_type = (update_field_data.field_type.value
+                      if isinstance(update_field_data.field_type,FieldTypeEnum)
+                      else update_field_data.field_type)
+
         self.validate_field(field_id=update_field_data.field_id,
                             template_id=update_field_data.template_id,
                             field_storage=self.field_storage)
@@ -40,6 +45,8 @@ class UpdateFieldInteractor(ValidationMixin):
         self.check_field_order_is_valid(field_order=update_field_data.order,
                                         template_id=update_field_data.template_id,
                                         field_storage=self.field_storage)
+        self.validate_field_config_and_default(field_type=field_type,
+                                               config=update_field_data.config)
 
         return self.field_storage.update_field(
             update_field_data=update_field_data)
