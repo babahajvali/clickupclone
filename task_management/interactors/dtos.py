@@ -26,7 +26,6 @@ class CreateFieldDTO:
     order: int
     config: dict
     is_required: bool
-    default_value: str
     created_by: str
 
 
@@ -43,7 +42,6 @@ class UpdateFieldDTO:
     order: int
     config: dict
     is_required: bool
-    default_value: str
     created_by: str
 
 
@@ -57,5 +55,4 @@ class FieldDTO:
     order: int
     config: dict
     is_required: bool
-    default_value: str
     created_by: str

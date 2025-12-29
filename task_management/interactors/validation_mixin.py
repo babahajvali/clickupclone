@@ -1,9 +1,8 @@
-from abc import abstractmethod
-
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     TemplateNotFoundException, UnexpectedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
-    NotAccessToCreateFieldException, FieldNotFoundException
+    NotAccessToCreateFieldException, FieldNotFoundException, \
+    InvalidFieldConfigException, InvalidFieldDefaultValueException
 from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
@@ -13,6 +12,39 @@ from task_management.interactors.storage_interface.template_storage_interface im
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
+
+FIELD_TYPE_RULES = {
+    FieldTypeEnum.Text: {
+        "config_keys": {"max_length"},
+        "default_type": str,
+        "default_required": False,
+    },
+    FieldTypeEnum.Number: {
+        "config_keys": {"min", "max"},
+        "default_type": (int, float),
+        "default_required": False,
+    },
+    FieldTypeEnum.Dropdown: {
+        "config_keys": {"options"},
+        "default_type": str,
+        "default_required": False,
+    },
+    FieldTypeEnum.Date: {
+        "config_keys": set(),
+        "default_type": str,
+        "default_required": False,
+    },
+    FieldTypeEnum.Checkbox: {
+        "config_keys": set(),
+        "default_type": bool,
+        "default_required": False,
+    },
+    FieldTypeEnum.email: {
+        "config_keys": set(),
+        "default_type": str,
+        "default_required": False,
+    },
+}
 
 
 class ValidationMixin:
@@ -24,14 +56,14 @@ class ValidationMixin:
         if not is_exist:
             raise UserNotFoundException(user_id=user_id)
 
-
     @staticmethod
-    def check_template_exist(template_id: str, template_storage: TemplateStorageInterface):
-        is_exist = template_storage.check_template_exist(template_id=template_id)
+    def check_template_exist(template_id: str,
+                             template_storage: TemplateStorageInterface):
+        is_exist = template_storage.check_template_exist(
+            template_id=template_id)
 
         if not is_exist:
             raise TemplateNotFoundException(template_id=template_id)
-
 
     @staticmethod
     def check_field_type(field_type: str):
@@ -41,37 +73,81 @@ class ValidationMixin:
         if field_type not in field_types:
             raise UnexpectedFieldTypeFoundException(field_type=field_type)
 
-
     @staticmethod
-    def check_already_existed_field_name(field_name: str,template_id: str, field_storage: FieldStorageInterface):
-        is_exist = field_storage.check_field_name_exist(field_name=field_name,template_id=template_id)
+    def check_already_existed_field_name(field_name: str, template_id: str,
+                                         field_storage: FieldStorageInterface):
+        is_exist = field_storage.check_field_name_exist(field_name=field_name,
+                                                        template_id=template_id)
 
         if is_exist:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
     @staticmethod
-    def check_field_order_is_valid(field_order: int, template_id: str, field_storage: FieldStorageInterface):
+    def check_field_order_is_valid(field_order: int, template_id: str,
+                                   field_storage: FieldStorageInterface):
 
-        is_exist = field_storage.check_field_order_exist(field_order=field_order,template_id=template_id)
+        is_exist = field_storage.check_field_order_exist(
+            field_order=field_order, template_id=template_id)
 
         if is_exist:
             raise FieldOrderAlreadyExistsException(field_order=field_order)
 
     @staticmethod
-    def check_user_has_access_to_create_field(user_id: str, permission_storage: PermissionStorageInterface):
+    def check_user_has_access_to_create_field(user_id: str,
+                                              permission_storage: PermissionStorageInterface):
 
-        is_user_permissions = permission_storage.get_user_access_permissions(user_id=user_id)
-
+        is_user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
 
         if is_user_permissions != PermissionsEnum.GUEST:
             raise NotAccessToCreateFieldException(user_id=user_id)
 
     @staticmethod
-    def validate_field(field_id: str,template_id: str, field_storage: FieldStorageInterface):
-        is_exist = field_storage.check_field_exist(field_id=field_id,template_id=template_id)
+    def validate_field(field_id: str, template_id: str,
+                       field_storage: FieldStorageInterface):
+        is_exist = field_storage.check_field_exist(field_id=field_id,
+                                                   template_id=template_id)
 
         if not is_exist:
             raise FieldNotFoundException(field_id=field_id)
 
+    @staticmethod
+    def validate_field_config_and_default(field_type: FieldTypeEnum,
+                                          config: dict):
+        default_value = config.get("default_value")
+        if field_type not in FIELD_TYPE_RULES:
+            raise UnexpectedFieldTypeFoundException(field_type=field_type)
 
+        rules = FIELD_TYPE_RULES[field_type]
 
+        allowed_keys = rules["config_keys"]
+        invalid_keys = set(config.keys()) - allowed_keys
+
+        if invalid_keys:
+            raise InvalidFieldConfigException(
+                field_type=field_type.value,
+                invalid_keys=list(invalid_keys)
+            )
+
+        if field_type == FieldTypeEnum.Dropdown:
+            if "options" not in config or not config["options"]:
+                raise InvalidFieldConfigException(
+                    field_type=field_type.value,
+                    message="Dropdown must have non-empty options"
+                )
+
+        if default_value is not None:
+            expected_type = rules["default_type"]
+
+            if not isinstance(default_value, expected_type):
+                raise InvalidFieldDefaultValueException(
+                    field_type=field_type.value,
+                    default_value=default_value
+                )
+
+            if field_type == FieldTypeEnum.Dropdown:
+                if default_value not in config.get("options", []):
+                    raise InvalidFieldDefaultValueException(
+                        field_type=field_type.value,
+                        message="Default value must be one of dropdown options"
+                    )
