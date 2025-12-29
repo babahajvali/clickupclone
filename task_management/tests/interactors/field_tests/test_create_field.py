@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, create_autospec
 
 import pytest
 from faker import Faker
@@ -20,6 +20,14 @@ from task_management.interactors.dtos import (
     FieldTypeEnum,
     PermissionsEnum
 )
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
+from task_management.interactors.storage_interface.permission_storage_interface import \
+    PermissionStorageInterface
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
+from task_management.interactors.storage_interface.user_storage_interface import \
+    UserStorageInterface
 
 Faker.seed()
 fake = Faker()
@@ -43,10 +51,11 @@ class TestCreateFieldInteractor:
 
     def test_create_field_successfully(self, snapshot):
         # Arrange
-        field_storage = MagicMock()
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
+
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
@@ -84,10 +93,10 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_user_not_found(self, snapshot):
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = False
 
@@ -116,10 +125,10 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_template_not_found(self, snapshot):
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = False
@@ -151,10 +160,10 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_invalid_field_type(self, snapshot):
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
@@ -187,10 +196,10 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_permission_denied(self, snapshot):
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
@@ -224,10 +233,10 @@ class TestCreateFieldInteractor:
 
     def test_create_field_duplicate_order(self, snapshot):
         # Arrange
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
@@ -265,10 +274,10 @@ class TestCreateFieldInteractor:
 
     def test_create_field_duplicate_name(self, snapshot):
         # Arrange
-        user_storage = MagicMock()
-        template_storage = MagicMock()
-        permission_storage = MagicMock()
-        field_storage = MagicMock()
+        field_storage = create_autospec(FieldStorageInterface)
+        user_storage = create_autospec(UserStorageInterface)
+        template_storage = create_autospec(TemplateStorageInterface)
+        permission_storage = create_autospec(PermissionStorageInterface)
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
