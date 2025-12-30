@@ -26,4 +26,7 @@ class FieldStorageInterface(ABC):
     def check_field_exist(self,field_id: str, template_id: str) -> bool:
         pass
 
+    @abstractmethod
+    def check_field_name_except_this_field(self,field_id: str , field_name: str, template_id: str) -> bool:
+        pass
 

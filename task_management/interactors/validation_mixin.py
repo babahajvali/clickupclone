@@ -83,6 +83,16 @@ class ValidationMixin:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
     @staticmethod
+    def check_field_name_exist(field_id: str, field_name: str,template_id: str,
+                               field_storage: FieldStorageInterface):
+
+        is_field_name_exist = field_storage.check_field_name_except_this_field(
+            field_id=field_id, field_name=field_name, template_id=template_id)
+
+        if is_field_name_exist:
+            raise FieldNameAlreadyExistsException(field_name=field_name)
+
+    @staticmethod
     def check_field_order_is_valid(field_order: int, template_id: str,
                                    field_storage: FieldStorageInterface):
 
@@ -116,21 +126,22 @@ class ValidationMixin:
                                           config: dict):
 
         if isinstance(field_type, FieldTypeEnum):
-             field_type_value = field_type
+            field_type_value = field_type
         else:
             try:
-                 field_type_value = FieldTypeEnum(field_type)
+                field_type_value = FieldTypeEnum(field_type)
             except ValueError:
-                raise UnexpectedFieldTypeFoundException(field_type=field_type.value)
+                raise UnexpectedFieldTypeFoundException(
+                    field_type=field_type.value)
 
         default_value = config.get("default")
 
-        if  field_type_value not in FIELD_TYPE_RULES:
+        if field_type_value not in FIELD_TYPE_RULES:
             raise UnexpectedFieldTypeFoundException(
-                field_type= field_type_value.value
+                field_type=field_type_value.value
             )
 
-        rules = FIELD_TYPE_RULES[ field_type_value]
+        rules = FIELD_TYPE_RULES[field_type_value]
 
         allowed_keys = rules["config_keys"]
         invalid_keys = set(config.keys()) - allowed_keys

@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, create_autospec
+from enum import Enum
+from unittest.mock import create_autospec
 
 import pytest
 from faker import Faker
@@ -29,8 +30,10 @@ from task_management.interactors.storage_interface.template_storage_interface im
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
 
-Faker.seed()
-fake = Faker()
+Faker.seed(1)
+
+class FieldEnum(Enum):
+    INVALID = "Invalid"
 
 
 class TestCreateFieldInteractor:
@@ -86,7 +89,7 @@ class TestCreateFieldInteractor:
         # Act
         result = interactor.create_field(create_field_data)
 
-        # Assert (REAL DATA SNAPSHOT)
+        # Assert
         snapshot.assert_match(
             repr(result),
             "test_create_field_successfully.txt"
@@ -177,7 +180,7 @@ class TestCreateFieldInteractor:
         )
 
         create_field_data = CreateFieldDTO(
-            field_type="InvalidType",
+            field_type= FieldEnum.INVALID,
             field_name="Priority",
             description="",
             template_id="tpl_1",

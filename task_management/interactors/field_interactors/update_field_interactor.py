@@ -23,9 +23,7 @@ class UpdateFieldInteractor(ValidationMixin):
         self.template_storage = template_storage
 
     def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
-        field_type = (update_field_data.field_type.value
-                      if isinstance(update_field_data.field_type,FieldTypeEnum)
-                      else update_field_data.field_type)
+        field_type = update_field_data.field_type.value if update_field_data.field_type.value else update_field_data.field_type
 
         self.validate_field(field_id=update_field_data.field_id,
                             template_id=update_field_data.template_id,
@@ -38,10 +36,10 @@ class UpdateFieldInteractor(ValidationMixin):
             user_id=update_field_data.created_by,
             permission_storage=self.permission_storage)
         self.check_field_type(field_type=update_field_data.field_type.value)
-        self.check_already_existed_field_name(
-            field_name=update_field_data.field_name,
-            template_id=update_field_data.template_id,
-            field_storage=self.field_storage)
+        self.check_field_name_exist(field_id=update_field_data.field_id,
+                                    field_name=update_field_data.field_name,
+                                    template_id=update_field_data.template_id,
+                                    field_storage=self.field_storage)
         self.check_field_order_is_valid(field_order=update_field_data.order,
                                         template_id=update_field_data.template_id,
                                         field_storage=self.field_storage)
