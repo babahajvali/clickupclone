@@ -1,5 +1,4 @@
-from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO, \
-    FieldTypeEnum
+from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \

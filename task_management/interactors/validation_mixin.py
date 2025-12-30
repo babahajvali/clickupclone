@@ -174,3 +174,28 @@ class ValidationMixin:
                         field_type=field_type.value,
                         message="Default value must be one of dropdown options"
                     )
+
+        if field_type_value == FieldTypeEnum.Number and default_value is not None:
+            min_val = config.get("min")
+            max_val = config.get("max")
+
+            if min_val is not None and default_value < min_val:
+                raise InvalidFieldDefaultValueException(
+                    field_type=field_type_value.value,
+                    message=f"Default value {default_value} is less than minimum {min_val}"
+                )
+
+            if max_val is not None and default_value > max_val:
+                raise InvalidFieldDefaultValueException(
+                    field_type=field_type_value.value,
+                    message=f"Default value {default_value} is greater than maximum {max_val}"
+                )
+
+        if field_type_value == FieldTypeEnum.Text and default_value is not None:
+            max_length = config.get("max_length")
+
+            if max_length is not None and len(default_value) > max_length:
+                raise InvalidFieldDefaultValueException(
+                    field_type=field_type_value.value,
+                    message=f"Default value length {len(default_value)} exceeds max_length {max_length}"
+                )

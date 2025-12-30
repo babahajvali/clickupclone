@@ -1,5 +1,4 @@
-from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    FieldTypeEnum
+from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \
@@ -32,8 +31,7 @@ class CreateFieldInteractor(ValidationMixin):
         self.check_user_has_access_to_create_field(
             user_id=create_field_data.created_by,
             permission_storage=self.permission_storage)
-        self.check_field_type(
-            field_type=field_type)
+        self.check_field_type(field_type=field_type)
         self.check_already_existed_field_name(
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id,
