@@ -1,3 +1,4 @@
+from dataclasses import replace
 from enum import Enum
 from unittest.mock import create_autospec
 
@@ -80,7 +81,7 @@ class TestUpdateFieldInteractor:
         return interactor
 
     def _get_update_dto(self, **overrides):
-        data = dict(
+        data = UpdateFieldDTO(
             field_id="field_1",
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
@@ -91,8 +92,7 @@ class TestUpdateFieldInteractor:
             is_required=True,
             created_by="user_1"
         )
-        data.update(overrides)
-        return UpdateFieldDTO(**data)
+        return replace(data, **overrides)
 
 
     def test_update_field_successfully(self, snapshot):

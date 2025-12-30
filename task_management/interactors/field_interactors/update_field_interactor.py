@@ -35,7 +35,7 @@ class UpdateFieldInteractor(ValidationMixin):
         self.check_user_has_access_to_create_field(
             user_id=update_field_data.created_by,
             permission_storage=self.permission_storage)
-        self.check_field_type(field_type=update_field_data.field_type.value)
+        self.check_field_type(field_type=field_type)
         self.check_field_name_exist(field_id=update_field_data.field_id,
                                     field_name=update_field_data.field_name,
                                     template_id=update_field_data.template_id,
