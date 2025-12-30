@@ -7,6 +7,7 @@ class TemplateNotFoundException(Exception):
     def __init__(self, template_id: str):
         self.template_id = template_id
 
+
 class UnexpectedFieldTypeFoundException(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
@@ -21,9 +22,11 @@ class FieldOrderAlreadyExistsException(Exception):
     def __init__(self, field_order: int):
         self.field_order = field_order
 
+
 class NotAccessToCreationException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
+
 
 class FieldNotFoundException(Exception):
     def __init__(self, field_id: str):
@@ -32,10 +35,10 @@ class FieldNotFoundException(Exception):
 
 class InvalidFieldConfigException(Exception):
     def __init__(
-        self,
-        field_type: str,
-        invalid_keys: list | None = None,
-        message: str | None = None
+            self,
+            field_type: str,
+            invalid_keys: list | None = None,
+            message: str | None = None
     ):
         self.field_type = field_type
         self.invalid_keys = invalid_keys
@@ -55,10 +58,10 @@ class InvalidFieldConfigException(Exception):
 
 class InvalidFieldDefaultValueException(Exception):
     def __init__(
-        self,
-        field_type: str,
-        default_value=None,
-        message: str | None = None
+            self,
+            field_type: str,
+            default_value=None,
+            message: str | None = None
     ):
         self.field_type = field_type
         self.default_value = default_value
@@ -82,3 +85,8 @@ class AlreadyExistedTemplateNameException(Exception):
 class DefaultTemplateAlreadyExistedException(Exception):
     def __init__(self, template_name: str):
         self.template_name = template_name
+
+
+class ListNotFoundException(Exception):
+    def __init__(self, list_id: str):
+        self.list_id = list_id

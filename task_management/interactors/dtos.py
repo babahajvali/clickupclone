@@ -63,6 +63,7 @@ class FieldDTO:
 class CreateTemplateDTO:
     name: str
     description: str
+    list_id: str
     is_default: bool
     created_by: str
 
@@ -71,6 +72,7 @@ class CreateTemplateDTO:
 class UpdateTemplateDTO:
     template_id: str
     name: str
+    list_id: str
     description: str
     is_default: bool
     created_by: str
@@ -79,6 +81,7 @@ class UpdateTemplateDTO:
 class TemplateDTO:
     template_id: str
     name: str
+    list_id: str
     description: str
     is_default: bool
     created_by: str

@@ -3,10 +3,13 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
     NotAccessToCreationException, FieldNotFoundException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
-    AlreadyExistedTemplateNameException, DefaultTemplateAlreadyExistedException
+    AlreadyExistedTemplateNameException, \
+    DefaultTemplateAlreadyExistedException, ListNotFoundException
 from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \
     PermissionStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
@@ -219,7 +222,7 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_access_permissions(
             user_id=user_id)
 
-        if user_permissions['List'].value == PermissionsEnum.GUEST.value:
+        if user_permissions == PermissionsEnum.GUEST.value:
             raise NotAccessToCreationException(user_id=user_id)
 
     @staticmethod
@@ -229,4 +232,21 @@ class ValidationMixin:
 
         if is_exist:
             raise DefaultTemplateAlreadyExistedException(
+                template_name=template_name)
+
+    @staticmethod
+    def check_list_exists(list_id: str, list_storage: ListStorageInterface):
+        is_exist = list_storage.check_list_exist(list_id=list_id)
+
+        if not is_exist:
+            raise ListNotFoundException(list_id=list_id)
+
+    @staticmethod
+    def check_template_name_exist(template_name: str, template_id: str,
+                                  template_storage: TemplateStorageInterface):
+        is_exist = template_storage.check_template_name_exist_except_this_template(
+            template_name=template_name, template_id=template_id)
+
+        if is_exist:
+            raise AlreadyExistedTemplateNameException(
                 template_name=template_name)

@@ -12,11 +12,9 @@ from task_management.interactors.validation_mixin import ValidationMixin
 
 class UpdateFieldInteractor(ValidationMixin):
 
-    def __init__(self, user_storage: UserStorageInterface,
-                 field_storage: FieldStorageInterface,
+    def __init__(self,field_storage: FieldStorageInterface,
                  permission_storage: PermissionStorageInterface,
                  template_storage: TemplateStorageInterface):
-        self.user_storage = user_storage
         self.field_storage = field_storage
         self.permission_storage = permission_storage
         self.template_storage = template_storage
@@ -28,8 +26,6 @@ class UpdateFieldInteractor(ValidationMixin):
         self.validate_field(field_id=update_field_data.field_id,
                             template_id=update_field_data.template_id,
                             field_storage=self.field_storage)
-        self.check_user_exist(user_id=update_field_data.created_by,
-                              user_storage=self.user_storage)
         self.check_template_exist(template_id=update_field_data.template_id,
                                   template_storage=self.template_storage)
         self.check_user_has_access_to_create_field(
