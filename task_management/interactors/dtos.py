@@ -119,7 +119,51 @@ DEFAULT_FIELDS = [
                 "field_name": "Status",
                 "order": 5,
                 "config": {
-                    "options": ["Todo", "In Progress", "Done"]
+                    "options": ["Todo", "In Progress", "Done"],
+                    "default": "Todo"
                 }
             }
         ]
+
+
+@dataclass
+class CreateTaskDTO:
+    title: str
+    description: str
+    list_id: str
+    created_by: str
+    is_active: bool
+
+
+@dataclass
+class UpdateTaskDTO:
+    task_id: str
+    title: str
+    description: str
+    list_id: str
+    created_by: str
+    is_active: bool
+
+@dataclass
+class TaskDTO:
+    task_id: str
+    title: str
+    description: str
+    list_id: str
+    created_by: str
+    is_active: bool
+
+@dataclass
+class TaskAssigneeDTO:
+    assignee_id: str
+    assignee_name: str
+    task_id: str
+    assigned_by: str
+    is_active: bool
+
+@dataclass
+class RemoveTaskAssigneeDTO:
+    task_id: str
+    assignee_id: str
+    removed_by: str
+    is_active: bool

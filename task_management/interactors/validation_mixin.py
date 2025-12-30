@@ -4,7 +4,8 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     NotAccessToCreationException, FieldNotFoundException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
     AlreadyExistedTemplateNameException, \
-    DefaultTemplateAlreadyExistedException, ListNotFoundException
+    DefaultTemplateAlreadyExistedException, ListNotFoundException, \
+    TaskNotFoundException, TaskAssigneeNotFoundException
 from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
@@ -12,6 +13,10 @@ from task_management.interactors.storage_interface.list_storage_interface import
     ListStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \
     PermissionStorageInterface
+from task_management.interactors.storage_interface.task_assignee_storage_interface import \
+    TaskAssigneeStorageInterface
+from task_management.interactors.storage_interface.task_storage_interface import \
+    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -250,3 +255,27 @@ class ValidationMixin:
         if is_exist:
             raise AlreadyExistedTemplateNameException(
                 template_name=template_name)
+
+    @staticmethod
+    def check_user_has_access_to_create_task(user_id: str,
+                                                 permission_storage: PermissionStorageInterface):
+        user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
+
+        if user_permissions == PermissionsEnum.GUEST.value:
+            raise NotAccessToCreationException(user_id=user_id)
+
+    @staticmethod
+    def validate_task_exists(task_id: str, task_storage: TaskStorageInterface):
+
+        is_exist = task_storage.check_task_exist(task_id=task_id)
+
+        if not is_exist:
+            raise TaskNotFoundException(task_id=task_id)
+
+    @staticmethod
+    def check_task_assignee_exists(assign_id: str, task_assignee_storage: TaskAssigneeStorageInterface):
+        is_exist = task_assignee_storage.check_tas_assignee_exist(assign_id=assign_id)
+
+        if not is_exist:
+            raise TaskAssigneeNotFoundException(assign_id=assign_id)

@@ -90,3 +90,12 @@ class DefaultTemplateAlreadyExistedException(Exception):
 class ListNotFoundException(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
+
+
+class TaskNotFoundException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+class TaskAssigneeNotFoundException(Exception):
+    def __init__(self, assign_id: str):
+        self.assign_id = assign_id

@@ -30,3 +30,9 @@ class FieldStorageInterface(ABC):
     def check_field_name_except_this_field(self,field_id: str , field_name: str, template_id: str) -> bool:
         pass
 
+    @abstractmethod
+    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+        pass
+
+
+
