@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
     FieldOrderAlreadyExistsException,
-    NotAccessToCreateFieldException
+    NotAccessToCreationException
 )
 from task_management.interactors.field_interactors.update_field_interactor import (
     UpdateFieldInteractor
@@ -53,7 +53,7 @@ class TestUpdateFieldInteractor:
     def _get_interactor(self, *,
                         user_exists=True,
                         template_exists=True,
-                        permission=PermissionsEnum.GUEST,
+                        permission=PermissionsEnum.ADMIN,
                         name_exists=False,
                         order_exists=False):
 
@@ -147,10 +147,10 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_permission_denied(self, snapshot):
-        interactor = self._get_interactor(permission=PermissionsEnum.ADMIN)
+        interactor = self._get_interactor(permission=PermissionsEnum.GUEST)
         update_field_data = self._get_update_dto()
 
-        with pytest.raises(NotAccessToCreateFieldException) as exc:
+        with pytest.raises(NotAccessToCreationException) as exc:
             interactor.update_field(update_field_data)
 
         snapshot.assert_match(

@@ -22,7 +22,8 @@ class CreateFieldInteractor(ValidationMixin):
         self.permission_storage = permission_storage
 
     def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
-        field_type = create_field_data.field_type.value if create_field_data.field_type.value else create_field_data.field_type
+        ft = create_field_data.field_type
+        field_type = ft.value if hasattr(ft, "value") else ft
 
         self.check_user_exist(user_id=create_field_data.created_by,
                               user_storage=self.user_storage)

@@ -1,8 +1,9 @@
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     TemplateNotFoundException, UnexpectedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
-    NotAccessToCreateFieldException, FieldNotFoundException, \
-    InvalidFieldConfigException, InvalidFieldDefaultValueException
+    NotAccessToCreationException, FieldNotFoundException, \
+    InvalidFieldConfigException, InvalidFieldDefaultValueException, \
+    AlreadyExistedTemplateNameException, DefaultTemplateAlreadyExistedException
 from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
@@ -83,7 +84,8 @@ class ValidationMixin:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
     @staticmethod
-    def check_field_name_exist(field_id: str, field_name: str,template_id: str,
+    def check_field_name_exist(field_id: str, field_name: str,
+                               template_id: str,
                                field_storage: FieldStorageInterface):
 
         is_field_name_exist = field_storage.check_field_name_except_this_field(
@@ -106,11 +108,11 @@ class ValidationMixin:
     def check_user_has_access_to_create_field(user_id: str,
                                               permission_storage: PermissionStorageInterface):
 
-        is_user_permissions = permission_storage.get_user_access_permissions(
+        user_permissions = permission_storage.get_user_access_permissions(
             user_id=user_id)
 
-        if is_user_permissions != PermissionsEnum.GUEST:
-            raise NotAccessToCreateFieldException(user_id=user_id)
+        if user_permissions == PermissionsEnum.GUEST:
+            raise NotAccessToCreationException(user_id=user_id)
 
     @staticmethod
     def validate_field(field_id: str, template_id: str,
@@ -199,3 +201,32 @@ class ValidationMixin:
                     field_type=field_type_value.value,
                     message=f"Default value length {len(default_value)} exceeds max_length {max_length}"
                 )
+
+    @staticmethod
+    def check_already_existed_template_name(template_name: str,
+                                            template_storage: TemplateStorageInterface):
+
+        is_exist = template_storage.check_template_name_exist(
+            template_name=template_name)
+
+        if is_exist:
+            raise AlreadyExistedTemplateNameException(
+                template_name=template_name)
+
+    @staticmethod
+    def check_user_has_access_to_create_template(user_id: str,
+                                                 permission_storage: PermissionStorageInterface):
+        user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
+
+        if user_permissions['List'].value == PermissionsEnum.GUEST.value:
+            raise NotAccessToCreationException(user_id=user_id)
+
+    @staticmethod
+    def check_default_template_exists(template_name: str,
+                                      template_storage: TemplateStorageInterface):
+        is_exist = template_storage.check_default_template_exist()
+
+        if is_exist:
+            raise DefaultTemplateAlreadyExistedException(
+                template_name=template_name)

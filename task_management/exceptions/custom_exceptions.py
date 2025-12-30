@@ -21,7 +21,7 @@ class FieldOrderAlreadyExistsException(Exception):
     def __init__(self, field_order: int):
         self.field_order = field_order
 
-class NotAccessToCreateFieldException(Exception):
+class NotAccessToCreationException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -72,3 +72,13 @@ class InvalidFieldDefaultValueException(Exception):
             )
 
         super().__init__(self.message)
+
+
+class AlreadyExistedTemplateNameException(Exception):
+    def __init__(self, template_name: str):
+        self.template_name = template_name
+
+
+class DefaultTemplateAlreadyExistedException(Exception):
+    def __init__(self, template_name: str):
+        self.template_name = template_name

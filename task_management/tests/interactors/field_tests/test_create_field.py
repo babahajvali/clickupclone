@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
     FieldOrderAlreadyExistsException,
-    NotAccessToCreateFieldException
+    NotAccessToCreationException
 )
 from task_management.interactors.field_interactors.create_field_interactor import (
     CreateFieldInteractor
@@ -39,7 +39,6 @@ class FieldEnum(Enum):
 class TestCreateFieldInteractor:
 
     def _get_field_dto(self):
-        """Helper to return real FieldDTO"""
         return FieldDTO(
             field_id="field_1",
             field_type=FieldTypeEnum.Text,
@@ -62,7 +61,7 @@ class TestCreateFieldInteractor:
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
+        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
         field_storage.check_field_name_exist.return_value = False
         field_storage.check_field_order_exist.return_value = False
 
@@ -170,7 +169,7 @@ class TestCreateFieldInteractor:
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
+        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
 
         interactor = CreateFieldInteractor(
             field_storage=field_storage,
@@ -206,7 +205,7 @@ class TestCreateFieldInteractor:
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
+        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
 
         interactor = CreateFieldInteractor(
             field_storage=field_storage,
@@ -226,7 +225,7 @@ class TestCreateFieldInteractor:
             created_by="user_1"
         )
 
-        with pytest.raises(NotAccessToCreateFieldException) as exc:
+        with pytest.raises(NotAccessToCreationException) as exc:
             interactor.create_field(create_field_data)
 
         snapshot.assert_match(
@@ -243,7 +242,7 @@ class TestCreateFieldInteractor:
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
+        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
 
         field_storage.check_field_name_exist.return_value = False
         field_storage.check_field_order_exist.return_value = True
@@ -284,7 +283,7 @@ class TestCreateFieldInteractor:
 
         user_storage.check_user_exist.return_value = True
         template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
+        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
 
         field_storage.check_field_name_exist.return_value = True
         field_storage.check_field_order_exist.return_value = False

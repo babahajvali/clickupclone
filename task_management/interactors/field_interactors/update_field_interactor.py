@@ -22,7 +22,8 @@ class UpdateFieldInteractor(ValidationMixin):
         self.template_storage = template_storage
 
     def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
-        field_type = update_field_data.field_type.value if update_field_data.field_type.value else update_field_data.field_type
+        ft = update_field_data.field_type
+        field_type = ft.value if hasattr(ft, "value") else ft
 
         self.validate_field(field_id=update_field_data.field_id,
                             template_id=update_field_data.template_id,
