@@ -5,21 +5,19 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    UserNotFoundException,
     TemplateNotFoundException,
     UnexpectedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
     FieldOrderAlreadyExistsException,
-    NotAccessToCreationException
+    NotAccessToModificationException
 )
+from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.field_interactors.update_field_interactor import (
     UpdateFieldInteractor
 )
 from task_management.interactors.dtos import (
     UpdateFieldDTO,
     FieldDTO,
-    FieldTypeEnum,
-    PermissionsEnum
 )
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
@@ -27,8 +25,7 @@ from task_management.interactors.storage_interface.permission_storage_interface 
     PermissionStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
-    UserStorageInterface
+
 
 
 class FieldEnum(Enum):
@@ -51,14 +48,12 @@ class TestUpdateFieldInteractor:
         )
 
     def _get_interactor(self, *,
-                        user_exists=True,
                         template_exists=True,
                         permission=PermissionsEnum.ADMIN,
                         name_exists=False,
                         order_exists=False):
 
         field_storage = create_autospec(FieldStorageInterface)
-        user_storage = create_autospec(UserStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
         permission_storage = create_autospec(PermissionStorageInterface)
 
@@ -67,12 +62,10 @@ class TestUpdateFieldInteractor:
         field_storage.check_field_order_exist.return_value = order_exists
         field_storage.update_field.return_value = self._get_field_dto()
 
-        user_storage.check_user_exist.return_value = user_exists
         template_storage.check_template_exist.return_value = template_exists
         permission_storage.get_user_access_permissions.return_value = permission
 
         interactor = UpdateFieldInteractor(
-            user_storage=user_storage,
             field_storage=field_storage,
             permission_storage=permission_storage,
             template_storage=template_storage
@@ -122,17 +115,6 @@ class TestUpdateFieldInteractor:
             "test_update_field_invalid_field_type.txt"
         )
 
-    def test_update_field_user_not_found(self, snapshot):
-        interactor = self._get_interactor(user_exists=False)
-        update_field_data = self._get_update_dto(created_by="invalid_user")
-
-        with pytest.raises(UserNotFoundException) as exc:
-            interactor.update_field(update_field_data)
-
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_update_field_user_not_found.txt"
-        )
 
     def test_update_field_template_not_found(self, snapshot):
         interactor = self._get_interactor(template_exists=False)
@@ -150,7 +132,7 @@ class TestUpdateFieldInteractor:
         interactor = self._get_interactor(permission=PermissionsEnum.GUEST)
         update_field_data = self._get_update_dto()
 
-        with pytest.raises(NotAccessToCreationException) as exc:
+        with pytest.raises(NotAccessToModificationException) as exc:
             interactor.update_field(update_field_data)
 
         snapshot.assert_match(

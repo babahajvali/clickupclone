@@ -5,7 +5,7 @@ from faker import Faker
 
 from task_management.exceptions.custom_exceptions import \
     AlreadyExistedTemplateNameException, DefaultTemplateAlreadyExistedException
-from task_management.interactors.dtos import PermissionsEnum
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.template_interactors.update_template_interactor import (
     UpdateTemplateInteractor
 )
@@ -58,7 +58,7 @@ class TestUpdateTemplateInteractor:
         )
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.return_value = True
+        self.user_storage.check_user_exists.return_value = True
         self.list_storage.check_list_exist.return_value = True
         self.template_storage.check_template_name_exist_except_this_template.return_value = False
         self.template_storage.update_template.return_value = updated_template
@@ -86,7 +86,7 @@ class TestUpdateTemplateInteractor:
         update_template_dto = UpdateTemplateDTOFactory()
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.side_effect = Exception(
+        self.user_storage.check_user_exists.side_effect = Exception(
             "User not found"
         )
 
@@ -99,7 +99,7 @@ class TestUpdateTemplateInteractor:
         update_template_dto = UpdateTemplateDTOFactory()
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.return_value = True
+        self.user_storage.check_user_exists.return_value = True
         self.list_storage.check_list_exist.return_value = False
 
         with pytest.raises(Exception):
@@ -111,7 +111,7 @@ class TestUpdateTemplateInteractor:
         update_template_dto = UpdateTemplateDTOFactory()
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.return_value = True
+        self.user_storage.check_user_exists.return_value = True
         self.list_storage.check_list_exist.return_value = True
 
         self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
@@ -125,7 +125,7 @@ class TestUpdateTemplateInteractor:
         update_template_dto = UpdateTemplateDTOFactory()
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.return_value = True
+        self.user_storage.check_user_exists.return_value = True
         self.list_storage.check_list_exist.return_value = True
 
         self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
@@ -141,7 +141,7 @@ class TestUpdateTemplateInteractor:
         update_template_dto = UpdateTemplateDTOFactory(is_default=True)
 
         self.template_storage.check_template_exist.return_value = True
-        self.user_storage.check_user_exist.return_value = True
+        self.user_storage.check_user_exists.return_value = True
         self.list_storage.check_list_exist.return_value = True
 
         self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN

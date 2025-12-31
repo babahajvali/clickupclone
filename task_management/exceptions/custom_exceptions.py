@@ -23,7 +23,7 @@ class FieldOrderAlreadyExistsException(Exception):
         self.field_order = field_order
 
 
-class NotAccessToCreationException(Exception):
+class NotAccessToModificationException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -92,9 +92,18 @@ class ListNotFoundException(Exception):
         self.list_id = list_id
 
 
-class ListOrderAlreadyExistedException(Exception):
-    def __init__(self, order: int):
-        self.order = order
+class FolderListOrderAlreadyExistedException(Exception):
+    def __init__(self, folder_id: str):
+        self.folder_id = folder_id
+
+
+class SpaceListOrderAlreadyExistedException(Exception):
+    def __init__(self, space_id: str):
+        self.space_id = space_id
+
+class FolderOrderAlreadyExistedException(Exception):
+    def __init__(self, space_id: str):
+        self.space_id = space_id
 
 class TaskNotFoundException(Exception):
     def __init__(self, task_id: str):

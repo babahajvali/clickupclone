@@ -1,7 +1,9 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.interactors.dtos import PermissionsEnum
+from faker import Faker
+
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
@@ -9,11 +11,11 @@ from task_management.interactors.storage_interface.folder_storage_interface impo
 from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import PermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToCreationException,
+    NotAccessToModificationException,
     ListNotFoundException,
     InactiveListFoundException,
 )
-
+Faker.seed(0)
 
 class TestRemoveList:
 
@@ -36,9 +38,8 @@ class TestRemoveList:
 
         result = self.interactor.remove_list("list_1", "user_1")
 
-        snapshot.assert_match(
-            repr(result.name),
-            "remove_list_success.json"
+        self.interactor.list_storage.remove_list.assert_called_once_with(
+            list_id="list_1"
         )
 
     def test_permission_denied(self, snapshot):
@@ -46,7 +47,7 @@ class TestRemoveList:
             PermissionsEnum.GUEST.value
         )
 
-        with pytest.raises(NotAccessToCreationException) as exc:
+        with pytest.raises(NotAccessToModificationException) as exc:
             self.interactor.remove_list("list_1", "user_1")
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")

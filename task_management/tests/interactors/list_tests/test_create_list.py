@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.interactors.dtos import PermissionsEnum
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
@@ -9,12 +9,9 @@ from task_management.interactors.storage_interface.folder_storage_interface impo
 from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import PermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToCreationException,
+    NotAccessToModificationException,
     SpaceNotFoundException,
-    InactiveSpaceFoundException,
-    FolderNotFoundException,
-    InactiveFolderFoundException,
-    ListOrderAlreadyExistedException,
+    InactiveSpaceFoundException, FolderListOrderAlreadyExistedException,
 )
 from task_management.tests.factories.interactor_factory import CreateListDTOFactory
 
@@ -31,11 +28,11 @@ class TestCreateList:
         )
 
     def test_create_list_success(self, snapshot):
-        dto = CreateListDTOFactory()
+        dto = CreateListDTOFactory(folder_id="!234")
 
         self.interactor.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
         self.interactor.space_storage.get_space.return_value = type("Space", (), {"is_active": True})()
-        self.interactor.list_storage.check_list_order_exist.return_value = False
+        self.interactor.list_storage.check_list_order_exist_in_folder.return_value = False
         self.interactor.list_storage.crate_list.return_value = "LIST_DTO"
 
         result = self.interactor.create_list(dto)
@@ -46,7 +43,7 @@ class TestCreateList:
         dto = CreateListDTOFactory()
         self.interactor.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST.value
 
-        with pytest.raises(NotAccessToCreationException) as exc:
+        with pytest.raises(NotAccessToModificationException) as exc:
             self.interactor.create_list(dto)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
@@ -71,13 +68,13 @@ class TestCreateList:
 
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")
 
-    def test_order_already_exists(self, snapshot):
-        dto = CreateListDTOFactory()
+    def test_order_already_exists_in_folder(self, snapshot):
+        dto = CreateListDTOFactory(folder_id= "123")
         self.interactor.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
         self.interactor.space_storage.get_space.return_value = type("Space", (), {"is_active": True})()
-        self.interactor.list_storage.check_list_order_exist.return_value = True
+        self.interactor.list_storage.check_list_order_exist_in_folder.return_value = True
 
-        with pytest.raises(ListOrderAlreadyExistedException) as exc:
+        with pytest.raises(FolderListOrderAlreadyExistedException) as exc:
             self.interactor.create_list(dto)
 
         snapshot.assert_match(repr(exc.value), "order_already_exists.txt")

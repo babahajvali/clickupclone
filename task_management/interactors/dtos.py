@@ -3,21 +3,7 @@ from enum import Enum
 
 from typing import Optional
 
-
-class FieldTypeEnum(Enum):
-    Dropdown = "dropdown"
-    User = "user"
-    Text = "text"
-    Number = "number"
-    Date = "date"
-    Checkbox = "checkbox"
-    email = "email"
-
-
-class PermissionsEnum(Enum):
-    ADMIN = "admin"
-    MEMBER = "member"
-    GUEST = "guest"
+from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum
 
 
 @dataclass
@@ -209,3 +195,60 @@ class ListDTO:
     is_private: bool
     created_by: str
     folder_id: Optional[str] = None
+
+
+@dataclass
+class CreateViewDTO:
+    name: str
+    description: str
+    view_type: ViewTypeEnum
+    created_by: str
+
+@dataclass
+class UpdateViewDTO:
+    view_id: str
+    name: str
+    description: str
+    view_type: ViewTypeEnum
+    created_by: str
+
+@dataclass
+class ViewDTO:
+    view_id: str
+    name: str
+    description: str
+    view_type: ViewTypeEnum
+    created_by: str
+
+
+@dataclass
+class CreateFolderDTO:
+    name: str
+    description: str
+    space_id: str
+    order: int
+    is_active: bool
+    created_by: str
+    is_private: bool
+
+@dataclass
+class UpdateFolderDTO:
+    folder_id: str
+    name: str
+    description: str
+    space_id: str
+    order: int
+    is_active: bool
+    created_by: str
+    is_private: bool
+
+@dataclass
+class FolderDTO:
+    folder_id: str
+    name: str
+    description: str
+    space_id: str
+    order: int
+    is_active: bool
+    created_by: str
+    is_private: bool

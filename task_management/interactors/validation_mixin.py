@@ -1,7 +1,7 @@
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     TemplateNotFoundException, UnexpectedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
-    NotAccessToCreationException, FieldNotFoundException, \
+    NotAccessToModificationException, FieldNotFoundException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
     AlreadyExistedTemplateNameException, \
     DefaultTemplateAlreadyExistedException, ListNotFoundException, \
@@ -9,8 +9,10 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveTaskFoundException, InactiveListFoundException, \
     SpaceNotFoundException, InactiveSpaceFoundException, \
     FolderNotFoundException, InactiveFolderFoundException, \
-    ListOrderAlreadyExistedException
-from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
+    FolderOrderAlreadyExistedException, \
+    FolderListOrderAlreadyExistedException, \
+    SpaceListOrderAlreadyExistedException
+from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -68,7 +70,7 @@ class ValidationMixin:
 
     @staticmethod
     def check_user_exist(user_id: str, user_storage: UserStorageInterface):
-        is_exist = user_storage.check_user_exist(user_id=user_id)
+        is_exist = user_storage.check_user_exists(user_id=user_id)
 
         if not is_exist:
             raise UserNotFoundException(user_id=user_id)
@@ -128,7 +130,7 @@ class ValidationMixin:
             user_id=user_id)
 
         if user_permissions == PermissionsEnum.GUEST:
-            raise NotAccessToCreationException(user_id=user_id)
+            raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
     def validate_field(field_id: str, template_id: str,
@@ -236,7 +238,7 @@ class ValidationMixin:
             user_id=user_id)
 
         if user_permissions == PermissionsEnum.GUEST.value:
-            raise NotAccessToCreationException(user_id=user_id)
+            raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
     def check_default_template_exists(template_name: str,
@@ -248,7 +250,8 @@ class ValidationMixin:
                 template_name=template_name)
 
     @staticmethod
-    def check_list_exists_and_status(list_id: str, list_storage: ListStorageInterface):
+    def check_list_exists_and_status(list_id: str,
+                                     list_storage: ListStorageInterface):
         list_data = list_storage.get_list(list_id=list_id)
 
         if not list_data:
@@ -269,21 +272,21 @@ class ValidationMixin:
 
     @staticmethod
     def check_user_has_access_to_create_task(user_id: str,
-                                                 permission_storage: PermissionStorageInterface):
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
-
-        if user_permissions == PermissionsEnum.GUEST.value:
-            raise NotAccessToCreationException(user_id=user_id)
-
-    @staticmethod
-    def check_user_has_access_to_list_modification(user_id: str,
                                              permission_storage: PermissionStorageInterface):
         user_permissions = permission_storage.get_user_access_permissions(
             user_id=user_id)
 
         if user_permissions == PermissionsEnum.GUEST.value:
-            raise NotAccessToCreationException(user_id=user_id)
+            raise NotAccessToModificationException(user_id=user_id)
+
+    @staticmethod
+    def check_user_has_access_to_list_modification(user_id: str,
+                                                   permission_storage: PermissionStorageInterface):
+        user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
+
+        if user_permissions == PermissionsEnum.GUEST.value:
+            raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
     def validate_task_exists(task_id: str, task_storage: TaskStorageInterface):
@@ -297,15 +300,17 @@ class ValidationMixin:
             raise InactiveTaskFoundException(task_id=task_id)
 
     @staticmethod
-    def check_task_assignee_exists(assign_id: str, task_assignee_storage: TaskAssigneeStorageInterface):
-        is_exist = task_assignee_storage.check_tas_assignee_exist(assign_id=assign_id)
+    def check_task_assignee_exists(assign_id: str,
+                                   task_assignee_storage: TaskAssigneeStorageInterface):
+        is_exist = task_assignee_storage.check_task_assignee_exist(
+            assign_id=assign_id)
 
         if not is_exist:
             raise TaskAssigneeNotFoundException(assign_id=assign_id)
 
-
     @staticmethod
-    def validate_space_exist_and_status(space_id: str, space_storage: SpaceStorageInterface):
+    def validate_space_exist_and_status(space_id: str,
+                                        space_storage: SpaceStorageInterface):
 
         space_data = space_storage.get_space(space_id=space_id)
 
@@ -316,7 +321,8 @@ class ValidationMixin:
             raise InactiveSpaceFoundException(space_id=space_id)
 
     @staticmethod
-    def validate_folder_exist_and_status(folder_id: str, folder_storage: FolderStorageInterface):
+    def validate_folder_exist_and_status(folder_id: str,
+                                         folder_storage: FolderStorageInterface):
         folder_data = folder_storage.get_folder(folder_id=folder_id)
 
         if not folder_data:
@@ -325,10 +331,37 @@ class ValidationMixin:
         if not folder_data.is_active:
             raise InactiveFolderFoundException(folder_id=folder_id)
 
-
     @staticmethod
-    def validate_list_order(order: int, list_storage: ListStorageInterface):
-        is_order_exist = list_storage.check_list_order_exist(order=order)
+    def validate_list_order_in_folder(order: int, folder_id: str, list_storage: ListStorageInterface):
+        is_order_exist = list_storage.check_list_order_exist_in_folder(order=order,folder_id=folder_id)
 
         if is_order_exist:
-            raise ListOrderAlreadyExistedException(order=order)
+            raise FolderListOrderAlreadyExistedException(folder_id=folder_id)
+
+    @staticmethod
+    def validate_list_order_in_space(order: int, space_id: str,
+                                      list_storage: ListStorageInterface):
+        is_order_exist = list_storage.check_list_order_exist_in_space(
+            order=order, space_id=space_id)
+
+        if is_order_exist:
+            raise SpaceListOrderAlreadyExistedException(space_id=space_id)
+
+    @staticmethod
+    def check_user_has_access_to_folder_modification(user_id: str,
+                                                     permission_storage: PermissionStorageInterface):
+
+        user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
+
+        if user_permissions == PermissionsEnum.GUEST.value:
+            raise NotAccessToModificationException(user_id=user_id)
+
+    @staticmethod
+    def validate_folder_order(order: int, space_id: str, folder_storage: FolderStorageInterface):
+        is_order_exist = folder_storage.check_order_exist(order=order,space_id=space_id)
+
+        if is_order_exist:
+            raise FolderOrderAlreadyExistedException(space_id=space_id)
+
+

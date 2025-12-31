@@ -7,15 +7,22 @@ from task_management.interactors.dtos import ListDTO, CreateListDTO, \
 class ListStorageInterface(ABC):
 
     @abstractmethod
-    def check_list_exist(self,list_id: str) -> bool:
+    def check_list_exist(self, list_id: str) -> bool:
         pass
 
     @abstractmethod
-    def get_list(self,list_id: str) -> ListDTO:
+    def get_list(self, list_id: str) -> ListDTO:
         pass
 
     @abstractmethod
-    def check_list_order_exist(self, order: int)-> bool:
+    def check_list_order_exist_in_folder(self, order: int,
+                                         folder_id: str) -> bool:
+        # check this order already exist
+        pass
+
+    @abstractmethod
+    def check_list_order_exist_in_space(self, order: int,
+                                        space_id: str) -> bool:
         # check this order already exist
         pass
 
@@ -36,7 +43,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_list(self, list_id: str)-> ListDTO:
+    def remove_list(self, list_id: str) -> ListDTO:
         # update the is_active false
         pass
 
@@ -47,5 +54,5 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def make_list_public(self, list_id: str) -> ListDTO:
-        #set is_private false
+        # set is_private false
         pass

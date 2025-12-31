@@ -33,12 +33,18 @@ class ListInteractor(ValidationMixin):
         self.validate_space_exist_and_status(
             space_id=create_list_data.space_id,
             space_storage=self.space_storage)
-        self.validate_list_order(order=create_list_data.order,list_storage=self.list_storage)
 
         if create_list_data.folder_id is not None:
             self.validate_folder_exist_and_status(
                 folder_id=create_list_data.folder_id,
                 folder_storage=self.folder_storage)
+            self.validate_list_order_in_folder(order=create_list_data.order,
+                                               folder_id=create_list_data.folder_id,
+                                               list_storage=self.list_storage)
+        else:
+            self.validate_list_order_in_space(
+                space_id=create_list_data.space_id,
+                order=create_list_data.order, list_storage=self.list_storage)
 
         return self.list_storage.crate_list(create_list_data=create_list_data)
 
@@ -51,35 +57,46 @@ class ListInteractor(ValidationMixin):
         self.validate_space_exist_and_status(
             space_id=update_list_data.space_id,
             space_storage=self.space_storage)
-        self.validate_list_order(order=update_list_data.order,
-                                 list_storage=self.list_storage)
 
         if update_list_data.folder_id is not None:
             self.validate_folder_exist_and_status(
                 folder_id=update_list_data.folder_id,
                 folder_storage=self.folder_storage)
+            self.validate_list_order_in_folder(order=update_list_data.order,
+                                               folder_id=update_list_data.folder_id,
+                                               list_storage=self.list_storage)
+        else:
+            self.validate_list_order_in_space(
+                space_id=update_list_data.space_id,
+                order=update_list_data.order, list_storage=self.list_storage)
 
         return self.list_storage.update_list(update_list_data=update_list_data)
 
     def get_folder_lists(self, folder_id: str) -> list[ListDTO]:
-        self.validate_folder_exist_and_status(folder_id=folder_id,folder_storage=self.folder_storage)
+        self.validate_folder_exist_and_status(folder_id=folder_id,
+                                              folder_storage=self.folder_storage)
 
         return self.list_storage.get_folder_lists(folder_id=folder_id)
 
     def get_space_lists(self, space_id: str) -> list[ListDTO]:
-        self.validate_space_exist_and_status(space_id=space_id,space_storage=self.space_storage)
-
+        self.validate_space_exist_and_status(space_id=space_id,
+                                             space_storage=self.space_storage)
 
         return self.list_storage.get_space_lists(space_id=space_id)
+
     def remove_list(self, list_id: str, user_id: str):
-        self.check_user_has_access_to_list_modification(user_id=user_id, permission_storage=self.permission_storage)
-        self.check_list_exists_and_status(list_id=list_id, list_storage=self.list_storage)
+        self.check_user_has_access_to_list_modification(user_id=user_id,
+                                                        permission_storage=self.permission_storage)
+        self.check_list_exists_and_status(list_id=list_id,
+                                          list_storage=self.list_storage)
 
         return self.list_storage.remove_list(list_id=list_id)
 
     def set_list_private(self, list_id: str, user_id: str):
-        self.check_user_has_access_to_list_modification(user_id=user_id, permission_storage=self.permission_storage)
-        self.check_list_exists_and_status(list_id=list_id, list_storage=self.list_storage)
+        self.check_user_has_access_to_list_modification(user_id=user_id,
+                                                        permission_storage=self.permission_storage)
+        self.check_list_exists_and_status(list_id=list_id,
+                                          list_storage=self.list_storage)
 
         return self.list_storage.make_list_private(list_id=list_id)
 
@@ -90,7 +107,3 @@ class ListInteractor(ValidationMixin):
                                           list_storage=self.list_storage)
 
         return self.list_storage.make_list_public(list_id=list_id)
-
-
-
-

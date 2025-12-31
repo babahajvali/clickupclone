@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.interactors.dtos import PermissionsEnum
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
@@ -11,9 +11,9 @@ from task_management.interactors.storage_interface.permission_storage_interface 
 from task_management.exceptions.custom_exceptions import (
     ListNotFoundException,
     InactiveListFoundException,
-    NotAccessToCreationException,
-    SpaceNotFoundException,
-    ListOrderAlreadyExistedException,
+    NotAccessToModificationException,
+    SpaceNotFoundException, FolderListOrderAlreadyExistedException,
+    SpaceListOrderAlreadyExistedException,
 )
 from task_management.tests.factories.interactor_factory import UpdateListDTOFactory
 
@@ -30,7 +30,7 @@ class TestUpdateList:
         )
 
     def test_update_list_success(self, snapshot):
-        dto = UpdateListDTOFactory()
+        dto = UpdateListDTOFactory(folder_id="764969664")
 
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
@@ -41,7 +41,7 @@ class TestUpdateList:
         self.interactor.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.interactor.list_storage.check_list_order_exist.return_value = False
+        self.interactor.list_storage.check_list_order_exist_in_folder.return_value = False
         self.interactor.list_storage.update_list.return_value = "UPDATED_LIST_DTO"
 
         result = self.interactor.update_list(dto)
@@ -80,7 +80,7 @@ class TestUpdateList:
             PermissionsEnum.GUEST.value
         )
 
-        with pytest.raises(NotAccessToCreationException) as exc:
+        with pytest.raises(NotAccessToModificationException) as exc:
             self.interactor.update_list(dto)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
@@ -101,7 +101,7 @@ class TestUpdateList:
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
     def test_order_already_exists(self, snapshot):
-        dto = UpdateListDTOFactory()
+        dto = UpdateListDTOFactory(space_id="1234")
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
@@ -111,9 +111,9 @@ class TestUpdateList:
         self.interactor.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.interactor.list_storage.check_list_order_exist.return_value = True
+        self.interactor.list_storage.check_list_order_exist_in_space.return_value = True
 
-        with pytest.raises(ListOrderAlreadyExistedException) as exc:
+        with pytest.raises(SpaceListOrderAlreadyExistedException) as exc:
             self.interactor.update_list(dto)
 
         snapshot.assert_match(repr(exc.value), "order_already_exists.txt")
