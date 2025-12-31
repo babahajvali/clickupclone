@@ -1,7 +1,8 @@
 import factory
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldTypeEnum, \
-    FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO
+    FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
+    UpdateListDTO, ListDTO
 
 
 class CreateFieldFactory(factory.Factory):
@@ -64,3 +65,44 @@ class TemplateDTOFactory(factory.Factory):
     is_default = False
     created_by = factory.Faker("uuid4")
 
+class CreateListDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateListDTO
+
+    name = factory.Faker("word")
+    description = factory.Faker("sentence")
+    space_id = factory.Faker("uuid4")
+    order = factory.Faker("random_int", min=1, max=100)
+    is_active = True
+    is_private = False
+    created_by = factory.Faker("uuid4")
+    folder_id = None
+
+class UpdateListDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateListDTO
+
+    list_id = factory.Faker("uuid4")
+    name = factory.Faker("word")
+    description = factory.Faker("sentence")
+    space_id = factory.Faker("uuid4")
+    is_active = True
+    order = factory.Faker("random_int", min=1, max=100)
+    is_private = False
+    created_by = factory.Faker("uuid4")
+    folder_id = None
+
+
+class ListDTOFactory(factory.Factory):
+    class Meta:
+        model = ListDTO
+
+    list_id = factory.Faker("uuid4")
+    name = factory.Faker("word")
+    description = factory.Faker("sentence")
+    space_id = factory.Faker("uuid4")
+    is_active = True
+    order = factory.Faker("random_int", min=1, max=100)
+    is_private = False
+    created_by = factory.Faker("uuid4")
+    folder_id = None

@@ -5,14 +5,22 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
     AlreadyExistedTemplateNameException, \
     DefaultTemplateAlreadyExistedException, ListNotFoundException, \
-    TaskNotFoundException, TaskAssigneeNotFoundException
+    TaskNotFoundException, TaskAssigneeNotFoundException, \
+    InactiveTaskFoundException, InactiveListFoundException, \
+    SpaceNotFoundException, InactiveSpaceFoundException, \
+    FolderNotFoundException, InactiveFolderFoundException, \
+    ListOrderAlreadyExistedException
 from task_management.interactors.dtos import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
 from task_management.interactors.storage_interface.permission_storage_interface import \
     PermissionStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
@@ -240,11 +248,14 @@ class ValidationMixin:
                 template_name=template_name)
 
     @staticmethod
-    def check_list_exists(list_id: str, list_storage: ListStorageInterface):
-        is_exist = list_storage.check_list_exist(list_id=list_id)
+    def check_list_exists_and_status(list_id: str, list_storage: ListStorageInterface):
+        list_data = list_storage.get_list(list_id=list_id)
 
-        if not is_exist:
+        if not list_data:
             raise ListNotFoundException(list_id=list_id)
+
+        if not list_data.is_active:
+            raise InactiveListFoundException(list_id=list_id)
 
     @staticmethod
     def check_template_name_exist(template_name: str, template_id: str,
@@ -266,12 +277,24 @@ class ValidationMixin:
             raise NotAccessToCreationException(user_id=user_id)
 
     @staticmethod
+    def check_user_has_access_to_list_modification(user_id: str,
+                                             permission_storage: PermissionStorageInterface):
+        user_permissions = permission_storage.get_user_access_permissions(
+            user_id=user_id)
+
+        if user_permissions == PermissionsEnum.GUEST.value:
+            raise NotAccessToCreationException(user_id=user_id)
+
+    @staticmethod
     def validate_task_exists(task_id: str, task_storage: TaskStorageInterface):
 
-        is_exist = task_storage.check_task_exist(task_id=task_id)
+        task_data = task_storage.get_task_by_id(task_id=task_id)
 
-        if not is_exist:
+        if not task_data:
             raise TaskNotFoundException(task_id=task_id)
+
+        if not task_data.is_active:
+            raise InactiveTaskFoundException(task_id=task_id)
 
     @staticmethod
     def check_task_assignee_exists(assign_id: str, task_assignee_storage: TaskAssigneeStorageInterface):
@@ -279,3 +302,33 @@ class ValidationMixin:
 
         if not is_exist:
             raise TaskAssigneeNotFoundException(assign_id=assign_id)
+
+
+    @staticmethod
+    def validate_space_exist_and_status(space_id: str, space_storage: SpaceStorageInterface):
+
+        space_data = space_storage.get_space(space_id=space_id)
+
+        if not space_data:
+            raise SpaceNotFoundException(space_id=space_id)
+
+        if not space_data.is_active:
+            raise InactiveSpaceFoundException(space_id=space_id)
+
+    @staticmethod
+    def validate_folder_exist_and_status(folder_id: str, folder_storage: FolderStorageInterface):
+        folder_data = folder_storage.get_folder(folder_id=folder_id)
+
+        if not folder_data:
+            raise FolderNotFoundException(folder_id=folder_id)
+
+        if not folder_data.is_active:
+            raise InactiveFolderFoundException(folder_id=folder_id)
+
+
+    @staticmethod
+    def validate_list_order(order: int, list_storage: ListStorageInterface):
+        is_order_exist = list_storage.check_list_order_exist(order=order)
+
+        if is_order_exist:
+            raise ListOrderAlreadyExistedException(order=order)

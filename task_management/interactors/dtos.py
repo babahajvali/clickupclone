@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from typing import Optional
+
 
 class FieldTypeEnum(Enum):
     Dropdown = "dropdown"
@@ -167,3 +169,43 @@ class RemoveTaskAssigneeDTO:
     assignee_id: str
     removed_by: str
     is_active: bool
+
+@dataclass
+class UserTasksDTO:
+    user_id: str
+    tasks: list[TaskDTO]
+
+@dataclass
+class CreateListDTO:
+    name: str
+    description: str
+    space_id: str
+    order: int
+    is_active: bool
+    created_by: str
+    is_private: bool
+    folder_id: Optional[str] = None
+
+@dataclass
+class UpdateListDTO:
+    list_id: str
+    name: str
+    description: str
+    space_id: str
+    is_active: bool
+    order: int
+    is_private: bool
+    created_by: str
+    folder_id: Optional[str] = None
+
+@dataclass
+class ListDTO:
+    list_id: str
+    name: str
+    description: str
+    space_id: str
+    is_active: bool
+    order: int
+    is_private: bool
+    created_by: str
+    folder_id: Optional[str] = None

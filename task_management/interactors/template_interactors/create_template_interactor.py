@@ -31,8 +31,8 @@ class CreateTemplateInteractor(ValidationMixin):
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
         self.check_user_exist(user_id=template_data.created_by,
                               user_storage=self.user_storage)
-        self.check_list_exists(list_id=template_data.list_id,
-                               list_storage=self.list_storage)
+        self.check_list_exists_and_status(list_id=template_data.list_id,
+                                          list_storage=self.list_storage)
         self.check_user_has_access_to_create_template(
             user_id=template_data.created_by,
             permission_storage=self.permission_storage)

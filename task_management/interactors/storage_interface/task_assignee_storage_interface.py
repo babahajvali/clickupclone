@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import TaskAssigneeDTO, \
-    RemoveTaskAssigneeDTO
+    RemoveTaskAssigneeDTO, UserTasksDTO
 
 
 class TaskAssigneeStorageInterface(ABC):
@@ -16,4 +16,18 @@ class TaskAssigneeStorageInterface(ABC):
 
     @abstractmethod
     def check_tas_assignee_exist(self,assign_id: str)-> bool:
+        pass
+
+    @abstractmethod
+    def get_task_assignee(self, task_id: str) -> list[TaskAssigneeDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_assigned_tasks(self,user_id: str) -> list[UserTasksDTO]:
+        # get tasks only active tasks
+        pass
+
+    @abstractmethod
+    def get_user_today_tasks(self,user_id: str) -> list[UserTasksDTO]:
+        # get today active tasks
         pass

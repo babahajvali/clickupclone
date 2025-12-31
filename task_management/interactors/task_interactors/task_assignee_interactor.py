@@ -1,5 +1,5 @@
 from task_management.interactors.dtos import TaskAssigneeDTO, \
-    RemoveTaskAssigneeDTO
+    RemoveTaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interface.permission_storage_interface import \
     PermissionStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
@@ -34,3 +34,13 @@ class TaskAssigneeInteractor(ValidationMixin):
                                                   permission_storage=self.permission_storage)
 
         return self.task_assignee_storage.remove_task_assignee(assign_id=assign_id, removed_by=removed_by)
+
+    def get_task_assignee(self,task_id: str) -> list[TaskAssigneeDTO]:
+        self.validate_task_exists(task_id=task_id,task_storage=self.task_storage)
+
+        return self.task_assignee_storage.get_task_assignee(task_id=task_id)
+
+    def get_user_assigned_tasks(self,user_id: str) -> list[UserTasksDTO]:
+        self.check_user_exist(user_id=user_id,user_storage=self.user_storage)
+
+        return self.task_assignee_storage.get_user_assigned_tasks(user_id=user_id)

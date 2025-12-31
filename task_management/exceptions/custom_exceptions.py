@@ -92,6 +92,10 @@ class ListNotFoundException(Exception):
         self.list_id = list_id
 
 
+class ListOrderAlreadyExistedException(Exception):
+    def __init__(self, order: int):
+        self.order = order
+
 class TaskNotFoundException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
@@ -99,3 +103,28 @@ class TaskNotFoundException(Exception):
 class TaskAssigneeNotFoundException(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
+        
+class InactiveTaskFoundException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+class InactiveListFoundException(Exception):
+    def __init__(self, list_id: str):
+        self.list_id = list_id
+
+class SpaceNotFoundException(Exception):
+    def __init__(self, space_id: str):
+        self.space_id = space_id
+
+
+class InactiveSpaceFoundException(Exception):
+    def __init__(self, space_id: str):
+        self.space_id = space_id
+
+class FolderNotFoundException(Exception):
+    def __init__(self, folder_id: str):
+        self.folder_id = folder_id
+
+class InactiveFolderFoundException(Exception):
+    def __init__(self, folder_id: str):
+        self.folder_id = folder_id
