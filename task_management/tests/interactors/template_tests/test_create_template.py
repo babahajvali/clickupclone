@@ -3,14 +3,17 @@ from unittest.mock import create_autospec, patch
 import pytest
 from faker import Faker
 
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
 )
-from task_management.interactors.storage_interface.permission_storage_interface import (
-    PermissionStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import (
+    SpacePermissionStorageInterface
 )
 from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
@@ -32,23 +35,22 @@ Faker.seed(0)
 class TestCreateTemplateInteractor:
 
     def setup_method(self):
-        self.user_storage = create_autospec(UserStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.permission_storage = create_autospec(PermissionStorageInterface)
+        self.permission_storage = create_autospec(ListPermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
 
         self.interactor = CreateTemplateInteractor(
-            user_storage=self.user_storage,
             field_storage=self.field_storage,
             permission_storage=self.permission_storage,
             template_storage=self.template_storage,
             list_storage=self.list_storage
         )
 
-    @patch("task_management.interactors.template_interactors.create_template_interactor.CreateFieldInteractor")
-    def test_create_template_success(self,mock_create_field_interactor,snapshot):
-        # Arrange
+    @patch(
+        "task_management.interactors.template_interactors.create_template_interactor.CreateFieldInteractor")
+    def test_create_template_success(self, mock_create_field_interactor,
+                                     snapshot):
         create_template_dto = CreateTemplateDTOFactory()
 
         template_dto = TemplateDTOFactory(
@@ -59,15 +61,25 @@ class TestCreateTemplateInteractor:
             created_by=create_template_dto.created_by,
         )
 
+        # list exists + active
+        self.list_storage.get_list.return_value = type(
+            "List", (), {"is_active": True}
+        )()
+
+        # permission allowed
+        self.permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+
         self.template_storage.check_template_name_exist.return_value = False
         self.template_storage.create_template.return_value = template_dto
 
-        # Act
         result = self.interactor.create_template(create_template_dto)
 
-        # Assert
-        snapshot.assert_match(repr(result),"create_template_success.json")
-
+        snapshot.assert_match(
+            repr(result),
+            "create_template_success.json"
+        )
 
     def test_create_template_duplicate_name(self, snapshot):
         # Arrange
@@ -108,15 +120,18 @@ class TestCreateTemplateInteractor:
         self.template_storage.create_template.assert_not_called()
 
     def test_create_template_permission_denied(self):
-        # Arrange
         create_template_dto = CreateTemplateDTOFactory()
 
-        self.permission_storage.get_user_access_permissions.return_value = {
-            "List": type("Enum", (), {"value": "GUEST"})()
-        }
+        self.list_storage.get_list.return_value = type(
+            "List", (), {"is_active": True}
+        )()
 
-        # Act & Assert
+        self.permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.VIEW.value
+        )
+
         with pytest.raises(Exception):
             self.interactor.create_template(create_template_dto)
 
         self.template_storage.create_template.assert_not_called()
+

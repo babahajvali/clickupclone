@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     TemplateNotFoundException, UnexpectedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
@@ -11,16 +13,24 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     FolderNotFoundException, InactiveFolderFoundException, \
     FolderOrderAlreadyExistedException, \
     FolderListOrderAlreadyExistedException, \
-    SpaceListOrderAlreadyExistedException
-from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum
+    SpaceListOrderAlreadyExistedException, ViewTypeNotFoundException, \
+    ViewNotFoundException, SpaceOrderAlreadyExistedException, \
+    WorkspaceNotFoundException, InactiveWorkspaceFoundException, \
+    InactiveUserFoundException, UserNotWorkspaceOwnerException
+from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum, \
+    ViewTypeEnum, RoleEnum
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import \
     FolderStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import \
-    PermissionStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
@@ -31,6 +41,12 @@ from task_management.interactors.storage_interface.template_storage_interface im
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
+from task_management.interactors.storage_interface.view_storage_interface import \
+    ViewStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
+from task_management.interactors.storage_interface.workspace_storage_interface import \
+    WorkspaceStorageInterface
 
 FIELD_TYPE_RULES = {
     FieldTypeEnum.Text: {
@@ -69,20 +85,26 @@ FIELD_TYPE_RULES = {
 class ValidationMixin:
 
     @staticmethod
-    def check_user_exist(user_id: str, user_storage: UserStorageInterface):
-        is_exist = user_storage.check_user_exists(user_id=user_id)
+    def validate_user_exist_and_status(user_id: str,
+                                       user_storage: UserStorageInterface):
+        user_data = user_storage.get_user_data(user_id=user_id)
 
-        if not is_exist:
+        if not user_data:
             raise UserNotFoundException(user_id=user_id)
+
+        if not user_data.is_active:
+            raise InactiveUserFoundException(user_id=user_id)
 
     @staticmethod
     def check_template_exist(template_id: str,
                              template_storage: TemplateStorageInterface):
-        is_exist = template_storage.check_template_exist(
+        template_data = template_storage.get_template_exist(
             template_id=template_id)
 
-        if not is_exist:
+        if not template_data:
             raise TemplateNotFoundException(template_id=template_id)
+
+        return template_data.list_id
 
     @staticmethod
     def check_field_type(field_type: str):
@@ -124,12 +146,12 @@ class ValidationMixin:
 
     @staticmethod
     def check_user_has_access_to_create_field(user_id: str,
-                                              permission_storage: PermissionStorageInterface):
+                                              permission_storage: SpacePermissionStorageInterface):
 
         user_permissions = permission_storage.get_user_access_permissions(
             user_id=user_id)
 
-        if user_permissions == PermissionsEnum.GUEST:
+        if user_permissions == PermissionsEnum.VIEW:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
@@ -231,14 +253,6 @@ class ValidationMixin:
             raise AlreadyExistedTemplateNameException(
                 template_name=template_name)
 
-    @staticmethod
-    def check_user_has_access_to_create_template(user_id: str,
-                                                 permission_storage: PermissionStorageInterface):
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
-
-        if user_permissions == PermissionsEnum.GUEST.value:
-            raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
     def check_default_template_exists(template_name: str,
@@ -272,24 +286,24 @@ class ValidationMixin:
 
     @staticmethod
     def check_user_has_access_to_create_task(user_id: str,
-                                             permission_storage: PermissionStorageInterface):
+                                             permission_storage: SpacePermissionStorageInterface):
         user_permissions = permission_storage.get_user_access_permissions(
             user_id=user_id)
 
-        if user_permissions == PermissionsEnum.GUEST.value:
+        if user_permissions == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def check_user_has_access_to_list_modification(user_id: str,
-                                                   permission_storage: PermissionStorageInterface):
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
+    def check_user_has_access_to_list_modification(user_id: str, list_id: str,
+                                                   permission_storage: ListPermissionStorageInterface):
+        user_permissions = permission_storage.get_user_permission_for_list(
+            user_id=user_id, list_id=list_id)
 
-        if user_permissions == PermissionsEnum.GUEST.value:
+        if user_permissions == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def validate_task_exists(task_id: str, task_storage: TaskStorageInterface):
+    def validate_task_exists(task_id: str, task_storage: TaskStorageInterface)-> str:
 
         task_data = task_storage.get_task_by_id(task_id=task_id)
 
@@ -298,6 +312,8 @@ class ValidationMixin:
 
         if not task_data.is_active:
             raise InactiveTaskFoundException(task_id=task_id)
+
+        return task_data.list_id
 
     @staticmethod
     def check_task_assignee_exists(assign_id: str,
@@ -332,15 +348,17 @@ class ValidationMixin:
             raise InactiveFolderFoundException(folder_id=folder_id)
 
     @staticmethod
-    def validate_list_order_in_folder(order: int, folder_id: str, list_storage: ListStorageInterface):
-        is_order_exist = list_storage.check_list_order_exist_in_folder(order=order,folder_id=folder_id)
+    def validate_list_order_in_folder(order: int, folder_id: str,
+                                      list_storage: ListStorageInterface):
+        is_order_exist = list_storage.check_list_order_exist_in_folder(
+            order=order, folder_id=folder_id)
 
         if is_order_exist:
             raise FolderListOrderAlreadyExistedException(folder_id=folder_id)
 
     @staticmethod
     def validate_list_order_in_space(order: int, space_id: str,
-                                      list_storage: ListStorageInterface):
+                                     list_storage: ListStorageInterface):
         is_order_exist = list_storage.check_list_order_exist_in_space(
             order=order, space_id=space_id)
 
@@ -349,19 +367,103 @@ class ValidationMixin:
 
     @staticmethod
     def check_user_has_access_to_folder_modification(user_id: str,
-                                                     permission_storage: PermissionStorageInterface):
+                                                     folder_id: str,
+                                                     permission_storage: FolderPermissionStorageInterface):
 
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
+        user_permissions = permission_storage.get_user_permission_for_folder(
+            user_id=user_id, folder_id=folder_id)
 
-        if user_permissions == PermissionsEnum.GUEST.value:
+        if user_permissions == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def validate_folder_order(order: int, space_id: str, folder_storage: FolderStorageInterface):
-        is_order_exist = folder_storage.check_order_exist(order=order,space_id=space_id)
+    def validate_folder_order(order: int, space_id: str,
+                              folder_storage: FolderStorageInterface):
+        is_order_exist = folder_storage.check_order_exist(order=order,
+                                                          space_id=space_id)
 
         if is_order_exist:
             raise FolderOrderAlreadyExistedException(space_id=space_id)
 
+    @staticmethod
+    def check_view_type(view_type: str):
+        view_types = [x.value for x in ViewTypeEnum]
 
+        if view_type not in view_types:
+            raise ViewTypeNotFoundException(view_type=view_type)
+
+    @staticmethod
+    def validate_view_exist(view_id: str, view_storage: ViewStorageInterface):
+        view_data = view_storage.get_view(view_id=view_id)
+
+        if not view_data:
+            raise ViewNotFoundException(view_id=view_id)
+
+    @staticmethod
+    def check_user_has_access_to_space_modification(user_id: str,
+                                                    space_id: str,
+                                                    permission_storage: SpacePermissionStorageInterface):
+
+        user_permissions = permission_storage.get_user_permission_for_space(
+            user_id=user_id, space_id=space_id)
+
+        if user_permissions == PermissionsEnum.VIEW.value:
+            raise NotAccessToModificationException(user_id=user_id)
+
+    @staticmethod
+    def check_space_order_exist(workspace_id: str, order: int,
+                                space_storage: SpaceStorageInterface):
+        is_space_order_exist = space_storage.check_space_order_exist(
+            order=order, workspace_id=workspace_id)
+
+        if is_space_order_exist:
+            raise SpaceOrderAlreadyExistedException(workspace_id=workspace_id)
+
+    @staticmethod
+    def validate_workspace_exist_and_status(workspace_id: str,
+                                            workspace_storage: WorkspaceStorageInterface):
+        workspace_data = workspace_storage.get_workspace(
+            workspace_id=workspace_id)
+
+        if not workspace_data:
+            raise WorkspaceNotFoundException(workspace_id=workspace_id)
+
+        if not workspace_data.is_active:
+            raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
+
+    @staticmethod
+    def check_user_owner_of_workspace(user_id: str, workspace_id: str,
+                                      workspace_storage: WorkspaceStorageInterface):
+        is_owner = workspace_storage.validate_workspace_owner(
+            workspace_id=workspace_id, user_id=user_id)
+
+        if not is_owner:
+            raise UserNotWorkspaceOwnerException(user_id=user_id)
+
+    @staticmethod
+    def validate_user_owner_or_editor_access(
+            user_id: str,
+            workspace_id: str,
+            workspace_storage: WorkspaceStorageInterface,
+            workspace_member_storage: WorkspaceMemberStorageInterface
+    ):
+        workspace_data = workspace_storage.get_workspace(
+            workspace_id=workspace_id
+        )
+
+        if not workspace_data:
+            raise WorkspaceNotFoundException(workspace_id=workspace_id)
+
+        if not workspace_data.is_active:
+            raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
+
+        if workspace_data.owner_id == user_id:
+            return
+
+        member_permission = workspace_member_storage.get_workspace_member(
+            workspace_id=workspace_id,
+            user_id=user_id
+        )
+
+        if not member_permission or member_permission.role == RoleEnum.GUEST.value:
+            raise NotAccessToModificationException(user_id=user_id)

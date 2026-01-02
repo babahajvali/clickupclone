@@ -2,6 +2,9 @@ class UserNotFoundException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+class InactiveUserFoundException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
 
 class TemplateNotFoundException(Exception):
     def __init__(self, template_id: str):
@@ -137,3 +140,35 @@ class FolderNotFoundException(Exception):
 class InactiveFolderFoundException(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
+
+class ViewTypeNotFoundException(Exception):
+    def __init__(self, view_type: str):
+        self.view_type = view_type
+
+class ViewNotFoundException(Exception):
+    def __init__(self, view_id: str):
+        self.view_id = view_id
+
+
+class SpaceOrderAlreadyExistedException(Exception):
+    def __init__(self, workspace_id: str):
+        self.workspace_id = workspace_id
+
+
+class WorkspaceNotFoundException(Exception):
+    def __init__(self, workspace_id: str):
+        self.workspace_id = workspace_id
+
+
+class InactiveWorkspaceFoundException(Exception):
+    def __init__(self, workspace_id: str):
+        self.workspace_id = workspace_id
+
+class UserNotWorkspaceOwnerException(Exception):
+    def __init__(self,user_id: str):
+        self.user_id = user_id
+
+
+class UnexpectedRoleFoundException(Exception):
+    def __init__(self, role: str):
+        self.role = role

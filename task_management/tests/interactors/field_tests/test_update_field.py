@@ -9,27 +9,32 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
     FieldOrderAlreadyExistsException,
-    NotAccessToModificationException
+    NotAccessToModificationException,
 )
 from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.field_interactors.update_field_interactor import (
     UpdateFieldInteractor
 )
-from task_management.interactors.dtos import (
-    UpdateFieldDTO,
-    FieldDTO,
-)
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
+from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import \
-    PermissionStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
+)
+from task_management.interactors.storage_interface.list_permission_storage_interface import (
+    ListPermissionStorageInterface
+)
+from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
+)
 
+
+# ✅ Dummy template object
+class DummyTemplate:
+    def __init__(self, list_id: str):
+        self.list_id = list_id
 
 
 class FieldEnum(Enum):
-    INVALID = "Invalid"
+    INVALID = "invalid"
 
 
 class TestUpdateFieldInteractor:
@@ -44,37 +49,46 @@ class TestUpdateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            created_by="user_1"
+            created_by="user_1",
         )
 
-    def _get_interactor(self, *,
-                        template_exists=True,
-                        permission=PermissionsEnum.ADMIN,
-                        name_exists=False,
-                        order_exists=False):
-
+    def _get_interactor(
+        self,
+        *,
+        template_exists=True,
+        permission=PermissionsEnum.FULL_EDIT.value,
+        name_exists=False,
+        order_exists=False,
+    ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        permission_storage = create_autospec(ListPermissionStorageInterface)
 
+        # field validations
         field_storage.check_field_exist.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
         field_storage.check_field_order_exist.return_value = order_exists
         field_storage.update_field.return_value = self._get_field_dto()
 
-        template_storage.check_template_exist.return_value = template_exists
-        permission_storage.get_user_access_permissions.return_value = permission
+        # template validation
+        if template_exists:
+            template_storage.get_template_exist.return_value = DummyTemplate(
+                list_id="list_1"
+            )
+        else:
+            template_storage.get_template_exist.return_value = None
 
-        interactor = UpdateFieldInteractor(
+        # ✅ CORRECT method + VALUE
+        permission_storage.get_user_permission_for_list.return_value = permission
+
+        return UpdateFieldInteractor(
             field_storage=field_storage,
             permission_storage=permission_storage,
-            template_storage=template_storage
+            template_storage=template_storage,
         )
 
-        return interactor
-
     def _get_update_dto(self, **overrides):
-        data = UpdateFieldDTO(
+        dto = UpdateFieldDTO(
             field_id="field_1",
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
@@ -83,83 +97,85 @@ class TestUpdateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            created_by="user_1"
+            created_by="user_1",
         )
-        return replace(data, **overrides)
+        return replace(dto, **overrides)
 
-
+    # ✅ SUCCESS
     def test_update_field_successfully(self, snapshot):
         interactor = self._get_interactor()
-        update_field_data = self._get_update_dto()
+        dto = self._get_update_dto()
 
-        result = interactor.update_field(update_field_data)
+        result = interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(result),
-            "test_update_field_successfully.txt"
+            "test_update_field_successfully.txt",
         )
 
-
-
+    # ❌ INVALID FIELD TYPE
     def test_update_field_invalid_field_type(self, snapshot):
         interactor = self._get_interactor()
-        update_field_data = self._get_update_dto(
-            field_type=FieldEnum.INVALID
-        )
+        dto = self._get_update_dto(field_type=FieldEnum.INVALID)
 
         with pytest.raises(UnexpectedFieldTypeFoundException) as exc:
-            interactor.update_field(update_field_data)
+            interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_type),
-            "test_update_field_invalid_field_type.txt"
+            "test_update_field_invalid_field_type.txt",
         )
 
-
+    # ❌ TEMPLATE NOT FOUND
     def test_update_field_template_not_found(self, snapshot):
         interactor = self._get_interactor(template_exists=False)
-        update_field_data = self._get_update_dto(template_id="invalid_tpl")
+        dto = self._get_update_dto(template_id="invalid_tpl")
 
         with pytest.raises(TemplateNotFoundException) as exc:
-            interactor.update_field(update_field_data)
+            interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.template_id),
-            "test_update_field_template_not_found.txt"
+            "test_update_field_template_not_found.txt",
         )
 
+    # ❌ PERMISSION DENIED
     def test_update_field_permission_denied(self, snapshot):
-        interactor = self._get_interactor(permission=PermissionsEnum.GUEST)
-        update_field_data = self._get_update_dto()
+        interactor = self._get_interactor(
+            permission=PermissionsEnum.VIEW.value
+        )
+        dto = self._get_update_dto()
 
         with pytest.raises(NotAccessToModificationException) as exc:
-            interactor.update_field(update_field_data)
+            interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.user_id),
-            "test_update_field_permission_denied.txt"
+            "test_update_field_permission_denied.txt",
         )
 
+    # ❌ DUPLICATE NAME
     def test_update_field_duplicate_name(self, snapshot):
         interactor = self._get_interactor(name_exists=True)
-        update_field_data = self._get_update_dto()
+        dto = self._get_update_dto()
 
         with pytest.raises(FieldNameAlreadyExistsException) as exc:
-            interactor.update_field(update_field_data)
+            interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_name),
-            "test_update_field_duplicate_name.txt"
+            "test_update_field_duplicate_name.txt",
         )
 
+    # ❌ DUPLICATE ORDER
     def test_update_field_duplicate_order(self, snapshot):
         interactor = self._get_interactor(order_exists=True)
-        update_field_data = self._get_update_dto()
+        dto = self._get_update_dto()
 
         with pytest.raises(FieldOrderAlreadyExistsException) as exc:
-            interactor.update_field(update_field_data)
+            interactor.update_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_order),
-            "test_update_field_duplicate_order.txt"
+            "test_update_field_duplicate_order.txt",
         )

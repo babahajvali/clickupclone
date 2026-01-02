@@ -1,10 +1,18 @@
+import uuid
+
 import factory
 
-from task_management.exceptions.enums import FieldTypeEnum
-from task_management.interactors.dtos import CreateFieldDTO,  \
+from task_management.exceptions.enums import FieldTypeEnum, RoleEnum
+from task_management.interactors.dtos import CreateFieldDTO, \
     FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
-    UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, TaskAssigneeDTO, \
-    RemoveTaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, FolderDTO
+    UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
+    TaskAssigneeDTO, \
+    RemoveTaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
+    FolderDTO, \
+    CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
+    CreateSpaceDTO, SpaceDTO, \
+    CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO, \
+    WorkspaceMemberDTO
 
 
 class CreateFieldFactory(factory.Factory):
@@ -18,6 +26,9 @@ class CreateFieldFactory(factory.Factory):
     order = factory.sequence(lambda n: n + 1)
     is_required = factory.Faker("boolean")
     created_by = factory.Faker("uuid4")
+    config = factory.LazyAttribute(lambda o: {
+        "options": ["Option 1", "Option 2"] if o.field_type == FieldTypeEnum.SELECT.value else {}
+    })
 
 
 class FieldDTOFactory(factory.Factory):
@@ -30,6 +41,7 @@ class FieldDTOFactory(factory.Factory):
     description = factory.Faker("text")
     field_type = factory.Iterator([x.value for x in FieldTypeEnum])
     order = factory.sequence(lambda n: n + 1)
+    config = factory.LazyFunction(dict)
     is_required = factory.Faker("boolean")
     created_by = factory.Faker("uuid4")
 
@@ -215,3 +227,134 @@ class FolderDTOFactory(factory.Factory):
     is_active = True
     created_by = factory.Faker('uuid4')
     is_private = False
+
+
+class CreateViewDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateViewDTO
+
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
+    created_by = factory.Faker('uuid4')
+
+
+class UpdateViewDTOFactory(factory.Factory):
+    class Meta:
+        model = UpdateViewDTO
+
+    view_id = factory.Faker('uuid4')
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
+    created_by = factory.Faker('uuid4')
+
+
+class ViewDTOFactory(factory.Factory):
+    class Meta:
+        model = ViewDTO
+
+    view_id = factory.Faker('uuid4')
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
+    created_by = factory.Faker('uuid4')
+
+
+class ListViewDTOFactory(factory.Factory):
+    class Meta:
+        model = ListViewDTO
+
+    id = factory.Sequence(lambda n: n + 1)
+    list_id = factory.Faker('uuid4')
+    view_id = factory.Faker('uuid4')
+    applied_by = factory.Faker('uuid4')
+    is_active = True
+
+
+class RemoveListViewDTOFactory(factory.Factory):
+    class Meta:
+        model = RemoveListViewDTO
+
+    id = factory.Sequence(lambda n: n + 1)
+    list_id = factory.Faker('uuid4')
+    view_id = factory.Faker('uuid4')
+    removed_by = factory.Faker('uuid4')
+    is_active = False
+
+
+class CreateSpaceDTOFactory(factory.Factory):
+    class Meta:
+        model = CreateSpaceDTO
+
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+    workspace_id = factory.Faker('uuid4')
+    order = factory.Sequence(lambda n: n + 1)
+    is_active = True
+    is_private = False
+    created_by = factory.Faker('uuid4')
+
+
+class SpaceDTOFactory(factory.Factory):
+    class Meta:
+        model = SpaceDTO
+
+    space_id = factory.Faker('uuid4')
+    name = factory.Faker('word')
+    description = factory.Faker('sentence')
+    workspace_id = factory.Faker('uuid4')
+    order = factory.Sequence(lambda n: n + 1)
+    is_active = True
+    is_private = False
+    created_by = factory.Faker('uuid4')
+
+
+class CreateWorkspaceFactory(factory.Factory):
+    class Meta:
+        model = CreateWorkspaceDTO
+
+    name = factory.Faker('company')
+    description = factory.Faker('sentence')
+    owner_id = factory.Faker('uuid4')
+
+
+class WorkspaceDTOFactory(factory.Factory):
+    class Meta:
+        model = WorkspaceDTO
+
+    workspace_id = factory.Faker('uuid4')
+    name = factory.Faker('company')
+    description = factory.Faker('sentence')
+    owner_id = factory.Faker('uuid4')
+    is_active = True
+
+
+# Aliases for backward compatibility
+CreateFieldDTOFactory = CreateFieldFactory
+FieldDTOFactory = FieldDTOFactory
+CreateWorkspaceDTOFactory = CreateWorkspaceFactory
+WorkspaceDTOFactory = WorkspaceDTOFactory
+
+class AddMemberToWorkspaceDTOFactory(factory.Factory):
+    class Meta:
+        model = AddMemberToWorkspaceDTO
+
+    workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
+    is_active = factory.Faker('boolean')
+    user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
+    added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
+    role = RoleEnum.MEMBER
+
+
+class WorkspaceMemberDTOFactory(factory.Factory):
+    class Meta:
+        model = WorkspaceMemberDTO
+
+    id = factory.Sequence(lambda n: n + 1)
+    workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
+    user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
+    role = RoleEnum.MEMBER
+    is_active = factory.Faker('boolean')
+    added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
+

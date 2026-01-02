@@ -1,0 +1,1 @@
+TaskAssigneeDTO(assignee_id='215203c7-421a-415e-b58c-43ceb51d70d8', assignee_name='Daniel Rogers', task_id='efe78b60-4bdd-4f99-8ae9-ee11f5fe0213', assigned_by='a2cb5f38-8d9e-4fb9-b549-2e22e0df7f74', is_active=True)

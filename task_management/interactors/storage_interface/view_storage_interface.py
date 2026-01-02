@@ -7,7 +7,11 @@ from task_management.interactors.dtos import CreateViewDTO, ViewDTO, \
 class ViewStorageInterface(ABC):
 
     @abstractmethod
-    def chek_view_exist(self,view_id: str) -> bool:
+    def get_all_views(self) -> list[ViewDTO]:
+        pass
+
+    @abstractmethod
+    def get_view(self,view_id: str) -> ViewDTO:
         pass
 
     @abstractmethod

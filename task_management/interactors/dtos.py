@@ -3,7 +3,31 @@ from enum import Enum
 
 from typing import Optional
 
-from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum
+from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
+    PermissionsEnum, PermissionScopeTypeEnum, GenderEnum, RoleEnum
+
+
+@dataclass
+class UserDTO:
+    user_id: str
+    full_name: str
+    username: str
+    gender: str
+    email: str
+    password: str
+    phone_number: str
+    is_active: bool
+    image_url: str
+
+@dataclass
+class CreateUserDTO:
+    username: str
+    full_name: str
+    email: str
+    password: str
+    phone_number: str
+    gender: GenderEnum
+    image_url: str
 
 
 @dataclass
@@ -252,3 +276,73 @@ class FolderDTO:
     is_active: bool
     created_by: str
     is_private: bool
+
+@dataclass
+class ListViewDTO:
+    id: int
+    list_id: str
+    view_id: str
+    applied_by: str
+    is_active: bool
+
+@dataclass
+class RemoveListViewDTO:
+    id: int
+    list_id: str
+    view_id: str
+    removed_by: str
+    is_active: bool
+
+
+@dataclass
+class CreateSpaceDTO:
+    name: str
+    description: str
+    workspace_id: str
+    order: int
+    is_active: bool
+    is_private: bool
+    created_by: str
+
+@dataclass
+class SpaceDTO:
+    space_id: str
+    name: str
+    description: str
+    workspace_id: str
+    order: int
+    is_active: bool
+    is_private: bool
+    created_by: str
+
+
+@dataclass
+class WorkspaceDTO:
+    workspace_id: str
+    name: str
+    description: str
+    owner_id: str
+    is_active: bool
+
+@dataclass
+class CreateWorkspaceDTO:
+    name: str
+    description: str
+    owner_id: str
+
+@dataclass
+class AddMemberToWorkspaceDTO:
+    workspace_id: str
+    user_id: str
+    role: RoleEnum
+    is_active: bool
+    added_by: str
+
+@dataclass
+class WorkspaceMemberDTO:
+    id: int
+    workspace_id: str
+    user_id: str
+    role: RoleEnum
+    is_active: bool
+    added_by: str

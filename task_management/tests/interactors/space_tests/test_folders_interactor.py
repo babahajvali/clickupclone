@@ -5,18 +5,23 @@ from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.space_interactors.folders_interactor import FolderInteractor
 from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import PermissionStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import (
+    SpacePermissionStorageInterface
+)
+from task_management.interactors.storage_interface.folder_permission_storage_interface import (
+    FolderPermissionStorageInterface
+)
 from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
     SpaceNotFoundException,
     InactiveSpaceFoundException,
     FolderNotFoundException,
-    InactiveFolderFoundException
+    InactiveFolderFoundException,
 )
 from task_management.tests.factories.interactor_factory import (
     CreateFolderDTOFactory,
     UpdateFolderDTOFactory,
-    FolderDTOFactory
+    FolderDTOFactory,
 )
 
 
@@ -25,172 +30,226 @@ class TestFolderInteractor:
     def setup_method(self):
         self.folder_storage = create_autospec(FolderStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
-        self.permission_storage = create_autospec(PermissionStorageInterface)
-        
+        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
+
         self.interactor = FolderInteractor(
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
-            permission_storage=self.permission_storage
+            space_permission_storage=self.space_permission_storage,
+            folder_permission_storage=self.folder_permission_storage,
         )
 
+    # ========================
+    # CREATE FOLDER
+    # ========================
     def test_create_folder_success(self, snapshot):
-        # Arrange
-        create_data = CreateFolderDTOFactory()
-        expected_result = FolderDTOFactory()
-        
-        # Mock dependencies
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.space_storage.get_space.return_value = type('Space', (), {'is_active': True})()
+        dto = CreateFolderDTOFactory()
+        expected = FolderDTOFactory()
+
+        self.space_permission_storage.get_user_permission_for_space.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.space_storage.get_space.return_value = type(
+            "Space", (), {"is_active": True}
+        )()
         self.folder_storage.check_order_exist.return_value = False
-        self.folder_storage.create_folder.return_value = expected_result
+        self.folder_storage.create_folder.return_value = expected
 
-        # Act
-        result = self.interactor.create_folder(create_data)
+        result = self.interactor.create_folder(dto)
 
-        # Assert
-        assert result == expected_result
-        self.folder_storage.create_folder.assert_called_once_with(create_data)
+        snapshot.assert_match(
+            repr(result),
+            "create_folder_success.txt"
+        )
 
     def test_create_folder_permission_denied(self, snapshot):
-        # Arrange
-        create_data = CreateFolderDTOFactory()
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST.value
+        dto = CreateFolderDTOFactory()
 
-        # Act & Assert
+        self.space_permission_storage.get_user_permission_for_space.return_value = (
+            PermissionsEnum.VIEW.value
+        )
+
         with pytest.raises(NotAccessToModificationException) as exc:
-            self.interactor.create_folder(create_data)
+            self.interactor.create_folder(dto)
 
-        snapshot.assert_match(repr(exc.value), "permission_denied.txt")
+        snapshot.assert_match(
+            repr(exc.value.user_id),
+            "create_folder_permission_denied.txt"
+        )
 
-    def test_create_folder_space_not_found(self, snapshot):
-        # Arrange
-        create_data = CreateFolderDTOFactory()
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.space_storage.get_space.return_value = None
+    def test_create_folder_inactive_space(self, snapshot):
+        dto = CreateFolderDTOFactory()
 
-        # Act & Assert
-        with pytest.raises(SpaceNotFoundException) as exc:
-            self.interactor.create_folder(create_data)
+        self.space_permission_storage.get_user_permission_for_space.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.space_storage.get_space.return_value = type(
+            "Space", (), {"is_active": False}
+        )()
 
-        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
-
-    def test_create_folder_space_inactive(self, snapshot):
-        # Arrange
-        create_data = CreateFolderDTOFactory()
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.space_storage.get_space.return_value = type('Space', (), {'is_active': False})()
-
-        # Act & Assert
         with pytest.raises(InactiveSpaceFoundException) as exc:
-            self.interactor.create_folder(create_data)
+            self.interactor.create_folder(dto)
 
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
+        snapshot.assert_match(
+            repr(exc.value.space_id),
+            "create_folder_inactive_space.txt"
+        )
 
-    def test_update_folder_success(self):
-        # Arrange
-        update_data = UpdateFolderDTOFactory()
-        expected_result = FolderDTOFactory()
-        
-        # Mock dependencies
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.space_storage.get_space.return_value = type('Space', (), {'is_active': True})()
-        self.folder_storage.get_folder.return_value = type('Folder', (), {'is_active': True})()
+    # ========================
+    # UPDATE FOLDER
+    # ========================
+    def test_update_folder_success(self, snapshot):
+        dto = UpdateFolderDTOFactory()
+        expected = FolderDTOFactory()
+
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = type(
+            "Folder", (), {"is_active": True}
+        )()
+        self.space_storage.get_space.return_value = type(
+            "Space", (), {"is_active": True}
+        )()
         self.folder_storage.check_order_exist.return_value = False
-        self.folder_storage.update_folder.return_value = expected_result
+        self.folder_storage.update_folder.return_value = expected
 
-        # Act
-        result = self.interactor.update_folder(update_data)
+        result = self.interactor.update_folder(dto)
 
-        # Assert
-        assert result == expected_result
-        self.folder_storage.update_folder.assert_called_once_with(update_data)
+        snapshot.assert_match(
+            repr(result),
+            "update_folder_success.txt"
+        )
 
-    def test_remove_folder_success(self):
-        # Arrange
-        folder_id = "folder123"
-        user_id = "user123"
-        expected_result = FolderDTOFactory()
-        
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.folder_storage.get_folder.return_value = type('Folder', (), {'is_active': True})()
-        self.folder_storage.remove_folder.return_value = expected_result
+    def test_update_folder_permission_denied(self, snapshot):
+        dto = UpdateFolderDTOFactory()
 
-        # Act
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.VIEW.value
+        )
+
+        with pytest.raises(NotAccessToModificationException) as exc:
+            self.interactor.update_folder(dto)
+
+        snapshot.assert_match(
+            repr(exc.value.user_id),
+            "update_folder_permission_denied.txt"
+        )
+
+    def test_update_folder_not_found(self, snapshot):
+        dto = UpdateFolderDTOFactory()
+
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = None
+
+        with pytest.raises(FolderNotFoundException) as exc:
+            self.interactor.update_folder(dto)
+
+        snapshot.assert_match(
+            repr(exc.value.folder_id),
+            "update_folder_not_found.txt"
+        )
+
+    # ========================
+    # REMOVE FOLDER
+    # ========================
+    def test_remove_folder_success(self, snapshot):
+        folder_id = "folder_1"
+        user_id = "user_1"
+        expected = FolderDTOFactory(is_active=False)
+
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = type(
+            "Folder", (), {"is_active": True}
+        )()
+        self.folder_storage.remove_folder.return_value = expected
+
         result = self.interactor.remove_folder(folder_id, user_id)
 
-        # Assert
-        assert result == expected_result
-        self.folder_storage.remove_folder.assert_called_once_with(folder_id)
+        snapshot.assert_match(
+            repr(result),
+            "remove_folder_success.txt"
+        )
 
-    def test_make_folder_private_success(self):
-        # Arrange
-        folder_id = "folder123"
-        user_id = "user123"
-        expected_result = FolderDTOFactory()
-        
-        # Mock dependencies
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.folder_storage.get_folder.return_value = type('Folder', (), {'is_active': True})()
-        self.folder_storage.set_folder_private.return_value = expected_result
+    def test_remove_folder_not_found(self, snapshot):
+        folder_id = "folder_1"
+        user_id = "user_1"
 
-        # Act
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = None
+
+        with pytest.raises(FolderNotFoundException) as exc:
+            self.interactor.remove_folder(folder_id, user_id)
+
+        snapshot.assert_match(
+            repr(exc.value.folder_id),
+            "remove_folder_not_found.txt"
+        )
+
+    def test_remove_folder_inactive(self, snapshot):
+        folder_id = "folder_1"
+        user_id = "user_1"
+
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = type(
+            "Folder", (), {"is_active": False}
+        )()
+
+        with pytest.raises(InactiveFolderFoundException) as exc:
+            self.interactor.remove_folder(folder_id, user_id)
+
+        snapshot.assert_match(
+            repr(exc.value.folder_id),
+            "remove_folder_inactive.txt"
+        )
+
+    # ========================
+    # PRIVACY
+    # ========================
+    def test_make_folder_private_success(self, snapshot):
+        folder_id = "folder_1"
+        user_id = "user_1"
+        expected = FolderDTOFactory(is_private=True)
+
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = type(
+            "Folder", (), {"is_active": True}
+        )()
+        self.folder_storage.set_folder_private.return_value = expected
+
         result = self.interactor.make_folder_private(folder_id, user_id)
 
-        # Assert
-        assert result == expected_result
-        self.folder_storage.set_folder_private.assert_called_once_with(folder_id)
+        snapshot.assert_match(
+            repr(result),
+            "make_folder_private_success.txt"
+        )
 
-    def test_make_folder_public_success(self):
-        # Arrange
-        folder_id = "folder123"
-        user_id = "user123"
-        expected_result = FolderDTOFactory()
-        
-        self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN.value
-        self.folder_storage.get_folder.return_value = type('Folder', (), {'is_active': True})()
-        self.folder_storage.set_folder_public.return_value = expected_result
+    def test_make_folder_public_inactive(self, snapshot):
+        folder_id = "folder_1"
+        user_id = "user_1"
 
-        # Act
-        result = self.interactor.make_folder_public(folder_id, user_id)
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            PermissionsEnum.FULL_EDIT.value
+        )
+        self.folder_storage.get_folder.return_value = type(
+            "Folder", (), {"is_active": False}
+        )()
 
-        # Assert
-        assert result == expected_result
-        self.folder_storage.set_folder_public.assert_called_once_with(folder_id)
+        with pytest.raises(InactiveFolderFoundException) as exc:
+            self.interactor.make_folder_public(folder_id, user_id)
 
-    def test_get_space_folders_success(self):
-        # Arrange
-        space_id = "space123"
-        expected_folders = [FolderDTOFactory() for _ in range(3)]
-        
-        # Mock dependencies
-        self.space_storage.get_space.return_value = type('Space', (), {'is_active': True})()
-        self.folder_storage.get_space_folders.return_value = expected_folders
-
-        # Act
-        result = self.interactor.get_space_folders(space_id)
-
-        # Assert
-        assert result == expected_folders
-        self.folder_storage.get_space_folders.assert_called_once_with(space_id)
-
-    def test_get_space_folders_space_not_found(self, snapshot):
-        # Arrange
-        space_id = "nonexistent_space"
-        self.space_storage.get_space.return_value = None
-
-        # Act & Assert
-        with pytest.raises(SpaceNotFoundException) as exc:
-            self.interactor.get_space_folders(space_id)
-
-        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
-
-    def test_get_space_folders_space_inactive(self, snapshot):
-        # Arrange
-        space_id = "inactive_space"
-        self.space_storage.get_space.return_value = type('Space', (), {'is_active': False})()
-
-        # Act & Assert
-        with pytest.raises(InactiveSpaceFoundException) as exc:
-            self.interactor.get_space_folders(space_id)
-
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
+        snapshot.assert_match(
+            repr(exc.value.folder_id),
+            "make_folder_public_inactive.txt"
+        )

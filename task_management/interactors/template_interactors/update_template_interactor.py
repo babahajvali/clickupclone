@@ -1,8 +1,8 @@
 from task_management.interactors.dtos import UpdateTemplateDTO
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import \
-    PermissionStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -13,23 +13,19 @@ from task_management.interactors.validation_mixin import ValidationMixin
 class UpdateTemplateInteractor(ValidationMixin):
 
     def __init__(self, list_storage: ListStorageInterface,
-                 user_storage: UserStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 permission_storage: PermissionStorageInterface):
+                 permission_storage: ListPermissionStorageInterface):
         self.list_storage = list_storage
-        self.user_storage = user_storage
         self.template_storage = template_storage
         self.permission_storage = permission_storage
 
     def update_template(self, update_template_data: UpdateTemplateDTO):
         self.check_template_exist(template_id=update_template_data.template_id,
                                   template_storage=self.template_storage)
-        self.check_user_exist(user_id=update_template_data.created_by,
-                              user_storage=self.user_storage)
         self.check_list_exists_and_status(list_id=update_template_data.list_id,
                                           list_storage=self.list_storage)
-        self.check_user_has_access_to_create_template(
-            user_id=update_template_data.created_by,
+        self.check_user_has_access_to_list_modification(
+            user_id=update_template_data.created_by,list_id=update_template_data.list_id,
             permission_storage=self.permission_storage)
         self.check_template_name_exist(
             template_name=update_template_data.name,

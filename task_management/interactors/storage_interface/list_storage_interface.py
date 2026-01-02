@@ -27,7 +27,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def crate_list(self, create_list_data: CreateListDTO) -> ListDTO:
+    def create_list(self, create_list_data: CreateListDTO) -> ListDTO:
         pass
 
     @abstractmethod

@@ -1,0 +1,1 @@
+RemoveTaskAssigneeDTO(task_id='fe3216bd-97d0-4e70-af1d-9bef53b53b92', assignee_id='94b28b9d-8881-4f42-9a42-b62914afe646', removed_by='e5ce0ca6-6068-41d6-a80a-07ee4ec985ff', is_active=True)

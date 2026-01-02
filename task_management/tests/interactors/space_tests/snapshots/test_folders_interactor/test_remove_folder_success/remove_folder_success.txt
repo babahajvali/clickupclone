@@ -1,0 +1,1 @@
+FolderDTO(folder_id='9f982188-3744-4a64-8c24-9558f2ad985f', name='child', description='Cup her national character.', space_id='7ce71b48-fba5-4e59-98a3-3736fd1ac7ce', order=3, is_active=False, created_by='a36bcb01-67e9-4363-905c-053b25fdacbe', is_private=False)

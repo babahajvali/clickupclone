@@ -1,0 +1,1 @@
+ViewDTO(view_id='8af37d72-ec4f-4490-84ea-f9432ee66e21', name='seem', description='Old charge read management production up our allow.', view_type='board', created_by='d7f14ec2-9a9d-4dd2-a7aa-d0707cddb4cc')

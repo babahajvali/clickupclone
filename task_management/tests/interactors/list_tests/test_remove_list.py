@@ -9,7 +9,9 @@ from task_management.interactors.storage_interface.list_storage_interface import
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import PermissionStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
     ListNotFoundException,
@@ -20,17 +22,23 @@ Faker.seed(0)
 class TestRemoveList:
 
     def setup_method(self):
+        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
+        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+
         self.interactor = ListInteractor(
             list_storage=create_autospec(ListStorageInterface),
             task_storage=create_autospec(TaskStorageInterface),
             folder_storage=create_autospec(FolderStorageInterface),
             space_storage=create_autospec(SpaceStorageInterface),
-            permission_storage=create_autospec(PermissionStorageInterface),
+            list_permission_storage=self.list_permission_storage,
+            folder_permission_storage=self.folder_permission_storage,
+            space_permission_storage=self.space_permission_storage,
         )
 
     def test_remove_list_success(self, snapshot):
-        self.interactor.permission_storage.get_user_access_permissions.return_value = (
-            PermissionsEnum.ADMIN.value
+        self.list_permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.FULL_EDIT.value
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
@@ -43,8 +51,8 @@ class TestRemoveList:
         )
 
     def test_permission_denied(self, snapshot):
-        self.interactor.permission_storage.get_user_access_permissions.return_value = (
-            PermissionsEnum.GUEST.value
+        self.list_permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.VIEW.value
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -53,8 +61,8 @@ class TestRemoveList:
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     def test_list_not_found(self, snapshot):
-        self.interactor.permission_storage.get_user_access_permissions.return_value = (
-            PermissionsEnum.ADMIN.value
+        self.list_permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.FULL_EDIT.value
         )
         self.interactor.list_storage.get_list.return_value = None
 
@@ -64,8 +72,8 @@ class TestRemoveList:
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
     def test_list_inactive(self, snapshot):
-        self.interactor.permission_storage.get_user_access_permissions.return_value = (
-            PermissionsEnum.ADMIN.value
+        self.list_permission_storage.get_user_permission_for_list.return_value = (
+            PermissionsEnum.FULL_EDIT.value
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}

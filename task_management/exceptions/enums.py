@@ -10,13 +10,32 @@ class FieldTypeEnum(Enum):
     email = "email"
 
 
-class PermissionsEnum(Enum):
-    ADMIN = "admin"
+class RoleEnum(Enum):
+    OWNER = "owner"
+    Admin = "admin"
     MEMBER = "member"
     GUEST = "guest"
+
+class PermissionsEnum(Enum):
+    FULL_EDIT = "full_edit"
+    COMMENT = "comment"
+    VIEW = "view"
 
 class ViewTypeEnum(Enum):
     Table = "table"
     Calendar = "calendar"
     Board = "board"
     Dashboard = "dashboard"
+
+
+class PermissionScopeTypeEnum(Enum):
+    WORKSPACE = "workspace"
+    SPACE ="space"
+    FOLDER ="folder"
+    LIST ="list"
+
+
+class GenderEnum(Enum):
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"

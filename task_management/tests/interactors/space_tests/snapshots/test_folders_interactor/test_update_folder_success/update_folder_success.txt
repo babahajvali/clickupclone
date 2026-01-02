@@ -1,0 +1,1 @@
+FolderDTO(folder_id='e4f7625e-afe6-490a-bc18-a40b55c7ed9d', name='clearly', description='Phone heart window police.', space_id='32b2c492-15ac-47a1-8eca-2ee310da8a95', order=2, is_active=True, created_by='62830869-0fa7-4e05-b897-4df5bff773ce', is_private=False)

@@ -2,37 +2,36 @@ from enum import Enum
 from unittest.mock import create_autospec
 
 import pytest
-from faker import Faker
 
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFoundException,
     UnexpectedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
     FieldOrderAlreadyExistsException,
-    NotAccessToModificationException
+    NotAccessToModificationException,
 )
 from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.field_interactors.create_field_interactor import (
     CreateFieldInteractor
 )
-from task_management.interactors.dtos import (
-    CreateFieldDTO,
-    FieldDTO,
-)
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
+from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
-from task_management.interactors.storage_interface.permission_storage_interface import \
-    PermissionStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
+)
+from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
+)
+from task_management.interactors.storage_interface.list_permission_storage_interface import (
+    ListPermissionStorageInterface
+)
 
 
-Faker.seed(1)
+class InvalidFieldEnum(Enum):
+    INVALID = "invalid"
 
-class FieldEnum(Enum):
-    INVALID = "Invalid"
-
-
+class DummyTemplate:
+    def __init__(self, list_id: str):
+        self.list_id = list_id
 class TestCreateFieldInteractor:
 
     def _get_field_dto(self):
@@ -45,30 +44,51 @@ class TestCreateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            created_by="user_1"
+            created_by="user_1",
         )
 
-    def test_create_field_successfully(self, snapshot):
-        # Arrange
+    def _get_interactor(
+            self,
+            *,
+            template_exists=True,
+            permission=PermissionsEnum.FULL_EDIT.value,
+            name_exists=False,
+            order_exists=False,
+    ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        permission_storage = create_autospec(ListPermissionStorageInterface)
 
+        # template mock
+        if template_exists:
+            class DummyTemplate:
+                def __init__(self, list_id):
+                    self.list_id = list_id
 
-        template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
-        field_storage.check_field_name_exist.return_value = False
-        field_storage.check_field_order_exist.return_value = False
+            template_storage.get_template_exist.return_value = DummyTemplate(
+                list_id="list_1"
+            )
+        else:
+            template_storage.get_template_exist.return_value = None
 
+        # ✅ CORRECT permission mock
+        permission_storage.get_user_permission_for_list.return_value = permission
+
+        field_storage.check_field_name_exist.return_value = name_exists
+        field_storage.check_field_order_exist.return_value = order_exists
         field_storage.create_field.return_value = self._get_field_dto()
 
-        interactor = CreateFieldInteractor(
+        return CreateFieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            permission_storage=permission_storage
+            permission_storage=permission_storage,
         )
 
-        create_field_data = CreateFieldDTO(
+    # ✅ SUCCESS
+    def test_create_field_success(self, snapshot):
+        interactor = self._get_interactor()
+
+        dto = CreateFieldDTO(
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
             description="Task priority",
@@ -76,33 +96,21 @@ class TestCreateFieldInteractor:
             order=1,
             config={"max_length": 10},
             is_required=True,
-            created_by="user_1"
+            created_by="user_1",
         )
 
-        # Act
-        result = interactor.create_field(create_field_data)
+        result = interactor.create_field(dto)
 
-        # Assert
         snapshot.assert_match(
             repr(result),
-            "test_create_field_successfully.txt"
+            "test_create_field_success.txt"
         )
 
-
+    # ❌ TEMPLATE NOT FOUND
     def test_create_field_template_not_found(self, snapshot):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        interactor = self._get_interactor(template_exists=False)
 
-        template_storage.check_template_exist.return_value = False
-
-        interactor = CreateFieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            permission_storage=permission_storage
-        )
-
-        create_field_data = CreateFieldDTO(
+        dto = CreateFieldDTO(
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
             description="",
@@ -110,65 +118,47 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            created_by="user_1"
+            created_by="user_1",
         )
 
         with pytest.raises(TemplateNotFoundException) as exc:
-            interactor.create_field(create_field_data)
+            interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.template_id),
             "test_create_field_template_not_found.txt"
         )
 
+    # ❌ INVALID FIELD TYPE
     def test_create_field_invalid_field_type(self, snapshot):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        interactor = self._get_interactor()
 
-        template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
-
-        interactor = CreateFieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            permission_storage=permission_storage
-        )
-
-        create_field_data = CreateFieldDTO(
-            field_type= FieldEnum.INVALID,
+        dto = CreateFieldDTO(
+            field_type=InvalidFieldEnum.INVALID,
             field_name="Priority",
             description="",
             template_id="tpl_1",
             order=1,
             config={},
             is_required=False,
-            created_by="user_1"
+            created_by="user_1",
         )
 
         with pytest.raises(UnexpectedFieldTypeFoundException) as exc:
-            interactor.create_field(create_field_data)
+            interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_type),
             "test_create_field_invalid_field_type.txt"
         )
 
+    # ❌ PERMISSION DENIED
     def test_create_field_permission_denied(self, snapshot):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
-
-        template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.GUEST
-
-        interactor = CreateFieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            permission_storage=permission_storage
+        interactor = self._get_interactor(
+            permission=PermissionsEnum.VIEW.value
         )
 
-        create_field_data = CreateFieldDTO(
+        dto = CreateFieldDTO(
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
             description="",
@@ -176,36 +166,22 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            created_by="user_1"
+            created_by="user_1",
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
-            interactor.create_field(create_field_data)
+            interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.user_id),
             "test_create_field_permission_denied.txt"
         )
 
+    # ❌ DUPLICATE FIELD ORDER
     def test_create_field_duplicate_order(self, snapshot):
-        # Arrange
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        interactor = self._get_interactor(order_exists=True)
 
-        template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
-
-        field_storage.check_field_name_exist.return_value = False
-        field_storage.check_field_order_exist.return_value = True
-
-        interactor = CreateFieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            permission_storage=permission_storage
-        )
-
-        create_field_data = CreateFieldDTO(
+        dto = CreateFieldDTO(
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
             description="",
@@ -213,37 +189,22 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            created_by="user_1"
+            created_by="user_1",
         )
 
-        # Act + Assert
         with pytest.raises(FieldOrderAlreadyExistsException) as exc:
-            interactor.create_field(create_field_data)
+            interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_order),
             "test_create_field_duplicate_order.txt"
         )
 
+    # ❌ DUPLICATE FIELD NAME
     def test_create_field_duplicate_name(self, snapshot):
-        # Arrange
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(PermissionStorageInterface)
+        interactor = self._get_interactor(name_exists=True)
 
-        template_storage.check_template_exist.return_value = True
-        permission_storage.get_user_access_permissions.return_value = PermissionsEnum.ADMIN
-
-        field_storage.check_field_name_exist.return_value = True
-        field_storage.check_field_order_exist.return_value = False
-
-        interactor = CreateFieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            permission_storage=permission_storage
-        )
-
-        create_field_data = CreateFieldDTO(
+        dto = CreateFieldDTO(
             field_type=FieldTypeEnum.Text,
             field_name="Priority",
             description="",
@@ -251,17 +212,13 @@ class TestCreateFieldInteractor:
             order=1,
             config={},
             is_required=False,
-            created_by="user_1"
+            created_by="user_1",
         )
 
-        # Act + Assert
         with pytest.raises(FieldNameAlreadyExistsException) as exc:
-            interactor.create_field(create_field_data)
+            interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_name),
             "test_create_field_duplicate_name.txt"
         )
-
-
-
