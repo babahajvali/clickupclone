@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import RoleEnum
 from task_management.interactors.dtos import WorkspaceMemberDTO, \
     AddMemberToWorkspaceDTO
 
@@ -25,6 +25,10 @@ class WorkspaceMemberStorageInterface(ABC):
 
     @abstractmethod
     def update_the_member_role(self, workspace_id: str, user_id: str,
-                               role: PermissionsEnum) -> WorkspaceMemberDTO:
+                               role: RoleEnum) -> WorkspaceMemberDTO:
         # change the member role
+        pass
+
+    @abstractmethod
+    def get_workspace_members(self, workspace_id: str) -> list[WorkspaceMemberDTO]:
         pass

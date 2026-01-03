@@ -35,11 +35,11 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_folder_lists(self, folder_id: str) -> list[ListDTO]:
+    def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
         pass
 
     @abstractmethod
-    def get_space_lists(self, space_id: str) -> list[ListDTO]:
+    def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         pass
 
     @abstractmethod

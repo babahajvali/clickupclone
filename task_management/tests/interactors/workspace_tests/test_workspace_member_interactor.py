@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import create_autospec
 
-
 from task_management.interactors.storage_interface.workspace_storage_interface import (
     WorkspaceStorageInterface
 )
@@ -28,16 +27,15 @@ from task_management.tests.factories.interactor_factory import (
 )
 
 
-
-
-
 class TestWorkspaceMemberInteractor:
 
     def setup_method(self):
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
-        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        self.workspace_member_storage = create_autospec(
+            WorkspaceMemberStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.permission_storage = create_autospec(
+            SpacePermissionStorageInterface)
 
         self.interactor = WorkspaceMemberInteractor(
             workspace_member_storage=self.workspace_member_storage,
@@ -45,7 +43,6 @@ class TestWorkspaceMemberInteractor:
             user_storage=self.user_storage,
             permission_storage=self.permission_storage
         )
-
 
     def _mock_active_workspace(self, owner_id="admin123"):
         return type(
@@ -66,8 +63,6 @@ class TestWorkspaceMemberInteractor:
                 "is_active": True
             }
         )()
-
-    # ---------- add member ----------
 
     def test_add_member_to_workspace_success(self, snapshot):
         dto = AddMemberToWorkspaceDTOFactory()
@@ -98,7 +93,6 @@ class TestWorkspaceMemberInteractor:
         with pytest.raises(UnexpectedRoleFoundException) as exc:
             self.interactor.add_member_to_workspace(dto)
 
-
         snapshot.assert_match(repr(exc.value), "add_member_invalid_role.txt")
 
     def test_add_member_permission_denied(self, snapshot):
@@ -108,13 +102,14 @@ class TestWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace.return_value = workspace
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
-        self.workspace_member_storage.get_workspace_member.return_value = (type("WorkspaceMember",(),{"role": RoleEnum.GUEST.value})())
-
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            type("WorkspaceMember", (), {"role": RoleEnum.GUEST.value})())
 
         with pytest.raises(NotAccessToModificationException) as exc:
             self.interactor.add_member_to_workspace(dto)
 
-        snapshot.assert_match(repr(exc.value), "add_member_permission_denied.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "add_member_permission_denied.txt")
 
     # ---------- remove member ----------
 

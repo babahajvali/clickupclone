@@ -1,10 +1,9 @@
 from dataclasses import dataclass
-from enum import Enum
 
 from typing import Optional
 
 from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
-    PermissionsEnum, PermissionScopeTypeEnum, GenderEnum, RoleEnum
+    GenderEnum, RoleEnum, PermissionsEnum
 
 
 @dataclass
@@ -18,6 +17,7 @@ class UserDTO:
     phone_number: str
     is_active: bool
     image_url: str
+
 
 @dataclass
 class CreateUserDTO:
@@ -89,6 +89,7 @@ class UpdateTemplateDTO:
     is_default: bool
     created_by: str
 
+
 @dataclass
 class TemplateDTO:
     template_id: str
@@ -100,42 +101,42 @@ class TemplateDTO:
 
 
 DEFAULT_FIELDS = [
-            {
-                "field_type": FieldTypeEnum.Text,
-                "field_name": "Title",
-                "description": "Task title",
-                "order": 1,
-                "config": {"max_length": 255},
-                "is_required": True
-            },
-            {
-                "field_type": FieldTypeEnum.User,
-                "field_name": "Assignee",
-                "order": 2
-            },
-            {
-                "field_type": FieldTypeEnum.Date,
-                "field_name": "Due Date",
-                "order": 3
-            },
-            {
-                "field_type": FieldTypeEnum.Dropdown,
-                "field_name": "Priority",
-                "order": 4,
-                "config": {
-                    "options": ["Low", "Medium", "High"]
-                }
-            },
-            {
-                "field_type": FieldTypeEnum.Dropdown,
-                "field_name": "Status",
-                "order": 5,
-                "config": {
-                    "options": ["Todo", "In Progress", "Done"],
-                    "default": "Todo"
-                }
-            }
-        ]
+    {
+        "field_type": FieldTypeEnum.Text,
+        "field_name": "Title",
+        "description": "Task title",
+        "order": 1,
+        "config": {"max_length": 255},
+        "is_required": True
+    },
+    {
+        "field_type": FieldTypeEnum.User,
+        "field_name": "Assignee",
+        "order": 2
+    },
+    {
+        "field_type": FieldTypeEnum.Date,
+        "field_name": "Due Date",
+        "order": 3
+    },
+    {
+        "field_type": FieldTypeEnum.Dropdown,
+        "field_name": "Priority",
+        "order": 4,
+        "config": {
+            "options": ["Low", "Medium", "High"]
+        }
+    },
+    {
+        "field_type": FieldTypeEnum.Dropdown,
+        "field_name": "Status",
+        "order": 5,
+        "config": {
+            "options": ["Todo", "In Progress", "Done"],
+            "default": "Todo"
+        }
+    }
+]
 
 
 @dataclass
@@ -156,6 +157,7 @@ class UpdateTaskDTO:
     created_by: str
     is_active: bool
 
+
 @dataclass
 class TaskDTO:
     task_id: str
@@ -165,6 +167,7 @@ class TaskDTO:
     created_by: str
     is_active: bool
 
+
 @dataclass
 class TaskAssigneeDTO:
     assignee_id: str
@@ -173,6 +176,7 @@ class TaskAssigneeDTO:
     assigned_by: str
     is_active: bool
 
+
 @dataclass
 class RemoveTaskAssigneeDTO:
     task_id: str
@@ -180,10 +184,12 @@ class RemoveTaskAssigneeDTO:
     removed_by: str
     is_active: bool
 
+
 @dataclass
 class UserTasksDTO:
     user_id: str
     tasks: list[TaskDTO]
+
 
 @dataclass
 class CreateListDTO:
@@ -196,6 +202,7 @@ class CreateListDTO:
     is_private: bool
     folder_id: Optional[str] = None
 
+
 @dataclass
 class UpdateListDTO:
     list_id: str
@@ -207,6 +214,7 @@ class UpdateListDTO:
     is_private: bool
     created_by: str
     folder_id: Optional[str] = None
+
 
 @dataclass
 class ListDTO:
@@ -228,6 +236,7 @@ class CreateViewDTO:
     view_type: ViewTypeEnum
     created_by: str
 
+
 @dataclass
 class UpdateViewDTO:
     view_id: str
@@ -235,6 +244,7 @@ class UpdateViewDTO:
     description: str
     view_type: ViewTypeEnum
     created_by: str
+
 
 @dataclass
 class ViewDTO:
@@ -255,6 +265,7 @@ class CreateFolderDTO:
     created_by: str
     is_private: bool
 
+
 @dataclass
 class UpdateFolderDTO:
     folder_id: str
@@ -265,6 +276,7 @@ class UpdateFolderDTO:
     is_active: bool
     created_by: str
     is_private: bool
+
 
 @dataclass
 class FolderDTO:
@@ -277,6 +289,7 @@ class FolderDTO:
     created_by: str
     is_private: bool
 
+
 @dataclass
 class ListViewDTO:
     id: int
@@ -284,6 +297,7 @@ class ListViewDTO:
     view_id: str
     applied_by: str
     is_active: bool
+
 
 @dataclass
 class RemoveListViewDTO:
@@ -303,6 +317,7 @@ class CreateSpaceDTO:
     is_active: bool
     is_private: bool
     created_by: str
+
 
 @dataclass
 class SpaceDTO:
@@ -324,11 +339,13 @@ class WorkspaceDTO:
     owner_id: str
     is_active: bool
 
+
 @dataclass
 class CreateWorkspaceDTO:
     name: str
     description: str
     owner_id: str
+
 
 @dataclass
 class AddMemberToWorkspaceDTO:
@@ -338,11 +355,63 @@ class AddMemberToWorkspaceDTO:
     is_active: bool
     added_by: str
 
+
 @dataclass
 class WorkspaceMemberDTO:
     id: int
     workspace_id: str
     user_id: str
     role: RoleEnum
+    is_active: bool
+    added_by: str
+
+@dataclass
+class CreateUserSpacePermissionDTO:
+    space_id: str
+    user_id: str
+    permission_type: PermissionsEnum
+    is_active: bool
+    added_by: str
+
+@dataclass
+class UserSpacePermissionDTO:
+    id: int
+    space_id: str
+    permission_type: PermissionsEnum
+    user_id: str
+    is_active: bool
+    added_by: str
+
+@dataclass
+class CreateUserFolderPermissionDTO:
+    folder_id: str
+    user_id: str
+    permission_type: PermissionsEnum
+    is_active: bool
+    added_by: str
+
+@dataclass
+class UserFolderPermissionDTO:
+    id: int
+    folder_id: str
+    permission_type: PermissionsEnum
+    user_id: str
+    is_active: bool
+    added_by: str
+
+@dataclass
+class CreateUserListPermissionDTO:
+    list_id: str
+    permission_type: PermissionsEnum
+    user_id: str
+    is_active: bool
+    added_by: str
+
+@dataclass
+class UserListPermissionDTO:
+    id: int
+    list_id: str
+    permission_type: PermissionsEnum
+    user_id: str
     is_active: bool
     added_by: str

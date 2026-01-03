@@ -1,5 +1,8 @@
-from task_management.exceptions.enums import PermissionsEnum
-from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
+from task_management.exceptions.custom_exceptions import \
+    UserDoesNotHaveSpacePermissionException, InactiveUserPermissionException
+from task_management.exceptions.enums import PermissionsEnum, RoleEnum
+from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
+    UserSpacePermissionDTO, CreateUserSpacePermissionDTO
 from task_management.interactors.storage_interface.folder_storage_interface import \
     FolderStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
@@ -43,8 +46,13 @@ class SpaceInteractor(ValidationMixin):
             workspace_id=create_space_data.workspace_id,
             workspace_storage=self.workspace_storage)
 
-        return self.space_storage.create_space(
+        result = self.space_storage.create_space(
             create_space_data=create_space_data)
+
+        self._create_space_users_permission(space_id=result.space_id,
+                                            workspace_id=result.workspace_id,
+                                            created_by=result.created_by)
+        return result
 
     def update_space(self, update_space_data: SpaceDTO) -> SpaceDTO:
         self.validate_space_exist_and_status(
@@ -104,15 +112,23 @@ class SpaceInteractor(ValidationMixin):
             workspace_id=workspace_id)
 
     # Permissions Section
-    def add_space_permission(self, space_id: str, user_id: str, added_by: str,
-                             permission_type: PermissionsEnum) :
+    def add_user_space_permission(self, space_id: str, user_id: str,
+                                  added_by: str,
+                                  permission_type: PermissionsEnum) -> UserSpacePermissionDTO:
+        user_space_permission = self.permission_storage.get_user_permission_for_space(
+            user_id=user_id, space_id=space_id)
+        if user_space_permission and not user_space_permission.is_active:
+            return self.permission_storage.active_user_permission_for_space(
+                user_id=user_id, space_id=space_id)
+        if user_space_permission and user_space_permission.is_active:
+            return user_space_permission
+
         self.check_user_has_access_to_space_modification(
             user_id=added_by,
             space_id=space_id,
             permission_storage=self.permission_storage
         )
 
-        # Validate space exists
         self.validate_space_exist_and_status(
             space_id=space_id,
             space_storage=self.space_storage
@@ -124,9 +140,11 @@ class SpaceInteractor(ValidationMixin):
             permission_type=permission_type
         )
 
-    def change_space_permissions(self, space_id: str, user_id: str,
-                                 changed_by: str,
-                                 permission_type: PermissionsEnum) :
+    def change_user_space_permissions(self, space_id: str, user_id: str,
+                                      changed_by: str,
+                                      permission_type: PermissionsEnum) -> UserSpacePermissionDTO:
+        self._check_user_have_space_permission(user_id=user_id,
+                                               space_id=space_id)
         self.check_user_has_access_to_space_modification(
             user_id=changed_by,
             space_id=space_id,
@@ -145,8 +163,10 @@ class SpaceInteractor(ValidationMixin):
             permission_type=permission_type
         )
 
-    def remove_space_permission(self, space_id: str, user_id: str,
-                                removed_by: str):
+    def remove_user_space_permission(self, space_id: str, user_id: str,
+                                     removed_by: str) -> UserSpacePermissionDTO:
+        self._check_user_have_space_permission(space_id=space_id,
+                                               user_id=user_id)
         self.check_user_has_access_to_space_modification(
             user_id=removed_by,
             space_id=space_id,
@@ -163,10 +183,48 @@ class SpaceInteractor(ValidationMixin):
             user_id=user_id
         )
 
-    def get_space_permissions(self, space_id: str):
+    def get_space_permissions(self, space_id: str) -> list[
+        UserSpacePermissionDTO]:
         self.validate_space_exist_and_status(
             space_id=space_id,
             space_storage=self.space_storage
         )
 
         return self.permission_storage.get_space_permissions(space_id=space_id)
+
+    def _check_user_have_space_permission(self, user_id: str,
+                                          space_id: str):
+        permission_data = self.permission_storage.get_user_permission_for_space(
+            user_id=user_id, space_id=space_id)
+        if not permission_data:
+            raise UserDoesNotHaveSpacePermissionException(user_id=user_id)
+
+        if not permission_data.is_active:
+            raise InactiveUserPermissionException(user_id=user_id)
+
+    def _create_space_users_permission(self, workspace_id: str, space_id: str,
+                                       created_by: str, ):
+        workspace_members = self.workspace_member_storage.get_workspace_members(
+            workspace_id=workspace_id)
+        users_permissions = []
+        for workspace_member in workspace_members:
+            if workspace_member.role != RoleEnum.GUEST.value:
+                user_permission = CreateUserSpacePermissionDTO(
+                    space_id=space_id,
+                    user_id=workspace_member.user_id,
+                    permission_type=PermissionsEnum.FULL_EDIT,
+                    is_active=True,
+                    added_by=created_by
+                )
+            else:
+                user_permission = CreateUserSpacePermissionDTO(
+                    space_id=space_id,
+                    user_id=workspace_member.user_id,
+                    permission_type=PermissionsEnum.VIEW,
+                    is_active=True,
+                    added_by=created_by
+                )
+            users_permissions.append(user_permission)
+
+        return self.permission_storage.create_user_space_permissions(
+            permission_data=users_permissions)

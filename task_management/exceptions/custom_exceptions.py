@@ -172,3 +172,20 @@ class UserNotWorkspaceOwnerException(Exception):
 class UnexpectedRoleFoundException(Exception):
     def __init__(self, role: str):
         self.role = role
+
+class UserDoesNotHaveSpacePermissionException(Exception):
+    def __init__(self,user_id: str):
+        self.user_id = user_id
+
+class UserDoesNotHaveFolderPermissionException(Exception):
+    def __init__(self,user_id: str):
+        self.user_id = user_id
+
+
+class UserDoesNotHaveListPermissionException(Exception):
+    def __init__(self,user_id: str):
+        self.user_id = user_id
+
+class InactiveUserPermissionException(Exception):
+    def __init__(self,user_id: str):
+        self.user_id = user_id
