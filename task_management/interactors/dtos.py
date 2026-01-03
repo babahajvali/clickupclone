@@ -29,6 +29,13 @@ class CreateUserDTO:
     gender: GenderEnum
     image_url: str
 
+@dataclass
+class AccountDTO:
+    id: int
+    user_id: str
+    username: str
+    is_active: bool
+
 
 @dataclass
 class CreateFieldDTO:

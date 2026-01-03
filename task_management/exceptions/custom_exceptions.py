@@ -189,3 +189,31 @@ class UserDoesNotHaveListPermissionException(Exception):
 class InactiveUserPermissionException(Exception):
     def __init__(self,user_id: str):
         self.user_id = user_id
+
+
+class NotExistedEmailFound(Exception):
+    def __init__(self,email: str):
+        self.email = email
+
+class WrongPasswordFound(Exception):
+    def __init__(self, password: str):
+        self.password = password
+
+class ExistedUsernameFound(Exception):
+    def __init__(self, username: str):
+        self.username = username
+
+
+class ExistedEmailFound(Exception):
+    def __init__(self, email: str):
+        self.email = email
+
+
+class ExistedPhoneNumberFound(Exception):
+    def __init__(self, phone_number: str):
+        self.phone_number = phone_number
+
+
+class UsernameNotFound(Exception):
+    def __init__(self, username: str):
+        self.username = username

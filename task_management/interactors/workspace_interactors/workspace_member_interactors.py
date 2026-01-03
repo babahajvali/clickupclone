@@ -311,7 +311,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
     @staticmethod
     def _validate_role(role: str):
-        existed_roles = [type.value for type in RoleEnum]
+        existed_roles = [x.value for x in RoleEnum]
         if role not in existed_roles:
             raise UnexpectedRoleFoundException(role=role)
 
