@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    UserDoesNotHaveListPermissionException, InactiveUserPermissionException
+    UserDoesNotHaveListPermissionException, InactiveUserPermissionException, \
+    InvalidOrderException
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO, \
@@ -81,7 +82,8 @@ class ListInteractor(ValidationMixin):
             space_storage=self.space_storage
         )
 
-        result = self.list_storage.create_list(create_list_data=create_list_data)
+        result = self.list_storage.create_list(
+            create_list_data=create_list_data)
         template_interactor = CreateTemplateInteractor(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
@@ -89,7 +91,7 @@ class ListInteractor(ValidationMixin):
             field_storage=self.field_storage
         )
         create_template_dto = CreateTemplateDTO(
-            name=create_list_data.name+"template",
+            name=create_list_data.name + "template",
             description=create_list_data.description,
             list_id=result.list_id,
             created_by=result.created_by
@@ -116,23 +118,41 @@ class ListInteractor(ValidationMixin):
                 folder_id=update_list_data.folder_id,
                 folder_storage=self.folder_storage
             )
-            self.validate_list_order_in_folder(
-                order=update_list_data.order,
+            self._validate_list_order_in_folder(
                 folder_id=update_list_data.folder_id,
-                list_storage=self.list_storage
-            )
+                order=update_list_data.order)
         else:
             self.validate_space_exist_and_status(
                 space_id=update_list_data.space_id,
                 space_storage=self.space_storage
             )
-            self.validate_list_order_in_space(
+            self._validate_list_order_in_space(
                 space_id=update_list_data.space_id,
-                order=update_list_data.order,
-                list_storage=self.list_storage
-            )
+                order=update_list_data.order)
 
         return self.list_storage.update_list(update_list_data=update_list_data)
+
+    def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
+                               user_id: str) -> list[ListDTO]:
+        self.check_user_has_access_to_list_modification(list_id=list_id,
+                                                        user_id=user_id,
+                                                        permission_storage=self.list_permission_storage)
+        self.check_list_exists_and_status(list_id=list_id,
+                                          list_storage=self.list_storage)
+        self._validate_list_order_in_folder(folder_id=folder_id, order=order)
+
+        return self.list_storage.reorder_list_in_folder(folder_id=folder_id,
+                                                        list_id=list_id,
+                                                        order=order)
+
+    def reorder_list_in_space(self, space_id: str, order: int, user_id: str,
+                              list_id: str) -> list[ListDTO]:
+        self.check_user_has_access_to_list_modification(list_id=list_id,user_id=user_id,permission_storage=self.list_permission_storage)
+        self.check_list_exists_and_status(list_id=list_id,list_storage=self.list_storage)
+        self._validate_list_order_in_space(space_id=space_id, order=order)
+
+        return self.list_storage.reorder_list_in_space(space_id=space_id,list_id=list_id,order=order)
+
 
     def remove_list(self, list_id: str, user_id: str):
         self.check_user_has_access_to_list_modification(
@@ -147,6 +167,7 @@ class ListInteractor(ValidationMixin):
 
         return self.list_storage.remove_list(list_id=list_id)
 
+
     def set_list_private(self, list_id: str, user_id: str):
         self.check_user_has_access_to_list_modification(
             user_id=user_id,
@@ -159,6 +180,7 @@ class ListInteractor(ValidationMixin):
         )
 
         return self.list_storage.make_list_private(list_id=list_id)
+
 
     def set_list_public(self, list_id: str, user_id: str):
         self.check_user_has_access_to_list_modification(
@@ -173,6 +195,7 @@ class ListInteractor(ValidationMixin):
 
         return self.list_storage.make_list_public(list_id=list_id)
 
+
     # Permission section
 
     def get_list_permissions(self, list_id: str) -> list[
@@ -183,15 +206,18 @@ class ListInteractor(ValidationMixin):
         return self.list_permission_storage.get_list_permissions(
             list_id=list_id)
 
+
     def get_folder_lists(self, folder_id: str):
         self.validate_folder_exist_and_status(folder_id=folder_id,
                                               folder_storage=self.folder_storage)
         return self.list_storage.get_folder_lists(folder_ids=[folder_id])
 
+
     def get_space_lists(self, space_id: str):
         self.validate_space_exist_and_status(space_id=space_id,
                                              space_storage=self.space_storage)
         return self.list_storage.get_space_lists(space_ids=[space_id])
+
 
     # Helping functions
 
@@ -204,6 +230,7 @@ class ListInteractor(ValidationMixin):
 
         if not user_permission.is_active:
             raise InactiveUserPermissionException(user_id=user_id)
+
 
     def _create_list_users_permissions(self, list_id: str, space_id: str,
                                        created_by: str) -> list[
@@ -242,3 +269,24 @@ class ListInteractor(ValidationMixin):
 
         return self.list_permission_storage.create_list_users_permissions(
             user_permissions=list_user_permissions)
+
+
+    def _validate_list_order_in_folder(self, folder_id: str, order: int):
+        if order < 1:
+            raise InvalidOrderException(order=order)
+
+        lists_count = self.list_storage.get_folder_lists_count(
+            folder_id=folder_id)
+
+        if order > lists_count:
+            raise InvalidOrderException(order=order)
+
+
+    def _validate_list_order_in_space(self, space_id: str, order: int):
+        if order < 1:
+            raise InvalidOrderException(order=order)
+        lists_count = self.list_storage.get_space_lists_count(
+            space_id=space_id)
+
+        if order > lists_count:
+            raise InvalidOrderException(order=order)

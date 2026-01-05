@@ -173,9 +173,9 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
 
         assignees = [TaskAssigneeDTOFactory(), TaskAssigneeDTOFactory()]
-        self.task_assignee_storage.get_task_assignee.return_value = assignees
+        self.task_assignee_storage.get_task_assignees.return_value = assignees
 
-        result = self.interactor.get_task_assignee("task123")
+        result = self.interactor.get_task_assignees("task123")
 
         snapshot.assert_match(
             repr(result),

@@ -14,8 +14,9 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
 from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    ListNotFoundException,InactiveListFoundException,SpaceNotFoundException,
-    NotAccessToModificationException,SpaceListOrderAlreadyExistedException,
+    ListNotFoundException, InactiveListFoundException, SpaceNotFoundException,
+    NotAccessToModificationException, SpaceListOrderAlreadyExistedException,
+    InvalidOrderException,
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
@@ -75,6 +76,7 @@ class TestUpdateList:
             "Space", (), {"is_active": True}
         )()
         self.interactor.list_storage.check_list_order_exist_in_folder.return_value = False
+        self.interactor.list_storage.get_folder_lists_count.return_value = 100
         self.interactor.list_storage.update_list.return_value = "UPDATED_LIST_DTO"
 
         result = self.interactor.update_list(dto)
@@ -134,7 +136,13 @@ class TestUpdateList:
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
     def test_order_already_exists(self, snapshot):
-        dto = UpdateListDTOFactory(space_id="1234")
+        dto = UpdateListDTOFactory(
+            space_id="1234",
+            folder_id=None,
+            order=101,
+            created_by="user_id",
+        )
+
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
@@ -144,9 +152,16 @@ class TestUpdateList:
         self.interactor.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.interactor.list_storage.check_list_order_exist_in_space.return_value = True
 
-        with pytest.raises(SpaceListOrderAlreadyExistedException) as exc:
+        self.interactor.list_storage.check_list_order_exist_in_space.return_value = True
+        self.interactor.list_storage.get_space_lists_count.return_value = 100
+
+        with pytest.raises(InvalidOrderException) as exc:
             self.interactor.update_list(dto)
 
-        snapshot.assert_match(repr(exc.value), "order_already_exists.txt")
+        # snapshot.assert_match(repr(exc.value), "order_already_exists.txt")
+        self.interactor.list_storage.check_list_order_exist_in_space.assert_not_called()
+
+
+
+

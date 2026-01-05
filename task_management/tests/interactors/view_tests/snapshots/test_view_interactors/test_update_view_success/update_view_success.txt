@@ -1,1 +1,1 @@
-ViewDTO(view_id='ac546740-a182-435f-848e-dc98eec9fa67', name='can', description='Choice already thank source.', view_type='board', created_by='63eaa005-77f6-4854-a668-bb6ec408143f')
+ViewDTO(view_id='3957f082-9c27-4c51-ac98-a368dfc8b87a', name='recent', description='Technology serious international position.', view_type='board', created_by='aedab7b5-e2aa-45a7-8951-03edfd05a5f5')

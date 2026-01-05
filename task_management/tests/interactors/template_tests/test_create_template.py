@@ -13,14 +13,8 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
 )
-from task_management.interactors.storage_interface.space_permission_storage_interface import (
-    SpacePermissionStorageInterface
-)
 from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
-)
-from task_management.interactors.storage_interface.user_storage_interface import (
-    UserStorageInterface
 )
 from task_management.interactors.template_interactors.create_template_interactor import (
     CreateTemplateInteractor
@@ -50,9 +44,11 @@ class TestCreateTemplateInteractor:
         )
 
     @patch(
-        "task_management.interactors.template_interactors.create_template_interactor.CreateFieldInteractor")
-    def test_create_template_success(self, mock_create_field_interactor,
-                                     snapshot):
+        "task_management.interactors.template_interactors.create_template_interactor.FieldInteractor"
+    )
+    def test_create_template_success(self, mock_field_interactor, snapshot):
+        mock_field_interactor.return_value.create_field.return_value = None
+
         create_template_dto = CreateTemplateDTOFactory()
 
         template_dto = TemplateDTOFactory(

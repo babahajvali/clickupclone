@@ -11,8 +11,8 @@ from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
 )
 from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
-from task_management.interactors.field_interactors.create_field_interactor import (
-    CreateFieldInteractor
+from task_management.interactors.field_interactors.field_interactors import (
+    FieldInteractor
 )
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UserListPermissionDTO
@@ -91,7 +91,7 @@ class TestCreateFieldInteractor:
         field_storage.check_field_order_exist.return_value = order_exists
         field_storage.create_field.return_value = self._get_field_dto()
 
-        return CreateFieldInteractor(
+        return FieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
             permission_storage=permission_storage,

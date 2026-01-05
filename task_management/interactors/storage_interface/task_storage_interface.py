@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from ast import List
 
 from task_management.interactors.dtos import CreateTaskDTO, UpdateTaskDTO, \
-    TaskDTO
+    TaskDTO, FilterDTO
 
 
 class TaskStorageInterface(ABC):
@@ -33,4 +33,12 @@ class TaskStorageInterface(ABC):
 
     @abstractmethod
     def check_task_order_exist(self,order: int, list_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def task_filter_data(self,filter_data: FilterDTO):
+        pass
+
+    @abstractmethod
+    def get_template_fields_by_list(self,list_id: str):
         pass

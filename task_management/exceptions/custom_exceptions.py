@@ -221,3 +221,15 @@ class UsernameNotFound(Exception):
 class TasKOrderAlreadyExistedException(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
+
+class InvalidOffsetNumberException(Exception):
+    def __init__(self, offset: int):
+        self.offset = offset
+
+class InvalidLimitException(Exception):
+    def __init__(self, limit: int):
+        self.limit = limit
+
+class InvalidOrderException(Exception):
+    def __init__(self, order: int):
+        self.order = order

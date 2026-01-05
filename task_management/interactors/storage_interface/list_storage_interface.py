@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO
+    UpdateListDTO, FieldDTO
 
 
 class ListStorageInterface(ABC):
@@ -55,4 +55,22 @@ class ListStorageInterface(ABC):
     @abstractmethod
     def make_list_public(self, list_id: str) -> ListDTO:
         # set is_private false
+        pass
+
+    @abstractmethod
+    def reorder_list_in_folder(self, folder_id: str, list_id: str,
+                               order: int) -> list[ListDTO]:
+        pass
+
+    @abstractmethod
+    def reorder_list_in_space(self, space_id: str, list_id: str, order: int) -> \
+    list[ListDTO]:
+        pass
+
+    @abstractmethod
+    def get_folder_lists_count(self, folder_id: str) -> int:
+        pass
+
+    @abstractmethod
+    def get_space_lists_count(self, space_id: str) -> int:
         pass

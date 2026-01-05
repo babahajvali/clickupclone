@@ -12,11 +12,10 @@ from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
 )
 from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
-from task_management.interactors.field_interactors.update_field_interactor import (
-    UpdateFieldInteractor
-)
 from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO, \
     UserListPermissionDTO
+from task_management.interactors.field_interactors.field_interactors import \
+    FieldInteractor
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
@@ -90,7 +89,7 @@ class TestUpdateFieldInteractor:
             make_permission_dto(permission)
         )
 
-        return UpdateFieldInteractor(
+        return FieldInteractor(
             field_storage=field_storage,
             permission_storage=permission_storage,
             template_storage=template_storage,

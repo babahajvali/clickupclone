@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from typing import Optional, Dict
 
@@ -427,3 +427,18 @@ class FilterDTO:
     assignees: Optional[list[str]] = None
     offset: int = 1
     limit: int = 10
+
+
+@dataclass
+class TaskWithDetailsDTO:
+    task: TaskDTO
+    field_values: Dict[str, str] = field(default_factory=dict)
+    assignees: list[str] = field(default_factory=list)
+
+    @property
+    def status(self) -> Optional[str]:
+        return self.field_values.get('Status')
+
+    @property
+    def priority(self) -> Optional[str]:
+        return self.field_values.get('Priority')

@@ -19,6 +19,10 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def reorder_folder(self,folder_id: str, order: int) -> FolderDTO:
+        pass
+
+    @abstractmethod
     def remove_folder(self,folder_id: str) -> FolderDTO:
         # in this case update the value is_active is  False
         pass

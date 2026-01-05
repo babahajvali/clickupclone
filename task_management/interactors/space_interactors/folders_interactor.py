@@ -74,6 +74,13 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_storage.update_folder(update_folder_data)
 
+    def reorder_folder(self,folder_id: str, user_id: str, order: int) -> FolderDTO:
+        self.validate_folder_exist_and_status(folder_id=folder_id,folder_storage=self.folder_storage)
+        self.check_user_has_access_to_folder_modification(folder_id=folder_id,user_id=user_id,permission_storage=self.folder_permission_storage)
+
+        return self.folder_storage.reorder_folder(folder_id=folder_id,order=order)
+
+
     def remove_folder(self, folder_id: str, user_id: str) -> FolderDTO:
         self.check_user_has_access_to_folder_modification(
             user_id=user_id,

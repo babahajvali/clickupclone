@@ -34,5 +34,14 @@ class FieldStorageInterface(ABC):
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         pass
 
+    @abstractmethod
+    def reorder_fields(self, field_id: str, template_id: str,new_order: int) -> list[FieldDTO]:
+        pass
+
+    @abstractmethod
+    def template_fields_count(self,template_id: str) -> int:
+        pass
+
+
 
 

@@ -2,8 +2,8 @@ from task_management.exceptions.custom_exceptions import \
     AlreadyExistedTemplateNameException
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     CreateFieldDTO, DEFAULT_FIELDS
-from task_management.interactors.field_interactors.create_field_interactor import \
-    CreateFieldInteractor
+from task_management.interactors.field_interactors.field_interactors import \
+    FieldInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
@@ -44,7 +44,7 @@ class CreateTemplateInteractor(ValidationMixin):
     def create_template_default_fields(self, template_id: str,
                                        created_by: str):
 
-        create_field_interactor = CreateFieldInteractor(
+        create_field_interactor = FieldInteractor(
             template_storage=self.template_storage,
             permission_storage=self.permission_storage,
             field_storage=self.field_storage)

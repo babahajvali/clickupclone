@@ -19,7 +19,7 @@ class TaskAssigneeStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_task_assignee(self, task_id: str) -> list[TaskAssigneeDTO]:
+    def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
         pass
 
     @abstractmethod
