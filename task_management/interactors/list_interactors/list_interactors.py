@@ -147,7 +147,8 @@ class ListInteractor(ValidationMixin):
 
         return self.list_storage.make_list_public(list_id=list_id)
 
-    # Permissions Section
+    # Permission section
+
     def add_user_list_permission(self, list_id: str, user_id: str,
                                  added_by: str,
                                  permission_type: PermissionsEnum) -> UserListPermissionDTO:

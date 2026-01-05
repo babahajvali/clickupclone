@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import PermissionsEnum
+from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.task_interactors.task_interactor import CreateTaskInteractor
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
@@ -24,6 +25,16 @@ from task_management.tests.factories.interactor_factory import (
     TaskDTOFactory
 )
 
+def make_permission(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_id",
+        permission_type=permission_type,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
+
 
 class TestCreateTaskInteractor:
 
@@ -38,7 +49,6 @@ class TestCreateTaskInteractor:
             permission_storage=self.permission_storage
         )
 
-    # ✅ CREATE TASK
     def test_create_task_success(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
@@ -46,8 +56,9 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
+        self.task_storage.check_task_order_exist.return_value = False
         self.task_storage.create_task.return_value = TaskDTOFactory()
 
         result = self.interactor.create_task(task_data)
@@ -64,7 +75,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -103,7 +114,6 @@ class TestCreateTaskInteractor:
             "test_create_task_list_inactive.txt"
         )
 
-    # ✅ UPDATE TASK
     def test_update_task_success(self, snapshot):
         update_data = UpdateTaskDTOFactory()
 
@@ -112,8 +122,9 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
+        self.task_storage.check_task_order_exist.return_value = False
         self.task_storage.update_task.return_value = TaskDTOFactory()
 
         result = self.interactor.update_task(update_data)
@@ -123,7 +134,6 @@ class TestCreateTaskInteractor:
             "test_update_task_success.txt"
         )
 
-    # ✅ GET LIST TASKS
     def test_get_list_tasks_success(self, snapshot):
         list_id = "list_1"
         tasks = [TaskDTOFactory(), TaskDTOFactory()]
@@ -140,7 +150,6 @@ class TestCreateTaskInteractor:
             "test_get_list_tasks_success.txt"
         )
 
-    # ✅ GET TASK
     def test_get_task_success(self, snapshot):
         task = TaskDTOFactory()
         self.task_storage.get_task_by_id.return_value = task

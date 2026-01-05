@@ -2,8 +2,6 @@ from task_management.interactors.dtos import CreateViewDTO, ViewDTO, \
     UpdateViewDTO
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.view_storage_interface import \
     ViewStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \

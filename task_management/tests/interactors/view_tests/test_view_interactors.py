@@ -80,18 +80,6 @@ class TestViewInteractor:
 
         snapshot.assert_match(repr(exc.value), "create_view_invalid_type.txt")
 
-    # def test_create_view_without_permission_raises_exception(self, snapshot):
-    #     # Arrange
-    #     create_data = CreateViewDTOFactory()
-    #     create_data.view_type = ViewTypeEnum.Table
-    #     self.permission_storage.get_user_access_permissions.return_value = PermissionsEnum.VIEW.value
-    # 
-    #     # Act & Assert
-    #     with pytest.raises(NotAccessToModificationException) as exc:
-    #         self.interactor.create_view(create_data)
-    # 
-    #     snapshot.assert_match(repr(exc.value),
-    #                           "create_view_permission_denied.txt")
 
     def test_update_view_success(self, snapshot):
         # Arrange

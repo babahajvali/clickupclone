@@ -1,1 +1,1 @@
-ViewDTO(view_id='8af37d72-ec4f-4490-84ea-f9432ee66e21', name='seem', description='Old charge read management production up our allow.', view_type='board', created_by='d7f14ec2-9a9d-4dd2-a7aa-d0707cddb4cc')
+ViewDTO(view_id='ac546740-a182-435f-848e-dc98eec9fa67', name='can', description='Choice already thank source.', view_type='board', created_by='63eaa005-77f6-4854-a668-bb6ec408143f')

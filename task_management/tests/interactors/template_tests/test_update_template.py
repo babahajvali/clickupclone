@@ -8,6 +8,7 @@ from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException
 )
 from task_management.exceptions.enums import PermissionsEnum
+from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
@@ -27,6 +28,15 @@ from task_management.tests.factories.interactor_factory import (
 
 Faker.seed(0)
 
+def make_permission(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_id",
+        permission_type=permission_type,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
 
 class TestUpdateTemplateInteractor:
 
@@ -55,14 +65,13 @@ class TestUpdateTemplateInteractor:
             name=update_dto.name,
             list_id=update_dto.list_id,
             description=update_dto.description,
-            is_default=update_dto.is_default,
             created_by=update_dto.created_by,
         )
 
         self.template_storage.get_template_exist.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.template_storage.check_template_name_exist_except_this_template.return_value = False
         self.template_storage.update_template.return_value = updated_template
@@ -74,7 +83,6 @@ class TestUpdateTemplateInteractor:
             "update_template_success.json"
         )
 
-    # ---------------- TEMPLATE NOT FOUND ----------------
 
     def test_update_template_template_not_found(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -88,7 +96,6 @@ class TestUpdateTemplateInteractor:
 
         self.template_storage.update_template.assert_not_called()
 
-    # ---------------- LIST NOT FOUND ----------------
 
     def test_update_template_list_not_found(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -101,7 +108,6 @@ class TestUpdateTemplateInteractor:
 
         self.template_storage.update_template.assert_not_called()
 
-    # ---------------- PERMISSION DENIED ----------------
 
     def test_update_template_permission_denied(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -109,15 +115,13 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_exist.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
-
         with pytest.raises(NotAccessToModificationException):
             self.interactor.update_template(update_dto)
 
         self.template_storage.update_template.assert_not_called()
 
-    # ---------------- DUPLICATE NAME ----------------
 
     def test_update_template_duplicate_name(self, snapshot):
         update_dto = UpdateTemplateDTOFactory()
@@ -125,7 +129,7 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_exist.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.template_storage.check_template_name_exist_except_this_template.return_value = True
 
@@ -137,23 +141,3 @@ class TestUpdateTemplateInteractor:
             "update_template_duplicate_name.txt"
         )
 
-    # ---------------- DEFAULT TEMPLATE EXISTS ----------------
-
-    def test_update_default_template_already_exists(self, snapshot):
-        update_dto = UpdateTemplateDTOFactory(is_default=True)
-
-        self.template_storage.get_template_exist.return_value = self._mock_template()
-        self.list_storage.get_list.return_value = self._mock_active_list()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
-        )
-        self.template_storage.check_template_name_exist_except_this_template.return_value = False
-        self.template_storage.check_default_template_exist.return_value = True
-
-        with pytest.raises(DefaultTemplateAlreadyExistedException) as exc:
-            self.interactor.update_template(update_dto)
-
-        snapshot.assert_match(
-            repr(exc.value.template_name),
-            "update_default_template_already_exists.txt"
-        )

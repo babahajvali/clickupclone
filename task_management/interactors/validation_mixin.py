@@ -145,25 +145,6 @@ class ValidationMixin:
             raise FieldOrderAlreadyExistsException(field_order=field_order)
 
     @staticmethod
-    def check_user_has_access_to_create_field(user_id: str,
-                                              permission_storage: SpacePermissionStorageInterface):
-
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
-
-        if user_permissions == PermissionsEnum.VIEW:
-            raise NotAccessToModificationException(user_id=user_id)
-
-    @staticmethod
-    def validate_field(field_id: str, template_id: str,
-                       field_storage: FieldStorageInterface):
-        is_exist = field_storage.check_field_exist(field_id=field_id,
-                                                   template_id=template_id)
-
-        if not is_exist:
-            raise FieldNotFoundException(field_id=field_id)
-
-    @staticmethod
     def validate_field_config_and_default(field_type: FieldTypeEnum,
                                           config: dict):
 
@@ -242,26 +223,6 @@ class ValidationMixin:
                     message=f"Default value length {len(default_value)} exceeds max_length {max_length}"
                 )
 
-    @staticmethod
-    def check_already_existed_template_name(template_name: str,
-                                            template_storage: TemplateStorageInterface):
-
-        is_exist = template_storage.check_template_name_exist(
-            template_name=template_name)
-
-        if is_exist:
-            raise AlreadyExistedTemplateNameException(
-                template_name=template_name)
-
-
-    @staticmethod
-    def check_default_template_exists(template_name: str,
-                                      template_storage: TemplateStorageInterface):
-        is_exist = template_storage.check_default_template_exist()
-
-        if is_exist:
-            raise DefaultTemplateAlreadyExistedException(
-                template_name=template_name)
 
     @staticmethod
     def check_list_exists_and_status(list_id: str,
@@ -274,24 +235,6 @@ class ValidationMixin:
         if not list_data.is_active:
             raise InactiveListFoundException(list_id=list_id)
 
-    @staticmethod
-    def check_template_name_exist(template_name: str, template_id: str,
-                                  template_storage: TemplateStorageInterface):
-        is_exist = template_storage.check_template_name_exist_except_this_template(
-            template_name=template_name, template_id=template_id)
-
-        if is_exist:
-            raise AlreadyExistedTemplateNameException(
-                template_name=template_name)
-
-    @staticmethod
-    def check_user_has_access_to_create_task(user_id: str,
-                                             permission_storage: SpacePermissionStorageInterface):
-        user_permissions = permission_storage.get_user_access_permissions(
-            user_id=user_id)
-
-        if user_permissions == PermissionsEnum.VIEW.value:
-            raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
     def check_user_has_access_to_list_modification(user_id: str, list_id: str,
@@ -299,7 +242,7 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
-        if user_permissions == PermissionsEnum.VIEW.value:
+        if user_permissions.permission_type.value == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
@@ -315,14 +258,6 @@ class ValidationMixin:
 
         return task_data.list_id
 
-    @staticmethod
-    def check_task_assignee_exists(assign_id: str,
-                                   task_assignee_storage: TaskAssigneeStorageInterface):
-        is_exist = task_assignee_storage.check_task_assignee_exist(
-            assign_id=assign_id)
-
-        if not is_exist:
-            raise TaskAssigneeNotFoundException(assign_id=assign_id)
 
     @staticmethod
     def validate_space_exist_and_status(space_id: str,
@@ -370,10 +305,10 @@ class ValidationMixin:
                                                      folder_id: str,
                                                      permission_storage: FolderPermissionStorageInterface):
 
-        user_permissions = permission_storage.get_user_permission_for_folder(
+        user_permission = permission_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
 
-        if user_permissions == PermissionsEnum.VIEW.value:
+        if user_permission.permission_type.value == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
@@ -407,7 +342,7 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
 
-        if user_permissions == PermissionsEnum.VIEW.value:
+        if user_permissions.permission_type.value == PermissionsEnum.VIEW.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod

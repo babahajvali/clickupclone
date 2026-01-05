@@ -53,7 +53,6 @@ class CreateTemplateDTOFactory(factory.Factory):
     name = factory.Faker("word")
     description = factory.Faker("sentence")
     list_id = factory.Faker("uuid4")
-    is_default = False
     created_by = factory.Faker("uuid4")
 
 class UpdateTemplateDTOFactory(factory.Factory):
@@ -64,7 +63,6 @@ class UpdateTemplateDTOFactory(factory.Factory):
     name = factory.Faker("word")
     list_id = factory.Faker("uuid4")
     description = factory.Faker("sentence")
-    is_default = False
     created_by = factory.Faker("uuid4")
 
 
@@ -76,7 +74,6 @@ class TemplateDTOFactory(factory.Factory):
     name = factory.Faker("word")
     list_id = factory.Faker("uuid4")
     description = factory.Faker("sentence")
-    is_default = False
     created_by = factory.Faker("uuid4")
 
 class CreateListDTOFactory(factory.Factory):
@@ -129,6 +126,7 @@ class CreateTaskDTOFactory(factory.Factory):
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
+    order = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker('uuid4')
     is_active = True
 
@@ -141,6 +139,7 @@ class UpdateTaskDTOFactory(factory.Factory):
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
+    order = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker('uuid4')
     is_active = True
 
@@ -153,6 +152,7 @@ class TaskDTOFactory(factory.Factory):
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
+    order = factory.sequence(lambda n:n+1)
     created_by = factory.Faker('uuid4')
     is_active = True
 

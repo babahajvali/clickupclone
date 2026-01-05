@@ -1,3 +1,5 @@
+from task_management.exceptions.custom_exceptions import \
+    AlreadyExistedTemplateNameException
 from task_management.interactors.dtos import UpdateTemplateDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
@@ -29,11 +31,14 @@ class UpdateTemplateInteractor(ValidationMixin):
             permission_storage=self.permission_storage)
         self.check_template_name_exist(
             template_name=update_template_data.name,
-            template_id=update_template_data.template_id,
-            template_storage=self.template_storage)
-        if update_template_data.is_default:
-            self.check_default_template_exists(
-                template_name=update_template_data.name,
-                template_storage=self.template_storage)
+            template_id=update_template_data.template_id)
 
         return self.template_storage.update_template(update_template_data=update_template_data)
+
+    def check_template_name_exist(self,template_name: str, template_id: str):
+        is_exist = self.template_storage.check_template_name_exist_except_this_template(
+            template_name=template_name, template_id=template_id)
+
+        if is_exist:
+            raise AlreadyExistedTemplateNameException(
+                template_name=template_name)

@@ -43,7 +43,11 @@ class FolderInteractor(ValidationMixin):
             folder_storage=self.folder_storage
         )
 
-        return self.folder_storage.create_folder(create_folder_data)
+        result = self.folder_storage.create_folder(create_folder_data)
+        self._create_folder_users_permissions(folder_id=result.folder_id,
+                                              space_id=result.space_id,
+                                              created_by=result.created_by)
+        return result
 
     def update_folder(self, update_folder_data: UpdateFolderDTO) -> FolderDTO:
         self.check_user_has_access_to_folder_modification(
@@ -143,7 +147,8 @@ class FolderInteractor(ValidationMixin):
     def change_user_folder_permissions(self, folder_id: str, user_id: str,
                                        changed_by: str,
                                        permission_type: PermissionsEnum) -> UserFolderPermissionDTO:
-        self._check_user_have_folder_permission(folder_id=folder_id,user_id=user_id)
+        self._check_user_have_folder_permission(folder_id=folder_id,
+                                                user_id=user_id)
         self.check_user_has_access_to_folder_modification(
             user_id=changed_by,
             folder_id=folder_id,
@@ -168,7 +173,8 @@ class FolderInteractor(ValidationMixin):
             folder_id=folder_id,
             permission_storage=self.folder_permission_storage
         )
-        self._check_user_have_folder_permission(folder_id=folder_id, user_id=user_id)
+        self._check_user_have_folder_permission(folder_id=folder_id,
+                                                user_id=user_id)
 
         # Validate folder exists
         self.validate_folder_exist_and_status(

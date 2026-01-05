@@ -1,3 +1,5 @@
+from task_management.exceptions.custom_exceptions import \
+    AlreadyExistedTemplateNameException
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     CreateFieldDTO, DEFAULT_FIELDS
 from task_management.interactors.field_interactors.create_field_interactor import \
@@ -19,7 +21,7 @@ from task_management.interactors.validation_mixin import ValidationMixin
 
 class CreateTemplateInteractor(ValidationMixin):
 
-    def __init__(self,field_storage: FieldStorageInterface,
+    def __init__(self, field_storage: FieldStorageInterface,
                  permission_storage: ListPermissionStorageInterface,
                  template_storage: TemplateStorageInterface,
                  list_storage: ListStorageInterface):
@@ -35,12 +37,7 @@ class CreateTemplateInteractor(ValidationMixin):
             user_id=template_data.created_by, list_id=template_data.list_id,
             permission_storage=self.permission_storage)
         self.check_already_existed_template_name(
-            template_name=template_data.name,
-            template_storage=self.template_storage)
-        if template_data.is_default:
-            self.check_default_template_exists(
-                template_name=template_data.name,
-                template_storage=self.template_storage)
+            template_name=template_data.name)
 
         result = self.template_storage.create_template(template_data)
         self.create_template_default_fields(template_id=result.template_id,
@@ -69,3 +66,12 @@ class CreateTemplateInteractor(ValidationMixin):
             )
 
             create_field_interactor.create_field(create_field_dto)
+
+    def check_already_existed_template_name(self, template_name: str):
+
+        is_exist = self.template_storage.check_template_name_exist(
+            template_name=template_name)
+
+        if is_exist:
+            raise AlreadyExistedTemplateNameException(
+                template_name=template_name)

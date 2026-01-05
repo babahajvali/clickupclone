@@ -217,3 +217,7 @@ class ExistedPhoneNumberFound(Exception):
 class UsernameNotFound(Exception):
     def __init__(self, username: str):
         self.username = username
+
+class TasKOrderAlreadyExistedException(Exception):
+    def __init__(self, list_id: str):
+        self.list_id = list_id

@@ -14,7 +14,8 @@ from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.field_interactors.create_field_interactor import (
     CreateFieldInteractor
 )
-from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
+from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
+    UserListPermissionDTO
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
@@ -32,6 +33,17 @@ class InvalidFieldEnum(Enum):
 class DummyTemplate:
     def __init__(self, list_id: str):
         self.list_id = list_id
+
+def make_permission_dto(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_1",
+        permission_type=permission_type,
+        user_id="user_1",
+        is_active=True,
+        added_by="admin_1"
+    )
+
 class TestCreateFieldInteractor:
 
     def _get_field_dto(self):
@@ -51,7 +63,7 @@ class TestCreateFieldInteractor:
             self,
             *,
             template_exists=True,
-            permission=PermissionsEnum.FULL_EDIT.value,
+            permission: PermissionsEnum = PermissionsEnum.FULL_EDIT,
             name_exists=False,
             order_exists=False,
     ):
@@ -71,8 +83,9 @@ class TestCreateFieldInteractor:
         else:
             template_storage.get_template_exist.return_value = None
 
-        # ✅ CORRECT permission mock
-        permission_storage.get_user_permission_for_list.return_value = permission
+        permission_storage.get_user_permission_for_list.return_value = (
+            make_permission_dto(permission)
+        )
 
         field_storage.check_field_name_exist.return_value = name_exists
         field_storage.check_field_order_exist.return_value = order_exists
@@ -84,7 +97,6 @@ class TestCreateFieldInteractor:
             permission_storage=permission_storage,
         )
 
-    # ✅ SUCCESS
     def test_create_field_success(self, snapshot):
         interactor = self._get_interactor()
 
@@ -152,10 +164,9 @@ class TestCreateFieldInteractor:
             "test_create_field_invalid_field_type.txt"
         )
 
-    # ❌ PERMISSION DENIED
     def test_create_field_permission_denied(self, snapshot):
         interactor = self._get_interactor(
-            permission=PermissionsEnum.VIEW.value
+            permission=PermissionsEnum.VIEW
         )
 
         dto = CreateFieldDTO(
@@ -200,7 +211,6 @@ class TestCreateFieldInteractor:
             "test_create_field_duplicate_order.txt"
         )
 
-    # ❌ DUPLICATE FIELD NAME
     def test_create_field_duplicate_name(self, snapshot):
         interactor = self._get_interactor(name_exists=True)
 

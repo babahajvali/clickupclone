@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import PermissionsEnum
+from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.view_interactors.list_view_interactors import (
     ListViewInteractor
 )
@@ -28,6 +29,16 @@ from task_management.tests.factories.interactor_factory import (
     RemoveListViewDTOFactory
 )
 
+def make_permission(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_id",
+        permission_type=permission_type,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
+
 
 class TestListViewInteractor:
 
@@ -44,11 +55,9 @@ class TestListViewInteractor:
             permission_storage=self.permission_storage
         )
 
-    # ---------- APPLY VIEW ----------
-
     def test_apply_view_for_list_success(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -70,7 +79,7 @@ class TestListViewInteractor:
 
     def test_apply_view_without_permission_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -82,7 +91,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_nonexistent_view_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = None
@@ -96,7 +105,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_nonexistent_list_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -114,7 +123,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_inactive_list_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -132,11 +141,10 @@ class TestListViewInteractor:
 
         snapshot.assert_match(repr(exc.value), "apply_list_inactive.txt")
 
-    # ---------- REMOVE VIEW ----------
 
     def test_remove_view_for_list_success(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -158,7 +166,7 @@ class TestListViewInteractor:
 
     def test_remove_view_without_permission_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -168,7 +176,6 @@ class TestListViewInteractor:
 
         snapshot.assert_match(repr(exc.value), "remove_permission_denied.txt")
 
-    # ---------- GET ----------
 
     def test_get_list_views_success(self, snapshot):
         self.list_storage.get_list.return_value = type(

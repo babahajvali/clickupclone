@@ -55,10 +55,7 @@ class UpdateFieldDTO:
     field_type: FieldTypeEnum
     description: str
     template_id: str
-    field_type: FieldTypeEnum
     field_name: str
-    description: str
-    template_id: str
     order: int
     config: dict
     is_required: bool
@@ -83,7 +80,6 @@ class CreateTemplateDTO:
     name: str
     description: str
     list_id: str
-    is_default: bool
     created_by: str
 
 
@@ -93,7 +89,6 @@ class UpdateTemplateDTO:
     name: str
     list_id: str
     description: str
-    is_default: bool
     created_by: str
 
 
@@ -103,7 +98,6 @@ class TemplateDTO:
     name: str
     list_id: str
     description: str
-    is_default: bool
     created_by: str
 
 
@@ -151,6 +145,7 @@ class CreateTaskDTO:
     title: str
     description: str
     list_id: str
+    order: int
     created_by: str
     is_active: bool
 
@@ -160,6 +155,7 @@ class UpdateTaskDTO:
     task_id: str
     title: str
     description: str
+    order: int
     list_id: str
     created_by: str
     is_active: bool
@@ -171,6 +167,7 @@ class TaskDTO:
     title: str
     description: str
     list_id: str
+    order: int
     created_by: str
     is_active: bool
 

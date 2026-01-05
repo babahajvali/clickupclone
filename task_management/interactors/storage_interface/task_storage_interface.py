@@ -30,3 +30,7 @@ class TaskStorageInterface(ABC):
     @abstractmethod
     def remove_task(self, task_id: str) -> TaskDTO:
         pass
+
+    @abstractmethod
+    def check_task_order_exist(self,order: int, list_id: str) -> bool:
+        pass

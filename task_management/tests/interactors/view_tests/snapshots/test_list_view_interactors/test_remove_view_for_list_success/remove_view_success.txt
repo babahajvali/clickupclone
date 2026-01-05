@@ -1,1 +1,0 @@
-RemoveListViewDTO(id=1, list_id='9eede43c-2453-4074-b13d-e531062d7f7a', view_id='61002dbd-22ca-4fe8-a8aa-7d13c5a918d1', removed_by='a8f78b61-f9d2-42de-92bb-a7013503c56e', is_active=False)

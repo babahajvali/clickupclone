@@ -4,6 +4,7 @@ from unittest.mock import create_autospec
 from faker import Faker
 
 from task_management.exceptions.enums import PermissionsEnum
+from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
@@ -18,6 +19,16 @@ from task_management.exceptions.custom_exceptions import (
     InactiveListFoundException,
 )
 Faker.seed(0)
+
+def make_permission(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_id",
+        permission_type=permission_type,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
 
 class TestRemoveList:
 
@@ -38,7 +49,7 @@ class TestRemoveList:
 
     def test_remove_list_success(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
@@ -52,7 +63,7 @@ class TestRemoveList:
 
     def test_permission_denied(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -62,7 +73,7 @@ class TestRemoveList:
 
     def test_list_not_found(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.interactor.list_storage.get_list.return_value = None
 
@@ -73,7 +84,7 @@ class TestRemoveList:
 
     def test_list_inactive(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}

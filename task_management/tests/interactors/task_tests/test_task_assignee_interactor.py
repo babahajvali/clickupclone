@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import PermissionsEnum
+from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.task_interactors.task_assignee_interactor import (
     TaskAssigneeInteractor
 )
@@ -27,6 +28,16 @@ from task_management.tests.factories.interactor_factory import (
     RemoveTaskAssigneeDTOFactory,
     UserTasksDTOFactory
 )
+
+def make_permission(permission_type: PermissionsEnum):
+    return UserListPermissionDTO(
+        id=1,
+        list_id="list_id",
+        permission_type=permission_type,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
 
 
 class TestTaskAssigneeInteractor:
@@ -68,13 +79,12 @@ class TestTaskAssigneeInteractor:
             }
         )()
 
-    # ---------- ASSIGN ----------
 
     def test_assign_task_assignee_success(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.FULL_EDIT.value
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
 
         expected = TaskAssigneeDTOFactory()
@@ -95,7 +105,7 @@ class TestTaskAssigneeInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            make_permission(PermissionsEnum.VIEW)
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -141,7 +151,6 @@ class TestTaskAssigneeInteractor:
             "task_not_found.txt"
         )
 
-    # ---------- REMOVE ----------
 
     def test_remove_task_assignee_success(self, snapshot):
         self.task_assignee_storage.check_task_assignee_exist.return_value = True
@@ -159,7 +168,6 @@ class TestTaskAssigneeInteractor:
             "remove_task_assignee_success.txt"
         )
 
-    # ---------- GET ----------
 
     def test_get_task_assignee_success(self, snapshot):
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()

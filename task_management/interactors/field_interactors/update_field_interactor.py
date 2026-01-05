@@ -1,3 +1,4 @@
+from task_management.exceptions.custom_exceptions import FieldNotFoundException
 from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
@@ -21,9 +22,8 @@ class UpdateFieldInteractor(ValidationMixin):
         ft = update_field_data.field_type
         field_type = ft.value if hasattr(ft, "value") else ft
 
-        self.validate_field(field_id=update_field_data.field_id,
-                            template_id=update_field_data.template_id,
-                            field_storage=self.field_storage)
+        self._validate_field(field_id=update_field_data.field_id,
+                             template_id=update_field_data.template_id)
         list_id = self.check_template_exist(template_id=update_field_data.template_id,
                                   template_storage=self.template_storage)
         self.check_user_has_access_to_list_modification(
@@ -42,3 +42,10 @@ class UpdateFieldInteractor(ValidationMixin):
 
         return self.field_storage.update_field(
             update_field_data=update_field_data)
+
+    def _validate_field(self, field_id: str, template_id: str):
+        is_exist = self.field_storage.check_field_exist(field_id=field_id,
+                                                   template_id=template_id)
+
+        if not is_exist:
+            raise FieldNotFoundException(field_id=field_id)
