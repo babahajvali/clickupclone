@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    UserDoesNotHaveFolderPermissionException, InactiveUserPermissionException
+    UserDoesNotHaveFolderPermissionException, InactiveUserPermissionException, \
+    InvalidOrderException
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UpdateFolderDTO, UserFolderPermissionDTO, CreateUserFolderPermissionDTO
@@ -74,9 +75,10 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_storage.update_folder(update_folder_data)
 
-    def reorder_folder(self,folder_id: str, user_id: str, order: int) -> FolderDTO:
+    def reorder_folder(self,space_id: str, folder_id: str, user_id: str, order: int) -> FolderDTO:
         self.validate_folder_exist_and_status(folder_id=folder_id,folder_storage=self.folder_storage)
         self.check_user_has_access_to_folder_modification(folder_id=folder_id,user_id=user_id,permission_storage=self.folder_permission_storage)
+        self._validate_the_folder_order(space_id=space_id,order=order)
 
         return self.folder_storage.reorder_folder(folder_id=folder_id,order=order)
 
@@ -267,3 +269,12 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_permission_storage.create_folder_users_permissions(
             users_permission_data=folder_user_permissions)
+
+    def _validate_the_folder_order(self, space_id: str, order: int):
+        if order < 1:
+            raise InvalidOrderException(order=order)
+        lists_count = self.folder_storage.get_space_folder_count(
+            space_id=space_id)
+
+        if order > lists_count:
+            raise InvalidOrderException(order=order)

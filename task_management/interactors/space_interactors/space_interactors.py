@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    UserDoesNotHaveSpacePermissionException, InactiveUserPermissionException
+    UserDoesNotHaveSpacePermissionException, InactiveUserPermissionException, \
+    InvalidOrderException
 from task_management.exceptions.enums import PermissionsEnum, RoleEnum
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     UserSpacePermissionDTO, CreateUserSpacePermissionDTO
@@ -72,6 +73,17 @@ class SpaceInteractor(ValidationMixin):
         return self.space_storage.update_space(
             update_space_data=update_space_data)
 
+    def reorder_space(self, workspace_id: str, space_id: str, order: int,
+                      user_id: str):
+        self.check_user_has_access_to_space_modification(space_id=space_id,
+                                                         user_id=user_id,
+                                                         permission_storage=self.permission_storage)
+        self.validate_workspace_exist_and_status(workspace_id=workspace_id,
+                                                 workspace_storage=self.workspace_storage)
+        self._validate_space_order(workspace_id=workspace_id,order=order)
+
+
+
     def delete_space(self, space_id: str, user_id: str) -> SpaceDTO:
         self.check_user_has_access_to_space_modification(
             user_id=user_id,
@@ -110,7 +122,6 @@ class SpaceInteractor(ValidationMixin):
 
         return self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
-
 
     # Permissions Section
 
@@ -159,3 +170,13 @@ class SpaceInteractor(ValidationMixin):
 
         return self.permission_storage.create_user_space_permissions(
             permission_data=users_permissions)
+
+
+    def _validate_space_order(self, workspace_id: str, order: int):
+        if order < 1:
+            raise InvalidOrderException(order=order)
+        space_count = self.space_storage.get_workspace_spaces_count(
+            workspace_id=workspace_id)
+
+        if order > space_count:
+            raise InvalidOrderException(order=order)

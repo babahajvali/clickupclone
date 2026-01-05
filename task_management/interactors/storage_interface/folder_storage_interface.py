@@ -47,3 +47,8 @@ class FolderStorageInterface(ABC):
         #set folder is public
         pass
 
+    @abstractmethod
+    def get_space_folder_count(self,space_id: str)-> int:
+        # get the active folder count in space
+        pass
+

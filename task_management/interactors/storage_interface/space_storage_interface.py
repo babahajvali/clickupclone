@@ -38,3 +38,13 @@ class SpaceStorageInterface(ABC):
     def get_workspace_spaces(self,workspace_id: str) -> list[SpaceDTO]:
         pass
 
+    @abstractmethod
+    def get_workspace_spaces_count(self,workspace_id: str) -> int:
+        # get the active spaces count in workspace
+        pass
+
+    @abstractmethod
+    def reorder_space(self,workspace_id: str, space_id: str, order: int)-> SpaceDTO:
+        # get the space order and provided order to reorder spaces
+        pass
+
