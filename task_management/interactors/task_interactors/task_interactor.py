@@ -13,7 +13,7 @@ from task_management.interactors.storage_interface.task_storage_interface import
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
-class CreateTaskInteractor(ValidationMixin):
+class TaskInteractor(ValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  list_storage: ListStorageInterface,
                  permission_storage: ListPermissionStorageInterface):
@@ -57,6 +57,10 @@ class CreateTaskInteractor(ValidationMixin):
                                   task_storage=self.task_storage)
 
         return self.task_storage.get_task_by_id(task_id=task_id)
+
+
+    def task_filter(self, task_filter_dto: int):
+        pass
 
     def _validate_task_order(self, order: int, list_id: str):
         is_order_exist = self.task_storage.check_task_order_exist(order=order,

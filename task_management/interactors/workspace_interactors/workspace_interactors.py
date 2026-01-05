@@ -17,6 +17,7 @@ class WorkspaceInteractor(ValidationMixin):
         self.validate_user_exist_and_status(create_workspace_data.owner_id,
                                             user_storage=self.user_storage)
 
+
         return self.workspace_storage.create_workspace(
             workspace_data=create_workspace_data)
 

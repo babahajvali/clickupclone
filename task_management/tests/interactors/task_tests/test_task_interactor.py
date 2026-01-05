@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.task_interactors.task_interactor import CreateTaskInteractor
+from task_management.interactors.task_interactors.task_interactor import TaskInteractor
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
@@ -43,7 +43,7 @@ class TestCreateTaskInteractor:
         self.list_storage = create_autospec(ListStorageInterface)
         self.permission_storage = create_autospec(ListPermissionStorageInterface)
 
-        self.interactor = CreateTaskInteractor(
+        self.interactor = TaskInteractor(
             task_storage=self.task_storage,
             list_storage=self.list_storage,
             permission_storage=self.permission_storage

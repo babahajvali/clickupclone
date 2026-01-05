@@ -2,6 +2,8 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import (
     FolderStorageInterface
 )
@@ -27,6 +29,8 @@ from task_management.exceptions.custom_exceptions import (
     FolderNotFoundException,
     InactiveFolderFoundException,
 )
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
 
 
 class TestGetFolderLists:
@@ -38,6 +42,8 @@ class TestGetFolderLists:
         self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
         self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
         self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
@@ -47,6 +53,8 @@ class TestGetFolderLists:
             list_permission_storage=self.list_permission_storage,
             folder_permission_storage=self.folder_permission_storage,
             space_permission_storage=self.space_permission_storage,
+            template_storage=self.template_storage,
+            field_storage=self.field_storage
         )
 
     # ✅ SUCCESS

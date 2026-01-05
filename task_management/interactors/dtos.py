@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from typing import Optional
+from typing import Optional, Dict
 
 from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
     GenderEnum, RoleEnum, PermissionsEnum
@@ -419,3 +419,11 @@ class UserListPermissionDTO:
     user_id: str
     is_active: bool
     added_by: str
+
+@dataclass
+class FilterDTO:
+    list_id: str
+    field_filters: Optional[Dict[str, list[str]]] = None
+    assignees: Optional[list[str]] = None
+    offset: int = 1
+    limit: int = 10

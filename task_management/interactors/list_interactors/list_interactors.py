@@ -2,7 +2,10 @@ from task_management.exceptions.custom_exceptions import \
     UserDoesNotHaveListPermissionException, InactiveUserPermissionException
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
-    UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO
+    UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO, \
+    CreateTemplateDTO
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -17,19 +20,27 @@ from task_management.interactors.storage_interface.space_storage_interface impor
     SpaceStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
+from task_management.interactors.template_interactors.create_template_interactor import \
+    CreateTemplateInteractor
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
 class ListInteractor(ValidationMixin):
 
     def __init__(self, list_storage: ListStorageInterface,
+                 template_storage: TemplateStorageInterface,
                  task_storage: TaskStorageInterface,
+                 field_storage: FieldStorageInterface,
                  folder_storage: FolderStorageInterface,
                  space_storage: SpaceStorageInterface,
                  list_permission_storage: ListPermissionStorageInterface,
                  folder_permission_storage: FolderPermissionStorageInterface,
                  space_permission_storage: SpacePermissionStorageInterface):
         self.list_storage = list_storage
+        self.template_storage = template_storage
+        self.field_storage = field_storage
         self.task_storage = task_storage
         self.folder_storage = folder_storage
         self.space_storage = space_storage
@@ -70,7 +81,22 @@ class ListInteractor(ValidationMixin):
             space_storage=self.space_storage
         )
 
-        return self.list_storage.create_list(create_list_data=create_list_data)
+        result = self.list_storage.create_list(create_list_data=create_list_data)
+        template_interactor = CreateTemplateInteractor(
+            list_storage=self.list_storage,
+            template_storage=self.template_storage,
+            permission_storage=self.list_permission_storage,
+            field_storage=self.field_storage
+        )
+        create_template_dto = CreateTemplateDTO(
+            name=create_list_data.name+"template",
+            description=create_list_data.description,
+            list_id=result.list_id,
+            created_by=result.created_by
+        )
+        template_interactor.create_template(template_data=create_template_dto)
+
+        return result
 
     def update_list(self, update_list_data: UpdateListDTO) -> ListDTO:
 

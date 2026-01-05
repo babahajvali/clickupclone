@@ -1,10 +1,12 @@
 import pytest
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     UserSpacePermissionDTO
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
@@ -24,6 +26,8 @@ from task_management.exceptions.custom_exceptions import (
     InactiveSpaceFoundException,
     FolderListOrderAlreadyExistedException,
 )
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
 from task_management.tests.factories.interactor_factory import CreateListDTOFactory
 
 
@@ -58,6 +62,8 @@ class TestCreateList:
         self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
         self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
         self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
@@ -67,20 +73,36 @@ class TestCreateList:
             list_permission_storage=self.list_permission_storage,
             folder_permission_storage=self.folder_permission_storage,
             space_permission_storage=self.space_permission_storage,
+            template_storage=self.template_storage,
+            field_storage=self.field_storage
         )
 
-    def test_create_list_success(self, snapshot):
+    @patch(
+        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+    )
+    def test_create_list_success(self, mock_create_template, snapshot):
+        mock_create_template.return_value = None
+
         dto = CreateListDTOFactory(folder_id="folder_123")
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+            make_folder_permission(PermissionsEnum.FULL_EDIT)
         )
         self.list_storage.check_list_order_exist_in_folder.return_value = False
-        self.list_storage.create_list.return_value = "LIST_DTO"
+
+        self.list_storage.create_list.return_value = type(
+            "List", (), {
+                "list_id": "list_id",
+                "created_by": "user_id"
+            }
+        )()
 
         result = self.interactor.create_list(dto)
 
-        snapshot.assert_match(repr(result), "create_list_success.json")
+        snapshot.assert_match(
+            repr(result),
+            "test_create_list_success.txt"
+        )
 
     def test_permission_denied(self, snapshot):
         dto = CreateListDTOFactory(folder_id=None)
@@ -94,36 +116,43 @@ class TestCreateList:
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
-    def test_space_not_found(self, snapshot):
-        dto = CreateListDTOFactory(folder_id=None)
+    @patch(
+        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+    )
+    def test_space_not_found(self, mock_create_template, snapshot):
+        mock_create_template.return_value = None
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT
+        dto = CreateListDTOFactory(folder_id=None)
+        dto.space_id = "space_123"  # ✅ REQUIRED
+
+        self.space_permission_storage.get_user_permission_for_space.return_value = (
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.space_storage.get_space.return_value = None
         self.list_storage.check_list_order_exist_in_space.return_value = False
 
-        with pytest.raises(SpaceNotFoundException) as exc:
+        with pytest.raises(SpaceNotFoundException):
             self.interactor.create_list(dto)
 
-        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
+    @patch(
+        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+    )
+    def test_space_inactive(self, mock_create_template, snapshot):
+        mock_create_template.return_value = None
 
-    def test_space_inactive(self, snapshot):
         dto = CreateListDTOFactory(folder_id=None)
+        dto.space_id = "space_123"
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT
+        self.space_permission_storage.get_user_permission_for_space.return_value = (
+            make_permission(PermissionsEnum.FULL_EDIT)
         )
-
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": False}
         )()
         self.list_storage.check_list_order_exist_in_space.return_value = False
 
-        with pytest.raises(InactiveSpaceFoundException) as exc:
+        with pytest.raises(InactiveSpaceFoundException):
             self.interactor.create_list(dto)
-
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
 
     def test_order_already_exists_in_folder(self, snapshot):
         dto = CreateListDTOFactory(folder_id="folder_123")

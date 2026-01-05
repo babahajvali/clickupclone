@@ -10,12 +10,8 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
     ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
-    UserStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 
 

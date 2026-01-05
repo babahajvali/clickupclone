@@ -4,6 +4,8 @@ from unittest.mock import create_autospec
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
@@ -16,6 +18,9 @@ from task_management.exceptions.custom_exceptions import (
     ListNotFoundException,
     InactiveListFoundException,
 )
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
+
 
 def make_permission(permission_type: PermissionsEnum):
     return UserListPermissionDTO(
@@ -31,18 +36,30 @@ def make_permission(permission_type: PermissionsEnum):
 class TestSetListPrivate:
 
     def setup_method(self):
-        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
-        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
-        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.task_storage = create_autospec(TaskStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+
+        self.list_permission_storage = create_autospec(
+            ListPermissionStorageInterface)
+        self.folder_permission_storage = create_autospec(
+            FolderPermissionStorageInterface)
+        self.space_permission_storage = create_autospec(
+            SpacePermissionStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = ListInteractor(
-            list_storage=create_autospec(ListStorageInterface),
-            task_storage=create_autospec(TaskStorageInterface),
-            folder_storage=create_autospec(FolderStorageInterface),
-            space_storage=create_autospec(SpaceStorageInterface),
+            list_storage=self.list_storage,
+            task_storage=self.task_storage,
+            folder_storage=self.folder_storage,
+            space_storage=self.space_storage,
             list_permission_storage=self.list_permission_storage,
             folder_permission_storage=self.folder_permission_storage,
             space_permission_storage=self.space_permission_storage,
+            template_storage=self.template_storage,
+            field_storage=self.field_storage
         )
 
     def test_set_list_private_success(self, snapshot):
