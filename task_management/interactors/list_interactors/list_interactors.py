@@ -149,56 +149,6 @@ class ListInteractor(ValidationMixin):
 
     # Permission section
 
-    def add_user_list_permission(self, list_id: str, user_id: str,
-                                 added_by: str,
-                                 permission_type: PermissionsEnum) -> UserListPermissionDTO:
-        self.check_user_has_access_to_list_modification(
-            user_id=added_by,
-            list_id=list_id,
-            permission_storage=self.list_permission_storage
-        )
-        self.check_list_exists_and_status(
-            list_id=list_id,
-            list_storage=self.list_storage
-        )
-
-        return self.list_permission_storage.add_user_permission_for_list(
-            list_id=list_id,
-            user_id=user_id,
-            permission_type=permission_type
-        )
-
-    def change_user_list_permissions(self, user_id: str, list_id: str,
-                                     changed_by: str,
-                                     permission_type: PermissionsEnum) -> UserListPermissionDTO:
-        self.check_user_has_access_to_list_modification(
-            user_id=changed_by,
-            list_id=list_id,
-            permission_storage=self.list_permission_storage
-        )
-        self.check_list_exists_and_status(
-            list_id=list_id,
-            list_storage=self.list_storage
-        )
-
-        return self.list_permission_storage.update_user_permission_for_list(
-            list_id=list_id,
-            user_id=user_id,
-            permission_type=permission_type
-        )
-
-    def remove_user_list_permission(self, list_id: str, user_id: str,
-                                    removed_by: str) -> UserListPermissionDTO:
-        self.check_list_exists_and_status(
-            list_id=list_id, list_storage=self.list_storage)
-        self._check_user_list_permission(list_id=list_id, user_id=user_id)
-        self.check_user_has_access_to_list_modification(
-            user_id=removed_by, list_id=list_id,
-            permission_storage=self.list_permission_storage)
-
-        return self.list_permission_storage.remove_user_permission_for_list(
-            list_id=list_id, user_id=user_id)
-
     def get_list_permissions(self, list_id: str) -> list[
         UserListPermissionDTO]:
         self.check_list_exists_and_status(list_id=list_id,
