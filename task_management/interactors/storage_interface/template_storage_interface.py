@@ -7,7 +7,7 @@ from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO, \
 class TemplateStorageInterface(ABC):
 
     @abstractmethod
-    def get_template_exist(self, template_id: str) -> TemplateDTO:
+    def get_template_by_id(self, template_id: str) -> TemplateDTO:
         pass
 
     @abstractmethod
@@ -15,7 +15,7 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_template_name_exist(self,template_name: str) -> bool:
+    def is_template_name_exist(self, template_name: str) -> bool:
         pass
 
     @abstractmethod

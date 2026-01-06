@@ -71,7 +71,7 @@ class TestCreateTemplateInteractor:
             added_by="admin"
         )
 
-        self.template_storage.check_template_name_exist.return_value = False
+        self.template_storage.is_template_name_exist.return_value = False
         self.template_storage.create_template.return_value = template_dto
 
         result = self.interactor.create_template(create_template_dto)
@@ -84,7 +84,7 @@ class TestCreateTemplateInteractor:
     def test_create_template_duplicate_name(self, snapshot):
         # Arrange
         create_template_dto = CreateTemplateDTOFactory()
-        self.template_storage.check_template_name_exist.return_value = True
+        self.template_storage.is_template_name_exist.return_value = True
 
         # Act & Assert
         with pytest.raises(Exception) as exc:

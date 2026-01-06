@@ -1,1 +1,1 @@
-ViewDTO(view_id='3957f082-9c27-4c51-ac98-a368dfc8b87a', name='recent', description='Technology serious international position.', view_type='board', created_by='aedab7b5-e2aa-45a7-8951-03edfd05a5f5')
+ViewDTO(view_id='5e12425c-b42f-4357-98d9-7f4a95331356', name='the', description='Quality political other begin war resource.', view_type='board', created_by='24536074-b13d-4531-862d-7f7a45dae1f3')

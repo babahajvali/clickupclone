@@ -11,7 +11,7 @@ class TemplateNotFoundException(Exception):
         self.template_id = template_id
 
 
-class UnexpectedFieldTypeFoundException(Exception):
+class UnSupportedFieldTypeFoundException(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
@@ -233,3 +233,7 @@ class InvalidLimitException(Exception):
 class InvalidOrderException(Exception):
     def __init__(self, order: int):
         self.order = order
+
+class InactiveWorkspaceMemberFoundException(Exception):
+    def __init__(self, workspace_member_id: str):
+        self.workspace_member_id = workspace_member_id

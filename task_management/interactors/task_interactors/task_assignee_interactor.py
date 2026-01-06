@@ -27,13 +27,13 @@ class TaskAssigneeInteractor(ValidationMixin):
 
     def assign_task_assignee(self, task_id: str, user_id: str,
                              assigned_by) -> TaskAssigneeDTO:
-        self.validate_user_exist_and_status(user_id=user_id,
-                                            user_storage=self.user_storage)
+        self.ensure_user_is_active(user_id=user_id,
+                                   user_storage=self.user_storage)
         list_id = self.validate_task_exists(task_id=task_id,
                                             task_storage=self.task_storage)
-        self.check_user_has_access_to_list_modification(user_id=user_id,
-                                                        list_id=list_id,
-                                                        permission_storage=self.permission_storage)
+        self.check_user_has_access_to_list(user_id=user_id,
+                                           list_id=list_id,
+                                           permission_storage=self.permission_storage)
 
         return self.task_assignee_storage.assign_task_assignee(task_id=task_id,
                                                                assigned_by=assigned_by,
@@ -53,8 +53,8 @@ class TaskAssigneeInteractor(ValidationMixin):
         return self.task_assignee_storage.get_task_assignees(task_id=task_id)
 
     def get_user_assigned_tasks(self, user_id: str) -> list[UserTasksDTO]:
-        self.validate_user_exist_and_status(user_id=user_id,
-                                            user_storage=self.user_storage)
+        self.ensure_user_is_active(user_id=user_id,
+                                   user_storage=self.user_storage)
 
         return self.task_assignee_storage.get_user_assigned_tasks(
             user_id=user_id)

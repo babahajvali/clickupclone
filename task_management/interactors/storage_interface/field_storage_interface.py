@@ -11,7 +11,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_field_name_exist(self, field_name: str,template_id: str) -> bool:
+    def is_field_name_exists(self, field_name: str, template_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -19,11 +19,15 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_field_by_id(self,field_id: str)->FieldDTO:
+        pass
+
+    @abstractmethod
     def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
         pass
 
     @abstractmethod
-    def check_field_exist(self,field_id: str, template_id: str) -> bool:
+    def is_field_exists(self, field_id: str) -> bool:
         pass
 
     @abstractmethod

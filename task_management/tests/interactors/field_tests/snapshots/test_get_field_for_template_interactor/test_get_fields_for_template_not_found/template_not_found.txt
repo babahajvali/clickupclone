@@ -1,1 +1,1 @@
-TemplateNotFoundException()
+TemplateNotFoundException('non-existent-template')

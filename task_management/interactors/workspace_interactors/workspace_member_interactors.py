@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     UnexpectedRoleFoundException
-from task_management.exceptions.enums import PermissionsEnum, RoleEnum
+from task_management.exceptions.enums import PermissionsEnum, Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO, CreateUserSpacePermissionDTO, \
     CreateUserFolderPermissionDTO, CreateUserListPermissionDTO
@@ -49,17 +49,14 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
-        self.validate_workspace_exist_and_status(
+        self.ensure_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage)
-        self.validate_user_exist_and_status(
+        self.ensure_user_is_active(
             user_id=workspace_member_data.user_id,
             user_storage=self.user_storage)
-        self.validate_user_exist_and_status(
-            user_id=workspace_member_data.added_by,
-            user_storage=self.user_storage)
-        self._validate_role(role=workspace_member_data.role.value)
-        self.validate_user_owner_or_editor_access(
+        self._validate_role(role=workspace_member_data.role)
+        self.ensure_user_can_modify_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage,
@@ -77,39 +74,40 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         return workspace_member
 
-    def remove_member_from_workspace(self, user_id: str, workspace_id: str,
-                                     removed_by: str) -> WorkspaceMemberDTO:
-        self.validate_workspace_exist_and_status(workspace_id=workspace_id,
-                                                 workspace_storage=self.workspace_storage)
-        self.validate_user_exist_and_status(user_id=user_id,
-                                            user_storage=self.user_storage)
-        self.validate_user_owner_or_editor_access(user_id=removed_by,
-                                                  workspace_id=workspace_id,
-                                                  workspace_storage=self.workspace_storage,
-                                                  workspace_member_storage=self.workspace_member_storage)
+    def remove_member_from_workspace(self, workspace_member_id: int,
+                                     user_id: str) -> WorkspaceMemberDTO:
+        self.ensure_workspace_member_is_active(
+            workspace_member_id=workspace_member_id,
+            workspace_member_storage=self.workspace_member_storage)
+        workspace_member_data = self.workspace_member_storage.get_workspace_member_by_id(
+            workspace_member_id=workspace_member_id)
+        self.ensure_user_can_modify_workspace(
+            user_id=user_id, workspace_id=workspace_member_data.workspace_id,
+            workspace_storage=self.workspace_storage,
+            workspace_member_storage=self.workspace_member_storage)
 
         workspace_member = self.workspace_member_storage.remove_member_from_workspace(
-            workspace_id=workspace_id, user_id=user_id)
+            workspace_member_id=workspace_member_id)
 
         self.remove_permissions_for_workspace_spaces(
-            workspace_id=workspace_id,
-            user_id=user_id
+            workspace_id=workspace_member_data.workspace_id,
+            user_id=workspace_member_data.user_id
         )
 
         return workspace_member
 
     def change_member_role(self, workspace_id: str, user_id: str,
-                           role: RoleEnum,
+                           role: str,
                            changed_by: str) -> WorkspaceMemberDTO:
-        self.validate_workspace_exist_and_status(workspace_id=workspace_id,
-                                                 workspace_storage=self.workspace_storage)
-        self.validate_user_exist_and_status(user_id=user_id,
-                                            user_storage=self.user_storage)
-        self.validate_user_owner_or_editor_access(user_id=changed_by,
-                                                  workspace_id=workspace_id,
-                                                  workspace_storage=self.workspace_storage,
-                                                  workspace_member_storage=self.workspace_member_storage)
-        self._validate_role(role=role.value)
+        self.ensure_workspace_is_active(workspace_id=workspace_id,
+                                        workspace_storage=self.workspace_storage)
+        self.ensure_user_is_active(user_id=user_id,
+                                   user_storage=self.user_storage)
+        self.ensure_user_can_modify_workspace(user_id=changed_by,
+                                              workspace_id=workspace_id,
+                                              workspace_storage=self.workspace_storage,
+                                              workspace_member_storage=self.workspace_member_storage)
+        self._validate_role(role=role)
 
         workspace_member = self.workspace_member_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=user_id, role=role)
@@ -122,12 +120,11 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         return workspace_member
 
-
     def add_permissions_for_workspace_spaces(self, workspace_id: str,
                                              user_id: str,
-                                             role: RoleEnum, added_by: str):
-        self.validate_workspace_exist_and_status(workspace_id=workspace_id,
-                                                 workspace_storage=self.workspace_storage)
+                                             role: str, added_by: str):
+        self.ensure_workspace_is_active(workspace_id=workspace_id,
+                                        workspace_storage=self.workspace_storage)
 
         workspace_spaces = self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
@@ -157,7 +154,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
         )
 
     def add_permissions_space_folders(self, space_ids: list[str], user_id: str,
-                                      role: RoleEnum, added_by: str):
+                                      role: str, added_by: str):
         space_folders = self.folder_storage.get_space_folders(
             space_ids=space_ids)
 
@@ -187,7 +184,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
         )
 
     def add_permissions_for_lists(self, space_ids: list[str],
-                                  user_id: str, role: RoleEnum, added_by: str):
+                                  user_id: str, role: str, added_by: str):
         space_lists = self.list_storage.get_space_lists(space_ids=space_ids)
 
         list_permissions = []
@@ -206,7 +203,6 @@ class WorkspaceMemberInteractor(ValidationMixin):
         if list_permissions:
             self.list_permission_storage.create_list_users_permissions(
                 user_permissions=list_permissions)
-
 
     def remove_permissions_for_workspace_spaces(self, workspace_id: str,
                                                 user_id: str):
@@ -245,16 +241,14 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         space_lists = self.list_storage.get_space_lists(space_ids=space_ids)
 
-
         for each_list in space_lists:
             self.list_permission_storage.remove_user_permission_for_list(
                 list_id=each_list.list_id,
                 user_id=user_id
             )
 
-
     def update_permissions_for_workspace_spaces(self, workspace_id: str,
-                                                user_id: str, role: RoleEnum):
+                                                user_id: str, role: str):
         workspace_spaces = self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
         space_ids = [each.space_id for each in workspace_spaces]
@@ -275,7 +269,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
         )
 
     def update_permissions_space_folders(self, space_ids: list[str],
-                                         user_id: str, role: RoleEnum):
+                                         user_id: str, role: str):
         space_folders = self.folder_storage.get_space_folders(
             space_ids=space_ids)
 
@@ -295,9 +289,8 @@ class WorkspaceMemberInteractor(ValidationMixin):
         )
 
     def update_permissions_for_lists(self, space_ids: list[str],
-                                     user_id: str, role: RoleEnum):
+                                     user_id: str, role: str):
         space_lists = self.list_storage.get_space_lists(space_ids=space_ids)
-
 
         permission_type = self._get_permission_type_by_role(role)
 
@@ -308,16 +301,15 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 permission_type=permission_type
             )
 
-
     @staticmethod
     def _validate_role(role: str):
-        existed_roles = [x.value for x in RoleEnum]
+        existed_roles = [x.value for x in Role]
         if role not in existed_roles:
             raise UnexpectedRoleFoundException(role=role)
 
     @staticmethod
-    def _get_permission_type_by_role(role: RoleEnum) -> PermissionsEnum:
-        if role.value == RoleEnum.GUEST.value:
+    def _get_permission_type_by_role(role: str) -> PermissionsEnum:
+        if role == Role.GUEST.value:
             return PermissionsEnum.VIEW
         else:
             return PermissionsEnum.FULL_EDIT

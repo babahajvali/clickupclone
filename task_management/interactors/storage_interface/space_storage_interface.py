@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
+from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
+    UpdateSpaceDTO
 
 
 class SpaceStorageInterface(ABC):
@@ -18,7 +19,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_space(self,update_space_data: SpaceDTO)-> SpaceDTO:
+    def update_space(self,update_space_data: UpdateSpaceDTO)-> SpaceDTO:
         pass
 
     @abstractmethod
@@ -27,11 +28,11 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def set_space_private(self,space_id: str, user_id: str)-> SpaceDTO:
+    def set_space_private(self,space_id: str)-> SpaceDTO:
         pass
 
     @abstractmethod
-    def set_space_public(self,space_id: str, user_id: str)-> SpaceDTO:
+    def set_space_public(self,space_id: str)-> SpaceDTO:
         pass
 
     @abstractmethod

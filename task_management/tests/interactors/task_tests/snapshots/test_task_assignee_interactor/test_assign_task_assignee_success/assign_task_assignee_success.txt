@@ -1,1 +1,1 @@
-TaskAssigneeDTO(assignee_id='606821d6-280a-47ee-8ec9-85ff94b28b9d', assignee_name='Theresa Brock', task_id='3c9590d3-3e2a-4d3e-8222-134550de4292', assigned_by='5f59aa2c-4a82-406a-af16-fb50c13e66af', is_active=True)
+TaskAssigneeDTO(assignee_id='374a6cc9-e039-4e67-9261-46de91bacf80', assignee_name='Ricardo Wilkerson', task_id='b2d10e3d-809e-4109-8786-7a38a09f1aed', assigned_by='4e28e674-81d1-4f06-ab8c-66f28611f583', is_active=True)

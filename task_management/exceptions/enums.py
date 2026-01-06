@@ -1,18 +1,18 @@
 from enum import Enum
 
-class FieldTypeEnum(Enum):
-    Dropdown = "dropdown"
-    User = "user"
-    Text = "text"
-    Number = "number"
-    Date = "date"
-    Checkbox = "checkbox"
-    email = "email"
+class FieldType(Enum):
+    DROPDOWN = "dropdown"
+    USER = "user"
+    TEXT = "text"
+    NUMBER = "number"
+    DATE = "date"
+    CHECKBOX = "checkbox"
+    EMAIL = "email"
 
 
-class RoleEnum(Enum):
+class Role(Enum):
     OWNER = "owner"
-    Admin = "admin"
+    ADMIN = "admin"
     MEMBER = "member"
     GUEST = "guest"
 
@@ -22,11 +22,14 @@ class PermissionsEnum(Enum):
     VIEW = "view"
 
 class ViewTypeEnum(Enum):
-    Table = "table"
-    Calendar = "calendar"
-    Board = "board"
-    Dashboard = "dashboard"
+    TABLE = "table"
+    CALENDER = "calendar"
+    BOARD = "board"
+    DASHBOARD = "dashboard"
 
+class Visibility(Enum):
+    PUBLIC = "public"
+    PRIVATE = "private"
 
 class PermissionScopeTypeEnum(Enum):
     WORKSPACE = "workspace"

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import PermissionsEnum, Visibility
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -70,7 +70,7 @@ class TestSetListPublic:
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True})()
 
-        result = self.interactor.set_list_public("list_1", "user_1")
+        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         self.interactor.list_storage.make_list_public.assert_called_once_with("list_1")
 
@@ -80,7 +80,7 @@ class TestSetListPublic:
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
-            self.interactor.set_list_public("list_1", "user_1")
+            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
@@ -91,7 +91,7 @@ class TestSetListPublic:
         self.interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFoundException) as exc:
-            self.interactor.set_list_public("list_1", "user_1")
+            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
@@ -104,6 +104,6 @@ class TestSetListPublic:
         )()
 
         with pytest.raises(InactiveListFoundException) as exc:
-            self.interactor.set_list_public("list_1", "user_1")
+            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "list_inactive.txt")

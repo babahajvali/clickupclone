@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 
 from typing import Optional, Dict
 
-from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
-    GenderEnum, RoleEnum, PermissionsEnum
+from task_management.exceptions.enums import ViewTypeEnum, FieldType, \
+    GenderEnum, Role, PermissionsEnum
 
 
 @dataclass
@@ -39,11 +39,10 @@ class AccountDTO:
 
 @dataclass
 class CreateFieldDTO:
-    field_type: FieldTypeEnum
+    field_type: str
     field_name: str
     description: str
     template_id: str
-    order: int
     config: dict
     is_required: bool
     created_by: str
@@ -52,20 +51,16 @@ class CreateFieldDTO:
 @dataclass
 class UpdateFieldDTO:
     field_id: str
-    field_type: FieldTypeEnum
-    description: str
-    template_id: str
-    field_name: str
-    order: int
-    config: dict
-    is_required: bool
-    created_by: str
+    description: Optional[str]
+    field_name: Optional[str]
+    config: Optional[dict]
+    is_required: Optional[bool]
 
 
 @dataclass
 class FieldDTO:
     field_id: str
-    field_type: FieldTypeEnum
+    field_type: str
     description: str
     template_id: str
     field_name: str
@@ -86,10 +81,8 @@ class CreateTemplateDTO:
 @dataclass
 class UpdateTemplateDTO:
     template_id: str
-    name: str
-    list_id: str
-    description: str
-    created_by: str
+    name: Optional[str]
+    description: Optional[str]
 
 
 @dataclass
@@ -101,37 +94,32 @@ class TemplateDTO:
     created_by: str
 
 
-DEFAULT_FIELDS = [
+FIXED_FIELDS = [
     {
-        "field_type": FieldTypeEnum.Text,
+        "field_type": FieldType.TEXT.value,
         "field_name": "Title",
         "description": "Task title",
-        "order": 1,
         "config": {"max_length": 255},
         "is_required": True
     },
     {
-        "field_type": FieldTypeEnum.User,
+        "field_type": FieldType.USER.value,
         "field_name": "Assignee",
-        "order": 2
     },
     {
-        "field_type": FieldTypeEnum.Date,
+        "field_type": FieldType.DATE.value,
         "field_name": "Due Date",
-        "order": 3
     },
     {
-        "field_type": FieldTypeEnum.Dropdown,
+        "field_type": FieldType.DROPDOWN.value,
         "field_name": "Priority",
-        "order": 4,
         "config": {
             "options": ["Low", "Medium", "High"]
         }
     },
     {
-        "field_type": FieldTypeEnum.Dropdown,
+        "field_type": FieldType.DROPDOWN.value,
         "field_name": "Status",
-        "order": 5,
         "config": {
             "options": ["Todo", "In Progress", "Done"],
             "default": "Todo"
@@ -200,7 +188,6 @@ class CreateListDTO:
     name: str
     description: str
     space_id: str
-    order: int
     is_active: bool
     created_by: str
     is_private: bool
@@ -210,14 +197,8 @@ class CreateListDTO:
 @dataclass
 class UpdateListDTO:
     list_id: str
-    name: str
-    description: str
-    space_id: str
-    is_active: bool
-    order: int
-    is_private: bool
-    created_by: str
-    folder_id: Optional[str] = None
+    name: Optional[str]
+    description: Optional[str]
 
 
 @dataclass
@@ -264,7 +245,6 @@ class CreateFolderDTO:
     name: str
     description: str
     space_id: str
-    order: int
     is_active: bool
     created_by: str
     is_private: bool
@@ -273,13 +253,8 @@ class CreateFolderDTO:
 @dataclass
 class UpdateFolderDTO:
     folder_id: str
-    name: str
-    description: str
-    space_id: str
-    order: int
-    is_active: bool
-    created_by: str
-    is_private: bool
+    name: Optional[str]
+    description: Optional[str]
 
 
 @dataclass
@@ -317,11 +292,15 @@ class CreateSpaceDTO:
     name: str
     description: str
     workspace_id: str
-    order: int
     is_active: bool
     is_private: bool
     created_by: str
 
+@dataclass
+class UpdateSpaceDTO:
+    space_id: str
+    name: Optional[str]
+    description: Optional[str]
 
 @dataclass
 class SpaceDTO:
@@ -343,19 +322,25 @@ class WorkspaceDTO:
     owner_id: str
     is_active: bool
 
+@dataclass
+class UpdateWorkspaceDTO:
+    workspace_id: str
+    name: Optional[str]
+    description: Optional[str]
+
 
 @dataclass
 class CreateWorkspaceDTO:
     name: str
     description: str
-    owner_id: str
+    user_id: str
 
 
 @dataclass
 class AddMemberToWorkspaceDTO:
     workspace_id: str
     user_id: str
-    role: RoleEnum
+    role: str
     is_active: bool
     added_by: str
 
@@ -365,7 +350,7 @@ class WorkspaceMemberDTO:
     id: int
     workspace_id: str
     user_id: str
-    role: RoleEnum
+    role: Role
     is_active: bool
     added_by: str
 

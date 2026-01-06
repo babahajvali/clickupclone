@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import PermissionsEnum, Visibility
 from task_management.interactors.dtos import UserSpacePermissionDTO, \
     UserFolderPermissionDTO
 from task_management.interactors.space_interactors.folders_interactor import FolderInteractor
@@ -122,7 +122,8 @@ class TestFolderInteractor:
             PermissionsEnum.FULL_EDIT
         )
         self.folder_storage.get_folder.return_value = type(
-            "Folder", (), {"is_active": True}
+            "Folder", (), {"is_active": True,
+                           "space_id":"space_id",}
         )()
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
@@ -130,7 +131,7 @@ class TestFolderInteractor:
         self.folder_storage.check_order_exist.return_value = False
         self.folder_storage.update_folder.return_value = expected
 
-        result = self.interactor.update_folder(dto)
+        result = self.interactor.update_folder(dto,user_id="user_id1")
 
         snapshot.assert_match(
             repr(result),
@@ -145,7 +146,7 @@ class TestFolderInteractor:
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
-            self.interactor.update_folder(dto)
+            self.interactor.update_folder(dto,user_id="user_id1")
 
         snapshot.assert_match(
             repr(exc.value.user_id),
@@ -161,7 +162,7 @@ class TestFolderInteractor:
         self.folder_storage.get_folder.return_value = None
 
         with pytest.raises(FolderNotFoundException) as exc:
-            self.interactor.update_folder(dto)
+            self.interactor.update_folder(dto,user_id="user_id1")
 
         snapshot.assert_match(
             repr(exc.value.folder_id),
@@ -239,7 +240,7 @@ class TestFolderInteractor:
         )()
         self.folder_storage.set_folder_private.return_value = expected
 
-        result = self.interactor.make_folder_private(folder_id, user_id)
+        result = self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PRIVATE)
 
         snapshot.assert_match(
             repr(result),
@@ -258,7 +259,7 @@ class TestFolderInteractor:
         )()
 
         with pytest.raises(InactiveFolderFoundException) as exc:
-            self.interactor.make_folder_public(folder_id, user_id)
+            self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC)
 
         snapshot.assert_match(
             repr(exc.value.folder_id),

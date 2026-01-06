@@ -5,7 +5,7 @@ from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
     UnexpectedRoleFoundException
 )
-from task_management.exceptions.enums import PermissionsEnum, RoleEnum
+from task_management.exceptions.enums import PermissionsEnum, Role
 from task_management.interactors.workspace_interactors.workspace_member_interactors import (
     WorkspaceMemberInteractor
 )
@@ -75,7 +75,6 @@ class TestWorkspaceMemberInteractor:
             list_storage=self.list_storage
         )
 
-    # ---------- helpers ----------
 
     def _mock_active_workspace(self, owner_id="admin123"):
         return type("Workspace",(),
@@ -143,7 +142,7 @@ class TestWorkspaceMemberInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
         self.workspace_member_storage.get_workspace_member.return_value = (
-            type("WorkspaceMember", (), {"role": RoleEnum.GUEST.value})()
+            type("WorkspaceMember", (), {"role": Role.GUEST.value})()
         )
 
         with pytest.raises(NotAccessToModificationException) as exc:
@@ -168,9 +167,7 @@ class TestWorkspaceMemberInteractor:
 
         result = self.interactor.remove_member_from_workspace(
             user_id="user123",
-            workspace_id="workspace123",
-            removed_by="admin123"
-        )
+            workspace_member_id=1)
         assert result == expected
 
         # snapshot.assert_match(repr(result), "remove_member_success.txt")
@@ -181,7 +178,7 @@ class TestWorkspaceMemberInteractor:
 
 
     def test_change_member_role_success(self, snapshot):
-        expected = WorkspaceMemberDTOFactory(role=RoleEnum.MEMBER)
+        expected = WorkspaceMemberDTOFactory(role=Role.MEMBER)
 
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
@@ -194,7 +191,7 @@ class TestWorkspaceMemberInteractor:
         result = self.interactor.change_member_role(
             workspace_id="workspace123",
             user_id="user123",
-            role=RoleEnum.MEMBER,
+            role=Role.MEMBER.value,
             changed_by="admin123"
         )
         assert result == expected

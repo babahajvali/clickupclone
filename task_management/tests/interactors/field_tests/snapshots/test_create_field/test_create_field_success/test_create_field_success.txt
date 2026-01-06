@@ -1,1 +1,1 @@
-FieldDTO(field_id='field_1', field_type=<FieldTypeEnum.Text: 'text'>, description='Task priority', template_id='tpl_1', field_name='Priority', order=1, config={'max_length': 10}, is_required=True, created_by='user_1')
+FieldDTO(field_id='field_1', field_type='text', description='Task priority', template_id='tpl_1', field_name='Priority', order=1, config={'max_length': 10}, is_required=True, created_by='user_1')

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
-    TemplateNotFoundException, UnexpectedFieldTypeFoundException, \
+    TemplateNotFoundException, UnSupportedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
     NotAccessToModificationException, FieldNotFoundException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
@@ -16,9 +16,10 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     SpaceListOrderAlreadyExistedException, ViewTypeNotFoundException, \
     ViewNotFoundException, SpaceOrderAlreadyExistedException, \
     WorkspaceNotFoundException, InactiveWorkspaceFoundException, \
-    InactiveUserFoundException, UserNotWorkspaceOwnerException
-from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum, \
-    ViewTypeEnum, RoleEnum
+    InactiveUserFoundException, UserNotWorkspaceOwnerException, \
+    InactiveWorkspaceMemberFoundException
+from task_management.exceptions.enums import PermissionsEnum, FieldType, \
+    ViewTypeEnum, Role
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -49,32 +50,32 @@ from task_management.interactors.storage_interface.workspace_storage_interface i
     WorkspaceStorageInterface
 
 FIELD_TYPE_RULES = {
-    FieldTypeEnum.Text: {
+    FieldType.TEXT.value: {
         "config_keys": {"max_length"},
         "default_type": str,
         "default_required": False,
     },
-    FieldTypeEnum.Number: {
+    FieldType.NUMBER.value: {
         "config_keys": {"min", "max"},
         "default_type": (int, float),
         "default_required": False,
     },
-    FieldTypeEnum.Dropdown: {
+    FieldType.DROPDOWN.value: {
         "config_keys": {"options"},
         "default_type": str,
         "default_required": False,
     },
-    FieldTypeEnum.Date: {
+    FieldType.DATE.value: {
         "config_keys": set(),
         "default_type": str,
         "default_required": False,
     },
-    FieldTypeEnum.Checkbox: {
+    FieldType.CHECKBOX.value: {
         "config_keys": set(),
         "default_type": bool,
         "default_required": False,
     },
-    FieldTypeEnum.email: {
+    FieldType.EMAIL.value: {
         "config_keys": set(),
         "default_type": str,
         "default_required": False,
@@ -85,8 +86,8 @@ FIELD_TYPE_RULES = {
 class ValidationMixin:
 
     @staticmethod
-    def validate_user_exist_and_status(user_id: str,
-                                       user_storage: UserStorageInterface):
+    def ensure_user_is_active(user_id: str,
+                              user_storage: UserStorageInterface):
         user_data = user_storage.get_user_data(user_id=user_id)
 
         if not user_data:
@@ -95,33 +96,46 @@ class ValidationMixin:
         if not user_data.is_active:
             raise InactiveUserFoundException(user_id=user_id)
 
-    @staticmethod
-    def check_template_exist(template_id: str,
+    def get_template_list_id(self, template_id: str,
                              template_storage: TemplateStorageInterface):
-        template_data = template_storage.get_template_exist(
-            template_id=template_id)
+        return self.get_template(template_id, template_storage).list_id
 
-        if not template_data:
-            raise TemplateNotFoundException(template_id=template_id)
+    @staticmethod
+    def get_template(template_id: str, storage: TemplateStorageInterface):
+        template = storage.get_template_by_id(template_id)
 
-        return template_data.list_id
+        if not template:
+            raise TemplateNotFoundException(template_id)
+
+        return template
 
     @staticmethod
     def check_field_type(field_type: str):
 
-        field_types = [x.value for x in FieldTypeEnum]
+        field_types = [x.value for x in FieldType]
 
         if field_type not in field_types:
-            raise UnexpectedFieldTypeFoundException(field_type=field_type)
+            raise UnSupportedFieldTypeFoundException(field_type=field_type)
 
     @staticmethod
-    def check_already_existed_field_name(field_name: str, template_id: str,
-                                         field_storage: FieldStorageInterface):
-        is_exist = field_storage.check_field_name_exist(field_name=field_name,
-                                                        template_id=template_id)
+    def validate_field_name_not_exists(field_name: str, template_id: str,
+                                       field_storage: FieldStorageInterface):
+        is_exist = field_storage.is_field_name_exists(field_name=field_name,
+                                                      template_id=template_id)
 
         if is_exist:
             raise FieldNameAlreadyExistsException(field_name=field_name)
+
+    @staticmethod
+    def validate_template_name_not_exists(template_name: str,
+                                          template_storage: TemplateStorageInterface):
+
+        is_exist = template_storage.is_template_name_exist(
+            template_name=template_name)
+
+        if is_exist:
+            raise AlreadyExistedTemplateNameException(
+                template_name=template_name)
 
     @staticmethod
     def check_field_name_exist(field_id: str, field_name: str,
@@ -145,40 +159,31 @@ class ValidationMixin:
             raise FieldOrderAlreadyExistsException(field_order=field_order)
 
     @staticmethod
-    def validate_field_config_and_default(field_type: FieldTypeEnum,
-                                          config: dict):
-
-        if isinstance(field_type, FieldTypeEnum):
-            field_type_value = field_type
-        else:
-            try:
-                field_type_value = FieldTypeEnum(field_type)
-            except ValueError:
-                raise UnexpectedFieldTypeFoundException(
-                    field_type=field_type.value)
+    def validate_field_config(field_type: str,
+                              config: dict):
 
         default_value = config.get("default")
 
-        if field_type_value not in FIELD_TYPE_RULES:
-            raise UnexpectedFieldTypeFoundException(
-                field_type=field_type_value.value
+        if field_type not in FIELD_TYPE_RULES:
+            raise UnSupportedFieldTypeFoundException(
+                field_type=field_type
             )
 
-        rules = FIELD_TYPE_RULES[field_type_value]
+        rules = FIELD_TYPE_RULES[field_type]
 
         allowed_keys = rules["config_keys"]
         invalid_keys = set(config.keys()) - allowed_keys
 
         if invalid_keys:
             raise InvalidFieldConfigException(
-                field_type=field_type.value,
+                field_type=field_type,
                 invalid_keys=list(invalid_keys)
             )
 
-        if field_type == FieldTypeEnum.Dropdown:
+        if field_type == FieldType.DROPDOWN.value:
             if "options" not in config or not config["options"]:
                 raise InvalidFieldConfigException(
-                    field_type=field_type.value,
+                    field_type=field_type,
                     message="Dropdown must have non-empty options"
                 )
 
@@ -187,46 +192,45 @@ class ValidationMixin:
 
             if not isinstance(default_value, expected_type):
                 raise InvalidFieldDefaultValueException(
-                    field_type=field_type.value,
+                    field_type=field_type,
                     default_value=default_value
                 )
 
-            if field_type == FieldTypeEnum.Dropdown:
+            if field_type == FieldType.DROPDOWN.value:
                 if default_value not in config.get("options", []):
                     raise InvalidFieldDefaultValueException(
-                        field_type=field_type.value,
+                        field_type=field_type,
                         message="Default value must be one of dropdown options"
                     )
 
-        if field_type_value == FieldTypeEnum.Number and default_value is not None:
+        if field_type == FieldType.NUMBER.value and default_value is not None:
             min_val = config.get("min")
             max_val = config.get("max")
 
             if min_val is not None and default_value < min_val:
                 raise InvalidFieldDefaultValueException(
-                    field_type=field_type_value.value,
+                    field_type=field_type,
                     message=f"Default value {default_value} is less than minimum {min_val}"
                 )
 
             if max_val is not None and default_value > max_val:
                 raise InvalidFieldDefaultValueException(
-                    field_type=field_type_value.value,
+                    field_type=field_type,
                     message=f"Default value {default_value} is greater than maximum {max_val}"
                 )
 
-        if field_type_value == FieldTypeEnum.Text and default_value is not None:
+        if field_type == FieldType.TEXT.value and default_value is not None:
             max_length = config.get("max_length")
 
             if max_length is not None and len(default_value) > max_length:
                 raise InvalidFieldDefaultValueException(
-                    field_type=field_type_value.value,
+                    field_type=field_type,
                     message=f"Default value length {len(default_value)} exceeds max_length {max_length}"
                 )
 
-
     @staticmethod
-    def check_list_exists_and_status(list_id: str,
-                                     list_storage: ListStorageInterface):
+    def validate_list_is_active(list_id: str,
+                                list_storage: ListStorageInterface):
         list_data = list_storage.get_list(list_id=list_id)
 
         if not list_data:
@@ -235,10 +239,9 @@ class ValidationMixin:
         if not list_data.is_active:
             raise InactiveListFoundException(list_id=list_id)
 
-
     @staticmethod
-    def check_user_has_access_to_list_modification(user_id: str, list_id: str,
-                                                   permission_storage: ListPermissionStorageInterface):
+    def check_user_has_access_to_list(user_id: str, list_id: str,
+                                      permission_storage: ListPermissionStorageInterface):
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
@@ -246,7 +249,8 @@ class ValidationMixin:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def validate_task_exists(task_id: str, task_storage: TaskStorageInterface)-> str:
+    def validate_task_exists(task_id: str,
+                             task_storage: TaskStorageInterface) -> str:
 
         task_data = task_storage.get_task_by_id(task_id=task_id)
 
@@ -258,10 +262,9 @@ class ValidationMixin:
 
         return task_data.list_id
 
-
     @staticmethod
-    def validate_space_exist_and_status(space_id: str,
-                                        space_storage: SpaceStorageInterface):
+    def ensure_space_is_active(space_id: str,
+                               space_storage: SpaceStorageInterface):
 
         space_data = space_storage.get_space(space_id=space_id)
 
@@ -272,8 +275,8 @@ class ValidationMixin:
             raise InactiveSpaceFoundException(space_id=space_id)
 
     @staticmethod
-    def validate_folder_exist_and_status(folder_id: str,
-                                         folder_storage: FolderStorageInterface):
+    def ensure_folder_is_active(folder_id: str,
+                                folder_storage: FolderStorageInterface):
         folder_data = folder_storage.get_folder(folder_id=folder_id)
 
         if not folder_data:
@@ -281,15 +284,6 @@ class ValidationMixin:
 
         if not folder_data.is_active:
             raise InactiveFolderFoundException(folder_id=folder_id)
-
-    @staticmethod
-    def validate_list_order_in_folder(order: int, folder_id: str,
-                                      list_storage: ListStorageInterface):
-        is_order_exist = list_storage.check_list_order_exist_in_folder(
-            order=order, folder_id=folder_id)
-
-        if is_order_exist:
-            raise FolderListOrderAlreadyExistedException(folder_id=folder_id)
 
     @staticmethod
     def validate_list_order_in_space(order: int, space_id: str,
@@ -301,24 +295,15 @@ class ValidationMixin:
             raise SpaceListOrderAlreadyExistedException(space_id=space_id)
 
     @staticmethod
-    def check_user_has_access_to_folder_modification(user_id: str,
-                                                     folder_id: str,
-                                                     permission_storage: FolderPermissionStorageInterface):
+    def ensure_user_has_access_to_folder(user_id: str,
+                                         folder_id: str,
+                                         permission_storage: FolderPermissionStorageInterface):
 
         user_permission = permission_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
 
-        if user_permission.permission_type.value == PermissionsEnum.VIEW.value:
+        if not user_permission.permission_type.value == PermissionsEnum.FULL_EDIT.value:
             raise NotAccessToModificationException(user_id=user_id)
-
-    @staticmethod
-    def validate_folder_order(order: int, space_id: str,
-                              folder_storage: FolderStorageInterface):
-        is_order_exist = folder_storage.check_order_exist(order=order,
-                                                          space_id=space_id)
-
-        if is_order_exist:
-            raise FolderOrderAlreadyExistedException(space_id=space_id)
 
     @staticmethod
     def check_view_type(view_type: str):
@@ -335,28 +320,18 @@ class ValidationMixin:
             raise ViewNotFoundException(view_id=view_id)
 
     @staticmethod
-    def check_user_has_access_to_space_modification(user_id: str,
-                                                    space_id: str,
-                                                    permission_storage: SpacePermissionStorageInterface):
+    def ensure_user_has_access_to_space(user_id: str, space_id: str,
+                                        permission_storage: SpacePermissionStorageInterface):
 
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
 
-        if user_permissions.permission_type.value == PermissionsEnum.VIEW.value:
+        if not user_permissions.permission_type.value == PermissionsEnum.FULL_EDIT.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def check_space_order_exist(workspace_id: str, order: int,
-                                space_storage: SpaceStorageInterface):
-        is_space_order_exist = space_storage.check_space_order_exist(
-            order=order, workspace_id=workspace_id)
-
-        if is_space_order_exist:
-            raise SpaceOrderAlreadyExistedException(workspace_id=workspace_id)
-
-    @staticmethod
-    def validate_workspace_exist_and_status(workspace_id: str,
-                                            workspace_storage: WorkspaceStorageInterface):
+    def ensure_workspace_is_active(workspace_id: str,
+                                   workspace_storage: WorkspaceStorageInterface):
         workspace_data = workspace_storage.get_workspace(
             workspace_id=workspace_id)
 
@@ -367,16 +342,16 @@ class ValidationMixin:
             raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
 
     @staticmethod
-    def check_user_owner_of_workspace(user_id: str, workspace_id: str,
-                                      workspace_storage: WorkspaceStorageInterface):
-        is_owner = workspace_storage.validate_workspace_owner(
+    def ensure_user_is_workspace_owner(user_id: str, workspace_id: str,
+                                       workspace_storage: WorkspaceStorageInterface):
+        is_owner = workspace_storage.ensure_user_is_workspace_owner(
             workspace_id=workspace_id, user_id=user_id)
 
         if not is_owner:
             raise UserNotWorkspaceOwnerException(user_id=user_id)
 
     @staticmethod
-    def validate_user_owner_or_editor_access(
+    def ensure_user_can_modify_workspace(
             user_id: str,
             workspace_id: str,
             workspace_storage: WorkspaceStorageInterface,
@@ -400,5 +375,15 @@ class ValidationMixin:
             user_id=user_id
         )
 
-        if not member_permission or member_permission.role == RoleEnum.GUEST.value:
+        if not member_permission or member_permission.role == Role.GUEST.value:
             raise NotAccessToModificationException(user_id=user_id)
+
+    @staticmethod
+    def ensure_workspace_member_is_active(workspace_member_id: int,
+                                          workspace_member_storage: WorkspaceMemberStorageInterface):
+        workspace_member_data = workspace_member_storage.get_workspace_member_by_id(
+            workspace_member_id=workspace_member_id)
+
+        if not workspace_member_data.is_active:
+            raise InactiveWorkspaceMemberFoundException(
+                workspace_member_id=workspace_member_id)

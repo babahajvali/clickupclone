@@ -31,7 +31,7 @@ class TestGetFieldForTemplateInteractor:
             FieldDTOFactory()
         ]
 
-        self.template_storage.get_template_exist.return_value = type("Template",(),{"list_id": "list-123"})()
+        self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "list-123"})()
 
         self.field_storage.get_fields_for_template.return_value = expected_fields
 
@@ -45,7 +45,7 @@ class TestGetFieldForTemplateInteractor:
     def test_get_fields_for_template_not_found(self, snapshot):
         template_id = "non-existent-template"
 
-        self.template_storage.get_template_exist.return_value = False
+        self.template_storage.get_template_by_id.return_value = False
 
         with pytest.raises(Exception) as exc:
             self.interactor.get_fields_for_template(template_id)

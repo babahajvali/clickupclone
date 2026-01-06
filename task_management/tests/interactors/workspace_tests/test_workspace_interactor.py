@@ -72,8 +72,6 @@ class TestWorkspaceInteractor:
             "create_workspace_user_not_found.txt"
         )
 
-    # ---------- update ----------
-
     def test_update_workspace_success(self, snapshot):
         update_data = WorkspaceDTOFactory()
         expected = WorkspaceDTOFactory()
@@ -83,7 +81,7 @@ class TestWorkspaceInteractor:
             self._mock_active_workspace(update_data.owner_id)
         self.workspace_storage.update_workspace.return_value = expected
 
-        result = self.interactor.update_workspace(update_data)
+        result = self.interactor.update_workspace(update_data,user_id="user_id")
 
         snapshot.assert_match(
             repr(result),
@@ -97,7 +95,7 @@ class TestWorkspaceInteractor:
         self.workspace_storage.get_workspace.return_value = None
 
         with pytest.raises(WorkspaceNotFoundException) as exc:
-            self.interactor.update_workspace(update_data)
+            self.interactor.update_workspace(update_data,user_id="user_id")
 
         snapshot.assert_match(
             repr(exc.value),
@@ -131,9 +129,7 @@ class TestWorkspaceInteractor:
         new_user_id = "new-owner-123"
         expected = WorkspaceDTOFactory()
 
-        self.user_storage.get_user_data.side_effect = [
-            self._mock_active_user(),  # current owner
-            self._mock_active_user(),  # new owner
+        self.user_storage.get_user_data.side_effect = [self._mock_active_user(),  # new owner
         ]
         self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
@@ -155,10 +151,7 @@ class TestWorkspaceInteractor:
         user_id = "owner-123"
         new_user_id = "invalid-user"
 
-        self.user_storage.get_user_data.side_effect = [
-            self._mock_active_user(),  # owner OK
-            None                       # new owner missing
-        ]
+        self.user_storage.get_user_data.side_effect = [None]
         self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
 

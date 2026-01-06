@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO
+from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
+    UpdateWorkspaceDTO
 
 
 class WorkspaceStorageInterface(ABC):
@@ -14,11 +15,11 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_workspace(self,workspace_data: WorkspaceDTO)-> WorkspaceDTO:
+    def update_workspace(self,workspace_data: UpdateWorkspaceDTO)-> WorkspaceDTO:
         pass
 
     @abstractmethod
-    def validate_workspace_owner(self,user_id: str, workspace_id: str):
+    def ensure_user_is_workspace_owner(self, user_id: str, workspace_id: str):
         pass
 
     @abstractmethod

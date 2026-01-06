@@ -38,7 +38,7 @@ class TestViewInteractor:
     def test_create_view_success(self, snapshot):
         # Arrange
         create_data = CreateViewDTOFactory()
-        create_data.view_type = ViewTypeEnum.Table
+        create_data.view_type = ViewTypeEnum.TABLE
         expected_result = ViewDTOFactory()
 
         self.view_storage.create_view.return_value = expected_result

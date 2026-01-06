@@ -2,7 +2,7 @@ import uuid
 
 import factory
 
-from task_management.exceptions.enums import FieldTypeEnum, RoleEnum
+from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import CreateFieldDTO, \
     FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
@@ -22,12 +22,11 @@ class CreateFieldFactory(factory.Factory):
     template_id = factory.Faker("uuid4")
     field_name = factory.Faker("name")
     description = factory.Faker("text")
-    field_type = factory.Iterator([x.value for x in FieldTypeEnum])
-    order = factory.sequence(lambda n: n + 1)
+    field_type = factory.Iterator([x.value for x in FieldType])
     is_required = factory.Faker("boolean")
     created_by = factory.Faker("uuid4")
     config = factory.LazyAttribute(lambda o: {
-        "options": ["Option 1", "Option 2"] if o.field_type == FieldTypeEnum.SELECT.value else {}
+        "options": ["Option 1", "Option 2"] if o.field_type == FieldType.DROPDOWN.value else {}
     })
 
 
@@ -39,7 +38,7 @@ class FieldDTOFactory(factory.Factory):
     template_id = factory.Faker("uuid4")
     field_name = factory.Faker("name")
     description = factory.Faker("text")
-    field_type = factory.Iterator([x.value for x in FieldTypeEnum])
+    field_type = factory.Iterator([x.value for x in FieldType])
     order = factory.sequence(lambda n: n + 1)
     config = factory.LazyFunction(dict)
     is_required = factory.Faker("boolean")
@@ -61,9 +60,7 @@ class UpdateTemplateDTOFactory(factory.Factory):
 
     template_id = factory.Faker("uuid4")
     name = factory.Faker("word")
-    list_id = factory.Faker("uuid4")
     description = factory.Faker("sentence")
-    created_by = factory.Faker("uuid4")
 
 
 class TemplateDTOFactory(factory.Factory):
@@ -83,7 +80,6 @@ class CreateListDTOFactory(factory.Factory):
     name = factory.Faker("word")
     description = factory.Faker("sentence")
     space_id = factory.Faker("uuid4")
-    order = factory.Faker("random_int", min=1, max=100)
     is_active = True
     is_private = False
     created_by = factory.Faker("uuid4")
@@ -96,12 +92,6 @@ class UpdateListDTOFactory(factory.Factory):
     list_id = factory.Faker("uuid4")
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    space_id = factory.Faker("uuid4")
-    is_active = True
-    order = factory.Faker("random_int", min=1, max=100)
-    is_private = False
-    created_by = factory.Faker("uuid4")
-    folder_id = None
 
 
 class ListDTOFactory(factory.Factory):
@@ -195,7 +185,6 @@ class CreateFolderDTOFactory(factory.Factory):
     name = factory.Faker('word')
     description = factory.Faker('sentence')
     space_id = factory.Faker('uuid4')
-    order = factory.Sequence(lambda n: n + 1)
     is_active = True
     created_by = factory.Faker('uuid4')
     is_private = False
@@ -208,11 +197,6 @@ class UpdateFolderDTOFactory(factory.Factory):
     folder_id = factory.Faker('uuid4')
     name = factory.Faker('word')
     description = factory.Faker('sentence')
-    space_id = factory.Faker('uuid4')
-    order = factory.Sequence(lambda n: n + 1)
-    is_active = True
-    created_by = factory.Faker('uuid4')
-    is_private = False
 
 
 class FolderDTOFactory(factory.Factory):
@@ -290,7 +274,6 @@ class CreateSpaceDTOFactory(factory.Factory):
     name = factory.Faker('word')
     description = factory.Faker('sentence')
     workspace_id = factory.Faker('uuid4')
-    order = factory.Sequence(lambda n: n + 1)
     is_active = True
     is_private = False
     created_by = factory.Faker('uuid4')
@@ -316,7 +299,7 @@ class CreateWorkspaceFactory(factory.Factory):
 
     name = factory.Faker('company')
     description = factory.Faker('sentence')
-    owner_id = factory.Faker('uuid4')
+    user_id = factory.Faker('uuid4')
 
 
 class WorkspaceDTOFactory(factory.Factory):
@@ -344,7 +327,7 @@ class AddMemberToWorkspaceDTOFactory(factory.Factory):
     is_active = factory.Faker('boolean')
     user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
-    role = RoleEnum.MEMBER
+    role = Role.MEMBER.value
 
 
 class WorkspaceMemberDTOFactory(factory.Factory):
@@ -354,7 +337,7 @@ class WorkspaceMemberDTOFactory(factory.Factory):
     id = factory.Sequence(lambda n: n + 1)
     workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
-    role = RoleEnum.MEMBER
+    role = Role.MEMBER
     is_active = factory.Faker('boolean')
     added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
 
