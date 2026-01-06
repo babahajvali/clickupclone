@@ -28,7 +28,7 @@ class FieldInteractor(ValidationMixin):
         list_id = self.get_template_list_id(
             template_id=create_field_data.template_id,
             template_storage=self.template_storage)
-        self.ensure_user_has_access_to_list(
+        self.validate_user_has_list_access(
             user_id=create_field_data.created_by, list_id=list_id,
             permission_storage=self.permission_storage)
         self.check_field_type(field_type=create_field_data.field_type)
@@ -51,13 +51,13 @@ class FieldInteractor(ValidationMixin):
         list_id = self.get_template_list_id(
             template_id=field_data.template_id,
             template_storage=self.template_storage)
-        self.ensure_user_has_access_to_list(
+        self.validate_user_has_list_access(
             user_id=user_id, list_id=list_id,
             permission_storage=self.permission_storage)
-        self.ensure_field_name_unique(field_id=update_field_data.field_id,
-                                      field_name=update_field_data.field_name,
-                                      template_id=field_data.template_id,
-                                      field_storage=self.field_storage)
+        self.validate_field_name_unique(field_id=update_field_data.field_id,
+                                         field_name=update_field_data.field_name,
+                                         template_id=field_data.template_id,
+                                         field_storage=self.field_storage)
         self.validate_field_config(field_type=field_data.field_type,
                                    config=update_field_data.config)
 
@@ -68,9 +68,9 @@ class FieldInteractor(ValidationMixin):
         self._validate_field_order(template_id=template_id, order=new_order)
         list_id = self.get_template_list_id(template_id=template_id,
                                             template_storage=self.template_storage)
-        self.ensure_user_has_access_to_list(list_id=list_id,
-                                            user_id=user_id,
-                                            permission_storage=self.permission_storage)
+        self.validate_user_has_list_access(list_id=list_id,
+                                           user_id=user_id,
+                                           permission_storage=self.permission_storage)
         self._validate_field(field_id=field_id)
 
         return self.field_storage.reorder_fields(field_id=field_id,

@@ -27,7 +27,7 @@ class CreateTemplateInteractor(ValidationMixin):
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
         self.validate_list_is_active(list_id=template_data.list_id,
                                      list_storage=self.list_storage)
-        self.ensure_user_has_access_to_list(
+        self.validate_user_has_list_access(
             user_id=template_data.created_by, list_id=template_data.list_id,
             permission_storage=self.permission_storage)
         self.validate_template_name_not_exists(

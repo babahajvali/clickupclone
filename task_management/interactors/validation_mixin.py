@@ -79,8 +79,8 @@ FIELD_TYPE_RULES = {
 class ValidationMixin:
 
     @staticmethod
-    def ensure_user_is_active(user_id: str,
-                              user_storage: UserStorageInterface):
+    def validate_user_is_active(user_id: str,
+                                 user_storage: UserStorageInterface):
         user_data = user_storage.get_user_data(user_id=user_id)
 
         if not user_data:
@@ -129,9 +129,9 @@ class ValidationMixin:
                 template_name=template_name)
 
     @staticmethod
-    def ensure_field_name_unique(field_id: str, field_name: str,
-                                 template_id: str,
-                                 field_storage: FieldStorageInterface):
+    def validate_field_name_unique(field_id: str, field_name: str,
+                                    template_id: str,
+                                    field_storage: FieldStorageInterface):
         is_field_name_exist = field_storage.check_field_name_except_this_field(
             field_id=field_id, field_name=field_name, template_id=template_id)
 
@@ -221,8 +221,8 @@ class ValidationMixin:
             raise InactiveListFoundException(list_id=list_id)
 
     @staticmethod
-    def ensure_user_has_access_to_list(user_id: str, list_id: str,
-                                       permission_storage: ListPermissionStorageInterface):
+    def validate_user_has_list_access(user_id: str, list_id: str,
+                                      permission_storage: ListPermissionStorageInterface):
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
@@ -243,8 +243,8 @@ class ValidationMixin:
         return task_data.list_id
 
     @staticmethod
-    def ensure_space_is_active(space_id: str,
-                               space_storage: SpaceStorageInterface):
+    def validate_space_is_active(space_id: str,
+                                 space_storage: SpaceStorageInterface):
         space_data = space_storage.get_space(space_id=space_id)
 
         if not space_data:
@@ -254,8 +254,8 @@ class ValidationMixin:
             raise InactiveSpaceFoundException(space_id=space_id)
 
     @staticmethod
-    def ensure_folder_is_active(folder_id: str,
-                                folder_storage: FolderStorageInterface):
+    def validate_folder_is_active(folder_id: str,
+                                  folder_storage: FolderStorageInterface):
         folder_data = folder_storage.get_folder(folder_id=folder_id)
         if not folder_data:
             raise FolderNotFoundException(folder_id=folder_id)
@@ -273,9 +273,9 @@ class ValidationMixin:
             raise SpaceListOrderAlreadyExistedException(space_id=space_id)
 
     @staticmethod
-    def ensure_user_has_access_to_folder(user_id: str,
-                                         folder_id: str,
-                                         permission_storage: FolderPermissionStorageInterface):
+    def validate_user_has_folder_access(user_id: str,
+                                        folder_id: str,
+                                        permission_storage: FolderPermissionStorageInterface):
 
         user_permission = permission_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
@@ -298,8 +298,8 @@ class ValidationMixin:
             raise ViewNotFoundException(view_id=view_id)
 
     @staticmethod
-    def ensure_user_has_access_to_space(user_id: str, space_id: str,
-                                        permission_storage: SpacePermissionStorageInterface):
+    def validate_user_has_space_access(user_id: str, space_id: str,
+                                       permission_storage: SpacePermissionStorageInterface):
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
 
@@ -307,8 +307,8 @@ class ValidationMixin:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def ensure_workspace_is_active(workspace_id: str,
-                                   workspace_storage: WorkspaceStorageInterface):
+    def validate_workspace_is_active(workspace_id: str,
+                                     workspace_storage: WorkspaceStorageInterface):
         workspace_data = workspace_storage.get_workspace(
             workspace_id=workspace_id)
 
@@ -319,8 +319,8 @@ class ValidationMixin:
             raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
 
     @staticmethod
-    def ensure_user_is_workspace_owner(user_id: str, workspace_id: str,
-                                       workspace_storage: WorkspaceStorageInterface):
+    def validate_user_is_workspace_owner(user_id: str, workspace_id: str,
+                                          workspace_storage: WorkspaceStorageInterface):
         is_owner = workspace_storage.ensure_user_is_workspace_owner(
             workspace_id=workspace_id, user_id=user_id)
 
@@ -328,7 +328,7 @@ class ValidationMixin:
             raise UserNotWorkspaceOwnerException(user_id=user_id)
 
     @staticmethod
-    def ensure_user_can_modify_workspace(
+    def validate_user_can_modify_workspace(
             user_id: str,
             workspace_id: str,
             workspace_storage: WorkspaceStorageInterface,
@@ -356,8 +356,8 @@ class ValidationMixin:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def ensure_workspace_member_is_active(workspace_member_id: int,
-                                          workspace_member_storage: WorkspaceMemberStorageInterface):
+    def validate_workspace_member_is_active(workspace_member_id: int,
+                                             workspace_member_storage: WorkspaceMemberStorageInterface):
         workspace_member_data = workspace_member_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
 

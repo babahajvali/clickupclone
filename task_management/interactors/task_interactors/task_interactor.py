@@ -31,7 +31,7 @@ class TaskInteractor(ValidationMixin):
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         self.validate_list_is_active(list_id=task_data.list_id,
                                      list_storage=self.list_storage)
-        self.ensure_user_has_access_to_list(
+        self.validate_user_has_list_access(
             user_id=task_data.created_by, list_id=task_data.list_id,
             permission_storage=self.permission_storage)
 
@@ -48,7 +48,7 @@ class TaskInteractor(ValidationMixin):
             task_storage=self.task_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
-        self.ensure_user_has_access_to_list(
+        self.validate_user_has_list_access(
             user_id=user_id,
             list_id=list_id,
             permission_storage=self.permission_storage)
@@ -58,9 +58,9 @@ class TaskInteractor(ValidationMixin):
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)
-        self.ensure_user_has_access_to_list(user_id=user_id,
-                                            list_id=list_id,
-                                            permission_storage=self.permission_storage)
+        self.validate_user_has_list_access(user_id=user_id,
+                                           list_id=list_id,
+                                           permission_storage=self.permission_storage)
 
         return self.task_storage.remove_task(task_id=task_id)
 
@@ -77,7 +77,7 @@ class TaskInteractor(ValidationMixin):
         return self.task_storage.get_task_by_id(task_id=task_id)
 
     def filter_tasks(self, task_filter_data: FilterDTO, user_id: str):
-        self.ensure_user_has_access_to_list(user_id=user_id,
+        self.validate_user_has_list_access(user_id=user_id,
                                             list_id=task_filter_data.list_id,
                                             permission_storage=self.permission_storage)
         self.validate_list_is_active(list_id=task_filter_data.list_id,
@@ -89,7 +89,7 @@ class TaskInteractor(ValidationMixin):
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)
-        self.ensure_user_has_access_to_list(user_id=user_id, list_id=list_id,
+        self.validate_user_has_list_access(user_id=user_id, list_id=list_id,
                                             permission_storage=self.permission_storage)
         self._validate_task_order(list_id=list_id, order=order)
 

@@ -20,8 +20,8 @@ class UserInteractor(ValidationMixin):
 
     def update_user(self, user_update_data: UserDTO) -> UserDTO:
         user_id = user_update_data.user_id
-        self.ensure_user_is_active(user_id=user_update_data.user_id,
-                                   user_storage=self.user_storage)
+        self.validate_user_is_active(user_id=user_update_data.user_id,
+                                      user_storage=self.user_storage)
         self._validate_updated_username_unique(username=user_update_data.username, user_id=user_id)
         self._validate_updated_email_unique(email=user_update_data.email, user_id=user_id)
         self._validate_updated_phone_number_unique(user_id=user_id,
@@ -30,12 +30,12 @@ class UserInteractor(ValidationMixin):
         return self.user_storage.update_user(user_data=user_update_data)
 
     def get_user_profile(self, user_id: str) -> UserDTO:
-        self.ensure_user_is_active(user_id=user_id, user_storage=self.user_storage)
+        self.validate_user_is_active(user_id=user_id, user_storage=self.user_storage)
 
         return self.user_storage.get_user_data(user_id=user_id)
 
     def block_user(self, user_id: str) -> UserDTO:
-        self.ensure_user_is_active(user_id=user_id, user_storage=self.user_storage)
+        self.validate_user_is_active(user_id=user_id, user_storage=self.user_storage)
 
         return self.user_storage.block_user(user_id=user_id)
 

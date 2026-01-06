@@ -49,14 +49,14 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
-        self.ensure_workspace_is_active(
+        self.validate_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage)
-        self.ensure_user_is_active(
+        self.validate_user_is_active(
             user_id=workspace_member_data.user_id,
             user_storage=self.user_storage)
         self._validate_role(role=workspace_member_data.role)
-        self.ensure_user_can_modify_workspace(
+        self.validate_user_can_modify_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage,
@@ -76,12 +76,12 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
     def remove_member_from_workspace(self, workspace_member_id: int,
                                      user_id: str) -> WorkspaceMemberDTO:
-        self.ensure_workspace_member_is_active(
+        self.validate_workspace_member_is_active(
             workspace_member_id=workspace_member_id,
             workspace_member_storage=self.workspace_member_storage)
         workspace_member_data = self.workspace_member_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
-        self.ensure_user_can_modify_workspace(
+        self.validate_user_can_modify_workspace(
             user_id=user_id, workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
@@ -99,14 +99,14 @@ class WorkspaceMemberInteractor(ValidationMixin):
     def change_member_role(self, workspace_id: str, user_id: str,
                            role: str,
                            changed_by: str) -> WorkspaceMemberDTO:
-        self.ensure_workspace_is_active(workspace_id=workspace_id,
-                                        workspace_storage=self.workspace_storage)
-        self.ensure_user_is_active(user_id=user_id,
-                                   user_storage=self.user_storage)
-        self.ensure_user_can_modify_workspace(user_id=changed_by,
-                                              workspace_id=workspace_id,
-                                              workspace_storage=self.workspace_storage,
-                                              workspace_member_storage=self.workspace_member_storage)
+        self.validate_workspace_is_active(workspace_id=workspace_id,
+                                           workspace_storage=self.workspace_storage)
+        self.validate_user_is_active(user_id=user_id,
+                                      user_storage=self.user_storage)
+        self.validate_user_can_modify_workspace(user_id=changed_by,
+                                                workspace_id=workspace_id,
+                                                workspace_storage=self.workspace_storage,
+                                                workspace_member_storage=self.workspace_member_storage)
         self._validate_role(role=role)
 
         workspace_member = self.workspace_member_storage.update_the_member_role(
@@ -123,8 +123,8 @@ class WorkspaceMemberInteractor(ValidationMixin):
     def add_permissions_for_workspace_spaces(self, workspace_id: str,
                                              user_id: str,
                                              role: str, added_by: str):
-        self.ensure_workspace_is_active(workspace_id=workspace_id,
-                                        workspace_storage=self.workspace_storage)
+        self.validate_workspace_is_active(workspace_id=workspace_id,
+                                           workspace_storage=self.workspace_storage)
 
         workspace_spaces = self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)

@@ -33,12 +33,12 @@ class SpaceInteractor(ValidationMixin):
         self.workspace_member_storage = workspace_member_storage
 
     def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
-        self.ensure_user_can_modify_workspace(
+        self.validate_user_can_modify_workspace(
             user_id=create_space_data.created_by,
             workspace_id=create_space_data.workspace_id,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
-        self.ensure_workspace_is_active(
+        self.validate_workspace_is_active(
             workspace_id=create_space_data.workspace_id,
             workspace_storage=self.workspace_storage)
 
@@ -52,14 +52,14 @@ class SpaceInteractor(ValidationMixin):
 
     def update_space(self, update_space_data: UpdateSpaceDTO,
                      user_id: str) -> SpaceDTO:
-        self.ensure_space_is_active(space_id=update_space_data.space_id,
-                                    space_storage=self.space_storage)
-        self.ensure_user_has_access_to_space(
+        self.validate_space_is_active(space_id=update_space_data.space_id,
+                                      space_storage=self.space_storage)
+        self.validate_user_has_space_access(
             user_id=user_id, space_id=update_space_data.space_id,
             permission_storage=self.permission_storage)
         space_data = self.space_storage.get_space(
             space_id=update_space_data.space_id)
-        self.ensure_workspace_is_active(
+        self.validate_workspace_is_active(
             workspace_id=space_data.workspace_id,
             workspace_storage=self.workspace_storage)
 
@@ -68,31 +68,31 @@ class SpaceInteractor(ValidationMixin):
 
     def reorder_space(self, workspace_id: str, space_id: str, order: int,
                       user_id: str):
-        self.ensure_user_has_access_to_space(
+        self.validate_user_has_space_access(
             space_id=space_id, user_id=user_id,
             permission_storage=self.permission_storage)
-        self.ensure_workspace_is_active(
+        self.validate_workspace_is_active(
             workspace_id=workspace_id,
             workspace_storage=self.workspace_storage)
         self._validate_space_order(workspace_id=workspace_id, order=order)
 
     def delete_space(self, space_id: str, user_id: str) -> SpaceDTO:
-        self.ensure_user_has_access_to_space(user_id=user_id,
+        self.validate_user_has_space_access(user_id=user_id,
                                              space_id=space_id,
                                              permission_storage=self.permission_storage)
-        self.ensure_space_is_active(space_id=space_id,
-                                    space_storage=self.space_storage)
+        self.validate_space_is_active(space_id=space_id,
+                                      space_storage=self.space_storage)
 
         return self.space_storage.remove_space(space_id=space_id,
                                                user_id=user_id)
 
     def set_space_visibility(self, space_id: str, user_id: str,
                              visibility: Visibility):
-        self.ensure_user_has_access_to_space(
+        self.validate_user_has_space_access(
             user_id=user_id, space_id=space_id,
             permission_storage=self.permission_storage)
-        self.ensure_space_is_active(space_id=space_id,
-                                    space_storage=self.space_storage)
+        self.validate_space_is_active(space_id=space_id,
+                                      space_storage=self.space_storage)
 
         if visibility == Visibility.PUBLIC:
             return self.space_storage.set_space_public(space_id=space_id)
@@ -100,14 +100,14 @@ class SpaceInteractor(ValidationMixin):
         return self.space_storage.set_space_private(space_id=space_id)
 
     def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
-        self.ensure_workspace_is_active(workspace_id=workspace_id,
-                                        workspace_storage=self.workspace_storage)
+        self.validate_workspace_is_active(workspace_id=workspace_id,
+                                          workspace_storage=self.workspace_storage)
 
         return self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
 
     def get_space_permissions(self, space_id: str) -> list[UserSpacePermissionDTO]:
-        self.ensure_space_is_active(
+        self.validate_space_is_active(
             space_id=space_id,
             space_storage=self.space_storage
         )

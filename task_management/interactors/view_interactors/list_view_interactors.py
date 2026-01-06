@@ -25,7 +25,7 @@ class ListViewInteractor(ValidationMixin):
 
     def apply_view_for_list(self, view_id: str, list_id: str,
                             user_id: str) -> ListViewDTO:
-        self.ensure_user_has_access_to_list(user_id=user_id,
+        self.validate_user_has_list_access(user_id=user_id,
                                             list_id=list_id,
                                             permission_storage=self.permission_storage)
         self.validate_view_exist(view_id=view_id,
@@ -38,7 +38,7 @@ class ListViewInteractor(ValidationMixin):
                                                           user_id=user_id)
 
     def remove_view_for_list(self, view_id: str, list_id: str, user_id: str) -> RemoveListViewDTO:
-        self.ensure_user_has_access_to_list(user_id=user_id,
+        self.validate_user_has_list_access(user_id=user_id,
                                             list_id=list_id,
                                             permission_storage=self.permission_storage)
         self.validate_view_exist(view_id=view_id,

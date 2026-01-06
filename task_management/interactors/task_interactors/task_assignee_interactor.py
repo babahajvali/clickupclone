@@ -25,11 +25,11 @@ class TaskAssigneeInteractor(ValidationMixin):
 
     def assign_task_assignee(self, task_id: str, user_id: str,
                              assigned_by) -> TaskAssigneeDTO:
-        self.ensure_user_is_active(user_id=user_id,
-                                   user_storage=self.user_storage)
+        self.validate_user_is_active(user_id=user_id,
+                                     user_storage=self.user_storage)
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)
-        self.ensure_user_has_access_to_list(user_id=assigned_by,
+        self.validate_user_has_list_access(user_id=assigned_by,
                                             list_id=list_id,
                                             permission_storage=self.permission_storage)
 
@@ -41,7 +41,7 @@ class TaskAssigneeInteractor(ValidationMixin):
         assignee_data = self._ensure_task_assignee_exists(assign_id=assign_id)
         list_id = self.get_active_task_list_id(task_id=assignee_data.task_id,
                                                task_storage=self.task_storage)
-        self.ensure_user_has_access_to_list(user_id=user_id, list_id=list_id,
+        self.validate_user_has_list_access(user_id=user_id, list_id=list_id,
                                             permission_storage=self.permission_storage)
 
         return self.task_assignee_storage.remove_task_assignee(
@@ -54,8 +54,8 @@ class TaskAssigneeInteractor(ValidationMixin):
         return self.task_assignee_storage.get_task_assignees(task_id=task_id)
 
     def get_user_assigned_tasks(self, user_id: str) -> list[UserTasksDTO]:
-        self.ensure_user_is_active(user_id=user_id,
-                                   user_storage=self.user_storage)
+        self.validate_user_is_active(user_id=user_id,
+                                     user_storage=self.user_storage)
 
         return self.task_assignee_storage.get_user_assigned_tasks(
             user_id=user_id)
