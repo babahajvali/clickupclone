@@ -11,6 +11,10 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_template_id_by_list_id(self,list_id: str) -> str:
+        pass
+
+    @abstractmethod
     def get_list(self, list_id: str) -> ListDTO:
         pass
 

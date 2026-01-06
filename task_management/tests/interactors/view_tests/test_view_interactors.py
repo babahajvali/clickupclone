@@ -11,7 +11,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
     ViewNotFoundException,
     ViewTypeNotFoundException
 )

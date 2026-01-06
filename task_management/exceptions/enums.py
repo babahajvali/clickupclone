@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class FieldType(Enum):
     DROPDOWN = "dropdown"
     USER = "user"
@@ -16,26 +17,32 @@ class Role(Enum):
     MEMBER = "member"
     GUEST = "guest"
 
+
 class PermissionsEnum(Enum):
     FULL_EDIT = "full_edit"
     COMMENT = "comment"
     VIEW = "view"
+
 
 class ViewTypeEnum(Enum):
     TABLE = "table"
     CALENDER = "calendar"
     BOARD = "board"
     DASHBOARD = "dashboard"
+    LIST = "list"
+    GANTT = "gantt"
+
 
 class Visibility(Enum):
     PUBLIC = "public"
     PRIVATE = "private"
 
+
 class PermissionScopeTypeEnum(Enum):
     WORKSPACE = "workspace"
-    SPACE ="space"
-    FOLDER ="folder"
-    LIST ="list"
+    SPACE = "space"
+    FOLDER = "folder"
+    LIST = "list"
 
 
 class GenderEnum(Enum):

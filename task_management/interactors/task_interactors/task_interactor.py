@@ -1,14 +1,16 @@
 from task_management.exceptions.custom_exceptions import \
-    TasKOrderAlreadyExistedException, InvalidOffsetNumberException, \
-    InvalidLimitException
+    InvalidOffsetNumberException, \
+    InvalidLimitException, InvalidOrderException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
-    UpdateTaskDTO, FilterDTO
+    UpdateTaskDTO, FilterDTO, CreateFieldValueDTO
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.task_field_values_storage_interface import \
+    FieldValueStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
@@ -17,10 +19,14 @@ from task_management.interactors.validation_mixin import ValidationMixin
 class TaskInteractor(ValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  list_storage: ListStorageInterface,
-                 permission_storage: ListPermissionStorageInterface):
+                 permission_storage: ListPermissionStorageInterface,
+                 field_storage: FieldStorageInterface,
+                 field_value_storage: FieldValueStorageInterface):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.permission_storage = permission_storage
+        self.field_storage = field_storage
+        self.field_value_storage = field_value_storage
 
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         self.validate_list_is_active(list_id=task_data.list_id,
@@ -29,11 +35,17 @@ class TaskInteractor(ValidationMixin):
             user_id=task_data.created_by, list_id=task_data.list_id,
             permission_storage=self.permission_storage)
 
-        return self.task_storage.create_task(task_data=task_data)
+        result = self.task_storage.create_task(task_data=task_data)
+        self._set_default_field_values_at_task(task_id=result.task_id,
+                                               list_id=task_data.list_id)
 
-    def update_task(self, update_task_data: UpdateTaskDTO,user_id: str) -> TaskDTO:
-        list_id = self.get_active_task_list_id(task_id=update_task_data.task_id,
-                                                 task_storage=self.task_storage)
+        return result
+
+    def update_task(self, update_task_data: UpdateTaskDTO,
+                    user_id: str) -> TaskDTO:
+        list_id = self.get_active_task_list_id(
+            task_id=update_task_data.task_id,
+            task_storage=self.task_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
         self.ensure_user_has_access_to_list(
@@ -74,6 +86,15 @@ class TaskInteractor(ValidationMixin):
 
         return self.task_storage.task_filter_data(filter_data=task_filter_data)
 
+    def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
+        list_id = self.get_active_task_list_id(task_id=task_id,
+                                               task_storage=self.task_storage)
+        self.ensure_user_has_access_to_list(user_id=user_id, list_id=list_id,
+                                            permission_storage=self.permission_storage)
+        self._validate_the_task_order(list_id=list_id, order=order)
+
+        return self.task_storage.reorder_tasks(task_id=task_id, order=order,
+                                               list_id=list_id)
 
     @staticmethod
     def _validate_filter_parameters(filter_data: FilterDTO):
@@ -87,3 +108,33 @@ class TaskInteractor(ValidationMixin):
             raise InvalidLimitException(
                 limit=filter_data.limit,
             )
+
+    def _validate_the_task_order(self, list_id: str, order: int):
+        if order < 1:
+            raise InvalidOrderException(order=order)
+        tasks_count = self.task_storage.get_tasks_count(
+            list_id=list_id)
+
+        if order > tasks_count:
+            raise InvalidOrderException(order=order)
+
+    def _set_default_field_values_at_task(self, task_id: str, list_id: str):
+        template_id = self.list_storage.get_template_id_by_list_id(
+            list_id=list_id)
+        template_fields = self.field_storage.get_fields_for_template(
+            template_id=template_id)
+
+        field_values = []
+        for field in template_fields:
+            default_value = field.config.get('default_value')
+
+            field_values.append(
+                CreateFieldValueDTO(
+                    task_id=task_id,
+                    field_id=field.field_id,
+                    value=default_value,
+                )
+            )
+
+        return self.field_value_storage.set_bulk_field_values(bulk_field_values=field_values)
+

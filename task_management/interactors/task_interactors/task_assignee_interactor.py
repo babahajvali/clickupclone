@@ -4,8 +4,6 @@ from task_management.interactors.dtos import TaskAssigneeDTO, \
     RemoveTaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \

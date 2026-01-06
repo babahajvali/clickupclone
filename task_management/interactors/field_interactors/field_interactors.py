@@ -6,6 +6,10 @@ from task_management.interactors.storage_interface.field_storage_interface impor
     FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
+from task_management.interactors.storage_interface.task_field_values_storage_interface import \
+    FieldValueStorageInterface
+from task_management.interactors.storage_interface.task_storage_interface import \
+    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
@@ -35,8 +39,10 @@ class FieldInteractor(ValidationMixin):
         self.validate_field_config(field_type=create_field_data.field_type,
                                    config=create_field_data.config)
 
-        return self.field_storage.create_field(
+        result =  self.field_storage.create_field(
             create_field_data=create_field_data)
+
+        return result
 
     def update_field(self, update_field_data: UpdateFieldDTO,
                      user_id: str) -> FieldDTO:
@@ -73,6 +79,13 @@ class FieldInteractor(ValidationMixin):
                                                  template_id=template_id,
                                                  new_order=new_order)
 
+    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+        self.get_template_list_id(template_id=template_id,
+                                  template_storage=self.template_storage)
+
+        return self.field_storage.get_fields_for_template(
+            template_id=template_id)
+
     def _validate_field(self, field_id: str):
         is_exist = self.field_storage.is_field_exists(field_id=field_id)
 
@@ -89,9 +102,3 @@ class FieldInteractor(ValidationMixin):
         if order > fields_count:
             raise InvalidOrderException(order=order)
 
-    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
-        self.get_template_list_id(template_id=template_id,
-                                  template_storage=self.template_storage)
-
-        return self.field_storage.get_fields_for_template(
-            template_id=template_id)

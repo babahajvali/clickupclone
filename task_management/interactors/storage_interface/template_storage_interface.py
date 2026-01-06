@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO, \
-    UpdateTemplateDTO
+    UpdateTemplateDTO, FieldDTO
 
 
 class TemplateStorageInterface(ABC):

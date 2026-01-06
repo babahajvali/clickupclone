@@ -7,15 +7,17 @@ from task_management.interactors.dtos import TaskAssigneeDTO, \
 class TaskAssigneeStorageInterface(ABC):
 
     @abstractmethod
-    def assign_task_assignee(self, task_id: str, user_id: str, assigned_by: str) -> TaskAssigneeDTO:
+    def assign_task_assignee(self, task_id: str, user_id: str,
+                             assigned_by: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
-    def remove_task_assignee(self, assign_id: str,removed_by: str) -> RemoveTaskAssigneeDTO:
+    def remove_task_assignee(self, assign_id: str,
+                             removed_by: str) -> RemoveTaskAssigneeDTO:
         pass
 
     @abstractmethod
-    def get_task_assignee(self, assign_id: str)-> TaskAssigneeDTO:
+    def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
@@ -23,11 +25,16 @@ class TaskAssigneeStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_assigned_tasks(self,user_id: str) -> list[UserTasksDTO]:
+    def get_user_assigned_tasks(self, user_id: str) -> list[UserTasksDTO]:
         # get tasks only active tasks
         pass
 
     @abstractmethod
-    def get_user_today_tasks(self,user_id: str) -> list[UserTasksDTO]:
+    def get_user_today_tasks(self, user_id: str) -> list[UserTasksDTO]:
         # get today active tasks
+        pass
+
+    @abstractmethod
+    def get_user_task_ids(self, user_id: str) -> list[str]:
+        # get only user task_ids
         pass

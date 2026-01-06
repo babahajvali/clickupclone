@@ -29,6 +29,7 @@ class CreateUserDTO:
     gender: GenderEnum
     image_url: str
 
+
 @dataclass
 class AccountDTO:
     id: int
@@ -289,11 +290,13 @@ class CreateSpaceDTO:
     is_private: bool
     created_by: str
 
+
 @dataclass
 class UpdateSpaceDTO:
     space_id: str
     name: Optional[str]
     description: Optional[str]
+
 
 @dataclass
 class SpaceDTO:
@@ -314,6 +317,7 @@ class WorkspaceDTO:
     description: str
     owner_id: str
     is_active: bool
+
 
 @dataclass
 class UpdateWorkspaceDTO:
@@ -347,6 +351,7 @@ class WorkspaceMemberDTO:
     is_active: bool
     added_by: str
 
+
 @dataclass
 class CreateUserSpacePermissionDTO:
     space_id: str
@@ -354,6 +359,7 @@ class CreateUserSpacePermissionDTO:
     permission_type: PermissionsEnum
     is_active: bool
     added_by: str
+
 
 @dataclass
 class UserSpacePermissionDTO:
@@ -364,6 +370,7 @@ class UserSpacePermissionDTO:
     is_active: bool
     added_by: str
 
+
 @dataclass
 class CreateUserFolderPermissionDTO:
     folder_id: str
@@ -371,6 +378,7 @@ class CreateUserFolderPermissionDTO:
     permission_type: PermissionsEnum
     is_active: bool
     added_by: str
+
 
 @dataclass
 class UserFolderPermissionDTO:
@@ -381,6 +389,7 @@ class UserFolderPermissionDTO:
     is_active: bool
     added_by: str
 
+
 @dataclass
 class CreateUserListPermissionDTO:
     list_id: str
@@ -388,6 +397,7 @@ class CreateUserListPermissionDTO:
     user_id: str
     is_active: bool
     added_by: str
+
 
 @dataclass
 class UserListPermissionDTO:
@@ -397,6 +407,7 @@ class UserListPermissionDTO:
     user_id: str
     is_active: bool
     added_by: str
+
 
 @dataclass
 class FilterDTO:
@@ -420,3 +431,30 @@ class TaskWithDetailsDTO:
     @property
     def priority(self) -> Optional[str]:
         return self.field_values.get('Priority')
+
+
+@dataclass
+class CreateFieldValueDTO:
+    task_id: str
+    field_id: str
+    value: str
+
+
+@dataclass
+class TaskFieldValueDTO:
+    id: int
+    task_id: str
+    field_id: str
+    value: str
+
+
+@dataclass
+class FieldValueDTO:
+    field_id: str
+    value: str
+
+
+@dataclass
+class TaskFieldValuesDTO:
+    task_id: str
+    values: list[FieldValueDTO]
