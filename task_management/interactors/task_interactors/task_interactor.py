@@ -25,34 +25,30 @@ class TaskInteractor(ValidationMixin):
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         self.validate_list_is_active(list_id=task_data.list_id,
                                      list_storage=self.list_storage)
-        self.check_user_has_access_to_list(
+        self.ensure_user_has_access_to_list(
             user_id=task_data.created_by, list_id=task_data.list_id,
             permission_storage=self.permission_storage)
-        self._validate_task_order(order=task_data.order,
-                                  list_id=task_data.list_id)
 
         return self.task_storage.create_task(task_data=task_data)
 
-    def update_task(self, update_task_data: UpdateTaskDTO) -> TaskDTO:
-        self.validate_task_exists(task_id=update_task_data.task_id,
-                                  task_storage=self.task_storage)
-        self.validate_list_is_active(list_id=update_task_data.list_id,
+    def update_task(self, update_task_data: UpdateTaskDTO,user_id: str) -> TaskDTO:
+        list_id = self.get_active_task_list_id(task_id=update_task_data.task_id,
+                                                 task_storage=self.task_storage)
+        self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
-        self.check_user_has_access_to_list(
-            user_id=update_task_data.created_by,
-            list_id=update_task_data.list_id,
+        self.ensure_user_has_access_to_list(
+            user_id=user_id,
+            list_id=list_id,
             permission_storage=self.permission_storage)
-        self._validate_task_order(order=update_task_data.order,
-                                  list_id=update_task_data.list_id)
 
         return self.task_storage.update_task(update_task_data=update_task_data)
 
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
-        list_id = self.validate_task_exists(task_id=task_id,
-                                            task_storage=self.task_storage)
-        self.check_user_has_access_to_list(user_id=user_id,
-                                           list_id=list_id,
-                                           permission_storage=self.permission_storage)
+        list_id = self.get_active_task_list_id(task_id=task_id,
+                                               task_storage=self.task_storage)
+        self.ensure_user_has_access_to_list(user_id=user_id,
+                                            list_id=list_id,
+                                            permission_storage=self.permission_storage)
 
         return self.task_storage.remove_task(task_id=task_id)
 
@@ -63,27 +59,21 @@ class TaskInteractor(ValidationMixin):
         return self.task_storage.get_list_tasks(list_id=list_id)
 
     def get_task(self, task_id: str) -> TaskDTO:
-        self.validate_task_exists(task_id=task_id,
-                                  task_storage=self.task_storage)
+        self.get_active_task_list_id(task_id=task_id,
+                                     task_storage=self.task_storage)
 
         return self.task_storage.get_task_by_id(task_id=task_id)
 
     def task_filter(self, task_filter_data: FilterDTO, user_id: str):
-        self.check_user_has_access_to_list(user_id=user_id,
-                                           list_id=task_filter_data.list_id,
-                                           permission_storage=self.permission_storage)
+        self.ensure_user_has_access_to_list(user_id=user_id,
+                                            list_id=task_filter_data.list_id,
+                                            permission_storage=self.permission_storage)
         self.validate_list_is_active(list_id=task_filter_data.list_id,
                                      list_storage=self.list_storage)
         self._validate_filter_parameters(filter_data=task_filter_data)
 
         return self.task_storage.task_filter_data(filter_data=task_filter_data)
 
-    def _validate_task_order(self, order: int, list_id: str):
-        is_order_exist = self.task_storage.check_task_order_exist(order=order,
-                                                                  list_id=list_id)
-
-        if is_order_exist:
-            raise TasKOrderAlreadyExistedException(list_id=list_id)
 
     @staticmethod
     def _validate_filter_parameters(filter_data: FilterDTO):

@@ -29,6 +29,7 @@ from task_management.tests.factories.interactor_factory import (
     UserTasksDTOFactory
 )
 
+
 def make_permission(permission_type: PermissionsEnum):
     return UserListPermissionDTO(
         id=1,
@@ -44,9 +45,11 @@ class TestTaskAssigneeInteractor:
 
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
-        self.task_assignee_storage = create_autospec(TaskAssigneeStorageInterface)
+        self.task_assignee_storage = create_autospec(
+            TaskAssigneeStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.permission_storage = create_autospec(
+            ListPermissionStorageInterface)
 
         self.interactor = TaskAssigneeInteractor(
             task_storage=self.task_storage,
@@ -55,17 +58,14 @@ class TestTaskAssigneeInteractor:
             permission_storage=self.permission_storage
         )
 
-        # 👇 ValidationMixin expects this
         self.interactor.user_storage = self.user_storage
-
-    # ---------- helpers ----------
 
     def _mock_active_task(self):
         return type(
             "Task",
             (),
             {
-                "is_active": True,
+                "is_delete": False,
                 "list_id": "list_123"
             }
         )()
@@ -78,7 +78,6 @@ class TestTaskAssigneeInteractor:
                 "is_active": True
             }
         )()
-
 
     def test_assign_task_assignee_success(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
@@ -151,23 +150,25 @@ class TestTaskAssigneeInteractor:
             "task_not_found.txt"
         )
 
-
     def test_remove_task_assignee_success(self, snapshot):
-        self.task_assignee_storage.check_task_assignee_exist.return_value = True
+        self.task_assignee_storage.get_task_assignee.return_value = type(
+            "TaskAssigneeDTO", (), {"task_id": "task_1"})()
 
         expected = RemoveTaskAssigneeDTOFactory()
+        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_assignee_storage.remove_task_assignee.return_value = expected
+        self.permission_storage.get_user_permission_for_list.return_value = make_permission(
+            PermissionsEnum.FULL_EDIT)
 
         result = self.interactor.remove_task_assignee(
             assign_id="assign123",
-            removed_by="admin123"
+            user_id="admin123"
         )
 
         snapshot.assert_match(
             repr(result),
             "remove_task_assignee_success.txt"
         )
-
 
     def test_get_task_assignee_success(self, snapshot):
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()

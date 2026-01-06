@@ -116,9 +116,8 @@ class CreateTaskDTOFactory(factory.Factory):
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
-    order = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker('uuid4')
-    is_active = True
+    is_delete = False
 
 
 class UpdateTaskDTOFactory(factory.Factory):
@@ -128,10 +127,6 @@ class UpdateTaskDTOFactory(factory.Factory):
     task_id = factory.Faker('uuid4')
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
-    list_id = factory.Faker('uuid4')
-    order = factory.sequence(lambda n: n + 1)
-    created_by = factory.Faker('uuid4')
-    is_active = True
 
 
 class TaskDTOFactory(factory.Factory):
@@ -144,7 +139,7 @@ class TaskDTOFactory(factory.Factory):
     list_id = factory.Faker('uuid4')
     order = factory.sequence(lambda n:n+1)
     created_by = factory.Faker('uuid4')
-    is_active = True
+    is_delete = False
 
 
 class TaskAssigneeDTOFactory(factory.Factory):

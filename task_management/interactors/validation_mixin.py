@@ -1,21 +1,16 @@
-from abc import abstractmethod
-
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     TemplateNotFoundException, UnSupportedFieldTypeFoundException, \
     FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
-    NotAccessToModificationException, FieldNotFoundException, \
+    NotAccessToModificationException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
     AlreadyExistedTemplateNameException, \
-    DefaultTemplateAlreadyExistedException, ListNotFoundException, \
-    TaskNotFoundException, TaskAssigneeNotFoundException, \
-    InactiveTaskFoundException, InactiveListFoundException, \
+    ListNotFoundException, TaskNotFoundException, \
+    DeletedTaskFoundException, InactiveListFoundException, \
     SpaceNotFoundException, InactiveSpaceFoundException, \
     FolderNotFoundException, InactiveFolderFoundException, \
-    FolderOrderAlreadyExistedException, \
-    FolderListOrderAlreadyExistedException, \
     SpaceListOrderAlreadyExistedException, ViewTypeNotFoundException, \
-    ViewNotFoundException, SpaceOrderAlreadyExistedException, \
-    WorkspaceNotFoundException, InactiveWorkspaceFoundException, \
+    ViewNotFoundException, WorkspaceNotFoundException, \
+    InactiveWorkspaceFoundException, \
     InactiveUserFoundException, UserNotWorkspaceOwnerException, \
     InactiveWorkspaceMemberFoundException
 from task_management.exceptions.enums import PermissionsEnum, FieldType, \
@@ -34,8 +29,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_assignee_storage_interface import \
-    TaskAssigneeStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
@@ -138,9 +131,9 @@ class ValidationMixin:
                 template_name=template_name)
 
     @staticmethod
-    def check_field_name_exist(field_id: str, field_name: str,
-                               template_id: str,
-                               field_storage: FieldStorageInterface):
+    def ensure_field_name_unique(field_id: str, field_name: str,
+                                 template_id: str,
+                                 field_storage: FieldStorageInterface):
 
         is_field_name_exist = field_storage.check_field_name_except_this_field(
             field_id=field_id, field_name=field_name, template_id=template_id)
@@ -159,8 +152,7 @@ class ValidationMixin:
             raise FieldOrderAlreadyExistsException(field_order=field_order)
 
     @staticmethod
-    def validate_field_config(field_type: str,
-                              config: dict):
+    def validate_field_config(field_type: str, config: dict):
 
         default_value = config.get("default")
 
@@ -188,14 +180,6 @@ class ValidationMixin:
                 )
 
         if default_value is not None:
-            expected_type = rules["default_type"]
-
-            if not isinstance(default_value, expected_type):
-                raise InvalidFieldDefaultValueException(
-                    field_type=field_type,
-                    default_value=default_value
-                )
-
             if field_type == FieldType.DROPDOWN.value:
                 if default_value not in config.get("options", []):
                     raise InvalidFieldDefaultValueException(
@@ -240,25 +224,25 @@ class ValidationMixin:
             raise InactiveListFoundException(list_id=list_id)
 
     @staticmethod
-    def check_user_has_access_to_list(user_id: str, list_id: str,
-                                      permission_storage: ListPermissionStorageInterface):
+    def ensure_user_has_access_to_list(user_id: str, list_id: str,
+                                       permission_storage: ListPermissionStorageInterface):
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
-        if user_permissions.permission_type.value == PermissionsEnum.VIEW.value:
+        if not user_permissions.permission_type.value == PermissionsEnum.FULL_EDIT.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod
-    def validate_task_exists(task_id: str,
-                             task_storage: TaskStorageInterface) -> str:
+    def get_active_task_list_id(task_id: str,
+                                task_storage: TaskStorageInterface) -> str:
 
         task_data = task_storage.get_task_by_id(task_id=task_id)
 
         if not task_data:
             raise TaskNotFoundException(task_id=task_id)
 
-        if not task_data.is_active:
-            raise InactiveTaskFoundException(task_id=task_id)
+        if task_data.is_delete:
+            raise DeletedTaskFoundException(task_id=task_id)
 
         return task_data.list_id
 

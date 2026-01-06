@@ -1,1 +1,1 @@
-ViewDTO(view_id='b2daa1f6-cc16-414a-ae4a-6e781cf4a8ed', name='himself', description='Do analysis him.', view_type='list', created_by='d24e3104-1dd2-4234-a131-24bd01275a63')
+ViewDTO(view_id='0c72fe13-fbf2-4c1c-ae6d-086cf7b37a86', name='parent', description='Image enjoy rise.', view_type='list', created_by='cc16014a-2e4a-4e78-9cf4-a8ed2db6de21')

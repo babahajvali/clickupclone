@@ -101,7 +101,7 @@ class ListInteractor(ValidationMixin):
 
         list_data = self.list_storage.get_list(
             list_id=update_list_data.list_id)
-        self.check_user_has_access_to_list(
+        self.ensure_user_has_access_to_list(
             user_id=user_id, list_id=update_list_data.list_id,
             permission_storage=self.list_permission_storage)
 
@@ -120,9 +120,9 @@ class ListInteractor(ValidationMixin):
 
     def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
                                user_id: str) -> list[ListDTO]:
-        self.check_user_has_access_to_list(list_id=list_id,
-                                           user_id=user_id,
-                                           permission_storage=self.list_permission_storage)
+        self.ensure_user_has_access_to_list(list_id=list_id,
+                                            user_id=user_id,
+                                            permission_storage=self.list_permission_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
         self._validate_list_order_in_folder(folder_id=folder_id, order=order)
@@ -133,8 +133,8 @@ class ListInteractor(ValidationMixin):
 
     def reorder_list_in_space(self, space_id: str, order: int, user_id: str,
                               list_id: str) -> list[ListDTO]:
-        self.check_user_has_access_to_list(list_id=list_id, user_id=user_id,
-                                           permission_storage=self.list_permission_storage)
+        self.ensure_user_has_access_to_list(list_id=list_id, user_id=user_id,
+                                            permission_storage=self.list_permission_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
         self._validate_list_order_in_space(space_id=space_id, order=order)
@@ -144,7 +144,7 @@ class ListInteractor(ValidationMixin):
                                                        order=order)
 
     def remove_list(self, list_id: str, user_id: str):
-        self.check_user_has_access_to_list(
+        self.ensure_user_has_access_to_list(
             user_id=user_id,
             list_id=list_id,
             permission_storage=self.list_permission_storage
@@ -158,8 +158,8 @@ class ListInteractor(ValidationMixin):
 
     def set_list_visibility(self, list_id: str, visibility: Visibility,
                             user_id: str) -> ListDTO:
-        self.check_user_has_access_to_list(list_id=list_id, user_id=user_id,
-                                           permission_storage=self.list_permission_storage)
+        self.ensure_user_has_access_to_list(list_id=list_id, user_id=user_id,
+                                            permission_storage=self.list_permission_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
 

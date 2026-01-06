@@ -15,7 +15,7 @@ class TaskAssigneeStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_task_assignee_exist(self, assign_id: str)-> bool:
+    def get_task_assignee(self, assign_id: str)-> TaskAssigneeDTO:
         pass
 
     @abstractmethod

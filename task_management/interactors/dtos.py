@@ -105,16 +105,14 @@ FIXED_FIELDS = [
     {
         "field_type": FieldType.USER.value,
         "field_name": "Assignee",
-    },
-    {
-        "field_type": FieldType.DATE.value,
-        "field_name": "Due Date",
+        "description": "task Assignees"
     },
     {
         "field_type": FieldType.DROPDOWN.value,
         "field_name": "Priority",
         "config": {
-            "options": ["Low", "Medium", "High"]
+            "options": ["Low", "Medium", "High"],
+            "default": "Medium"
         }
     },
     {
@@ -133,9 +131,8 @@ class CreateTaskDTO:
     title: str
     description: str
     list_id: str
-    order: int
     created_by: str
-    is_active: bool
+    is_delete: bool
 
 
 @dataclass
@@ -143,10 +140,6 @@ class UpdateTaskDTO:
     task_id: str
     title: str
     description: str
-    order: int
-    list_id: str
-    created_by: str
-    is_active: bool
 
 
 @dataclass
@@ -157,7 +150,7 @@ class TaskDTO:
     list_id: str
     order: int
     created_by: str
-    is_active: bool
+    is_delete: bool
 
 
 @dataclass
