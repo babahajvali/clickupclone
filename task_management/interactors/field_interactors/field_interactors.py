@@ -39,8 +39,7 @@ class FieldInteractor(ValidationMixin):
         self.validate_field_config(field_type=create_field_data.field_type,
                                    config=create_field_data.config)
 
-        result =  self.field_storage.create_field(
-            create_field_data=create_field_data)
+        return self.field_storage.create_field(create_field_data=create_field_data)
 
         return result
 
@@ -62,8 +61,7 @@ class FieldInteractor(ValidationMixin):
         self.validate_field_config(field_type=field_data.field_type,
                                    config=update_field_data.config)
 
-        return self.field_storage.update_field(
-            update_field_data=update_field_data)
+        return self.field_storage.update_field(update_field_data=update_field_data)
 
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> list[FieldDTO]:

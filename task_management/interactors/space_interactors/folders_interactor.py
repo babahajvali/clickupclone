@@ -66,7 +66,7 @@ class FolderInteractor(ValidationMixin):
         self.ensure_user_has_access_to_folder(folder_id=folder_id,
                                               user_id=user_id,
                                               permission_storage=self.folder_permission_storage)
-        self._validate_the_folder_order(space_id=space_id, order=order)
+        self._validate_folder_order(space_id=space_id, order=order)
 
         return self.folder_storage.reorder_folder(folder_id=folder_id,
                                                   order=order)
@@ -104,22 +104,18 @@ class FolderInteractor(ValidationMixin):
                                    user_id: str) -> UserFolderPermissionDTO:
         self.ensure_user_has_access_to_folder(
             user_id=user_id,
-
             folder_id=folder_id,
             permission_storage=self.folder_permission_storage
         )
-
         self.ensure_folder_is_active(
             folder_id=folder_id,
-
             folder_storage=self.folder_storage
         )
 
         return self.folder_permission_storage.get_user_permission_for_folder(
             folder_id=folder_id, user_id=user_id)
 
-    def get_folder_permissions(self, folder_id: str) -> list[
-        UserFolderPermissionDTO]:
+    def get_folder_permissions(self, folder_id: str) -> list[UserFolderPermissionDTO]:
         self.ensure_folder_is_active(folder_id=folder_id,
                                      folder_storage=self.folder_storage)
 
@@ -127,8 +123,7 @@ class FolderInteractor(ValidationMixin):
             folder_id=folder_id)
 
     def _create_folder_users_permissions(self, folder_id: str, space_id: str,
-                                         created_by: str) -> list[
-        UserFolderPermissionDTO]:
+                                         created_by: str) -> list[UserFolderPermissionDTO]:
         space_user_permissions = self.space_permission_storage.get_space_permissions(
             space_id=space_id)
         folder_user_permissions = []
@@ -164,7 +159,7 @@ class FolderInteractor(ValidationMixin):
         return self.folder_permission_storage.create_folder_users_permissions(
             users_permission_data=folder_user_permissions)
 
-    def _validate_the_folder_order(self, space_id: str, order: int):
+    def _validate_folder_order(self, space_id: str, order: int):
         if order < 1:
             raise InvalidOrderException(order=order)
         lists_count = self.folder_storage.get_space_folder_count(

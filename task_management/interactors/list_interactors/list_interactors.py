@@ -168,10 +168,7 @@ class ListInteractor(ValidationMixin):
 
         return self.list_storage.make_list_private(list_id=list_id)
 
-    # Permission section
-
-    def get_list_permissions(self, list_id: str) -> list[
-        UserListPermissionDTO]:
+    def get_list_permissions(self, list_id: str) -> list[UserListPermissionDTO]:
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
 
@@ -188,9 +185,7 @@ class ListInteractor(ValidationMixin):
                                     space_storage=self.space_storage)
         return self.list_storage.get_space_lists(space_ids=[space_id])
 
-    # Helping functions
-
-    def _check_user_list_permission(self, list_id: str, user_id: str):
+    def _validate_user_list_permission(self, list_id: str, user_id: str):
         user_permission = self.list_permission_storage.get_user_permission_for_list(
             list_id=list_id, user_id=user_id)
 
@@ -201,8 +196,7 @@ class ListInteractor(ValidationMixin):
             raise InactiveUserPermissionException(user_id=user_id)
 
     def _create_list_users_permissions(self, list_id: str, space_id: str,
-                                       created_by: str) -> list[
-        UserListPermissionDTO]:
+                                       created_by: str) -> list[UserListPermissionDTO]:
         space_user_permissions = self.space_permission_storage.get_space_permissions(
             space_id=space_id)
         list_user_permissions = []

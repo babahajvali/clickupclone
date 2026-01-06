@@ -146,15 +146,15 @@ class WorkspaceMemberInteractor(ValidationMixin):
             self.space_permission_storage.create_user_space_permissions(
                 permission_data=user_spaces_permission)
 
-        self.add_permissions_space_folders(
+        self.add_permissions_for_space_folders(
             space_ids=space_ids,
             user_id=user_id,
             role=role,
             added_by=added_by
         )
 
-    def add_permissions_space_folders(self, space_ids: list[str], user_id: str,
-                                      role: str, added_by: str):
+    def add_permissions_for_space_folders(self, space_ids: list[str], user_id: str,
+                                          role: str, added_by: str):
         space_folders = self.folder_storage.get_space_folders(
             space_ids=space_ids)
 
@@ -216,13 +216,13 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 space_id=space_id
             )
 
-        self.remove_permissions_space_folders(
+        self.remove_permissions_for_space_folders(
             space_ids=space_ids,
             user_id=user_id
         )
 
-    def remove_permissions_space_folders(self, space_ids: list[str],
-                                         user_id: str):
+    def remove_permissions_for_space_folders(self, space_ids: list[str],
+                                              user_id: str):
         space_folders = self.folder_storage.get_space_folders(
             space_ids=space_ids)
 
@@ -262,14 +262,14 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 permission_type=permission_type
             )
 
-        self.update_permissions_space_folders(
+        self.update_permissions_for_space_folders(
             space_ids=space_ids,
             user_id=user_id,
             role=role
         )
 
-    def update_permissions_space_folders(self, space_ids: list[str],
-                                         user_id: str, role: str):
+    def update_permissions_for_space_folders(self, space_ids: list[str],
+                                             user_id: str, role: str):
         space_folders = self.folder_storage.get_space_folders(
             space_ids=space_ids)
 

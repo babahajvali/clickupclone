@@ -104,7 +104,6 @@ class ValidationMixin:
 
     @staticmethod
     def check_field_type(field_type: str):
-
         field_types = [x.value for x in FieldType]
 
         if field_type not in field_types:
@@ -122,7 +121,6 @@ class ValidationMixin:
     @staticmethod
     def validate_template_name_not_exists(template_name: str,
                                           template_storage: TemplateStorageInterface):
-
         is_exist = template_storage.is_template_name_exist(
             template_name=template_name)
 
@@ -134,7 +132,6 @@ class ValidationMixin:
     def ensure_field_name_unique(field_id: str, field_name: str,
                                  template_id: str,
                                  field_storage: FieldStorageInterface):
-
         is_field_name_exist = field_storage.check_field_name_except_this_field(
             field_id=field_id, field_name=field_name, template_id=template_id)
 
@@ -235,7 +232,6 @@ class ValidationMixin:
     @staticmethod
     def get_active_task_list_id(task_id: str,
                                 task_storage: TaskStorageInterface) -> str:
-
         task_data = task_storage.get_task_by_id(task_id=task_id)
 
         if not task_data:
@@ -249,7 +245,6 @@ class ValidationMixin:
     @staticmethod
     def ensure_space_is_active(space_id: str,
                                space_storage: SpaceStorageInterface):
-
         space_data = space_storage.get_space(space_id=space_id)
 
         if not space_data:
@@ -262,7 +257,6 @@ class ValidationMixin:
     def ensure_folder_is_active(folder_id: str,
                                 folder_storage: FolderStorageInterface):
         folder_data = folder_storage.get_folder(folder_id=folder_id)
-
         if not folder_data:
             raise FolderNotFoundException(folder_id=folder_id)
 
@@ -306,7 +300,6 @@ class ValidationMixin:
     @staticmethod
     def ensure_user_has_access_to_space(user_id: str, space_id: str,
                                         permission_storage: SpacePermissionStorageInterface):
-
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
 

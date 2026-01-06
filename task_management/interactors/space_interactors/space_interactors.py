@@ -45,7 +45,7 @@ class SpaceInteractor(ValidationMixin):
         result = self.space_storage.create_space(
             create_space_data=create_space_data)
 
-        self._create_space_users_permission(space_id=result.space_id,
+        self._create_space_user_permissions(space_id=result.space_id,
                                             workspace_id=result.workspace_id,
                                             created_by=result.created_by)
         return result
@@ -106,10 +106,7 @@ class SpaceInteractor(ValidationMixin):
         return self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
 
-    # Permissions Section
-
-    def get_space_permissions(self, space_id: str) -> list[
-        UserSpacePermissionDTO]:
+    def get_space_permissions(self, space_id: str) -> list[UserSpacePermissionDTO]:
         self.ensure_space_is_active(
             space_id=space_id,
             space_storage=self.space_storage
@@ -117,8 +114,8 @@ class SpaceInteractor(ValidationMixin):
 
         return self.permission_storage.get_space_permissions(space_id=space_id)
 
-    def _create_space_users_permission(self, workspace_id: str, space_id: str,
-                                       created_by: str, ):
+    def _create_space_user_permissions(self, workspace_id: str, space_id: str,
+                                       created_by: str):
         workspace_members = self.workspace_member_storage.get_workspace_members(
             workspace_id=workspace_id)
         users_permissions = []

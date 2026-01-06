@@ -36,8 +36,8 @@ class TaskInteractor(ValidationMixin):
             permission_storage=self.permission_storage)
 
         result = self.task_storage.create_task(task_data=task_data)
-        self._set_default_field_values_at_task(task_id=result.task_id,
-                                               list_id=task_data.list_id)
+        self._set_default_field_values_for_task(task_id=result.task_id,
+                                                 list_id=task_data.list_id)
 
         return result
 
@@ -76,7 +76,7 @@ class TaskInteractor(ValidationMixin):
 
         return self.task_storage.get_task_by_id(task_id=task_id)
 
-    def task_filter(self, task_filter_data: FilterDTO, user_id: str):
+    def filter_tasks(self, task_filter_data: FilterDTO, user_id: str):
         self.ensure_user_has_access_to_list(user_id=user_id,
                                             list_id=task_filter_data.list_id,
                                             permission_storage=self.permission_storage)
@@ -91,14 +91,13 @@ class TaskInteractor(ValidationMixin):
                                                task_storage=self.task_storage)
         self.ensure_user_has_access_to_list(user_id=user_id, list_id=list_id,
                                             permission_storage=self.permission_storage)
-        self._validate_the_task_order(list_id=list_id, order=order)
+        self._validate_task_order(list_id=list_id, order=order)
 
         return self.task_storage.reorder_tasks(task_id=task_id, order=order,
                                                list_id=list_id)
 
     @staticmethod
     def _validate_filter_parameters(filter_data: FilterDTO):
-
         if filter_data.offset < 1:
             raise InvalidOffsetNumberException(
                 offset=filter_data.offset,
@@ -109,7 +108,7 @@ class TaskInteractor(ValidationMixin):
                 limit=filter_data.limit,
             )
 
-    def _validate_the_task_order(self, list_id: str, order: int):
+    def _validate_task_order(self, list_id: str, order: int):
         if order < 1:
             raise InvalidOrderException(order=order)
         tasks_count = self.task_storage.get_tasks_count(
@@ -118,7 +117,7 @@ class TaskInteractor(ValidationMixin):
         if order > tasks_count:
             raise InvalidOrderException(order=order)
 
-    def _set_default_field_values_at_task(self, task_id: str, list_id: str):
+    def _set_default_field_values_for_task(self, task_id: str, list_id: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
         template_fields = self.field_storage.get_fields_for_template(

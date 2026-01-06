@@ -31,7 +31,7 @@ class CreateTemplateInteractor(ValidationMixin):
             user_id=template_data.created_by, list_id=template_data.list_id,
             permission_storage=self.permission_storage)
         self.validate_template_name_not_exists(
-            template_name=template_data.name,template_storage=self.template_storage)
+            template_name=template_data.name, template_storage=self.template_storage)
 
         result = self.template_storage.create_template(template_data)
         self.create_template_default_fields(template_id=result.template_id,
