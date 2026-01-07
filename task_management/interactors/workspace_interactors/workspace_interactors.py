@@ -15,8 +15,8 @@ class WorkspaceInteractor(ValidationMixin):
 
     def create_workspace(self, create_workspace_data: CreateWorkspaceDTO) \
             -> WorkspaceDTO:
-        self.ensure_user_is_active(create_workspace_data.user_id,
-                                   user_storage=self.user_storage)
+        self.validate_user_is_active(create_workspace_data.user_id,
+                                     user_storage=self.user_storage)
 
         return self.workspace_storage.create_workspace(
             workspace_data=create_workspace_data)
@@ -24,10 +24,10 @@ class WorkspaceInteractor(ValidationMixin):
     def update_workspace(self,
                          update_workspace_data: UpdateWorkspaceDTO,
                          user_id: str) -> WorkspaceDTO:
-        self.ensure_user_is_workspace_owner(
+        self.validate_user_is_workspace_owner(
             user_id=user_id, workspace_id=update_workspace_data.workspace_id,
             workspace_storage=self.workspace_storage)
-        self.ensure_workspace_is_active(
+        self.validate_workspace_is_active(
             update_workspace_data.workspace_id,
             workspace_storage=self.workspace_storage)
 
@@ -36,7 +36,7 @@ class WorkspaceInteractor(ValidationMixin):
 
     def delete_workspace(self, workspace_id: str,
                          user_id: str) -> WorkspaceDTO:
-        self.ensure_user_is_workspace_owner(
+        self.validate_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id,
             workspace_storage=self.workspace_storage)
 
@@ -45,11 +45,11 @@ class WorkspaceInteractor(ValidationMixin):
 
     def transfer_workspace(self, workspace_id: str, user_id: str,
                            new_user_id: str) -> WorkspaceDTO:
-        self.ensure_user_is_workspace_owner(user_id=user_id,
-                                            workspace_id=workspace_id,
-                                            workspace_storage=self.workspace_storage)
-        self.ensure_user_is_active(user_id=new_user_id,
-                                   user_storage=self.user_storage)
+        self.validate_user_is_workspace_owner(user_id=user_id,
+                                              workspace_id=workspace_id,
+                                              workspace_storage=self.workspace_storage)
+        self.validate_user_is_active(user_id=new_user_id,
+                                     user_storage=self.user_storage)
 
         return self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)

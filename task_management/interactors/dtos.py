@@ -11,7 +11,7 @@ class UserDTO:
     user_id: str
     full_name: str
     username: str
-    gender: str
+    gender: GenderEnum
     email: str
     password: str
     phone_number: str
@@ -40,7 +40,7 @@ class AccountDTO:
 
 @dataclass
 class CreateFieldDTO:
-    field_type: str
+    field_type: FieldType
     field_name: str
     description: str
     template_id: str
@@ -61,7 +61,7 @@ class UpdateFieldDTO:
 @dataclass
 class FieldDTO:
     field_id: str
-    field_type: str
+    field_type: FieldType
     description: str
     template_id: str
     field_name: str

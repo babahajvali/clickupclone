@@ -49,7 +49,7 @@ class TestCreateFieldInteractor:
     def _get_field_dto(self):
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldType.TEXT.value,
+            field_type=FieldType.TEXT,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
@@ -101,7 +101,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor()
 
         dto = CreateFieldDTO(
-            field_type=FieldType.TEXT.value,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="Task priority",
             template_id="tpl_1",
@@ -121,7 +121,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor(template_exists=False)
 
         dto = CreateFieldDTO(
-            field_type=FieldType.TEXT.value,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="invalid_tpl",
@@ -143,7 +143,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor()
 
         dto = CreateFieldDTO(
-            field_type=InvalidFieldEnum.INVALID.value,
+            field_type=InvalidFieldEnum.INVALID,
             field_name="Priority",
             description="",
             template_id="tpl_1",
@@ -188,7 +188,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor(name_exists=True)
 
         dto = CreateFieldDTO(
-            field_type=FieldType.TEXT.value,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",
