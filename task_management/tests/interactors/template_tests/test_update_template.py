@@ -66,7 +66,6 @@ class TestUpdateTemplateInteractor:
             name=update_dto.name,
             list_id=list_id,
             description=update_dto.description,
-            created_by="user_id",
         )
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()

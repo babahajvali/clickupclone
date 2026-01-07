@@ -55,7 +55,6 @@ class TestCreateTemplateInteractor:
             name=create_template_dto.name,
             list_id=create_template_dto.list_id,
             description=create_template_dto.description,
-            created_by=create_template_dto.created_by,
         )
 
         self.list_storage.get_list.return_value = type(
