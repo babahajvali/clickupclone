@@ -351,7 +351,7 @@ class ValidationMixin:
         if not workspace_data.is_active:
             raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
 
-        if workspace_data.owner_id == user_id:
+        if workspace_data.user_id == user_id:
             return
 
         member_permission = workspace_member_storage.get_workspace_member(

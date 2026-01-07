@@ -80,7 +80,6 @@ class CreateListDTOFactory(factory.Factory):
     name = factory.Faker("word")
     description = factory.Faker("sentence")
     space_id = factory.Faker("uuid4")
-    is_active = True
     is_private = False
     created_by = factory.Faker("uuid4")
     folder_id = None
@@ -117,7 +116,6 @@ class CreateTaskDTOFactory(factory.Factory):
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
     created_by = factory.Faker('uuid4')
-    is_delete = False
 
 
 class UpdateTaskDTOFactory(factory.Factory):
@@ -180,7 +178,6 @@ class CreateFolderDTOFactory(factory.Factory):
     name = factory.Faker('word')
     description = factory.Faker('sentence')
     space_id = factory.Faker('uuid4')
-    is_active = True
     created_by = factory.Faker('uuid4')
     is_private = False
 
@@ -269,7 +266,6 @@ class CreateSpaceDTOFactory(factory.Factory):
     name = factory.Faker('word')
     description = factory.Faker('sentence')
     workspace_id = factory.Faker('uuid4')
-    is_active = True
     is_private = False
     created_by = factory.Faker('uuid4')
 
@@ -304,7 +300,7 @@ class WorkspaceDTOFactory(factory.Factory):
     workspace_id = factory.Faker('uuid4')
     name = factory.Faker('company')
     description = factory.Faker('sentence')
-    owner_id = factory.Faker('uuid4')
+    user_id = factory.Faker('uuid4')
     is_active = True
 
 
@@ -319,7 +315,6 @@ class AddMemberToWorkspaceDTOFactory(factory.Factory):
         model = AddMemberToWorkspaceDTO
 
     workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
-    is_active = factory.Faker('boolean')
     user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
     role = Role.MEMBER.value

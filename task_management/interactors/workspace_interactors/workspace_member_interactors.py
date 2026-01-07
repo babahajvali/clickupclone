@@ -137,7 +137,6 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 user_id=user_id,
                 space_id=each.space_id,
                 permission_type=permission_type,
-                is_active=True,
                 added_by=added_by
             )
             user_spaces_permission.append(space_permission)
@@ -167,7 +166,6 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 user_id=user_id,
                 folder_id=each.folder_id,
                 permission_type=permission_type,
-                is_active=True,
                 added_by=added_by
             )
             folder_permissions.append(folder_permission)
@@ -195,7 +193,6 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 user_id=user_id,
                 list_id=each_list.list_id,
                 permission_type=permission_type,
-                is_active=True,
                 added_by=added_by
             )
             list_permissions.append(list_permission)

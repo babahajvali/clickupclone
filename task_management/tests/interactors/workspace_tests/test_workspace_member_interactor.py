@@ -80,7 +80,7 @@ class TestWorkspaceMemberInteractor:
         return type("Workspace",(),
             {
                 "workspace_id": "workspace123",
-                "owner_id": owner_id,
+                "user_id": owner_id,
                 "is_active": True
             })()
 

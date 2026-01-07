@@ -72,7 +72,7 @@ class TestSpaceInteractor:
         self.workspace_storage.get_workspace.return_value = type(
             'Workspace', (), {
                 'is_active': True,
-                'owner_id': create_data.created_by
+                'user_id': create_data.created_by
             }
         )()
 
@@ -91,7 +91,7 @@ class TestSpaceInteractor:
         self.workspace_storage.get_workspace.return_value = type(
             "Workspace", (), {
                 "is_active": True,
-                "owner_id": "some-other-user"
+                "user_id": "some-other-user"
             }
         )()
 

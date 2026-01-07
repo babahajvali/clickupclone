@@ -7,7 +7,6 @@ from task_management.exceptions.custom_exceptions import (
     TemplateNotFoundException,
     UnSupportedFieldTypeFoundException,
     FieldNameAlreadyExistsException,
-    FieldOrderAlreadyExistsException,
     NotAccessToModificationException,
 )
 from task_management.exceptions.enums import FieldType, PermissionsEnum
@@ -45,8 +44,8 @@ def make_permission_dto(permission_type: PermissionsEnum):
     )
 
 class TestCreateFieldInteractor:
-
-    def _get_field_dto(self):
+    @staticmethod
+    def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
             field_type=FieldType.TEXT,
@@ -166,7 +165,7 @@ class TestCreateFieldInteractor:
         )
 
         dto = CreateFieldDTO(
-            field_type=FieldType.TEXT.value,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",

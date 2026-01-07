@@ -31,14 +31,6 @@ class CreateUserDTO:
 
 
 @dataclass
-class AccountDTO:
-    id: int
-    user_id: str
-    username: str
-    is_active: bool
-
-
-@dataclass
 class CreateFieldDTO:
     field_type: FieldType
     field_name: str
@@ -133,8 +125,6 @@ class CreateTaskDTO:
     description: str
     list_id: str
     created_by: str
-    is_delete: bool
-
 
 @dataclass
 class UpdateTaskDTO:
@@ -182,7 +172,6 @@ class CreateListDTO:
     name: str
     description: str
     space_id: str
-    is_active: bool
     created_by: str
     is_private: bool
     folder_id: Optional[str] = None
@@ -239,7 +228,6 @@ class CreateFolderDTO:
     name: str
     description: str
     space_id: str
-    is_active: bool
     created_by: str
     is_private: bool
 
@@ -286,7 +274,6 @@ class CreateSpaceDTO:
     name: str
     description: str
     workspace_id: str
-    is_active: bool
     is_private: bool
     created_by: str
 
@@ -315,7 +302,7 @@ class WorkspaceDTO:
     workspace_id: str
     name: str
     description: str
-    owner_id: str
+    user_id: str
     is_active: bool
 
 
@@ -338,7 +325,6 @@ class AddMemberToWorkspaceDTO:
     workspace_id: str
     user_id: str
     role: str
-    is_active: bool
     added_by: str
 
 
@@ -357,7 +343,6 @@ class CreateUserSpacePermissionDTO:
     space_id: str
     user_id: str
     permission_type: PermissionsEnum
-    is_active: bool
     added_by: str
 
 
@@ -376,7 +361,6 @@ class CreateUserFolderPermissionDTO:
     folder_id: str
     user_id: str
     permission_type: PermissionsEnum
-    is_active: bool
     added_by: str
 
 
@@ -395,7 +379,6 @@ class CreateUserListPermissionDTO:
     list_id: str
     permission_type: PermissionsEnum
     user_id: str
-    is_active: bool
     added_by: str
 
 

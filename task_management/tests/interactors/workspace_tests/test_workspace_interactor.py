@@ -78,7 +78,7 @@ class TestWorkspaceInteractor:
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace.return_value = \
-            self._mock_active_workspace(update_data.owner_id)
+            self._mock_active_workspace(update_data.user_id)
         self.workspace_storage.update_workspace.return_value = expected
 
         result = self.interactor.update_workspace(update_data,user_id="user_id")
