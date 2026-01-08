@@ -1,1 +1,1 @@
-ViewDTO(view_id='61c61ae4-6a59-4b07-ada6-78063a19607d', name='may', description='Job high she.', view_type='board', created_by='074f3be0-44f2-4133-b45c-88409da28338')
+ViewDTO(view_id='51497435-a9c9-424e-bd72-3837705bacc2', name='throughout', description='Attack detail box choose view week remain.', view_type='board', created_by='b44788bd-5e2d-4454-a462-32e735c3de95')

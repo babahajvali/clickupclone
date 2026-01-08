@@ -31,5 +31,9 @@ class WorkspaceStorageInterface(ABC):
         # change the owner id with new_user_id
         pass
 
+    @abstractmethod
+    def get_workspaces_by_account(self,account_id: str) -> list[WorkspaceDTO]:
+        pass
+
 
 

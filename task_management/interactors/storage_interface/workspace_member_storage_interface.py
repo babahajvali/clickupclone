@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO, \
     AddMemberToWorkspaceDTO
 
@@ -37,4 +36,8 @@ class WorkspaceMemberStorageInterface(ABC):
     @abstractmethod
     def get_workspace_members(self, workspace_id: str) -> list[
         WorkspaceMemberDTO]:
+        pass
+
+    @abstractmethod
+    def validate_member_exists(self, user_id: str, workspace_id: str) -> bool:
         pass

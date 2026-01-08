@@ -5,7 +5,7 @@ from task_management.exceptions.custom_exceptions import (
     NotAccessToModificationException,
     UnexpectedRoleFoundException
 )
-from task_management.exceptions.enums import PermissionsEnum, Role
+from task_management.exceptions.enums import  Role
 from task_management.interactors.workspace_interactors.workspace_member_interactors import (
     WorkspaceMemberInteractor
 )
@@ -75,8 +75,8 @@ class TestWorkspaceMemberInteractor:
             list_storage=self.list_storage
         )
 
-
-    def _mock_active_workspace(self, owner_id="admin123"):
+    @staticmethod
+    def _mock_active_workspace(owner_id="admin123"):
         return type("Workspace",(),
             {
                 "workspace_id": "workspace123",
@@ -84,20 +84,24 @@ class TestWorkspaceMemberInteractor:
                 "is_active": True
             })()
 
-    def _mock_active_user(self):
+    @staticmethod
+    def _mock_active_user():
         return type("User", (), {"is_active": True})()
 
-    def _mock_space(self, space_id="space123"):
+    @staticmethod
+    def _mock_space(space_id="space123"):
         return type("Space", (), {"space_id": space_id})()
 
-    def _mock_folder(self, folder_id="folder123"):
+    @staticmethod
+    def _mock_folder(folder_id="folder123"):
         return type("Folder", (), {"folder_id": folder_id})()
 
-    def _mock_list(self, list_id="list123"):
+    @staticmethod
+    def _mock_list(list_id="list123"):
         return type("List", (), {"list_id": list_id})()
 
 
-    def test_add_member_to_workspace_success(self, snapshot):
+    def test_add_member_to_workspace_success(self):
         dto = AddMemberToWorkspaceDTOFactory()
         expected = WorkspaceMemberDTOFactory()
 
@@ -154,7 +158,7 @@ class TestWorkspaceMemberInteractor:
         )
 
 
-    def test_remove_member_success(self, snapshot):
+    def test_remove_member_success(self):
         expected = WorkspaceMemberDTOFactory()
 
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
@@ -166,7 +170,7 @@ class TestWorkspaceMemberInteractor:
         self.list_storage.get_space_lists.return_value = [self._mock_list()]
 
         result = self.interactor.remove_member_from_workspace(
-            user_id="user123",
+            removed_by="user123",
             workspace_member_id=1)
         assert result == expected
 
@@ -177,7 +181,7 @@ class TestWorkspaceMemberInteractor:
         self.list_permission_storage.remove_user_permission_for_list.assert_called_once()
 
 
-    def test_change_member_role_success(self, snapshot):
+    def test_change_member_role_success(self):
         expected = WorkspaceMemberDTOFactory(role=Role.MEMBER)
 
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()

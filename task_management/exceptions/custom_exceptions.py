@@ -250,3 +250,23 @@ class InvalidOrderException(Exception):
 class InactiveWorkspaceMemberFoundException(Exception):
     def __init__(self, workspace_member_id: int):
         self.workspace_member_id = workspace_member_id
+
+
+class AlreadyAccountNameExistedException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+
+class AccountNotFoundException(Exception):
+    def __init__(self, account_id: str):
+        self.account_id = account_id
+
+
+class InactiveAccountFoundException(Exception):
+    def __init__(self, account_id: str):
+        self.account_id = account_id
+
+
+class UserNotAccountOwnerException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id

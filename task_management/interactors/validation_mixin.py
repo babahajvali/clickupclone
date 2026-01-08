@@ -12,9 +12,14 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     ViewNotFoundException, WorkspaceNotFoundException, \
     InactiveWorkspaceFoundException, \
     InactiveUserFoundException, UserNotWorkspaceOwnerException, \
-    InactiveWorkspaceMemberFoundException
+    InactiveWorkspaceMemberFoundException, AccountNotFoundException, \
+    InactiveAccountFoundException, UnexpectedRoleFoundException
 from task_management.exceptions.enums import PermissionsEnum, FieldType, \
     ViewTypeEnum, Role
+from task_management.interactors.storage_interface.account_storage_interface import \
+    AccountStorageInterface
+from task_management.interactors.storage_interface.account_member_storage_interface import \
+    AccountMemberStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -371,3 +376,29 @@ class ValidationMixin:
         if not workspace_member_data.is_active:
             raise InactiveWorkspaceMemberFoundException(
                 workspace_member_id=workspace_member_id)
+
+    @staticmethod
+    def validate_account_is_active(account_id: str,
+                                   account_storage: AccountStorageInterface):
+        account_data = account_storage.get_account_by_id(account_id=account_id)
+
+        if not account_data:
+            raise AccountNotFoundException(account_id=account_id)
+
+        if not account_data.is_active:
+            raise InactiveAccountFoundException(account_id=account_id)
+
+    @staticmethod
+    def validate_user_access_for_account(user_id: str, account_id: str,
+                                         account_member_storage: AccountMemberStorageInterface):
+        account_user_data = account_member_storage.get_user_permission_for_account(
+            user_id=user_id, account_id=account_id)
+
+        if account_user_data.role.value == Role.GUEST.value:
+            raise NotAccessToModificationException(user_id=user_id)
+
+    @staticmethod
+    def validate_role(role: str):
+        existed_roles = [x.value for x in Role]
+        if role not in existed_roles:
+            raise UnexpectedRoleFoundException(role=role)

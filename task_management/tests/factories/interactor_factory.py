@@ -12,7 +12,8 @@ from task_management.interactors.dtos import CreateFieldDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
     CreateSpaceDTO, SpaceDTO, \
     CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO, \
-    WorkspaceMemberDTO
+    WorkspaceMemberDTO, CreateAccountDTO, AccountDTO, CreateAccountMemberDTO, \
+    AccountMemberDTO
 
 
 class CreateFieldFactory(factory.Factory):
@@ -26,7 +27,8 @@ class CreateFieldFactory(factory.Factory):
     is_required = factory.Faker("boolean")
     created_by = factory.Faker("uuid4")
     config = factory.LazyAttribute(lambda o: {
-        "options": ["Option 1", "Option 2"] if o.field_type == FieldType.DROPDOWN.value else {}
+        "options": ["Option 1",
+                    "Option 2"] if o.field_type == FieldType.DROPDOWN.value else {}
     })
 
 
@@ -54,6 +56,7 @@ class CreateTemplateDTOFactory(factory.Factory):
     list_id = factory.Faker("uuid4")
     created_by = factory.Faker("uuid4")
 
+
 class UpdateTemplateDTOFactory(factory.Factory):
     class Meta:
         model = UpdateTemplateDTO
@@ -73,6 +76,7 @@ class TemplateDTOFactory(factory.Factory):
     description = factory.Faker("sentence")
     created_by = factory.Faker("uuid4")
 
+
 class CreateListDTOFactory(factory.Factory):
     class Meta:
         model = CreateListDTO
@@ -83,6 +87,7 @@ class CreateListDTOFactory(factory.Factory):
     is_private = False
     created_by = factory.Faker("uuid4")
     folder_id = None
+
 
 class UpdateListDTOFactory(factory.Factory):
     class Meta:
@@ -135,7 +140,7 @@ class TaskDTOFactory(factory.Factory):
     title = factory.Faker('sentence', nb_words=3)
     description = factory.Faker('text')
     list_id = factory.Faker('uuid4')
-    order = factory.sequence(lambda n:n+1)
+    order = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker('uuid4')
     is_delete = False
 
@@ -291,6 +296,7 @@ class CreateWorkspaceFactory(factory.Factory):
     name = factory.Faker('company')
     description = factory.Faker('sentence')
     user_id = factory.Faker('uuid4')
+    account_id = factory.Faker('uuid4')
 
 
 class WorkspaceDTOFactory(factory.Factory):
@@ -301,6 +307,7 @@ class WorkspaceDTOFactory(factory.Factory):
     name = factory.Faker('company')
     description = factory.Faker('sentence')
     user_id = factory.Faker('uuid4')
+    account_id = factory.Faker('uuid4')
     is_active = True
 
 
@@ -310,6 +317,7 @@ FieldDTOFactory = FieldDTOFactory
 CreateWorkspaceDTOFactory = CreateWorkspaceFactory
 WorkspaceDTOFactory = WorkspaceDTOFactory
 
+
 class AddMemberToWorkspaceDTOFactory(factory.Factory):
     class Meta:
         model = AddMemberToWorkspaceDTO
@@ -317,7 +325,7 @@ class AddMemberToWorkspaceDTOFactory(factory.Factory):
     workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
-    role = Role.MEMBER.value
+    role = Role.MEMBER
 
 
 class WorkspaceMemberDTOFactory(factory.Factory):
@@ -331,3 +339,44 @@ class WorkspaceMemberDTOFactory(factory.Factory):
     is_active = factory.Faker('boolean')
     added_by = factory.LazyFunction(lambda: str(uuid.uuid4()))
 
+
+class CreateAccountFactory(factory.Factory):
+    class Meta:
+        model = CreateAccountDTO
+
+    name = factory.Faker("company")
+    description = factory.Faker("sentence")
+    owner_id = factory.Faker("uuid4")
+
+
+class AccountDTOFactory(factory.Factory):
+    class Meta:
+        model = AccountDTO
+
+    account_id = factory.Faker("uuid4")
+    name = factory.Faker("company")
+    description = factory.Faker("sentence")
+    owner_id = factory.Faker("uuid4")
+    is_active = True
+
+
+class CreateAccountMemberFactory(factory.Factory):
+    class Meta:
+        model = CreateAccountMemberDTO
+
+    account_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    role = Role.MEMBER
+    added_by = factory.Faker("uuid4")
+
+
+class AccountMemberDTOFactory(factory.Factory):
+    class Meta:
+        model = AccountMemberDTO
+
+    id = factory.Sequence(lambda n: n + 1)
+    account_id = factory.Faker("uuid4")
+    user_id = factory.Faker("uuid4")
+    role = Role.MEMBER
+    is_active = True
+    added_by = factory.Faker("uuid4")

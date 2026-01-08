@@ -303,6 +303,7 @@ class WorkspaceDTO:
     name: str
     description: str
     user_id: str
+    account_id: str
     is_active: bool
 
 
@@ -318,13 +319,14 @@ class CreateWorkspaceDTO:
     name: str
     description: str
     user_id: str
+    account_id: str
 
 
 @dataclass
 class AddMemberToWorkspaceDTO:
     workspace_id: str
     user_id: str
-    role: str
+    role: Role
     added_by: str
 
 
@@ -441,3 +443,34 @@ class FieldValueDTO:
 class TaskFieldValuesDTO:
     task_id: str
     values: list[FieldValueDTO]
+
+
+@dataclass
+class CreateAccountDTO:
+    name: str
+    description: str
+    owner_id: str
+
+@dataclass
+class AccountDTO:
+    account_id: str
+    name: str
+    description: str
+    owner_id: str
+    is_active: bool
+
+@dataclass
+class AccountMemberDTO:
+    id: int
+    user_id: str
+    account_id: str
+    role: Role
+    added_by: str
+    is_active: bool
+
+@dataclass
+class CreateAccountMemberDTO:
+    account_id: str
+    user_id: str
+    role: Role
+    added_by: str
