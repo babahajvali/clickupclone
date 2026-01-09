@@ -1,7 +1,7 @@
 from task_management.exceptions.custom_exceptions import \
     TaskAssigneeNotFoundException
 from task_management.interactors.dtos import TaskAssigneeDTO, \
-    RemoveTaskAssigneeDTO, UserTasksDTO
+    TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
@@ -37,7 +37,7 @@ class TaskAssigneeInteractor(ValidationMixin):
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
 
     def remove_task_assignee(self, assign_id: str,
-                             user_id: str) -> RemoveTaskAssigneeDTO:
+                             user_id: str) -> TaskAssigneeDTO:
         assignee_data = self._ensure_task_assignee_exists(assign_id=assign_id)
         list_id = self.get_active_task_list_id(task_id=assignee_data.task_id,
                                                task_storage=self.task_storage)
@@ -45,7 +45,7 @@ class TaskAssigneeInteractor(ValidationMixin):
                                               permission_storage=self.permission_storage)
 
         return self.task_assignee_storage.remove_task_assignee(
-            assign_id=assign_id, removed_by=user_id)
+            assign_id=assign_id)
 
     def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
         self.get_active_task_list_id(task_id=task_id,

@@ -1,7 +1,8 @@
 from task_management.exceptions.custom_exceptions import NotExistedEmailFound, \
     WrongPasswordFound, ExistedUsernameFound, ExistedEmailFound, \
     ExistedPhoneNumberFound, UsernameNotFound
-from task_management.interactors.dtos import CreateUserDTO, UserDTO
+from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
+    UpdateUserDTO
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
@@ -18,7 +19,7 @@ class UserInteractor(ValidationMixin):
 
         return self.user_storage.create_user(user_data=user_details)
 
-    def update_user(self, user_update_data: UserDTO) -> UserDTO:
+    def update_user(self, user_update_data: UpdateUserDTO) -> UserDTO:
 
         user_id = user_update_data.user_id
         self.validate_user_is_active(user_id=user_update_data.user_id,

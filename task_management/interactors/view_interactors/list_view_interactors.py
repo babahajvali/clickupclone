@@ -37,7 +37,8 @@ class ListViewInteractor(ValidationMixin):
                                                           list_id=list_id,
                                                           user_id=user_id)
 
-    def remove_view_for_list(self, view_id: str, list_id: str, user_id: str) -> RemoveListViewDTO:
+    def remove_view_for_list(self, view_id: str, list_id: str,
+                             user_id: str) -> RemoveListViewDTO:
         self.validate_user_has_access_to_list(user_id=user_id,
                                               list_id=list_id,
                                               permission_storage=self.permission_storage)
@@ -46,9 +47,11 @@ class ListViewInteractor(ValidationMixin):
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
 
-        return self.list_view_storage.remove_view_for_list(view_id=view_id,list_id=list_id,user_id=user_id)
+        return self.list_view_storage.remove_view_for_list(view_id=view_id,
+                                                           list_id=list_id)
 
-    def get_list_views(self,list_id: str) -> list[ListViewDTO]:
-        self.validate_list_is_active(list_id=list_id, list_storage=self.list_storage)
+    def get_list_views(self, list_id: str) -> list[ListViewDTO]:
+        self.validate_list_is_active(list_id=list_id,
+                                     list_storage=self.list_storage)
 
         return self.list_view_storage.get_list_views(list_id=list_id)

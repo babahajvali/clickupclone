@@ -86,8 +86,7 @@ class SpaceInteractor(ValidationMixin):
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
 
-        return self.space_storage.remove_space(space_id=space_id,
-                                               user_id=user_id)
+        return self.space_storage.remove_space(space_id=space_id)
 
     def set_space_visibility(self, space_id: str, user_id: str,
                              visibility: Visibility):

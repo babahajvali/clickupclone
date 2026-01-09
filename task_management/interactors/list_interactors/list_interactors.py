@@ -119,7 +119,7 @@ class ListInteractor(ValidationMixin):
         return self.list_storage.update_list(update_list_data=update_list_data)
 
     def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
-                               user_id: str) -> list[ListDTO]:
+                               user_id: str) -> ListDTO:
         self.validate_user_has_access_to_list(list_id=list_id,
                                               user_id=user_id,
                                               permission_storage=self.list_permission_storage)
@@ -132,7 +132,7 @@ class ListInteractor(ValidationMixin):
                                                         order=order)
 
     def reorder_list_in_space(self, space_id: str, order: int, user_id: str,
-                              list_id: str) -> list[ListDTO]:
+                              list_id: str) -> ListDTO:
         self.validate_user_has_access_to_list(list_id=list_id, user_id=user_id,
                                               permission_storage=self.list_permission_storage)
         self.validate_list_is_active(list_id=list_id,
@@ -213,7 +213,6 @@ class ListInteractor(ValidationMixin):
                     list_id=list_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.FULL_EDIT,
-                    is_active=True,
                     added_by=created_by,
                 )
             elif each.permission_type == PermissionsEnum.COMMENT.value:
@@ -221,7 +220,6 @@ class ListInteractor(ValidationMixin):
                     list_id=list_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.COMMENT,
-                    is_active=True,
                     added_by=created_by,
                 )
             else:
@@ -229,7 +227,6 @@ class ListInteractor(ValidationMixin):
                     list_id=list_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.VIEW,
-                    is_active=True,
                     added_by=created_by,
                 )
 

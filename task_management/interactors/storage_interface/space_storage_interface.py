@@ -15,15 +15,11 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_space_order_exist(self,order: int, workspace_id: str):
-        pass
-
-    @abstractmethod
     def update_space(self,update_space_data: UpdateSpaceDTO)-> SpaceDTO:
         pass
 
     @abstractmethod
-    def remove_space(self,space_id: str,user_id: str):
+    def remove_space(self,space_id: str):
         #set the space is_active is false
         pass
 

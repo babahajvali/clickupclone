@@ -19,7 +19,7 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def reorder_folder(self,folder_id: str, order: int) -> FolderDTO:
+    def reorder_folder(self,folder_id: str, new_order: int) -> FolderDTO:
         pass
 
     @abstractmethod
@@ -30,10 +30,6 @@ class FolderStorageInterface(ABC):
     @abstractmethod
     def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
         #get the space active folders
-        pass
-
-    @abstractmethod
-    def check_order_exist(self, order: int, space_id: str) -> bool:
         pass
 
     @abstractmethod

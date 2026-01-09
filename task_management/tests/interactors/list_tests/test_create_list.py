@@ -127,7 +127,6 @@ class TestCreateList:
             make_permission(PermissionsEnum.FULL_EDIT)
         )
         self.space_storage.get_space.return_value = None
-        self.list_storage.check_list_order_exist_in_space.return_value = False
 
         with pytest.raises(SpaceNotFoundException):
             self.interactor.create_list(dto)
@@ -147,7 +146,6 @@ class TestCreateList:
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": False}
         )()
-        self.list_storage.check_list_order_exist_in_space.return_value = False
 
         with pytest.raises(InactiveSpaceFoundException):
             self.interactor.create_list(dto)

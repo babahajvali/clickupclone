@@ -70,7 +70,6 @@ class TestFolderInteractor:
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.folder_storage.check_order_exist.return_value = False
         self.folder_storage.create_folder.return_value = expected
 
         result = self.interactor.create_folder(dto)
@@ -128,7 +127,6 @@ class TestFolderInteractor:
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.folder_storage.check_order_exist.return_value = False
         self.folder_storage.update_folder.return_value = expected
 
         result = self.interactor.update_folder(dto,user_id="user_id1")

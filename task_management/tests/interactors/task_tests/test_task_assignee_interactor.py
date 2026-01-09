@@ -24,9 +24,7 @@ from task_management.exceptions.custom_exceptions import (
     UserNotFoundException
 )
 from task_management.tests.factories.interactor_factory import (
-    TaskAssigneeDTOFactory,
-    RemoveTaskAssigneeDTOFactory,
-    UserTasksDTOFactory
+    TaskAssigneeDTOFactory,UserTasksDTOFactory
 )
 
 
@@ -154,7 +152,7 @@ class TestTaskAssigneeInteractor:
         self.task_assignee_storage.get_task_assignee.return_value = type(
             "TaskAssigneeDTO", (), {"task_id": "task_1"})()
 
-        expected = RemoveTaskAssigneeDTOFactory()
+        expected = TaskAssigneeDTOFactory()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_assignee_storage.remove_task_assignee.return_value = expected
         self.permission_storage.get_user_permission_for_list.return_value = make_permission(

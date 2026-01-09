@@ -2,7 +2,7 @@ from task_management.exceptions.custom_exceptions import \
     InvalidOffsetNumberException, \
     InvalidLimitException, InvalidOrderException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
-    UpdateTaskDTO, FilterDTO, CreateFieldValueDTO
+    UpdateTaskDTO, FilterDTO,  CreateFieldValueDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
@@ -36,8 +36,9 @@ class TaskInteractor(ValidationMixin):
             permission_storage=self.permission_storage)
 
         result = self.task_storage.create_task(task_data=task_data)
-        self._set_default_field_values_at_task(task_id=result.task_id,
-                                               list_id=task_data.list_id)
+        self._set_default_field_values_at_task(
+            task_id=result.task_id, list_id=task_data.list_id,
+            created_by=task_data.created_by)
 
         return result
 
@@ -117,7 +118,8 @@ class TaskInteractor(ValidationMixin):
         if order > tasks_count:
             raise InvalidOrderException(order=order)
 
-    def _set_default_field_values_at_task(self, task_id: str, list_id: str):
+    def _set_default_field_values_at_task(self, task_id: str, list_id: str,
+                                          created_by: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
         template_fields = self.field_storage.get_fields_for_template(
@@ -132,8 +134,9 @@ class TaskInteractor(ValidationMixin):
                     task_id=task_id,
                     field_id=field.field_id,
                     value=default_value,
+                    created_by=created_by
                 )
             )
 
-        return self.field_value_storage.set_bulk_field_values(bulk_field_values=field_values)
-
+        return self.field_value_storage.create_bulk_field_values(
+            bulk_field_values=field_values)

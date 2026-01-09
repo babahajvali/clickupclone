@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 
-from task_management.interactors.dtos import UserDTO, CreateUserDTO
+from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
+    UpdateUserDTO
 
 
 class UserStorageInterface(ABC):
 
-    @abstractmethod
-    def check_user_exists(self, user_id: str) -> bool:
-        pass
 
     @abstractmethod
     def get_user_data(self, user_id: str)-> UserDTO:
@@ -22,7 +20,7 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user_data: UserDTO) -> UserDTO:
+    def update_user(self, user_data: UpdateUserDTO) -> UserDTO:
         pass
 
     @abstractmethod

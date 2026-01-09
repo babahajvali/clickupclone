@@ -1,0 +1,97 @@
+from datetime import date
+
+from task_management.interactors.dtos import TaskAssigneeDTO, \
+    TaskAssigneeDTO, UserTasksDTO, TaskDTO
+from task_management.interactors.storage_interface.task_assignee_storage_interface import \
+    TaskAssigneeStorageInterface
+from task_management.models import User, Task, TaskAssignee
+
+
+class TaskAssigneeStorage(TaskAssigneeStorageInterface):
+
+    @staticmethod
+    def _assignee_dto(assignee_data: TaskAssignee) -> TaskAssigneeDTO:
+        return TaskAssigneeDTO(
+            assign_id=assignee_data.assign_id,
+            task_id=assignee_data.task.task_id,
+            user_id=assignee_data.user.user_id,
+            is_active=assignee_data.is_active,
+            assigned_by=assignee_data.assigned_by.user_id,
+        )
+
+    def assign_task_assignee(self, task_id: str, user_id: str,
+                             assigned_by: str) -> TaskAssigneeDTO:
+        user = User.objects.get(user_id=user_id)
+        task = Task.objects.get(task_id=task_id)
+        assigned_by = User.objects.get(user_id=assigned_by)
+
+        assignment_data = TaskAssignee.objects.create(assigned_by=assigned_by,
+                                                      task=task, user=user)
+
+        return self._assignee_dto(assignee_data=assignment_data)
+
+    def remove_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
+        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
+        assignee_data.is_active = False
+        assignee_data.save()
+
+        return self._assignee_dto(assignee_data=assignee_data)
+
+    def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
+        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
+
+        return self._assignee_dto(assignee_data=assignee_data)
+
+    def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
+        task_assignees = TaskAssignee.objects.filter(task_id=task_id)
+
+        return [self._assignee_dto(assignee_data=data) for data in
+                task_assignees]
+
+    def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
+        assignees = TaskAssignee.objects.filter(
+            user_id=user_id,is_active=True,task__is_deleted=False)
+
+        tasks = []
+        for assignee in assignees:
+            tasks.append(TaskDTO(
+                task_id=str(assignee.task.task_id),
+                title=assignee.task.title,
+                description=assignee.task.description,
+                list_id=str(assignee.task.list.list_id),
+                order=assignee.task.order,
+                created_by=str(assignee.task.created_by.user_id),
+                is_delete=assignee.task.is_deleted
+            ))
+
+        return UserTasksDTO(
+            user_id=user_id,
+            tasks=tasks
+        )
+
+    def get_user_today_tasks(self, user_id: str) -> UserTasksDTO:
+        today = date.today()
+
+        assignees = TaskAssignee.objects.filter(
+            user_id=user_id,
+            is_active=True,
+            task__is_deleted=False,
+            assigned_at__date=today
+        )
+
+        tasks = []
+        for assignee in assignees:
+            tasks.append(TaskDTO(
+                task_id=str(assignee.task.task_id),
+                title=assignee.task.title,
+                description=assignee.task.description,
+                list_id=str(assignee.task.list.list_id),
+                order=assignee.task.order,
+                created_by=str(assignee.task.created_by.user_id),
+                is_delete=assignee.task.is_deleted
+            ))
+
+        return UserTasksDTO(
+            user_id=user_id,
+            tasks=tasks
+        )

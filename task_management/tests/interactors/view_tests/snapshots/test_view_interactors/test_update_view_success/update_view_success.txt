@@ -1,1 +1,1 @@
-ViewDTO(view_id='51497435-a9c9-424e-bd72-3837705bacc2', name='throughout', description='Attack detail box choose view week remain.', view_type='board', created_by='b44788bd-5e2d-4454-a462-32e735c3de95')
+ViewDTO(view_id='640ca20c-702a-4b67-b7ae-77585b45cf5a', name='leg', description='Suffer life chair senior seem west.', view_type='board', created_by='b52f6009-76c0-4651-b361-c49764e0dab3')

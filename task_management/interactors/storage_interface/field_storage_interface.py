@@ -15,10 +15,6 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_field_order_exist(self, field_order: int, template_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def get_field_by_id(self,field_id: str)->FieldDTO:
         pass
 
@@ -39,13 +35,16 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def reorder_fields(self, field_id: str, template_id: str,new_order: int) -> list[FieldDTO]:
+    def reorder_fields(self, field_id: str, template_id: str,new_order: int) -> FieldDTO:
         pass
 
     @abstractmethod
     def template_fields_count(self,template_id: str) -> int:
         pass
 
+    @abstractmethod
+    def delete_field(self, field_id: str):
+        pass
 
 
 

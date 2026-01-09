@@ -7,7 +7,7 @@ from task_management.interactors.dtos import CreateFieldDTO, \
     FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
     TaskAssigneeDTO, \
-    RemoveTaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
+    TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
     FolderDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
     CreateSpaceDTO, SpaceDTO, \
@@ -149,21 +149,12 @@ class TaskAssigneeDTOFactory(factory.Factory):
     class Meta:
         model = TaskAssigneeDTO
 
-    assignee_id = factory.Faker('uuid4')
-    assignee_name = factory.Faker('name')
+    assign_id = factory.Faker('uuid4')
+    user_id = factory.Faker('uuid4')
     task_id = factory.Faker('uuid4')
     assigned_by = factory.Faker('uuid4')
     is_active = True
 
-
-class RemoveTaskAssigneeDTOFactory(factory.Factory):
-    class Meta:
-        model = RemoveTaskAssigneeDTO
-
-    task_id = factory.Faker('uuid4')
-    assignee_id = factory.Faker('uuid4')
-    removed_by = factory.Faker('uuid4')
-    is_active = True
 
 
 class UserTasksDTOFactory(factory.Factory):
@@ -227,8 +218,6 @@ class UpdateViewDTOFactory(factory.Factory):
     view_id = factory.Faker('uuid4')
     name = factory.Faker('word')
     description = factory.Faker('sentence')
-    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
-    created_by = factory.Faker('uuid4')
 
 
 class ViewDTOFactory(factory.Factory):

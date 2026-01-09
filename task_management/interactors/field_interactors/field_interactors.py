@@ -32,8 +32,9 @@ class FieldInteractor(ValidationMixin):
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id,
             field_storage=self.field_storage)
-        self.validate_field_config(field_type=create_field_data.field_type.value,
-                                   config=create_field_data.config)
+        self.validate_field_config(
+            field_type=create_field_data.field_type.value,
+            config=create_field_data.config)
 
         return self.field_storage.create_field(
             create_field_data=create_field_data)
@@ -60,7 +61,7 @@ class FieldInteractor(ValidationMixin):
             update_field_data=update_field_data)
 
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
-                      user_id: str) -> list[FieldDTO]:
+                      user_id: str) -> FieldDTO:
         self._validate_field_order(template_id=template_id, order=new_order)
         list_id = self.get_template_list_id(template_id=template_id,
                                             template_storage=self.template_storage)
@@ -72,6 +73,18 @@ class FieldInteractor(ValidationMixin):
         return self.field_storage.reorder_fields(field_id=field_id,
                                                  template_id=template_id,
                                                  new_order=new_order)
+
+    def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
+        self._validate_field(field_id=field_id)
+        field_data = self.field_storage.get_field_by_id(field_id=field_id)
+        list_id = self.get_template_list_id(
+            template_id=field_data.template_id,
+            template_storage=self.template_storage)
+        self.validate_user_has_access_to_list(
+            user_id=user_id, list_id=list_id,
+            permission_storage=self.permission_storage)
+
+
 
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         self.get_template_list_id(template_id=template_id,
@@ -95,4 +108,3 @@ class FieldInteractor(ValidationMixin):
 
         if order > fields_count:
             raise InvalidOrderException(order=order)
-

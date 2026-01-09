@@ -12,19 +12,11 @@ class SpacePermissionStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_user_permission_for_space(self,user_id: str, space_id:str, permission_type: PermissionsEnum)-> UserSpacePermissionDTO:
-        pass
-
-    @abstractmethod
     def update_user_permission_for_space(self,user_id: str, space_id:str, permission_type: PermissionsEnum)-> UserSpacePermissionDTO:
         pass
 
     @abstractmethod
     def remove_user_permission_for_space(self,user_id: str, space_id:str)-> UserSpacePermissionDTO:
-        pass
-
-    @abstractmethod
-    def active_user_permission_for_space(self,user_id: str, space_id:str)-> UserSpacePermissionDTO:
         pass
 
     @abstractmethod

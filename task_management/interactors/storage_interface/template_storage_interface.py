@@ -19,10 +19,6 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_default_template_exist(self)->bool:
-        pass
-
-    @abstractmethod
     def check_template_name_exist_except_this_template(self,template_name: str,template_id: str) -> bool:
         pass
 

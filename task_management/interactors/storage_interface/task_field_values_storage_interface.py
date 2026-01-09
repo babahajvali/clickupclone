@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
-from task_management.interactors.dtos import CreateFieldValueDTO, \
-    TaskFieldValuesDTO, TaskFieldValueDTO
+from task_management.interactors.dtos import UpdateFieldValueDTO, \
+    TaskFieldValuesDTO, TaskFieldValueDTO, CreateFieldValueDTO
 
 
 class FieldValueStorageInterface(ABC):
 
     @abstractmethod
-    def set_task_field_value(self, field_value_data: CreateFieldValueDTO) -> \
+    def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> \
             TaskFieldValueDTO:
         # set field value
         pass
@@ -19,6 +19,6 @@ class FieldValueStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def set_bulk_field_values(self, bulk_field_values: list[
-        TaskFieldValueDTO]) -> TaskFieldValueDTO:
+    def create_bulk_field_values(self, bulk_field_values: list[
+        CreateFieldValueDTO]):
         pass

@@ -19,11 +19,11 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def ensure_user_is_workspace_owner(self, user_id: str, workspace_id: str):
+    def validate_user_is_workspace_owner(self, user_id: str, workspace_id: str):
         pass
 
     @abstractmethod
-    def remove_workspace(self,workspace_id: str,user_id: str) -> WorkspaceDTO:
+    def delete_workspace(self, workspace_id: str) -> WorkspaceDTO:
         pass
 
     @abstractmethod

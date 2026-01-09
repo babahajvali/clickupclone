@@ -38,6 +38,3 @@ class WorkspaceMemberStorageInterface(ABC):
         WorkspaceMemberDTO]:
         pass
 
-    @abstractmethod
-    def validate_member_exists(self, user_id: str, workspace_id: str) -> bool:
-        pass

@@ -96,7 +96,6 @@ class TestCreateTemplateInteractor:
     def test_create_template_list_not_found(self):
         # Arrange
         create_template_dto = CreateTemplateDTOFactory()
-        self.list_storage.check_list_exist.return_value = False
 
         # Act & Assert
         with pytest.raises(Exception):

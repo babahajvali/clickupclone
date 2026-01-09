@@ -147,16 +147,6 @@ class ValidationMixin:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
     @staticmethod
-    def check_field_order_is_valid(field_order: int, template_id: str,
-                                   field_storage: FieldStorageInterface):
-
-        is_exist = field_storage.check_field_order_exist(
-            field_order=field_order, template_id=template_id)
-
-        if is_exist:
-            raise FieldOrderAlreadyExistsException(field_order=field_order)
-
-    @staticmethod
     def validate_field_config(field_type: str, config: dict):
 
         default_value = config.get("default")
@@ -274,14 +264,6 @@ class ValidationMixin:
         if not folder_data.is_active:
             raise InactiveFolderFoundException(folder_id=folder_id)
 
-    @staticmethod
-    def validate_list_order_in_space(order: int, space_id: str,
-                                     list_storage: ListStorageInterface):
-        is_order_exist = list_storage.check_list_order_exist_in_space(
-            order=order, space_id=space_id)
-
-        if is_order_exist:
-            raise SpaceListOrderAlreadyExistedException(space_id=space_id)
 
     @staticmethod
     def validate_user_has_access_to_folder(user_id: str,
@@ -333,7 +315,7 @@ class ValidationMixin:
     @staticmethod
     def validate_user_is_workspace_owner(user_id: str, workspace_id: str,
                                          workspace_storage: WorkspaceStorageInterface):
-        is_owner = workspace_storage.ensure_user_is_workspace_owner(
+        is_owner = workspace_storage.validate_user_is_workspace_owner(
             workspace_id=workspace_id, user_id=user_id)
 
         if not is_owner:
@@ -395,6 +377,16 @@ class ValidationMixin:
             user_id=user_id, account_id=account_id)
 
         if account_user_data.role.value == Role.GUEST.value:
+            raise NotAccessToModificationException(user_id=user_id)
+
+
+    @staticmethod
+    def validate_user_access_for_workspace(user_id: str, workspace_id: str,
+                                         workspace_member_storage: WorkspaceMemberStorageInterface):
+        workspace_user_data = workspace_member_storage.get_workspace_member(
+            user_id=user_id, workspace_id=workspace_id)
+
+        if workspace_user_data.role.value == Role.GUEST.value:
             raise NotAccessToModificationException(user_id=user_id)
 
     @staticmethod

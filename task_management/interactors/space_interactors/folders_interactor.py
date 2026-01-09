@@ -69,7 +69,7 @@ class FolderInteractor(ValidationMixin):
         self._validate_the_folder_order(space_id=space_id, order=order)
 
         return self.folder_storage.reorder_folder(folder_id=folder_id,
-                                                  order=order)
+                                                  new_order=order)
 
     def remove_folder(self, folder_id: str, user_id: str) -> FolderDTO:
         self.validate_user_has_access_to_folder(
@@ -139,7 +139,6 @@ class FolderInteractor(ValidationMixin):
                     folder_id=folder_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.FULL_EDIT,
-                    is_active=True,
                     added_by=created_by,
                 )
             elif each.permission_type == PermissionsEnum.COMMENT.value:
@@ -147,7 +146,6 @@ class FolderInteractor(ValidationMixin):
                     folder_id=folder_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.COMMENT,
-                    is_active=True,
                     added_by=created_by,
                 )
             else:
@@ -155,7 +153,6 @@ class FolderInteractor(ValidationMixin):
                     folder_id=folder_id,
                     user_id=each.user_id,
                     permission_type=PermissionsEnum.VIEW,
-                    is_active=True,
                     added_by=created_by,
                 )
 

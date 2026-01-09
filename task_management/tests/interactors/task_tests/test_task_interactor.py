@@ -131,7 +131,6 @@ class TestCreateTaskInteractor:
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(PermissionsEnum.FULL_EDIT)
         )
-        self.task_storage.check_task_order_exist.return_value = False
         self.task_storage.update_task.return_value = TaskDTOFactory()
 
         result = self.interactor.update_task(update_data,user_id="user_id")

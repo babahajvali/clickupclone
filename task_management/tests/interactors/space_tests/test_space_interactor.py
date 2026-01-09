@@ -68,7 +68,6 @@ class TestSpaceInteractor:
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
             PermissionsEnum.FULL_EDIT)
-        self.space_storage.check_space_order_exist.return_value = False
         self.workspace_storage.get_workspace.return_value = type(
             'Workspace', (), {
                 'is_active': True,
@@ -101,7 +100,6 @@ class TestSpaceInteractor:
             }
         )()
 
-        self.space_storage.check_space_order_exist.return_value = False
 
         with pytest.raises(NotAccessToModificationException) as exc:
             self.interactor.create_space(create_data)
@@ -116,7 +114,6 @@ class TestSpaceInteractor:
         create_data = CreateSpaceDTOFactory()
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
             PermissionsEnum.FULL_EDIT)
-        self.space_storage.check_space_order_exist.return_value = False
         self.workspace_storage.get_workspace.return_value = None
 
         # Act & Assert
@@ -130,7 +127,6 @@ class TestSpaceInteractor:
         create_data = CreateSpaceDTOFactory()
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
             PermissionsEnum.FULL_EDIT)
-        self.space_storage.check_space_order_exist.return_value = False
         self.workspace_storage.get_workspace.return_value = type('Workspace',
                                                                  (), {
                                                                      'is_active': False})()
@@ -151,7 +147,6 @@ class TestSpaceInteractor:
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True,
                                                           "workspace_id": "workspace_id_1"})()
-        self.space_storage.check_space_order_exist.return_value = False
         self.workspace_storage.get_workspace.return_value = type('Workspace',
                                                                  (), {
                                                                      'is_active': True})()
@@ -195,7 +190,7 @@ class TestSpaceInteractor:
         # Assert
         assert result == expected_result
         self.space_storage.remove_space.assert_called_once_with(
-            space_id=space_id, user_id=user_id)
+            space_id=space_id)
 
     def test_set_space_private_success(self):
         # Arrange

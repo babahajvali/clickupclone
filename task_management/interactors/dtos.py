@@ -13,10 +13,20 @@ class UserDTO:
     username: str
     gender: GenderEnum
     email: str
-    password: str
     phone_number: str
     is_active: bool
     image_url: str
+
+
+@dataclass
+class UpdateUserDTO:
+    user_id: str
+    full_name: Optional[str]
+    username: Optional[str]
+    gender: Optional[GenderEnum]
+    email: Optional[str]
+    phone_number: Optional[str]
+    image_url: Optional[str]
 
 
 @dataclass
@@ -146,18 +156,10 @@ class TaskDTO:
 
 @dataclass
 class TaskAssigneeDTO:
-    assignee_id: str
-    assignee_name: str
+    assign_id: str
+    user_id: str
     task_id: str
     assigned_by: str
-    is_active: bool
-
-
-@dataclass
-class RemoveTaskAssigneeDTO:
-    task_id: str
-    assignee_id: str
-    removed_by: str
     is_active: bool
 
 
@@ -210,8 +212,6 @@ class UpdateViewDTO:
     view_id: str
     name: str
     description: str
-    view_type: ViewTypeEnum
-    created_by: str
 
 
 @dataclass
@@ -419,11 +419,17 @@ class TaskWithDetailsDTO:
 
 
 @dataclass
-class CreateFieldValueDTO:
+class UpdateFieldValueDTO:
     task_id: str
     field_id: str
     value: str
 
+@dataclass
+class CreateFieldValueDTO:
+    task_id: str
+    field_id: str
+    value: str
+    created_by: str
 
 @dataclass
 class TaskFieldValueDTO:

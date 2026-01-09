@@ -1,1 +1,1 @@
-RemoveTaskAssigneeDTO(task_id='8b92c247-4d18-4103-a100-ed14fa92cd28', assignee_id='b4cfafa8-6c98-473d-a7fe-1b4b9bf1f1d1', removed_by='ad9d1f42-17b1-4e6e-b8af-f58ec058a332', is_active=True)
+TaskAssigneeDTO(assign_id='a100ed14-fa92-4d28-84c5-36fb1d4d1180', user_id='27fe1b4b-9bf1-41d1-8b92-c2474d18c103', task_id='78aff58e-c058-4332-b4cf-afa86c98f73d', assigned_by='c2953f51-7f67-4e1a-ad9d-1f4217b18e6e', is_active=True)

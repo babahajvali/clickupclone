@@ -7,22 +7,11 @@ from task_management.interactors.dtos import ListDTO, CreateListDTO, \
 class ListStorageInterface(ABC):
 
     @abstractmethod
-    def check_list_exist(self, list_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def get_template_id_by_list_id(self,list_id: str) -> str:
         pass
 
     @abstractmethod
     def get_list(self, list_id: str) -> ListDTO:
-        pass
-
-
-    @abstractmethod
-    def check_list_order_exist_in_space(self, order: int,
-                                        space_id: str) -> bool:
-        # check this order already exist
         pass
 
     @abstractmethod
@@ -59,12 +48,12 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def reorder_list_in_folder(self, folder_id: str, list_id: str,
-                               order: int) -> list[ListDTO]:
+                               order: int) -> ListDTO:
         pass
 
     @abstractmethod
     def reorder_list_in_space(self, space_id: str, list_id: str, order: int) -> \
-    list[ListDTO]:
+    ListDTO:
         pass
 
     @abstractmethod

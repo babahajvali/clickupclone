@@ -81,7 +81,6 @@ class TestUpdateFieldInteractor:
         template_exists: bool = True,
         permission: PermissionsEnum = PermissionsEnum.FULL_EDIT,
         name_exists: bool = False,
-        order_exists: bool = False,
     ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
@@ -89,7 +88,6 @@ class TestUpdateFieldInteractor:
 
         field_storage.is_field_exists.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
-        field_storage.check_field_order_exist.return_value = order_exists
         field_storage.update_field.return_value = self._get_field_dto()
         field_storage.get_field_by_id.return_value = self._get_field_dto()
 

@@ -6,6 +6,8 @@ from task_management.interactors.storage_interface.account_member_storage_interf
     AccountMemberStorageInterface
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.workspace_interactors.workspace_interactors import (
     WorkspaceInteractor
 )
@@ -32,12 +34,14 @@ class TestWorkspaceInteractor:
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
         self.account_members_storage = create_autospec(AccountMemberStorageInterface)
+        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
 
         self.interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
-            account_member_storage=self.account_members_storage
+            account_member_storage=self.account_members_storage,
+            workspace_member_storage=self.workspace_member_storage
         )
 
 
@@ -120,7 +124,7 @@ class TestWorkspaceInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
-        self.workspace_storage.remove_workspace.return_value = expected
+        self.workspace_storage.delete_workspace.return_value = expected
 
         result = self.interactor.delete_workspace(workspace_id, user_id)
 

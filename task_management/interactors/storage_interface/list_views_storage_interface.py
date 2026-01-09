@@ -11,8 +11,7 @@ class ListViewsStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_view_for_list(self, view_id: str, list_id: str,
-                             user_id: str) -> RemoveListViewDTO:
+    def remove_view_for_list(self, view_id: str, list_id: str,):
         #set the is_active is false
         pass
 
