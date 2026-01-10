@@ -21,11 +21,10 @@ from task_management.interactors.storage_interface.folder_permission_storage_int
     FolderPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
     SpaceNotFoundException,
-    InactiveSpaceFoundException,
-    FolderListOrderAlreadyExistedException,
-)
+    InactiveSpaceException,
+    )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.tests.factories.interactor_factory import CreateListDTOFactory
@@ -109,7 +108,7 @@ class TestCreateList:
             PermissionsEnum.VIEW
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.create_list(dto)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
@@ -147,5 +146,5 @@ class TestCreateList:
             "Space", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveSpaceFoundException):
+        with pytest.raises(InactiveSpaceException):
             self.interactor.create_list(dto)

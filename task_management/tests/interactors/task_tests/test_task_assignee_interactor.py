@@ -19,7 +19,7 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
     ListPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
     TaskNotFoundException,
     UserNotFoundException
 )
@@ -105,7 +105,7 @@ class TestTaskAssigneeInteractor:
             make_permission(PermissionsEnum.VIEW)
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.assign_task_assignee(
                 task_id="task123",
                 user_id="user123",

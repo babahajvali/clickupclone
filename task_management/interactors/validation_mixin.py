@@ -1,19 +1,17 @@
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
-    TemplateNotFoundException, UnSupportedFieldTypeFoundException, \
-    FieldNameAlreadyExistsException, FieldOrderAlreadyExistsException, \
-    NotAccessToModificationException, \
+    TemplateNotFoundException, UnsupportedFieldTypeException, \
+    FieldNameAlreadyExistsException, ModificationNotAllowedException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
-    AlreadyExistedTemplateNameException, \
+    TemplateNameAlreadyExistsException, \
     ListNotFoundException, TaskNotFoundException, \
-    DeletedTaskFoundException, InactiveListFoundException, \
-    SpaceNotFoundException, InactiveSpaceFoundException, \
-    FolderNotFoundException, InactiveFolderFoundException, \
-    SpaceListOrderAlreadyExistedException, ViewTypeNotFoundException, \
-    ViewNotFoundException, WorkspaceNotFoundException, \
-    InactiveWorkspaceFoundException, \
-    InactiveUserFoundException, UserNotWorkspaceOwnerException, \
-    InactiveWorkspaceMemberFoundException, AccountNotFoundException, \
-    InactiveAccountFoundException, UnexpectedRoleFoundException
+    DeletedTaskException, InactiveListException, \
+    SpaceNotFoundException, InactiveSpaceException, \
+    FolderNotFoundException, InactiveFolderException, \
+    ViewTypeNotFoundException, ViewNotFoundException, \
+    WorkspaceNotFoundException, InactiveWorkspaceException, \
+    InactiveUserException, UserNotWorkspaceOwnerException, \
+    InactiveWorkspaceMemberException, AccountNotFoundException, \
+    InactiveAccountException, UnexpectedRoleException
 from task_management.exceptions.enums import PermissionsEnum, FieldType, \
     ViewTypeEnum, Role
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -92,7 +90,7 @@ class ValidationMixin:
             raise UserNotFoundException(user_id=user_id)
 
         if not user_data.is_active:
-            raise InactiveUserFoundException(user_id=user_id)
+            raise InactiveUserException(user_id=user_id)
 
     def get_template_list_id(self, template_id: str,
                              template_storage: TemplateStorageInterface):
@@ -113,7 +111,7 @@ class ValidationMixin:
         field_types = [x.value for x in FieldType]
 
         if field_type not in field_types:
-            raise UnSupportedFieldTypeFoundException(field_type=field_type)
+            raise UnsupportedFieldTypeException(field_type=field_type)
 
     @staticmethod
     def validate_field_name_not_exists(field_name: str, template_id: str,
@@ -132,7 +130,7 @@ class ValidationMixin:
             template_name=template_name)
 
         if is_exist:
-            raise AlreadyExistedTemplateNameException(
+            raise TemplateNameAlreadyExistsException(
                 template_name=template_name)
 
     @staticmethod
@@ -152,7 +150,7 @@ class ValidationMixin:
         default_value = config.get("default")
 
         if field_type not in FIELD_TYPE_RULES:
-            raise UnSupportedFieldTypeFoundException(
+            raise UnsupportedFieldTypeException(
                 field_type=field_type
             )
 
@@ -216,7 +214,7 @@ class ValidationMixin:
             raise ListNotFoundException(list_id=list_id)
 
         if not list_data.is_active:
-            raise InactiveListFoundException(list_id=list_id)
+            raise InactiveListException(list_id=list_id)
 
     @staticmethod
     def validate_user_has_access_to_list(user_id: str, list_id: str,
@@ -224,8 +222,8 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
-        if not user_permissions.permission_type.value == PermissionsEnum.FULL_EDIT.value:
-            raise NotAccessToModificationException(user_id=user_id)
+        if not user_permissions.permission_type == PermissionsEnum.FULL_EDIT.value:
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def get_active_task_list_id(task_id: str,
@@ -237,7 +235,7 @@ class ValidationMixin:
             raise TaskNotFoundException(task_id=task_id)
 
         if task_data.is_delete:
-            raise DeletedTaskFoundException(task_id=task_id)
+            raise DeletedTaskException(task_id=task_id)
 
         return task_data.list_id
 
@@ -251,7 +249,7 @@ class ValidationMixin:
             raise SpaceNotFoundException(space_id=space_id)
 
         if not space_data.is_active:
-            raise InactiveSpaceFoundException(space_id=space_id)
+            raise InactiveSpaceException(space_id=space_id)
 
     @staticmethod
     def validate_folder_is_active(folder_id: str,
@@ -262,8 +260,7 @@ class ValidationMixin:
             raise FolderNotFoundException(folder_id=folder_id)
 
         if not folder_data.is_active:
-            raise InactiveFolderFoundException(folder_id=folder_id)
-
+            raise InactiveFolderException(folder_id=folder_id)
 
     @staticmethod
     def validate_user_has_access_to_folder(user_id: str,
@@ -273,8 +270,8 @@ class ValidationMixin:
         user_permission = permission_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
 
-        if not user_permission.permission_type.value == PermissionsEnum.FULL_EDIT.value:
-            raise NotAccessToModificationException(user_id=user_id)
+        if not user_permission.permission_type == PermissionsEnum.FULL_EDIT.value:
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def check_view_type(view_type: str):
@@ -296,9 +293,10 @@ class ValidationMixin:
 
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
+        print("Hajvali")
 
-        if not user_permissions.permission_type.value == PermissionsEnum.FULL_EDIT.value:
-            raise NotAccessToModificationException(user_id=user_id)
+        if not user_permissions.permission_type == PermissionsEnum.FULL_EDIT.value:
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_workspace_is_active(workspace_id: str,
@@ -310,7 +308,7 @@ class ValidationMixin:
             raise WorkspaceNotFoundException(workspace_id=workspace_id)
 
         if not workspace_data.is_active:
-            raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
+            raise InactiveWorkspaceException(workspace_id=workspace_id)
 
     @staticmethod
     def validate_user_is_workspace_owner(user_id: str, workspace_id: str,
@@ -336,9 +334,9 @@ class ValidationMixin:
             raise WorkspaceNotFoundException(workspace_id=workspace_id)
 
         if not workspace_data.is_active:
-            raise InactiveWorkspaceFoundException(workspace_id=workspace_id)
+            raise InactiveWorkspaceException(workspace_id=workspace_id)
 
-        if workspace_data.user_id == user_id:
+        if str(workspace_data.user_id) == str(user_id):
             return
 
         member_permission = workspace_member_storage.get_workspace_member(
@@ -347,7 +345,7 @@ class ValidationMixin:
         )
 
         if not member_permission or member_permission.role == Role.GUEST.value:
-            raise NotAccessToModificationException(user_id=user_id)
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_workspace_member_is_active(workspace_member_id: int,
@@ -356,7 +354,7 @@ class ValidationMixin:
             workspace_member_id=workspace_member_id)
 
         if not workspace_member_data.is_active:
-            raise InactiveWorkspaceMemberFoundException(
+            raise InactiveWorkspaceMemberException(
                 workspace_member_id=workspace_member_id)
 
     @staticmethod
@@ -368,29 +366,27 @@ class ValidationMixin:
             raise AccountNotFoundException(account_id=account_id)
 
         if not account_data.is_active:
-            raise InactiveAccountFoundException(account_id=account_id)
+            raise InactiveAccountException(account_id=account_id)
 
     @staticmethod
     def validate_user_access_for_account(user_id: str, account_id: str,
                                          account_member_storage: AccountMemberStorageInterface):
         account_user_data = account_member_storage.get_user_permission_for_account(
             user_id=user_id, account_id=account_id)
-
-        if account_user_data.role.value == Role.GUEST.value:
-            raise NotAccessToModificationException(user_id=user_id)
-
+        if account_user_data.role == Role.GUEST.value:
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_user_access_for_workspace(user_id: str, workspace_id: str,
-                                         workspace_member_storage: WorkspaceMemberStorageInterface):
+                                           workspace_member_storage: WorkspaceMemberStorageInterface):
         workspace_user_data = workspace_member_storage.get_workspace_member(
             user_id=user_id, workspace_id=workspace_id)
 
-        if workspace_user_data.role.value == Role.GUEST.value:
-            raise NotAccessToModificationException(user_id=user_id)
+        if workspace_user_data.role == Role.GUEST.value:
+            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_role(role: str):
         existed_roles = [x.value for x in Role]
         if role not in existed_roles:
-            raise UnexpectedRoleFoundException(role=role)
+            raise UnexpectedRoleException(role=role)

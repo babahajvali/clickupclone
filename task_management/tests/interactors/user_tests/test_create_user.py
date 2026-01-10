@@ -2,9 +2,9 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    ExistedUsernameFound,
-    ExistedEmailFound,
-    ExistedPhoneNumberFound,
+    ExistedUsernameFoundException,
+    ExistedEmailFoundException,
+    ExistedPhoneNumberFoundException,
 )
 from task_management.exceptions.enums import GenderEnum
 from task_management.interactors.dtos import CreateUserDTO
@@ -75,7 +75,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedUsernameFound) as exc:
+        with pytest.raises(ExistedUsernameFoundException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -103,7 +103,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedEmailFound) as exc:
+        with pytest.raises(ExistedEmailFoundException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -131,7 +131,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedPhoneNumberFound) as exc:
+        with pytest.raises(ExistedPhoneNumberFoundException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(

@@ -13,6 +13,7 @@ class UserStorage(UserStorageInterface):
             user_id=data.user_id,
             username=data.username,
             email=data.email,
+            password=data.password,
             full_name=data.full_name,
             phone_number=data.phone_number,
             image_url=data.image_url,
@@ -20,16 +21,19 @@ class UserStorage(UserStorageInterface):
             gender=data.gender,
         )
 
-    def get_user_data(self, user_id: str) -> UserDTO:
-        user_data = User.objects.get(user_id=user_id)
+    def get_user_data(self, user_id: str) -> UserDTO | None:
+        try:
+            user_data = User.objects.get(user_id=user_id)
+            return self._user_dto(data=user_data)
+        except User.DoesNotExist:
+            return None
 
-        return self._user_dto(data=user_data)
-
-    def get_user_details(self, email: str) -> UserDTO:
-        user_data = User.objects.get(email=email)
-
-        return self._user_dto(data=user_data)
-
+    def get_user_details(self, email: str) -> UserDTO | None:
+        try:
+            user_data = User.objects.get(email=email)
+            return self._user_dto(data=user_data)
+        except User.DoesNotExist:
+            raise None
     def create_user(self, user_data: CreateUserDTO) -> UserDTO:
         user_obj = User.objects.create(
             username=user_data.username, full_name=user_data.full_name,

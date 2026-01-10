@@ -2,8 +2,8 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
-    UnexpectedRoleFoundException
+    ModificationNotAllowedException,
+    UnexpectedRoleException
 )
 from task_management.exceptions.enums import  Role
 from task_management.interactors.workspace_interactors.workspace_member_interactors import (
@@ -132,7 +132,7 @@ class TestWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
-        with pytest.raises(UnexpectedRoleFoundException) as exc:
+        with pytest.raises(UnexpectedRoleException) as exc:
             self.interactor.add_member_to_workspace(dto)
 
         snapshot.assert_match(repr(exc.value), "add_member_invalid_role.txt")
@@ -149,7 +149,7 @@ class TestWorkspaceMemberInteractor:
             type("WorkspaceMember", (), {"role": Role.GUEST.value})()
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.add_member_to_workspace(dto)
 
         snapshot.assert_match(
@@ -210,7 +210,7 @@ class TestWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
-        with pytest.raises(UnexpectedRoleFoundException) as exc:
+        with pytest.raises(UnexpectedRoleException) as exc:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",

@@ -3,7 +3,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     UserNotFoundException,
-    InactiveUserFoundException,   # use your real exception name
+    InactiveUserException,   # use your real exception name
 )
 from task_management.exceptions.enums import GenderEnum
 from task_management.interactors.dtos import UserDTO
@@ -83,7 +83,7 @@ class TestBlockUser:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(InactiveUserFoundException) as exc:
+        with pytest.raises(InactiveUserException) as exc:
             interactor.block_user(user_id="user123")
 
         snapshot.assert_match(

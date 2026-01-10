@@ -15,8 +15,8 @@ from task_management.interactors.storage_interface.account_member_storage_interf
     AccountMemberStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    AlreadyAccountNameExistedException,
-    UserNotAccountOwnerException, NotAccessToModificationException
+    AccountNameAlreadyExistsException,
+    UserNotAccountOwnerException, ModificationNotAllowedException
 )
 from task_management.tests.factories.interactor_factory import (
     CreateAccountFactory,
@@ -33,9 +33,9 @@ class TestAccountInteractor:
             AccountMemberStorageInterface)
 
         self.interactor = AccountInteractor(
-            account_storage_interface=self.account_storage,
+            account_storage=self.account_storage,
             user_storage=self.user_storage,
-            account_user_storage=self.account_member_storage
+            account_member_storage=self.account_member_storage
         )
 
     def _mock_active_user(self):
@@ -69,7 +69,7 @@ class TestAccountInteractor:
 
         self.account_storage.validate_account_name_exists.return_value = True
 
-        with pytest.raises(AlreadyAccountNameExistedException) as exc:
+        with pytest.raises(AccountNameAlreadyExistsException) as exc:
             self.interactor.create_account(create_data)
 
         snapshot.assert_match(
@@ -160,7 +160,7 @@ class TestAccountInteractor:
         permission = type("Permission", (), {"role": Role.GUEST})()
         self.account_member_storage.get_user_permission_for_account.return_value = permission
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.delete_account(
                 account_id=account_id,
                 deleted_by=user_id

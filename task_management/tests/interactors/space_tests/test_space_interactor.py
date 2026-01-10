@@ -18,9 +18,9 @@ from task_management.interactors.storage_interface.workspace_storage_interface i
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
     WorkspaceNotFoundException,
-    InactiveWorkspaceFoundException,
+    InactiveWorkspaceException,
     SpaceNotFoundException,
 )
 from task_management.tests.factories.interactor_factory import (
@@ -101,7 +101,7 @@ class TestSpaceInteractor:
         )()
 
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.create_space(create_data)
 
         snapshot.assert_match(
@@ -132,7 +132,7 @@ class TestSpaceInteractor:
                                                                      'is_active': False})()
 
         # Act & Assert
-        with pytest.raises(InactiveWorkspaceFoundException) as exc:
+        with pytest.raises(InactiveWorkspaceException) as exc:
             self.interactor.create_space(create_data)
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")
@@ -269,7 +269,7 @@ class TestSpaceInteractor:
                                                                      'is_active': False})()
 
         # Act & Assert
-        with pytest.raises(InactiveWorkspaceFoundException) as exc:
+        with pytest.raises(InactiveWorkspaceException) as exc:
             self.interactor.get_workspace_spaces(workspace_id)
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")

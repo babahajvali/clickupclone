@@ -11,6 +11,7 @@ class UserDTO:
     user_id: str
     full_name: str
     username: str
+    password: str
     gender: GenderEnum
     email: str
     phone_number: str
@@ -479,4 +480,4 @@ class CreateAccountMemberDTO:
     account_id: str
     user_id: str
     role: Role
-    added_by: str
+    added_by: str |None

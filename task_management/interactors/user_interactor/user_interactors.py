@@ -1,6 +1,6 @@
-from task_management.exceptions.custom_exceptions import NotExistedEmailFound, \
-    WrongPasswordFound, ExistedUsernameFound, ExistedEmailFound, \
-    ExistedPhoneNumberFound, UsernameNotFound
+from task_management.exceptions.custom_exceptions import NotExistedEmailFoundException, \
+    WrongPasswordFoundException, ExistedUsernameFoundException, ExistedEmailFoundException, \
+    ExistedPhoneNumberFoundException, UsernameNotFoundException
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -41,49 +41,49 @@ class UserInteractor(ValidationMixin):
 
         return self.user_storage.block_user(user_id=user_id)
 
-    def user_login(self, email: str, password: str) -> UserDTO | None:
-        self._check_email_exist_or_not(email=email)
+    def user_login(self, email: str, password: str) -> UserDTO:
+        is_email_exist = self.user_storage.check_email_exists(email=email)
+        if not is_email_exist:
+            raise NotExistedEmailFoundException(email=email)
         user_data = self.user_storage.get_user_details(email=email)
-        if not user_data:
-            raise NotExistedEmailFound(email=email)
 
         if user_data.password == password:
             return user_data
 
-        raise WrongPasswordFound(password=password)
+        raise WrongPasswordFoundException(password=password)
 
     def _is_username_taken(self, username: str):
         is_existed_user_name = self.user_storage.check_username_exists(
             username=username)
 
         if is_existed_user_name:
-            raise ExistedUsernameFound(username=username)
+            raise ExistedUsernameFoundException(username=username)
 
     def _is_email_registered(self, email: str):
         is_existed_email = self.user_storage.check_email_exists(email=email)
 
         if is_existed_email:
-            raise ExistedEmailFound(email=email)
+            raise ExistedEmailFoundException(email=email)
 
     def _is_phone_number_exists(self, phone_number: str):
         is_existed_phone_number = self.user_storage.check_phone_number_exists(
             phone_number=phone_number)
 
         if is_existed_phone_number:
-            raise ExistedPhoneNumberFound(phone_number=phone_number)
+            raise ExistedPhoneNumberFoundException(phone_number=phone_number)
 
     def _check_username_exist_or_not(self, username: str):
         is_existed_username = self.user_storage.check_username_exists(
             username=username)
 
         if not is_existed_username:
-            raise UsernameNotFound(username=username)
+            raise UsernameNotFoundException(username=username)
 
     def _check_email_exist_or_not(self, email: str):
         is_existed_email = self.user_storage.check_email_exists(email=email)
 
         if not is_existed_email:
-            raise ExistedEmailFound(email=email)
+            raise ExistedEmailFoundException(email=email)
 
     def _check_updated_username_exist(self, username: str, user_id: str):
         is_user_exist_username = self.user_storage.check_user_username_exists(

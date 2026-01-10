@@ -27,7 +27,7 @@ from task_management.interactors.storage_interface.folder_permission_storage_int
 )
 from task_management.exceptions.custom_exceptions import (
     FolderNotFoundException,
-    InactiveFolderFoundException,
+    InactiveFolderException,
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
@@ -90,7 +90,7 @@ class TestGetFolderLists:
             "Folder", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveFolderFoundException) as exc:
+        with pytest.raises(InactiveFolderException) as exc:
             self.interactor.get_folder_lists("folder_1")
 
         snapshot.assert_match(

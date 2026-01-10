@@ -3,7 +3,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     UserNotFoundException,
-    InactiveUserFoundException,   # use your actual exception name
+    InactiveUserException,   # use your actual exception name
 )
 from task_management.exceptions.enums import GenderEnum
 from task_management.interactors.dtos import UserDTO
@@ -82,7 +82,7 @@ class TestGetUserProfile:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(InactiveUserFoundException) as exc:
+        with pytest.raises(InactiveUserException) as exc:
             interactor.get_user_profile(user_id="user123")
 
         snapshot.assert_match(

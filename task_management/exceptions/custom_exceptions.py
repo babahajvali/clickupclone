@@ -3,7 +3,7 @@ class UserNotFoundException(Exception):
         self.user_id = user_id
 
 
-class InactiveUserFoundException(Exception):
+class InactiveUserException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -13,7 +13,7 @@ class TemplateNotFoundException(Exception):
         self.template_id = template_id
 
 
-class UnSupportedFieldTypeFoundException(Exception):
+class UnsupportedFieldTypeException(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
@@ -23,12 +23,7 @@ class FieldNameAlreadyExistsException(Exception):
         self.field_name = field_name
 
 
-class FieldOrderAlreadyExistsException(Exception):
-    def __init__(self, field_order: int):
-        self.field_order = field_order
-
-
-class NotAccessToModificationException(Exception):
+class ModificationNotAllowedException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -82,12 +77,7 @@ class InvalidFieldDefaultValueException(Exception):
         super().__init__(self.message)
 
 
-class AlreadyExistedTemplateNameException(Exception):
-    def __init__(self, template_name: str):
-        self.template_name = template_name
-
-
-class DefaultTemplateAlreadyExistedException(Exception):
+class TemplateNameAlreadyExistsException(Exception):
     def __init__(self, template_name: str):
         self.template_name = template_name
 
@@ -95,21 +85,6 @@ class DefaultTemplateAlreadyExistedException(Exception):
 class ListNotFoundException(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
-
-
-class FolderListOrderAlreadyExistedException(Exception):
-    def __init__(self, folder_id: str):
-        self.folder_id = folder_id
-
-
-class SpaceListOrderAlreadyExistedException(Exception):
-    def __init__(self, space_id: str):
-        self.space_id = space_id
-
-
-class FolderOrderAlreadyExistedException(Exception):
-    def __init__(self, space_id: str):
-        self.space_id = space_id
 
 
 class TaskNotFoundException(Exception):
@@ -122,12 +97,12 @@ class TaskAssigneeNotFoundException(Exception):
         self.assign_id = assign_id
 
 
-class DeletedTaskFoundException(Exception):
+class DeletedTaskException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
 
 
-class InactiveListFoundException(Exception):
+class InactiveListException(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -137,7 +112,7 @@ class SpaceNotFoundException(Exception):
         self.space_id = space_id
 
 
-class InactiveSpaceFoundException(Exception):
+class InactiveSpaceException(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
@@ -147,7 +122,7 @@ class FolderNotFoundException(Exception):
         self.folder_id = folder_id
 
 
-class InactiveFolderFoundException(Exception):
+class InactiveFolderException(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 
@@ -162,17 +137,12 @@ class ViewNotFoundException(Exception):
         self.view_id = view_id
 
 
-class SpaceOrderAlreadyExistedException(Exception):
-    def __init__(self, workspace_id: str):
-        self.workspace_id = workspace_id
-
-
 class WorkspaceNotFoundException(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
 
-class InactiveWorkspaceFoundException(Exception):
+class InactiveWorkspaceException(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
@@ -182,7 +152,7 @@ class UserNotWorkspaceOwnerException(Exception):
         self.user_id = user_id
 
 
-class UnexpectedRoleFoundException(Exception):
+class UnexpectedRoleException(Exception):
     def __init__(self, role: str):
         self.role = role
 
@@ -197,39 +167,34 @@ class InactiveUserPermissionException(Exception):
         self.user_id = user_id
 
 
-class NotExistedEmailFound(Exception):
+class NotExistedEmailFoundException(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class WrongPasswordFound(Exception):
+class WrongPasswordFoundException(Exception):
     def __init__(self, password: str):
         self.password = password
 
 
-class ExistedUsernameFound(Exception):
+class ExistedUsernameFoundException(Exception):
     def __init__(self, username: str):
         self.username = username
 
 
-class ExistedEmailFound(Exception):
+class ExistedEmailFoundException(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class ExistedPhoneNumberFound(Exception):
+class ExistedPhoneNumberFoundException(Exception):
     def __init__(self, phone_number: str):
         self.phone_number = phone_number
 
 
-class UsernameNotFound(Exception):
+class UsernameNotFoundException(Exception):
     def __init__(self, username: str):
         self.username = username
-
-
-class TasKOrderAlreadyExistedException(Exception):
-    def __init__(self, list_id: str):
-        self.list_id = list_id
 
 
 class InvalidOffsetNumberException(Exception):
@@ -247,12 +212,12 @@ class InvalidOrderException(Exception):
         self.order = order
 
 
-class InactiveWorkspaceMemberFoundException(Exception):
+class InactiveWorkspaceMemberException(Exception):
     def __init__(self, workspace_member_id: int):
         self.workspace_member_id = workspace_member_id
 
 
-class AlreadyAccountNameExistedException(Exception):
+class AccountNameAlreadyExistsException(Exception):
     def __init__(self, name: str):
         self.name = name
 
@@ -262,11 +227,15 @@ class AccountNotFoundException(Exception):
         self.account_id = account_id
 
 
-class InactiveAccountFoundException(Exception):
+class InactiveAccountException(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
 
 
 class UserNotAccountOwnerException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+
+class UserDoesNotHaveAccountPermissionException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id

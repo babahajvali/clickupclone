@@ -6,24 +6,27 @@ from task_management.models import Account, User
 
 class AccountStorage(AccountStorageInterface):
 
-    def get_account_by_id(self, account_id: str) -> AccountDTO:
-        account_data = Account.objects.get(account_id=account_id)
+    def get_account_by_id(self, account_id: str) -> AccountDTO | None:
+        try:
+            account_data = Account.objects.get(account_id=account_id)
 
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+            return AccountDTO(
+                account_id=account_data.account_id,
+                name=account_data.name,
+                description=account_data.description,
+                owner_id=account_data.owner.user_id,
+                is_active=account_data.is_active,
+            )
+        except Account.DoesNotExist:
+            return None
 
     def validate_account_name_exists(self, name: str) -> bool:
         return Account.objects.filter(name=name).exists()
 
     def create_account(self, account_dto: CreateAccountDTO) -> AccountDTO:
-        owner = User.objects.get(user_id=account_dto.owner_id)
-        account_data = Account.objects.create(name=account_dto.name, description=account_dto.description,owner_id=owner)
 
+        owner = User.objects.get(user_id=account_dto.owner_id)
+        account_data = Account.objects.create(name=account_dto.name, description=account_dto.description,owner=owner)
         return AccountDTO(
             account_id=account_data.account_id,
             name=account_data.name,

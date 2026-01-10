@@ -1,0 +1,172 @@
+import graphene
+
+
+class UserNotFoundType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class InactiveUserType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class TemplateNotFoundType(graphene.ObjectType):
+    template_id = graphene.String(required=True)
+
+
+class UnsupportedFieldTypeType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+
+
+class FieldNameAlreadyExistsType(graphene.ObjectType):
+    field_name = graphene.String(required=True)
+
+
+class ModificationNotAllowedType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class FieldNotFoundType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+
+
+class InvalidFieldConfigType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+    invalid_keys = graphene.List(graphene.String)
+    message = graphene.String()
+
+
+class InvalidFieldDefaultValueType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+    default_value = graphene.String()
+    message = graphene.String()
+
+
+class TemplateNameAlreadyExistsType(graphene.ObjectType):
+    template_name = graphene.String(required=True)
+
+
+class ListNotFoundType(graphene.ObjectType):
+    list_id = graphene.String(required=True)
+
+
+class TaskNotFoundType(graphene.ObjectType):
+    task_id = graphene.String(required=True)
+
+
+class TaskAssigneeNotFoundType(graphene.ObjectType):
+    assign_id = graphene.String(required=True)
+
+
+class DeletedTaskType(graphene.ObjectType):
+    task_id = graphene.String(required=True)
+
+
+class InactiveListType(graphene.ObjectType):
+    list_id = graphene.String(required=True)
+
+
+class SpaceNotFoundType(graphene.ObjectType):
+    space_id = graphene.String(required=True)
+
+
+class InactiveSpaceType(graphene.ObjectType):
+    space_id = graphene.String(required=True)
+
+
+class FolderNotFoundType(graphene.ObjectType):
+    folder_id = graphene.String(required=True)
+
+
+class InactiveFolderType(graphene.ObjectType):
+    folder_id = graphene.String(required=True)
+
+
+class ViewTypeNotFoundType(graphene.ObjectType):
+    view_type = graphene.String(required=True)
+
+
+class ViewNotFoundType(graphene.ObjectType):
+    view_id = graphene.String(required=True)
+
+
+class WorkspaceNotFoundType(graphene.ObjectType):
+    workspace_id = graphene.String(required=True)
+
+
+class InactiveWorkspaceType(graphene.ObjectType):
+    workspace_id = graphene.String(required=True)
+
+
+class UserNotWorkspaceOwnerType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class UnexpectedRoleType(graphene.ObjectType):
+    role = graphene.String(required=True)
+
+
+class UserDoesNotHaveListPermissionType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class InactiveUserPermissionType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class NotExistedEmailFoundType(graphene.ObjectType):
+    email = graphene.String(required=True)
+
+
+class WrongPasswordFoundType(graphene.ObjectType):
+    password = graphene.String(required=True)
+
+
+class ExistedUsernameFoundType(graphene.ObjectType):
+    username = graphene.String(required=True)
+
+
+class ExistedEmailFoundType(graphene.ObjectType):
+    email = graphene.String(required=True)
+
+
+class ExistedPhoneNumberFoundType(graphene.ObjectType):
+    phone_number = graphene.String(required=True)
+
+
+class UsernameNotFoundType(graphene.ObjectType):
+    username = graphene.String(required=True)
+
+
+class InvalidOffsetNumberType(graphene.ObjectType):
+    offset = graphene.Int(required=True)
+
+
+class InvalidLimitType(graphene.ObjectType):
+    limit = graphene.Int(required=True)
+
+
+class InvalidOrderType(graphene.ObjectType):
+    order = graphene.Int(required=True)
+
+
+class InactiveWorkspaceMemberType(graphene.ObjectType):
+    workspace_member_id = graphene.Int(required=True)
+
+
+class AccountNameAlreadyExistsType(graphene.ObjectType):
+    name = graphene.String(required=True)
+
+
+class AccountNotFoundType(graphene.ObjectType):
+    account_id = graphene.String(required=True)
+
+
+class InactiveAccountType(graphene.ObjectType):
+    account_id = graphene.String(required=True)
+
+
+class UserNotAccountOwnerType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+class UserDoesNotHaveAccountPermissionType(graphene.ObjectType):
+    user_id = graphene.String(required=True)

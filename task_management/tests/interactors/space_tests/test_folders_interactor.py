@@ -14,10 +14,10 @@ from task_management.interactors.storage_interface.folder_permission_storage_int
     FolderPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
-    InactiveSpaceFoundException,
+    ModificationNotAllowedException,
+    InactiveSpaceException,
     FolderNotFoundException,
-    InactiveFolderFoundException,
+    InactiveFolderException,
 )
 from task_management.tests.factories.interactor_factory import (
     CreateFolderDTOFactory,
@@ -86,7 +86,7 @@ class TestFolderInteractor:
             PermissionsEnum.VIEW
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.create_folder(dto)
 
         snapshot.assert_match(
@@ -104,7 +104,7 @@ class TestFolderInteractor:
             "Space", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveSpaceFoundException) as exc:
+        with pytest.raises(InactiveSpaceException) as exc:
             self.interactor.create_folder(dto)
 
         snapshot.assert_match(
@@ -143,7 +143,7 @@ class TestFolderInteractor:
             PermissionsEnum.VIEW
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.update_folder(dto,user_id="user_id1")
 
         snapshot.assert_match(
@@ -216,7 +216,7 @@ class TestFolderInteractor:
             "Folder", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveFolderFoundException) as exc:
+        with pytest.raises(InactiveFolderException) as exc:
             self.interactor.remove_folder(folder_id, user_id)
 
         snapshot.assert_match(
@@ -256,7 +256,7 @@ class TestFolderInteractor:
             "Folder", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveFolderFoundException) as exc:
+        with pytest.raises(InactiveFolderException) as exc:
             self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC)
 
         snapshot.assert_match(

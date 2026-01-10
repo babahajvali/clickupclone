@@ -18,9 +18,9 @@ from task_management.interactors.storage_interface.task_storage_interface import
     TaskStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
     ListNotFoundException,
-    InactiveListFoundException,
+    InactiveListException,
     TaskNotFoundException
 )
 from task_management.tests.factories.interactor_factory import (
@@ -85,7 +85,7 @@ class TestCreateTaskInteractor:
             make_permission(PermissionsEnum.VIEW)
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(
@@ -113,7 +113,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListFoundException) as exc:
+        with pytest.raises(InactiveListException) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(

@@ -5,9 +5,9 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFoundException,
-    UnSupportedFieldTypeFoundException,
+    UnsupportedFieldTypeException,
     FieldNameAlreadyExistsException,
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
 )
 from task_management.exceptions.enums import FieldType, PermissionsEnum
 from task_management.interactors.field_interactors.field_interactors import (
@@ -149,7 +149,7 @@ class TestCreateFieldInteractor:
             created_by="user_1",
         )
 
-        with pytest.raises(UnSupportedFieldTypeFoundException) as exc:
+        with pytest.raises(UnsupportedFieldTypeException) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -172,7 +172,7 @@ class TestCreateFieldInteractor:
             created_by="user_1",
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(

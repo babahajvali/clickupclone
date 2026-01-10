@@ -14,9 +14,8 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
 from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    ListNotFoundException, InactiveListFoundException, SpaceNotFoundException,
-    NotAccessToModificationException, SpaceListOrderAlreadyExistedException,
-    InvalidOrderException,
+    ListNotFoundException, InactiveListException, SpaceNotFoundException,
+    ModificationNotAllowedException,
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
@@ -101,7 +100,7 @@ class TestUpdateList:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListFoundException) as exc:
+        with pytest.raises(InactiveListException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
 
@@ -116,7 +115,7 @@ class TestUpdateList:
             make_permission(PermissionsEnum.VIEW)
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
 

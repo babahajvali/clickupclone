@@ -19,10 +19,10 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
     ListPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
     ViewNotFoundException,
     ListNotFoundException,
-    InactiveListFoundException
+    InactiveListException
 )
 from task_management.tests.factories.interactor_factory import (
     ListViewDTOFactory,
@@ -82,7 +82,7 @@ class TestListViewInteractor:
             make_permission(PermissionsEnum.VIEW)
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -134,7 +134,7 @@ class TestListViewInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListFoundException) as exc:
+        with pytest.raises(InactiveListException) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -169,7 +169,7 @@ class TestListViewInteractor:
             make_permission(PermissionsEnum.VIEW)
         )
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.remove_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -194,7 +194,7 @@ class TestListViewInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListFoundException) as exc:
+        with pytest.raises(InactiveListException) as exc:
             self.interactor.get_list_views("list_id")
 
         snapshot.assert_match(repr(exc.value), "get_list_inactive.txt")

@@ -2,9 +2,9 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    ExistedUsernameFound,
-    ExistedEmailFound,
-    ExistedPhoneNumberFound,
+    ExistedUsernameFoundException,
+    ExistedEmailFoundException,
+    ExistedPhoneNumberFoundException,
 )
 from task_management.exceptions.enums import GenderEnum
 from task_management.interactors.dtos import UserDTO
@@ -86,7 +86,7 @@ class TestUpdateUser:
             image_url="url",
         )
 
-        with pytest.raises(ExistedUsernameFound) as exc:
+        with pytest.raises(ExistedUsernameFoundException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(
@@ -116,7 +116,7 @@ class TestUpdateUser:
             image_url="url",
         )
 
-        with pytest.raises(ExistedEmailFound) as exc:
+        with pytest.raises(ExistedEmailFoundException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(
@@ -146,7 +146,7 @@ class TestUpdateUser:
             image_url="url",
         )
 
-        with pytest.raises(ExistedPhoneNumberFound) as exc:
+        with pytest.raises(ExistedPhoneNumberFoundException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(

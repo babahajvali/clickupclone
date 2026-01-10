@@ -3,9 +3,8 @@ import pytest
 from faker import Faker
 
 from task_management.exceptions.custom_exceptions import (
-    AlreadyExistedTemplateNameException,
-    DefaultTemplateAlreadyExistedException,
-    NotAccessToModificationException
+    TemplateNameAlreadyExistsException,
+    ModificationNotAllowedException
 )
 from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.dtos import UserListPermissionDTO
@@ -117,7 +116,7 @@ class TestUpdateTemplateInteractor:
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(PermissionsEnum.VIEW)
         )
-        with pytest.raises(NotAccessToModificationException):
+        with pytest.raises(ModificationNotAllowedException):
             self.interactor.update_template(update_dto,user_id="user_id")
 
         self.template_storage.update_template.assert_not_called()
@@ -133,7 +132,7 @@ class TestUpdateTemplateInteractor:
         )
         self.template_storage.check_template_name_exist_except_this_template.return_value = True
 
-        with pytest.raises(AlreadyExistedTemplateNameException) as exc:
+        with pytest.raises(TemplateNameAlreadyExistsException) as exc:
             self.interactor.update_template(update_dto,user_id="user_id")
 
         snapshot.assert_match(

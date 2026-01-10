@@ -20,7 +20,8 @@ class SpaceStorage(SpaceStorageInterface):
             is_active=space_data.is_active,
             order=space_data.order,
             is_private=space_data.is_private,
-            created_by=str(space_data.created_by.user_id))
+            created_by=str(space_data.created_by.user_id)
+        )
 
     def get_space(self, space_id: str) -> SpaceDTO:
         space_data = Space.objects.get(space_id=space_id)

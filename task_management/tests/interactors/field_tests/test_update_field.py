@@ -8,8 +8,7 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFoundException,
     FieldNameAlreadyExistsException,
-    FieldOrderAlreadyExistsException,
-    NotAccessToModificationException,
+    ModificationNotAllowedException,
 )
 from task_management.exceptions.enums import FieldType, PermissionsEnum
 from task_management.interactors.dtos import (
@@ -137,7 +136,7 @@ class TestUpdateFieldInteractor:
         )
         dto = self._get_update_dto()
 
-        with pytest.raises(NotAccessToModificationException) as exc:
+        with pytest.raises(ModificationNotAllowedException) as exc:
             interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(

@@ -38,13 +38,13 @@ class SpaceInteractor(ValidationMixin):
             workspace_id=create_space_data.workspace_id,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
+
         self.validate_workspace_is_active(
             workspace_id=create_space_data.workspace_id,
             workspace_storage=self.workspace_storage)
 
         result = self.space_storage.create_space(
             create_space_data=create_space_data)
-
         self._create_space_users_permission(space_id=result.space_id,
                                             workspace_id=result.workspace_id,
                                             created_by=result.created_by)
@@ -71,10 +71,12 @@ class SpaceInteractor(ValidationMixin):
         self.validate_user_has_access_to_space(
             space_id=space_id, user_id=user_id,
             permission_storage=self.permission_storage)
+        print("Baba")
         self.validate_workspace_is_active(
             workspace_id=workspace_id,
             workspace_storage=self.workspace_storage)
         self._validate_space_order(workspace_id=workspace_id, order=order)
+
 
         return self.space_storage.reorder_space(workspace_id=workspace_id,
                                                 space_id=space_id, order=order)
@@ -108,6 +110,12 @@ class SpaceInteractor(ValidationMixin):
         return self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)
 
+    def get_space(self, space_id: str) -> SpaceDTO:
+        self.validate_space_is_active(space_id=space_id,
+                                      space_storage=self.space_storage)
+
+        return self.space_storage.get_space(space_id=space_id)
+
     # Permissions Section
 
     def get_space_permissions(self, space_id: str) -> list[
@@ -130,7 +138,6 @@ class SpaceInteractor(ValidationMixin):
                     space_id=space_id,
                     user_id=workspace_member.user_id,
                     permission_type=PermissionsEnum.FULL_EDIT,
-                    is_active=True,
                     added_by=created_by
                 )
             else:
@@ -138,7 +145,6 @@ class SpaceInteractor(ValidationMixin):
                     space_id=space_id,
                     user_id=workspace_member.user_id,
                     permission_type=PermissionsEnum.VIEW,
-                    is_active=True,
                     added_by=created_by
                 )
             users_permissions.append(user_permission)

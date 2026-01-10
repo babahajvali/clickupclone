@@ -13,7 +13,7 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
 from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     SpaceNotFoundException,
-    InactiveSpaceFoundException,
+    InactiveSpaceException,
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
@@ -71,7 +71,7 @@ class TestGetSpaceLists:
             "Space", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveSpaceFoundException) as exc:
+        with pytest.raises(InactiveSpaceException) as exc:
             self.interactor.get_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")

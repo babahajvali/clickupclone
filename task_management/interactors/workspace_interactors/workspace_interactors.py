@@ -1,5 +1,6 @@
+from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
-    UpdateWorkspaceDTO
+    UpdateWorkspaceDTO, AddMemberToWorkspaceDTO
 from task_management.interactors.storage_interface.account_member_storage_interface import \
     AccountMemberStorageInterface
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -36,8 +37,18 @@ class WorkspaceInteractor(ValidationMixin):
             account_id=create_workspace_data.account_id,
             account_member_storage=self.account_member_storage)
 
-        return self.workspace_storage.create_workspace(
+        result = self.workspace_storage.create_workspace(
             workspace_data=create_workspace_data)
+
+        create_workspace_member = AddMemberToWorkspaceDTO(
+            workspace_id=result.workspace_id,
+            user_id=create_workspace_data.user_id,
+            role=Role.OWNER,
+            added_by=create_workspace_data.user_id,
+        )
+        self.workspace_member_storage.add_member_to_workspace(create_workspace_member)
+
+        return result
 
     def update_workspace(self, update_workspace_data: UpdateWorkspaceDTO,
                          user_id: str) -> WorkspaceDTO:
@@ -71,3 +82,8 @@ class WorkspaceInteractor(ValidationMixin):
 
         return self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
+
+    def get_workspace(self, workspace_id: str)->WorkspaceDTO:
+        self.validate_workspace_is_active(workspace_id, workspace_storage=self.workspace_storage)
+
+        return self.workspace_storage.get_workspace(workspace_id=workspace_id)

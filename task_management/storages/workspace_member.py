@@ -1,5 +1,3 @@
-from enum import member
-
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
@@ -29,7 +27,7 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
 
         workspace_member_data = WorkspaceMember.objects.create(
             workspace=workspace, user=user, added_by=added_by,
-            role=workspace_member_data.role)
+            role=workspace_member_data.role.value)
 
         return self._workspace_member_dto(data=workspace_member_data)
 
