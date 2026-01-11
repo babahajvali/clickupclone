@@ -35,6 +35,6 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def reorder_tasks(self, list_id: str, order: int, task_id: str):
+    def reorder_tasks(self, list_id: str, new_order: int, task_id: str):
         pass
 

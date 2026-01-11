@@ -74,6 +74,10 @@ class ListInteractor(ValidationMixin):
 
         result = self.list_storage.create_list(
             create_list_data=create_list_data)
+
+        self._create_list_users_permissions(
+            list_id=result.list_id, space_id=result.space_id,
+            created_by=result.created_by)
         template_interactor = CreateTemplateInteractor(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
@@ -87,9 +91,7 @@ class ListInteractor(ValidationMixin):
             created_by=result.created_by
         )
         template_interactor.create_template(template_data=create_template_dto)
-        self._create_list_users_permissions(
-            list_id=result.list_id, space_id=result.space_id,
-            created_by=result.created_by)
+
 
         return result
 
@@ -162,11 +164,17 @@ class ListInteractor(ValidationMixin):
                                               permission_storage=self.list_permission_storage)
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
+        self._validate_visibility_type(visibility=visibility)
 
-        if visibility == Visibility.PUBLIC:
+        if visibility == Visibility.PUBLIC.value:
             return self.list_storage.make_list_public(list_id=list_id)
 
         return self.list_storage.make_list_private(list_id=list_id)
+
+    def get_list(self, list_id: str):
+        self.validate_list_is_active(list_id=list_id,list_storage=self.list_storage)
+
+        return self.list_storage.get_list(list_id=list_id)
 
     # Permission section
 

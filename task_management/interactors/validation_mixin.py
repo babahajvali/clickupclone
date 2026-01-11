@@ -11,9 +11,10 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     WorkspaceNotFoundException, InactiveWorkspaceException, \
     InactiveUserException, UserNotWorkspaceOwnerException, \
     InactiveWorkspaceMemberException, AccountNotFoundException, \
-    InactiveAccountException, UnexpectedRoleException
+    InactiveAccountException, UnexpectedRoleException, \
+    UnsupportedVisibilityTypeException
 from task_management.exceptions.enums import PermissionsEnum, FieldType, \
-    ViewTypeEnum, Role
+    ViewTypeEnum, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.account_member_storage_interface import \
@@ -47,32 +48,37 @@ from task_management.interactors.storage_interface.workspace_storage_interface i
 
 FIELD_TYPE_RULES = {
     FieldType.TEXT.value: {
-        "config_keys": {"max_length"},
+        "config_keys": {"max_length", "default"},
         "default_type": str,
         "default_required": False,
     },
+    FieldType.USER.value: {
+        "config_keys": {"multiple", "allow_groups"},
+        "default_type": str,  # User ID as string (UUID)
+        "default_required": False,
+    },
     FieldType.NUMBER.value: {
-        "config_keys": {"min", "max"},
+        "config_keys": {"min", "max","default"},
         "default_type": (int, float),
         "default_required": False,
     },
     FieldType.DROPDOWN.value: {
-        "config_keys": {"options"},
+        "config_keys": {"options","default"},
         "default_type": str,
         "default_required": False,
     },
     FieldType.DATE.value: {
-        "config_keys": set(),
+        "config_keys": set("default"),
         "default_type": str,
         "default_required": False,
     },
     FieldType.CHECKBOX.value: {
-        "config_keys": set(),
+        "config_keys": set("default"),
         "default_type": bool,
         "default_required": False,
     },
     FieldType.EMAIL.value: {
-        "config_keys": set(),
+        "config_keys": set("default"),
         "default_type": str,
         "default_required": False,
     },
@@ -234,7 +240,7 @@ class ValidationMixin:
         if not task_data:
             raise TaskNotFoundException(task_id=task_id)
 
-        if task_data.is_delete:
+        if task_data.is_deleted:
             raise DeletedTaskException(task_id=task_id)
 
         return task_data.list_id
@@ -293,7 +299,6 @@ class ValidationMixin:
 
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
-        print("Hajvali")
 
         if not user_permissions.permission_type == PermissionsEnum.FULL_EDIT.value:
             raise ModificationNotAllowedException(user_id=user_id)
@@ -309,6 +314,14 @@ class ValidationMixin:
 
         if not workspace_data.is_active:
             raise InactiveWorkspaceException(workspace_id=workspace_id)
+
+    @staticmethod
+    def _validate_visibility_type(visibility: str):
+        existed_visibilities = [each.value for each in Visibility]
+
+        if visibility not in existed_visibilities:
+            raise UnsupportedVisibilityTypeException(
+                visibility_type=visibility)
 
     @staticmethod
     def validate_user_is_workspace_owner(user_id: str, workspace_id: str,

@@ -1,0 +1,76 @@
+import graphene
+
+from task_management.exceptions import custom_exceptions
+from task_management.graphql.types.error_types import FolderNotFoundType, \
+    InactiveFolderType, ModificationNotAllowedType, SpaceNotFoundType, \
+    InactiveSpaceType
+from task_management.graphql.types.input_types import UpdateFolderInputParams
+from task_management.graphql.types.response_types import UpdateFolderResponse
+from task_management.graphql.types.types import FolderType
+
+from task_management.interactors.dtos import UpdateFolderDTO
+from task_management.interactors.space_interactors.folders_interactor import \
+    FolderInteractor
+from task_management.storages.folder_storage import FolderStorage
+from task_management.storages.folder_permission_storage import FolderPermissionStorage
+from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.space_storage import SpaceStorage
+
+
+class UpdateFolderMutation(graphene.Mutation):
+    class Arguments:
+        params = UpdateFolderInputParams(required=True)
+
+    Output = UpdateFolderResponse
+
+    @staticmethod
+    def mutate(root, info, params):
+        folder_storage = FolderStorage()
+        folder_permission_storage = FolderPermissionStorage()
+        space_permission_storage = SpacePermissionStorage()
+        space_storage = SpaceStorage()
+
+        interactor = FolderInteractor(
+            folder_storage=folder_storage,
+            folder_permission_storage=folder_permission_storage,
+            space_permission_storage=space_permission_storage,
+            space_storage=space_storage
+        )
+
+        try:
+            update_folder_data = UpdateFolderDTO(
+                folder_id=params.folder_id,
+                name=params.name if params.name else None,
+                description=params.description if params.description else None
+            )
+
+            result = interactor.update_folder(
+                update_folder_data=update_folder_data,
+                user_id=params.user_id
+            )
+
+            return FolderType(
+                folder_id=str(result.folder_id),
+                name=result.name,
+                description=result.description,
+                space_id=str(result.space_id),
+                order=result.order,
+                is_active=result.is_active,
+                created_by=str(result.created_by),
+                is_private=result.is_private
+            )
+
+        except custom_exceptions.FolderNotFoundException as e:
+            return FolderNotFoundType(folder_id=e.folder_id)
+
+        except custom_exceptions.InactiveFolderException as e:
+            return InactiveFolderType(folder_id=e.folder_id)
+
+        except custom_exceptions.ModificationNotAllowedException as e:
+            return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.SpaceNotFoundException as e:
+            return SpaceNotFoundType(space_id=e.space_id)
+
+        except custom_exceptions.InactiveSpaceException as e:
+            return InactiveSpaceType(space_id=e.space_id)

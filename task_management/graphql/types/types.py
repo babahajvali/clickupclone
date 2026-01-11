@@ -62,6 +62,10 @@ class FolderType(graphene.ObjectType):
     is_private = graphene.Boolean(required=True)
 
 
+class SpaceFoldersType(graphene.ObjectType):
+    folders = graphene.List(FolderType)
+
+
 class ListType(graphene.ObjectType):
     list_id = graphene.String(required=True)
     name = graphene.String(required=True)
@@ -71,8 +75,10 @@ class ListType(graphene.ObjectType):
     order = graphene.Int(required=True)
     is_private = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
-    folder_id = graphene.String(required=False)
+    folder_id = graphene.String()
 
+class ListsType(graphene.ObjectType):
+    lists = graphene.List(ListType)
 
 class TaskType(graphene.ObjectType):
     task_id = graphene.String(required=True)
@@ -83,6 +89,8 @@ class TaskType(graphene.ObjectType):
     created_by = graphene.String(required=True)
     is_delete = graphene.Boolean(required=True)
 
+class TasksType(graphene.ObjectType):
+    tasks = graphene.List(TaskType)
 
 class TaskAssigneeType(graphene.ObjectType):
     assign_id = graphene.String(required=True)

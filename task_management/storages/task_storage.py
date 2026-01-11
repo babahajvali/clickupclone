@@ -15,8 +15,8 @@ class TaskStorage(TaskStorageInterface):
             title=task_data.title,
             description=task_data.description,
             order=task_data.order,
-            is_delete=task_data.is_deleted,
-            created_by=task_data.created_by,
+            is_deleted=task_data.is_deleted,
+            created_by=task_data.created_by.user_id,
             list_id=task_data.list.list_id,
         )
 
@@ -70,7 +70,7 @@ class TaskStorage(TaskStorageInterface):
     def task_filter_data(self, filter_data: FilterDTO):
         active_tasks = Task.objects.filter(list_id=filter_data.list_id,
                                            is_deleted=False).prefetch_related(
-            "taskassignee_set",
+            "task_assignees",
             "task_field_values",
         )
 
@@ -90,24 +90,24 @@ class TaskStorage(TaskStorageInterface):
         active_tasks = active_tasks.distinct().order_by('order')
 
         return active_tasks[
-            filter_data.offset: filter_data.offset + filter_data.limit]
+            filter_data.offset - 1: filter_data.offset + filter_data.limit]
 
     def get_tasks_count(self, list_id: str):
         return Task.objects.filter(list_id=list_id, is_deleted=False).count()
 
-    def reorder_tasks(self, list_id: str, order: int, task_id: str):
-        new_order = order
+    def reorder_tasks(self, list_id: str, new_order: int, task_id: str):
         task_data = Task.objects.get(task_id=task_id)
         old_order = task_data.order
 
         if old_order == new_order:
             return self._task_dto(task_data=task_data)
 
+        task_data.order = 0
+        task_data.save()
         if new_order > old_order:
             Task.objects.filter(
                 list_id=list_id, is_deleted=False, order__gt=old_order,
                 order__lte=new_order).update(order=F("order") - 1)
-
         else:
             Task.objects.filter(
                 list_id=list_id, is_deleted=False, order__gte=new_order,

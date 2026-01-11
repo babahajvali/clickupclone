@@ -13,7 +13,7 @@ class ListPermissionStorage(ListPermissionStorageInterface):
             permission_data: ListPermission) -> UserListPermissionDTO:
         return UserListPermissionDTO(
             id=permission_data.pk,
-            list_id=permission_data.list_id.list_id,
+            list_id=permission_data.list.list_id,
             user_id=permission_data.user.user_id,
             permission_type=permission_data.permission_type,
             is_active=permission_data.is_active,
@@ -26,7 +26,7 @@ class ListPermissionStorage(ListPermissionStorageInterface):
             list_id=list_id,
             user_id=user_id
         )
-        permission.permission_type = permission_type
+        permission.permission_type = permission_type.value
         permission.save()
 
         return self._list_permission_dto(permission_data=permission)
@@ -78,13 +78,15 @@ class ListPermissionStorage(ListPermissionStorageInterface):
 
         permissions_to_create = []
         for perm_data in user_permissions:
+            list_obj = lists.get(str(perm_data.list_id))
+            user = users.get(str(perm_data.user_id))
+            added_by_user = added_by_users.get(str(perm_data.added_by))
             permissions_to_create.append(
                 ListPermission(
-                    list_id=lists[perm_data.list_id],
-                    user=users[perm_data.user_id],
-                    permission_type=perm_data.permission_type,
-                    added_by=added_by_users[perm_data.added_by],
-                    is_active=True
+                    list=list_obj,
+                    user=user,
+                    permission_type=perm_data.permission_type.value,
+                    added_by=added_by_user,
                 )
             )
 

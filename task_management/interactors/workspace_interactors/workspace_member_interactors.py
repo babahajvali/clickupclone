@@ -53,7 +53,8 @@ class WorkspaceMemberInteractor(ValidationMixin):
         self.validate_user_is_active(
             user_id=workspace_member_data.user_id,
             user_storage=self.user_storage)
-        self.validate_role(role=workspace_member_data.role.value)
+        self.validate_role(role=workspace_member_data.role)
+
         self.validate_user_can_modify_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id,
@@ -66,7 +67,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
         self.add_permissions_for_workspace_spaces(
             workspace_id=workspace_member_data.workspace_id,
             user_id=workspace_member_data.user_id,
-            role=workspace_member_data.role.value,
+            role=workspace_member_data.role,
             added_by=workspace_member_data.added_by
         )
 
@@ -80,7 +81,8 @@ class WorkspaceMemberInteractor(ValidationMixin):
         workspace_member_data = self.workspace_member_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
         self.validate_user_can_modify_workspace(
-            user_id=removed_by, workspace_id=workspace_member_data.workspace_id,
+            user_id=removed_by,
+            workspace_id=workspace_member_data.workspace_id,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
 
@@ -94,9 +96,9 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         return workspace_member
 
-    def change_member_role(self, workspace_id: str, user_id: str,
-                           role: str,
-                           changed_by: str) -> WorkspaceMemberDTO:
+    def change_member_role(
+            self, workspace_id: str, user_id: str, role: str,
+            changed_by: str) -> WorkspaceMemberDTO:
         self.validate_workspace_is_active(workspace_id=workspace_id,
                                           workspace_storage=self.workspace_storage)
         self.validate_user_is_active(user_id=user_id,
@@ -295,7 +297,6 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 user_id=user_id,
                 permission_type=permission_type
             )
-
 
     @staticmethod
     def _get_permission_type_by_role(role: str) -> PermissionsEnum:

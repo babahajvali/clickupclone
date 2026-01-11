@@ -88,7 +88,6 @@ class AccountMember(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('account', 'user')
         indexes = [
             models.Index(fields=["account"]),
             models.Index(fields=["user",]),
@@ -149,7 +148,6 @@ class Space(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('name', 'workspace')
         indexes = [
             models.Index(fields=["workspace"]),
             models.Index(fields=["is_active"]),
@@ -181,7 +179,6 @@ class Folder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('name', 'space')
         indexes = [
             models.Index(fields=["space"]),
         ]
@@ -218,7 +215,6 @@ class List(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('name', 'space')
         indexes = [
             models.Index(fields=["space"]),
             models.Index(fields=["folder"]),
@@ -231,14 +227,14 @@ class List(models.Model):
 class Task(models.Model):
     task_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     list = models.ForeignKey(
         'List',
         on_delete=models.CASCADE,
         related_name='list_tasks'
     )
     order = models.PositiveIntegerField()
-    is_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, db_index=True)
     created_by = models.ForeignKey(
         'User',
         on_delete=models.SET_NULL,
@@ -249,7 +245,6 @@ class Task(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('list', 'order')
         indexes = [
             models.Index(fields=["list", "is_deleted"]),
         ]
@@ -260,7 +255,7 @@ class Task(models.Model):
 
 class Template(models.Model):
     template_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     description = models.TextField()
     list = models.OneToOneField(
         'List',
@@ -270,8 +265,6 @@ class Template(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = ('list', 'name')
 
     def __str__(self):
         return self.name
@@ -322,8 +315,7 @@ class ListView(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('list', 'view')
+
 
     def __str__(self):
         return f"{self.list.name} - {self.view.name}"
@@ -350,8 +342,6 @@ class TaskAssignee(models.Model):
     )
     assigned_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('task', 'user')
 
     def __str__(self):
         return f"{self.user.username} - {self.task.title}"
@@ -368,7 +358,8 @@ class Field(models.Model):
         EMAIL = "email", "Email"
 
     field_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    field_name = models.CharField(max_length=255, unique=True)
+    field_name = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
     description = models.TextField()
     field_type = models.CharField(max_length=50, choices=FieldType.choices)
     template = models.ForeignKey(
@@ -377,7 +368,7 @@ class Field(models.Model):
         related_name='fields'
     )
     order = models.PositiveIntegerField()
-    config = models.JSONField()
+    config = models.JSONField(default=dict, blank=True)
     is_required = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         'User',
@@ -390,7 +381,8 @@ class Field(models.Model):
 
     class Meta:
         ordering = ['order']
-        unique_together = ('template', 'order')
+        indexes = [
+            models.Index(fields=['template', 'is_active']),]
 
     def __str__(self):
         return self.field_name
@@ -418,7 +410,8 @@ class FieldValue(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('field', 'task')
+        indexes = [
+            models.Index(fields=['task'])]
 
     def __str__(self):
         return self.field.field_name
@@ -445,8 +438,6 @@ class WorkspaceMember(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = ('workspace', 'user')
 
     def __str__(self):
         return self.user.username
@@ -501,8 +492,7 @@ class FolderPermission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = ('folder', 'user')
+
 
     def __str__(self):
         return self.user.username
@@ -529,8 +519,6 @@ class ListPermission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        unique_together = ('list', 'user')
 
     def __str__(self):
         return self.user.username

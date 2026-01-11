@@ -152,7 +152,7 @@ class TaskDTO:
     list_id: str
     order: int
     created_by: str
-    is_delete: bool
+    is_deleted: bool
 
 
 @dataclass

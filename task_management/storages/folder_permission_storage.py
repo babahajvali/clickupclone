@@ -71,13 +71,15 @@ class FolderPermissionStorage(FolderPermissionStorageInterface):
 
         permissions_to_create = []
         for perm_data in users_permission_data:
+            folder = folders.get(str(perm_data.folder_id))
+            user = users.get(str(perm_data.user_id))
+            added_by_user = added_by_users.get(str(perm_data.added_by))
             permissions_to_create.append(
                 FolderPermission(
-                    folder_id=folders[perm_data.folder_id],
-                    user=users[perm_data.user_id],
-                    permission_type=perm_data.permission_type,
-                    added_by=added_by_users[perm_data.added_by],
-                    is_active=True
+                    folder=folder,
+                    user=user,
+                    permission_type=perm_data.permission_type.value,
+                    added_by=added_by_user,
                 )
             )
         created_permissions = FolderPermission.objects.bulk_create(

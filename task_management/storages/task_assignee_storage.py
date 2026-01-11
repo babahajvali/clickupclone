@@ -61,7 +61,7 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
                 list_id=str(assignee.task.list.list_id),
                 order=assignee.task.order,
                 created_by=str(assignee.task.created_by.user_id),
-                is_delete=assignee.task.is_deleted
+                is_deleted=assignee.task.is_deleted
             ))
 
         return UserTasksDTO(
@@ -88,7 +88,7 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
                 list_id=str(assignee.task.list.list_id),
                 order=assignee.task.order,
                 created_by=str(assignee.task.created_by.user_id),
-                is_delete=assignee.task.is_deleted
+                is_deleted=assignee.task.is_deleted
             ))
 
         return UserTasksDTO(

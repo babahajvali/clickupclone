@@ -151,6 +151,9 @@ class UserNotWorkspaceOwnerException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+class UnsupportedVisibilityTypeException(Exception):
+    def __init__(self, visibility_type: str):
+        self.visibility_type = visibility_type
 
 class UnexpectedRoleException(Exception):
     def __init__(self, role: str):

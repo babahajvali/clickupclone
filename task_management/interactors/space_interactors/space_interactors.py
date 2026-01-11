@@ -71,7 +71,6 @@ class SpaceInteractor(ValidationMixin):
         self.validate_user_has_access_to_space(
             space_id=space_id, user_id=user_id,
             permission_storage=self.permission_storage)
-        print("Baba")
         self.validate_workspace_is_active(
             workspace_id=workspace_id,
             workspace_storage=self.workspace_storage)
@@ -79,7 +78,7 @@ class SpaceInteractor(ValidationMixin):
 
 
         return self.space_storage.reorder_space(workspace_id=workspace_id,
-                                                space_id=space_id, order=order)
+                                                space_id=space_id, new_order=order)
 
     def delete_space(self, space_id: str, user_id: str) -> SpaceDTO:
         self.validate_user_has_access_to_space(user_id=user_id,
@@ -97,8 +96,9 @@ class SpaceInteractor(ValidationMixin):
             permission_storage=self.permission_storage)
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
+        self._validate_visibility_type(visibility=visibility)
 
-        if visibility == Visibility.PUBLIC:
+        if visibility == Visibility.PUBLIC.value:
             return self.space_storage.set_space_public(space_id=space_id)
 
         return self.space_storage.set_space_private(space_id=space_id)

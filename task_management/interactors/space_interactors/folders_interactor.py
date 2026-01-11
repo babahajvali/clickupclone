@@ -87,8 +87,8 @@ class FolderInteractor(ValidationMixin):
             permission_storage=self.folder_permission_storage)
         self.validate_folder_is_active(folder_id=folder_id,
                                        folder_storage=self.folder_storage)
-
-        if visibility == Visibility.PUBLIC:
+        self._validate_visibility_type(visibility=visibility)
+        if visibility == Visibility.PUBLIC.value:
             return self.folder_storage.set_folder_public(folder_id=folder_id)
 
         return self.folder_storage.set_folder_private(folder_id=folder_id)

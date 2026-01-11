@@ -41,7 +41,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def reorder_space(self,workspace_id: str, space_id: str, order: int)-> SpaceDTO:
+    def reorder_space(self,workspace_id: str, space_id: str, new_order: int)-> SpaceDTO:
         # get the space order and provided order to reorder spaces
         pass
 

@@ -34,7 +34,7 @@ class SpacePermissionStorage(SpacePermissionStorageInterface):
             user_id=user_id,
             space_id=space_id
         )
-        permission.permission_type = permission_type
+        permission.permission_type = permission_type.value
         permission.save()
 
         return self._to_dto(permission)

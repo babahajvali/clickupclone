@@ -67,12 +67,15 @@ class FieldValueStorage(FieldValueStorageInterface):
 
         field_values_to_create = []
         for fv_data in bulk_field_values:
+            task = tasks[str(fv_data.task_id)]
+            field = fields[str(fv_data.field_id)]
+            created_by = users[str(fv_data.created_by)]
             field_values_to_create.append(
                 FieldValue(
-                    task=tasks[fv_data.task_id],
-                    field=fields[fv_data.field_id],
+                    task=task,
+                    field=field,
                     value=fv_data.value,
-                    created_by=users[fv_data.created_by]
+                    created_by=created_by
                 )
             )
 

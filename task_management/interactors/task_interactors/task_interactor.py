@@ -38,7 +38,7 @@ class TaskInteractor(ValidationMixin):
         result = self.task_storage.create_task(task_data=task_data)
         self._set_default_field_values_at_task(
             task_id=result.task_id, list_id=task_data.list_id,
-            created_by=task_data.created_by)
+            created_by=task_data.created_by,title=result.title)
 
         return result
 
@@ -94,7 +94,7 @@ class TaskInteractor(ValidationMixin):
                                               permission_storage=self.permission_storage)
         self._validate_the_task_order(list_id=list_id, order=order)
 
-        return self.task_storage.reorder_tasks(task_id=task_id, order=order,
+        return self.task_storage.reorder_tasks(task_id=task_id, new_order=order,
                                                list_id=list_id)
 
     @staticmethod
@@ -119,7 +119,7 @@ class TaskInteractor(ValidationMixin):
             raise InvalidOrderException(order=order)
 
     def _set_default_field_values_at_task(self, task_id: str, list_id: str,
-                                          created_by: str):
+                                          created_by: str, title: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
         template_fields = self.field_storage.get_fields_for_template(
@@ -127,7 +127,9 @@ class TaskInteractor(ValidationMixin):
 
         field_values = []
         for field in template_fields:
-            default_value = field.config.get('default_value')
+            default_value = field.config.get('default')
+            if field.field_name == "Title":
+                default_value = title
 
             field_values.append(
                 CreateFieldValueDTO(

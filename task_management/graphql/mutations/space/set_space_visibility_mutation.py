@@ -3,7 +3,7 @@ import graphene
 from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    InactiveSpaceType, ModificationNotAllowedType
+    InactiveSpaceType, ModificationNotAllowedType, UnsupportedVisibilityType
 from task_management.graphql.types.input_types import SetSpaceVisibilityInputParams
 from task_management.graphql.types.response_types import SetSpaceVisibilityResponse
 from task_management.graphql.types.types import SpaceType
@@ -69,5 +69,5 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowedException as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except ObjectDoesNotExist:
-            return SpaceNotFoundType(space_id=params.space_id)
+        except custom_exceptions.UnsupportedVisibilityTypeException as e:
+            return UnsupportedVisibilityType(visibility=e.visibility_type)

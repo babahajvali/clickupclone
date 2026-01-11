@@ -24,6 +24,8 @@ class FieldNameAlreadyExistsType(graphene.ObjectType):
 class ModificationNotAllowedType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
+class UnsupportedVisibilityType(graphene.ObjectType):
+    visibility = graphene.String(required=True)
 
 class FieldNotFoundType(graphene.ObjectType):
     field_id = graphene.String(required=True)
@@ -74,11 +76,11 @@ class InactiveSpaceType(graphene.ObjectType):
 
 
 class FolderNotFoundType(graphene.ObjectType):
-    folder_id = graphene.String(required=True)
+    folder_id = graphene.String()
 
 
 class InactiveFolderType(graphene.ObjectType):
-    folder_id = graphene.String(required=True)
+    folder_id = graphene.String()
 
 
 class ViewTypeNotFoundType(graphene.ObjectType):

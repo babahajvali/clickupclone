@@ -27,7 +27,7 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
 
         workspace_member_data = WorkspaceMember.objects.create(
             workspace=workspace, user=user, added_by=added_by,
-            role=workspace_member_data.role.value)
+            role=workspace_member_data.role)
 
         return self._workspace_member_dto(data=workspace_member_data)
 

@@ -47,7 +47,7 @@ class WorkspaceAdmin(admin.ModelAdmin):
 
 @admin.register(WorkspaceMember)
 class WorkspaceMemberAdmin(admin.ModelAdmin):
-    list_display = ('workspace', 'user', 'role', 'is_active', 'added_by',
+    list_display = ('workspace',"pk", 'user', 'role', 'is_active', 'added_by',
                     'created_at')
     list_filter = ('role', 'is_active', 'created_at')
     search_fields = ('workspace__name', 'user__username')
@@ -78,7 +78,7 @@ class SpacePermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Folder)
 class FolderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'space', 'order', 'is_active', 'is_private',
+    list_display = ('name','folder_id', 'space', 'order', 'is_active', 'is_private',
                     'created_by', 'created_at')
     list_filter = ('is_active', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -99,7 +99,7 @@ class FolderPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'space', 'folder', 'order', 'is_active',
+    list_display = ('name','list_id' ,'space', 'folder', 'order', 'is_active',
                     'is_private', 'created_by', 'created_at')
     list_filter = ('is_active', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -120,7 +120,7 @@ class ListPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('title', 'list', 'order', 'is_deleted', 'created_by',
+    list_display = ('title','task_id' ,'list', 'order', 'is_deleted', 'created_by',
                     'created_at')
     list_filter = ('is_deleted', 'created_at')
     search_fields = ('title', 'description')
@@ -160,7 +160,7 @@ class FieldAdmin(admin.ModelAdmin):
 
 @admin.register(FieldValue)
 class FieldValueAdmin(admin.ModelAdmin):
-    list_display = ('field', 'task', 'created_by', 'created_at')
+    list_display = ('field', 'task', 'value','created_by', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('field__field_name', 'task__title')
     readonly_fields = ('created_at', 'updated_at')

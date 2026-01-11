@@ -1,7 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     TaskAssigneeNotFoundException
-from task_management.interactors.dtos import TaskAssigneeDTO, \
-    TaskAssigneeDTO, UserTasksDTO
+from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
