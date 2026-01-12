@@ -41,7 +41,7 @@ def make_permission_dto(permission_type: PermissionsEnum):
     return UserListPermissionDTO(
         id=1,
         list_id="list_1",
-        permission_type=permission_type,
+        permission_type=permission_type.value,
         user_id="user_1",
         is_active=True,
         added_by="admin_1",
@@ -64,11 +64,12 @@ class TestUpdateFieldInteractor:
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldType.TEXT,
+            field_type=FieldType.TEXT.value,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
             order=1,
+            is_active=True,
             config={"max_length": 10},
             is_required=True,
             created_by="user_1",

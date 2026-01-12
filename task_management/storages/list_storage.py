@@ -26,10 +26,15 @@ class ListStorage(ListStorageInterface):
     def get_template_id_by_list_id(self, list_id: str) -> str:
         return Template.objects.get(list_id=list_id).template_id
 
-    def get_list(self, list_id: str) -> ListDTO:
-        list_data = List.objects.get(list_id=list_id)
+    def get_list(self, list_id: str) -> ListDTO | None:
+        try:
+            list_data = List.objects.select_related(
+                'space', 'folder', 'created_by'
+            ).get(list_id=list_id)
 
-        return self._list_dto(list_data=list_data)
+            return self._list_dto(list_data=list_data)
+        except List.DoesNotExist:
+            return None
 
     def create_list(self, create_list_data: CreateListDTO) -> ListDTO:
         space = Space.objects.get(space_id=create_list_data.space_id)
@@ -48,7 +53,7 @@ class ListStorage(ListStorageInterface):
 
         next_order = (last_list.order + 1) if last_list else 1
 
-        list_data = List.objects.create(
+        list_obj = List.objects.create(
             name=create_list_data.name,
             description=create_list_data.description,
             space=space,
@@ -57,11 +62,18 @@ class ListStorage(ListStorageInterface):
             is_private=create_list_data.is_private,
             created_by=user
         )
+        
+        # Refresh with related objects for DTO conversion
+        list_obj = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=list_obj.list_id)
 
-        return self._list_dto(list_data=list_data)
+        return self._list_dto(list_data=list_obj)
 
     def update_list(self, update_list_data: UpdateListDTO) -> ListDTO:
-        list_data = List.objects.get(list_id=update_list_data.list_id)
+        list_data = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=update_list_data.list_id)
         if update_list_data.description is not None:
             list_data.description = update_list_data.description
 
@@ -73,20 +85,25 @@ class ListStorage(ListStorageInterface):
         return self._list_dto(list_data=list_data)
 
     def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
-        folder_lists = List.objects.filter(folder_id__in=folder_ids,
-                                           is_active=True)
+        folder_lists = List.objects.filter(
+            folder_id__in=folder_ids,
+            is_active=True
+        ).select_related('space', 'folder', 'created_by')
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
     def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         space_lists = List.objects.filter(
-            space_id__in=space_ids, folder__isnull=True, is_active=True)
+            space_id__in=space_ids, folder__isnull=True, is_active=True
+        ).select_related('space', 'folder', 'created_by')
 
         return [self._list_dto(list_data=data) for data in space_lists]
 
     def remove_list(self, list_id: str) -> ListDTO:
         # update the is_active false
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.select_related('space', 'folder').get(
+            list_id=list_id
+        )
         list_data.is_active = False
         list_data.save()
 
@@ -105,7 +122,9 @@ class ListStorage(ListStorageInterface):
 
     def make_list_private(self, list_id: str) -> ListDTO:
         # set the is_private is true
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=list_id)
         list_data.is_private = True
         list_data.save()
 
@@ -113,7 +132,9 @@ class ListStorage(ListStorageInterface):
 
     def make_list_public(self, list_id: str) -> ListDTO:
         # set is_private false
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=list_id)
         list_data.is_private = False
         list_data.save()
 
@@ -121,7 +142,9 @@ class ListStorage(ListStorageInterface):
 
     def reorder_list_in_folder(self, folder_id: str, list_id: str,
                                order: int) -> ListDTO:
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=list_id)
         old_order = list_data.order
         new_order = order
 
@@ -150,7 +173,9 @@ class ListStorage(ListStorageInterface):
 
     def reorder_list_in_space(self, space_id: str, list_id: str, order: int) -> \
             ListDTO:
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.select_related(
+            'space', 'folder', 'created_by'
+        ).get(list_id=list_id)
         old_order = list_data.order
         new_order = order
 

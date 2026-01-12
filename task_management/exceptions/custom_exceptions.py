@@ -242,3 +242,13 @@ class UserNotAccountOwnerException(Exception):
 class UserDoesNotHaveAccountPermissionException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
+
+class ListViewNotExistedException(Exception):
+    def __init__(self, list_id: str,view_id: str):
+        self.list_id = list_id
+        self.view_id = view_id
+
+
+class AccountMemberNotFoundException(Exception):
+    def __init__(self, account_member_id: int):
+        self.account_member_id = account_member_id

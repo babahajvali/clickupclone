@@ -8,14 +8,20 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     SetFolderVisibility, CreateList, UpdateList, DeleteList, \
     ReorderListInFolder, SetListVisibility, ReorderListInSpace, CreateTask, \
     UpdateTask, ReorderTask, DeleteTask, CreateView, AddMemberToWorkspace, \
-    ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace, TaskAssignee
+    ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace, TaskAssignee, \
+    RemoveTaskAssignee, UpdateView, UpdateField, CreateField, DeleteField, \
+    ReorderField, ApplyListView, RemoveListView, AddAccountMember, \
+    ChangeAccountMemberRole, RemoveAccountMember
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
-    GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks
+    GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
+    GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
-                 GetSpaceLists, GetTaskFilters, GetTask, GetListTasks]
+                 GetSpaceLists, GetTaskFilters, GetTask, GetListTasks,
+                 GetTaskAssignees, GetViews, GetTemplateFields, GetField,
+                 GetListViews]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,
@@ -25,8 +31,12 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     ReorderFolder, SetFolderVisibility, CreateList, UpdateList,
                     DeleteList, ReorderListInFolder, SetListVisibility,
                     ReorderListInSpace, CreateTask, UpdateTask, ReorderTask,
-                    DeleteTask, CreateView, AddMemberToWorkspace,TaskAssignee,
-                    ChangeWorkspaceMemberRole,RemoveMemberFromWorkspace]
+                    DeleteTask, CreateView, AddMemberToWorkspace, TaskAssignee,
+                    ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace,
+                    RemoveTaskAssignee, UpdateView, UpdateField, CreateField,
+                    DeleteField, ReorderField, ApplyListView, RemoveListView,
+                    AddAccountMember, ChangeAccountMemberRole,
+                    RemoveAccountMember]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

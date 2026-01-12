@@ -58,7 +58,6 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
 
         try:
 
-
             workspace_member_dto = AddMemberToWorkspaceDTO(
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,

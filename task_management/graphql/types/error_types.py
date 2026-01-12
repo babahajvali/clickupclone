@@ -172,3 +172,10 @@ class UserNotAccountOwnerType(graphene.ObjectType):
 
 class UserDoesNotHaveAccountPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
+
+class ListViewNotExistedType(graphene.ObjectType):
+    list_id = graphene.String(required=True)
+    view_id = graphene.String(required=True)
+
+class AccountMemberNotFoundType(graphene.ObjectType):
+    account_member_id = graphene.Int(required=True)

@@ -131,7 +131,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(TaskAssignee)
 class TaskAssigneeAdmin(admin.ModelAdmin):
-    list_display = ('task', 'user', 'is_active', 'assigned_by', 'assigned_at')
+    list_display = ('task',"assign_id", 'user', 'is_active', 'assigned_by', 'assigned_at')
     list_filter = ('is_active', 'assigned_at')
     search_fields = ('task__title', 'user__username')
     readonly_fields = ('assign_id', 'assigned_at')
@@ -140,7 +140,7 @@ class TaskAssigneeAdmin(admin.ModelAdmin):
 
 @admin.register(Template)
 class TemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'list', 'created_at')
+    list_display = ('name','template_id', 'list', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('name', 'description')
     readonly_fields = ('template_id', 'created_at', 'updated_at')
@@ -149,7 +149,7 @@ class TemplateAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('field_name', 'field_type', 'template', 'order',
+    list_display = ('field_name','field_id', 'field_type', 'template', 'order',
                     'is_required', 'created_by', 'created_at')
     list_filter = ('field_type', 'is_required', 'created_at')
     search_fields = ('field_name', 'description')
@@ -169,7 +169,7 @@ class FieldValueAdmin(admin.ModelAdmin):
 
 @admin.register(View)
 class ViewAdmin(admin.ModelAdmin):
-    list_display = ('name', 'view_type', 'created_by', 'created_at')
+    list_display = ('name', 'view_id','view_type', 'created_by', 'created_at')
     list_filter = ('view_type', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('view_id', 'created_at', 'updated_at')

@@ -32,9 +32,10 @@ class FieldInteractor(ValidationMixin):
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id,
             field_storage=self.field_storage)
-        self.validate_field_config(
-            field_type=create_field_data.field_type,
-            config=create_field_data.config)
+        if create_field_data.config:
+            self.validate_field_config(
+                field_type=create_field_data.field_type,
+                config=create_field_data.config)
 
         return self.field_storage.create_field(
             create_field_data=create_field_data)
@@ -54,7 +55,7 @@ class FieldInteractor(ValidationMixin):
                                         field_name=update_field_data.field_name,
                                         template_id=field_data.template_id,
                                         field_storage=self.field_storage)
-        self.validate_field_config(field_type=field_data.field_type.value,
+        self.validate_field_config(field_type=field_data.field_type,
                                    config=update_field_data.config)
 
         return self.field_storage.update_field(
@@ -84,6 +85,7 @@ class FieldInteractor(ValidationMixin):
             user_id=user_id, list_id=list_id,
             permission_storage=self.permission_storage)
 
+        return self.field_storage.delete_field(field_id=field_id)
 
 
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
@@ -92,6 +94,11 @@ class FieldInteractor(ValidationMixin):
 
         return self.field_storage.get_fields_for_template(
             template_id=template_id)
+
+    def get_field(self, field_id: str) -> FieldDTO:
+        self._validate_field(field_id=field_id)
+
+        return self.field_storage.get_field_by_id(field_id=field_id)
 
     def _validate_field(self, field_id: str):
         is_exist = self.field_storage.is_field_exists(field_id=field_id)

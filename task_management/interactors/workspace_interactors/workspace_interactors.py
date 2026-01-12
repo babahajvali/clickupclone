@@ -43,7 +43,7 @@ class WorkspaceInteractor(ValidationMixin):
         create_workspace_member = AddMemberToWorkspaceDTO(
             workspace_id=result.workspace_id,
             user_id=create_workspace_data.user_id,
-            role=Role.OWNER,
+            role=Role.OWNER.value,
             added_by=create_workspace_data.user_id,
         )
         self.workspace_member_storage.add_member_to_workspace(create_workspace_member)

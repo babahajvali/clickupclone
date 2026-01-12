@@ -47,7 +47,7 @@ class CreateFieldDTO:
     field_name: str
     description: str
     template_id: str
-    config: dict
+    config: Optional[dict]
     is_required: bool
     created_by: str
 
@@ -68,6 +68,7 @@ class FieldDTO:
     description: str
     template_id: str
     field_name: str
+    is_active: bool
     order: int
     config: dict
     is_required: bool
@@ -110,6 +111,11 @@ FIXED_FIELDS = [
         "field_type": FieldType.USER.value,
         "field_name": "Assignee",
         "description": "task Assignees"
+    },
+    {
+        "field_type": FieldType.DATE.value,
+        "field_name": "Due Date",
+        "description": "Due date for complete task",
     },
     {
         "field_type": FieldType.DROPDOWN.value,

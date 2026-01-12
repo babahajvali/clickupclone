@@ -83,7 +83,7 @@ class TestAccountMemberInteractor:
     # ---------------- ADD MEMBER ---------------- #
 
     def test_add_member_to_account_success(self, snapshot):
-        create_data = CreateAccountMemberFactory(role=Role.MEMBER)
+        create_data = CreateAccountMemberFactory(role=Role.MEMBER.value)
         expected = AccountMemberDTOFactory(role=Role.MEMBER)
 
         # ValidationMixin dependencies
@@ -93,7 +93,7 @@ class TestAccountMemberInteractor:
         self.user_storage.get_user_data.return_value = type(
             "User", (), {"is_active": True}
         )()
-        permission = type("Permission", (), {"role": Role.OWNER})()
+        permission = type("Permission", (), {"role": Role.OWNER.value})()
         self.account_member_storage.get_user_permission_for_account.return_value = permission
 
         self.account_member_storage.add_member_to_account.return_value = expected
@@ -112,11 +112,11 @@ class TestAccountMemberInteractor:
         account_member_id = 1
         changed_by = "user-123"
 
-        existing = AccountMemberDTOFactory(role=Role.MEMBER)
-        updated = AccountMemberDTOFactory(role=Role.ADMIN)
+        existing = AccountMemberDTOFactory(role=Role.MEMBER.value)
+        updated = AccountMemberDTOFactory(role=Role.ADMIN.value)
 
         self.account_member_storage.get_account_member_permission.return_value = existing
-        permission = type("Permission", (), {"role": Role.OWNER})()
+        permission = type("Permission", (), {"role": Role.OWNER.value})()
         self.account_member_storage.get_user_permission_for_account.return_value = permission
 
         self.account_member_storage.update_member_role.return_value = updated
@@ -124,7 +124,7 @@ class TestAccountMemberInteractor:
 
         result = self.interactor.update_member_role(
             account_member_id=account_member_id,
-            role=Role.ADMIN,
+            role=Role.ADMIN.value,
             changed_by=changed_by
         )
 
@@ -187,7 +187,7 @@ class TestAccountMemberInteractor:
 
         self.account_member_storage.get_account_member_permission.return_value = existing
         self.account_member_storage.get_user_permission_for_account.return_value = \
-            type("Permission", (), {"role": Role.GUEST})()
+            type("Permission", (), {"role": Role.GUEST.value})()
 
         with pytest.raises(Exception) as exc:
             self.interactor.remove_member_from_account(
@@ -201,7 +201,7 @@ class TestAccountMemberInteractor:
         )
 
     def test_add_member_account_inactive(self, snapshot):
-        create_data = CreateAccountMemberFactory()
+        create_data = CreateAccountMemberFactory(role=Role.MEMBER.value)
 
         self.account_storage.get_account_by_id.return_value = \
             type("Account", (), {"is_active": False})()
@@ -220,7 +220,7 @@ class TestAccountMemberInteractor:
         with pytest.raises(Exception) as exc:
             self.interactor.update_member_role(
                 account_member_id=99,
-                role=Role.ADMIN,
+                role=Role.ADMIN.value,
                 changed_by="user-1"
             )
 
@@ -230,7 +230,7 @@ class TestAccountMemberInteractor:
         )
 
     def test_add_member_no_workspaces(self, snapshot):
-        create_data = CreateAccountMemberFactory()
+        create_data = CreateAccountMemberFactory(role=Role.MEMBER.value)
         expected = AccountMemberDTOFactory()
 
         self.account_storage.get_account_by_id.return_value = \
@@ -238,7 +238,7 @@ class TestAccountMemberInteractor:
         self.user_storage.get_user_data.return_value = \
             type("User", (), {"is_active": True})()
         self.account_member_storage.get_user_permission_for_account.return_value = \
-            type("Permission", (), {"role": Role.OWNER})()
+            type("Permission", (), {"role": Role.OWNER.value})()
 
         self.account_member_storage.add_member_to_account.return_value = expected
         self.workspace_storage.get_workspaces_by_account.return_value = []

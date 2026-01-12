@@ -1,11 +1,25 @@
 import graphene
 
+from task_management.graphql.mutations.account.update_account_member_role_mutation import \
+    UpdateAccountMemberRoleMutation
+from task_management.graphql.mutations.account.add_account_member_mutation import \
+    CreateAccountMemberMutation
 from task_management.graphql.mutations.account.create_account_mutation import \
     CreateAccountMutation
 from task_management.graphql.mutations.account.delete_account_mutation import \
     DeleteAccountMutation
+from task_management.graphql.mutations.account.remove_account_member import \
+    RemoveAccountMemberMutation
 from task_management.graphql.mutations.account.transfer_account_mutation import \
     TransferAccountMutation
+from task_management.graphql.mutations.field.create_field_mutation import \
+    CreateFieldMutation
+from task_management.graphql.mutations.field.delete_field_mutation import \
+    DeleteFieldMutation
+from task_management.graphql.mutations.field.reorder_field_mutation import \
+    ReorderFieldMutation
+from task_management.graphql.mutations.field.update_field_mutation import \
+    UpdateFieldMutation
 from task_management.graphql.mutations.folder.create_folder_mutation import \
     CreateFolderMutation
 from task_management.graphql.mutations.folder.delete_folder_mutation import \
@@ -44,6 +58,8 @@ from task_management.graphql.mutations.task.create_task_mutation import \
     CreateTaskMutation
 from task_management.graphql.mutations.task.delete_task_mutation import \
     DeleteTaskMutation
+from task_management.graphql.mutations.task.remove_task_assignee_mutation import \
+    RemoveTaskAssigneeMutation
 from task_management.graphql.mutations.task.reorder_task_mutation import \
     ReorderTaskMutation
 from task_management.graphql.mutations.task.update_task_mutation import \
@@ -56,8 +72,14 @@ from task_management.graphql.mutations.user.update_user_mutation import \
     UpdateUserMutation
 from task_management.graphql.mutations.user.user_login_mutation import \
     UserLoginMutation
+from task_management.graphql.mutations.view.apply_list_view_mutation import \
+    ApplyListViewMutation
 from task_management.graphql.mutations.view.create_view_mutation import \
     CreateViewMutation
+from task_management.graphql.mutations.view.remove_list_view_mutation import \
+    RemoveListViewMutation
+from task_management.graphql.mutations.view.update_view_mutation import \
+    UpdateViewMutation
 from task_management.graphql.mutations.workspace.add_workspace_member_mutation import \
     AddMemberToWorkspaceMutation
 from task_management.graphql.mutations.workspace.change_workspace_member_role import \
@@ -215,5 +237,50 @@ class RemoveMemberFromWorkspace(graphene.ObjectType):
     remove_member_from_workspace = RemoveMemberFromWorkspaceMutation.Field(
         required=True)
 
+
 class TaskAssignee(graphene.ObjectType):
     task_assignee = AssignTaskAssigneeMutation.Field(required=True)
+
+
+class RemoveTaskAssignee(graphene.ObjectType):
+    remove_task_assignee = RemoveTaskAssigneeMutation.Field(required=True)
+
+
+class UpdateView(graphene.ObjectType):
+    update_view = UpdateViewMutation.Field(required=True)
+
+
+class CreateField(graphene.ObjectType):
+    create_field = CreateFieldMutation.Field(required=True)
+
+
+class UpdateField(graphene.ObjectType):
+    update_field = UpdateFieldMutation.Field(required=True)
+
+
+class DeleteField(graphene.ObjectType):
+    delete_field = DeleteFieldMutation.Field(required=True)
+
+
+class ReorderField(graphene.ObjectType):
+    reorder_field = ReorderFieldMutation.Field(required=True)
+
+
+class ApplyListView(graphene.ObjectType):
+    apply_list_view = ApplyListViewMutation.Field(required=True)
+
+
+class RemoveListView(graphene.ObjectType):
+    remove_list_view = RemoveListViewMutation.Field(required=True)
+
+
+class AddAccountMember(graphene.ObjectType):
+    add_account_member = CreateAccountMemberMutation.Field(required=True)
+
+
+class ChangeAccountMemberRole(graphene.ObjectType):
+    change_account_member_role = UpdateAccountMemberRoleMutation.Field(
+        required=True)
+
+class RemoveAccountMember(graphene.ObjectType):
+    remove_account_member = RemoveAccountMemberMutation.Field(required=True)

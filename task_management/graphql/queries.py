@@ -1,5 +1,9 @@
 import graphene
 
+from task_management.graphql.resolvers.fields.get_field_resolver import \
+    get_field_resolver
+from task_management.graphql.resolvers.fields.get_template_fields_resolver import \
+    get_fields_for_template_resolver
 from task_management.graphql.resolvers.folder.get_folder import \
     get_folder_resolver
 from task_management.graphql.resolvers.folder.get_sapce_folders import \
@@ -16,12 +20,18 @@ from task_management.graphql.resolvers.space.get_workspace_spaces_resolver impor
     get_workspace_spaces_resolver
 from task_management.graphql.resolvers.task.get_list_tasks_resolver import \
     get_list_tasks_resolver
+from task_management.graphql.resolvers.task.get_task_assignees_resolver import \
+    get_task_assignees_resolver
 from task_management.graphql.resolvers.task.get_task_resolver import \
     get_task_resolver
 from task_management.graphql.resolvers.task.task_filter_resolver import \
     task_filter_resolver
 from task_management.graphql.resolvers.user.get_user_resolver import \
     get_user_profile_resolver
+from task_management.graphql.resolvers.views.get_list_views import \
+    get_list_views_resolver
+from task_management.graphql.resolvers.views.get_views_resolver import \
+    get_all_views_resolver
 from task_management.graphql.resolvers.workspace.get_workspace_resolver import \
     get_workspace_resolver
 from task_management.graphql.types.input_types import \
@@ -29,12 +39,16 @@ from task_management.graphql.types.input_types import \
     GetWorkspaceSpacesInputParams, GetSpaceInputParams, \
     GetSpaceFoldersInputParams, GetFolderInputParams, GetListInputParams, \
     GetFolderListsInputParams, GetSpaceListsInputParams, \
-    GetListTasksInputParams, GetTaskInputParams, TaskFilterInputParams
+    GetListTasksInputParams, GetTaskInputParams, TaskFilterInputParams, \
+    GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
+    GetFieldInputParams, GetListViewsInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \
     GetListResponse, GetFolderListsResponse, GetSpaceListsResponse, \
-    GetListTasksResponse, GetTaskResponse, TaskFilterResponse
+    GetListTasksResponse, GetTaskResponse, TaskFilterResponse, \
+    GetTaskAssigneesResponse, GetViewsResponse, GetFieldsForTemplateResponse, \
+    GetFieldResponse, GetListViewsResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -124,4 +138,38 @@ class GetTaskFilters(graphene.ObjectType):
         TaskFilterResponse,
         params=TaskFilterInputParams(required=True),
         resolver=task_filter_resolver
+    )
+
+class GetTaskAssignees(graphene.ObjectType):
+    get_task_assignees = graphene.Field(
+        GetTaskAssigneesResponse,
+        params=GetTaskAssigneesInputParams(required=True),
+        resolver=get_task_assignees_resolver
+    )
+
+class GetViews(graphene.ObjectType):
+    get_views = graphene.Field(
+        GetViewsResponse,
+        resolver=get_all_views_resolver
+    )
+
+class GetTemplateFields(graphene.ObjectType):
+    get_template_fields = graphene.Field(
+        GetFieldsForTemplateResponse,
+        params=GetFieldsForTemplateInputParams(required=True),
+        resolver=get_fields_for_template_resolver
+    )
+
+class GetField(graphene.ObjectType):
+    get_fields = graphene.Field(
+        GetFieldResponse,
+        params=GetFieldInputParams(required=True),
+        resolver=get_field_resolver
+    )
+
+class GetListViews(graphene.ObjectType):
+    get_list_views = graphene.Field(
+        GetListViewsResponse,
+        params=GetListViewsInputParams(required=True),
+        resolver=get_list_views_resolver
     )

@@ -7,7 +7,7 @@ from task_management.interactors.dtos import FolderDTO, CreateFolderDTO, \
 class FolderStorageInterface(ABC):
 
     @abstractmethod
-    def get_folder(self, folder_id: str):
+    def get_folder(self, folder_id: str)-> FolderDTO:
         pass
 
     @abstractmethod

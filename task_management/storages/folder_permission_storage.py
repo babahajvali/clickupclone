@@ -20,12 +20,18 @@ class FolderPermissionStorage(FolderPermissionStorageInterface):
             added_by=data.added_by.user_id,
         )
 
-    def get_user_permission_for_folder(self, user_id: str,
-                                       folder_id: str) -> UserFolderPermissionDTO:
-        user_folder_permission = FolderPermission.objects.get(user_id=user_id,
-                                                              folder_id=folder_id)
+    def get_user_permission_for_folder(
+            self, user_id: str,
+            folder_id: str) -> UserFolderPermissionDTO | None:
+        try:
+            user_folder_permission = FolderPermission.objects.get(
+                user_id=user_id,
+                folder_id=folder_id)
 
-        return self._user_folder_permission_dto(data=user_folder_permission)
+            return self._user_folder_permission_dto(
+                data=user_folder_permission)
+        except FolderPermission.DoesNotExist:
+            return None
 
     def update_user_permission_for_folder(self, user_id: str, folder_id: str,
                                           permission_type: PermissionsEnum) -> UserFolderPermissionDTO:
@@ -54,7 +60,8 @@ class FolderPermissionStorage(FolderPermissionStorageInterface):
                 folder_permissions]
 
     def create_folder_users_permissions(self,
-            users_permission_data: list[CreateUserFolderPermissionDTO]) -> \
+                                        users_permission_data: list[
+                                            CreateUserFolderPermissionDTO]) -> \
             list[UserFolderPermissionDTO]:
         folder_ids = list(
             set(perm.folder_id for perm in users_permission_data))
@@ -85,7 +92,6 @@ class FolderPermissionStorage(FolderPermissionStorageInterface):
         created_permissions = FolderPermission.objects.bulk_create(
             permissions_to_create
         )
-
 
         return [self._user_folder_permission_dto(data=perm) for perm in
                 created_permissions]

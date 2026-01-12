@@ -1,3 +1,5 @@
+from task_management.exceptions.custom_exceptions import \
+    AccountMemberNotFoundException
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateAccountMemberDTO, \
     AccountMemberDTO, AddMemberToWorkspaceDTO
@@ -58,20 +60,20 @@ class AccountMemberInteractor(ValidationMixin):
     def get_workspace_interactor(self):
         if self._workspace_member_interactor is None:
             self._workspace_member_interactor = WorkspaceMemberInteractor(
-            workspace_storage=self.workspace_storage,
-            workspace_member_storage=self.workspace_member_storage,
-            user_storage=self.user_storage,
-            space_permission_storage=self.space_permission_storage,
-            space_storage=self.space_storage,
-            folder_storage=self.folder_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            list_permission_storage=self.list_permission_storage,
-            list_storage=self.list_storage
-        )
+                workspace_storage=self.workspace_storage,
+                workspace_member_storage=self.workspace_member_storage,
+                user_storage=self.user_storage,
+                space_permission_storage=self.space_permission_storage,
+                space_storage=self.space_storage,
+                folder_storage=self.folder_storage,
+                folder_permission_storage=self.folder_permission_storage,
+                list_permission_storage=self.list_permission_storage,
+                list_storage=self.list_storage
+            )
         return self._workspace_member_interactor
 
     def add_member_to_account(
-            self, create_account_member_data: CreateAccountMemberDTO) -> \
+        self, create_account_member_data: CreateAccountMemberDTO) -> \
             AccountMemberDTO:
         self.validate_account_is_active(
             account_id=create_account_member_data.account_id,
@@ -79,6 +81,7 @@ class AccountMemberInteractor(ValidationMixin):
         self.validate_user_is_active(user_storage=self.user_storage,
                                      user_id=create_account_member_data.user_id)
         self.validate_role(role=create_account_member_data.role.value)
+
         self.validate_user_access_for_account(
             user_id=create_account_member_data.added_by,
             account_id=create_account_member_data.account_id,
@@ -89,13 +92,13 @@ class AccountMemberInteractor(ValidationMixin):
 
         self._add_member_to_account_workspaces(
             account_id=result.account_id, user_id=result.user_id,
-            account_role=result.role, added_by=result.added_by)
+            account_role=create_account_member_data.role, added_by=result.added_by)
 
         return result
 
     def update_member_role(self, account_member_id: int, role: Role,
                            changed_by: str) -> AccountMemberDTO:
-        account_member_data = self.account_member_storage.get_account_member_permission(
+        account_member_data = self._validate_and_get_account_member_data(
             account_member_id=account_member_id)
         self.validate_role(role=role.value)
         self.validate_user_access_for_account(
@@ -111,17 +114,23 @@ class AccountMemberInteractor(ValidationMixin):
 
         return result
 
-    def remove_member_from_account(self, account_member_id: int, removed_by: str):
-        account_member_data = self.account_member_storage.get_account_member_permission(
+    def remove_member_from_account(self, account_member_id: int,
+                                   removed_by: str):
+
+        account_member_data = self._validate_and_get_account_member_data(
             account_member_id=account_member_id
         )
         self.validate_user_access_for_account(
             user_id=removed_by, account_id=account_member_data.account_id,
             account_member_storage=self.account_member_storage)
 
-        result =  self.account_member_storage.delete_account_member_permission(
+        result = self.account_member_storage.delete_account_member_permission(
             account_member_id=account_member_id)
-        self._remove_member_from_account_workspaces(account_id=result.account_id, user_id=result.user_id, removed_by=removed_by)
+        self._remove_member_from_account_workspaces(
+            account_id=result.account_id, user_id=result.user_id,
+            removed_by=removed_by)
+
+        return result
 
     def _add_member_to_account_workspaces(self, account_id: str, user_id: str,
                                           account_role: Role,
@@ -171,3 +180,12 @@ class AccountMemberInteractor(ValidationMixin):
                 removed_by=removed_by,
                 workspace_member_id=workspace_member_data.id
             )
+
+    def _validate_and_get_account_member_data(self, account_member_id: int):
+        account_member_data = self.account_member_storage.get_account_member_permission(
+            account_member_id=account_member_id)
+        if not account_member_data:
+            raise AccountMemberNotFoundException(
+                account_member_id=account_member_id)
+
+        return account_member_data

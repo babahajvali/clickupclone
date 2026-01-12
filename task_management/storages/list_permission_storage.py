@@ -40,13 +40,16 @@ class ListPermissionStorage(ListPermissionStorageInterface):
         return [self._list_permission_dto(perm) for perm in permissions]
 
     def get_user_permission_for_list(self, user_id: str,
-                                     list_id: str) -> UserListPermissionDTO:
-        permission = ListPermission.objects.get(
-            list_id=list_id,
-            user_id=user_id
-        )
+                                     list_id: str) -> UserListPermissionDTO | None:
+        try:
+            permission = ListPermission.objects.get(
+                list_id=list_id,
+                user_id=user_id
+            )
 
-        return self._list_permission_dto(permission_data=permission)
+            return self._list_permission_dto(permission_data=permission)
+        except ListPermission.DoesNotExist:
+            return None
 
     def add_user_permission_for_list(self, list_id: str, user_id: str,
                                      permission_type: PermissionsEnum) -> UserListPermissionDTO:

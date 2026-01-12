@@ -21,7 +21,7 @@ class UpdateUserInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)
     full_name = graphene.String()
     username = graphene.String()
-    gender = graphene.String()
+    gender = graphene.String(required=False)
     email = graphene.String()
     phone_number = graphene.String()
     image_url = graphene.String()
@@ -32,7 +32,7 @@ class CreateFieldInputParams(graphene.InputObjectType):
     field_name = graphene.String(required=True)
     description = graphene.String(required=True)
     template_id = graphene.String(required=True)
-    config = graphene.JSONString(required=True)
+    config = graphene.JSONString()
     is_required = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
@@ -43,6 +43,7 @@ class UpdateFieldInputParams(graphene.InputObjectType):
     field_name = graphene.String(required=False)
     config = graphene.JSONString(required=False)
     is_required = graphene.Boolean(required=False)
+    user_id = graphene.String(required=True)
 
 
 class CreateTemplateInputParams(graphene.InputObjectType):
@@ -55,12 +56,6 @@ class CreateTemplateInputParams(graphene.InputObjectType):
 class UserLoginInputParams(graphene.InputObjectType):
     email = graphene.String(required=True)
     password = graphene.String(required=True)
-
-
-class UpdateTemplateInputParams(graphene.InputObjectType):
-    template_id = graphene.String(required=True)
-    name = graphene.String(required=False)
-    description = graphene.String(required=False)
 
 
 class TransferAccountInputParams(graphene.InputObjectType):
@@ -136,8 +131,8 @@ class CreateViewInputParams(graphene.InputObjectType):
 
 class UpdateViewInputParams(graphene.InputObjectType):
     view_id = graphene.String(required=True)
-    name = graphene.String(required=True)
-    description = graphene.String(required=True)
+    name = graphene.String()
+    description = graphene.String()
 
 
 class CreateFolderInputParams(graphene.InputObjectType):
@@ -195,6 +190,7 @@ class AddMemberToWorkspaceInputParams(graphene.InputObjectType):
     role = graphene.String(required=True)
     added_by = graphene.String(required=True)
 
+
 class ChangeWorkspaceMemberRoleInputParams(graphene.InputObjectType):
     workspace_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
@@ -211,6 +207,7 @@ class DeleteSpaceInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
 
+
 class SetSpaceVisibilityInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
@@ -221,13 +218,8 @@ class GetWorkspaceSpacesInputParams(graphene.InputObjectType):
     workspace_id = graphene.String(required=True)
 
 
-class GetSpacePermissionsInputParams(graphene.InputObjectType):
-    space_id = graphene.String(required=True)
-
-
 class GetSpaceInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
-
 
 
 class ReorderSpaceInputParams(graphene.InputObjectType):
@@ -235,19 +227,6 @@ class ReorderSpaceInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
     order = graphene.Int(required=True)
     user_id = graphene.String(required=True)
-
-
-class CreateUserListPermissionInputParams(graphene.InputObjectType):
-    list_id = graphene.String(required=True)
-    permission_type = graphene.String(required=True)
-    user_id = graphene.String(required=True)
-    added_by = graphene.String(required=True)
-
-
-class UpdateFieldValueInputParams(graphene.InputObjectType):
-    task_id = graphene.String(required=True)
-    field_id = graphene.String(required=True)
-    value = graphene.String(required=True)
 
 
 class CreateFieldValueInputParams(graphene.InputObjectType):
@@ -262,14 +241,6 @@ class CreateAccountMemberInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)
     role = graphene.String(required=True)
     added_by = graphene.String(required=True)
-
-
-class FilterInputParams(graphene.InputObjectType):
-    list_id = graphene.String(required=True)
-    field_filters = graphene.JSONString(required=False)
-    assignees = graphene.List(graphene.String, required=False)
-    offset = graphene.Int(required=False, default_value=1)
-    limit = graphene.Int(required=False, default_value=10)
 
 
 class ReorderFolderInputParams(graphene.InputObjectType):
@@ -287,15 +258,6 @@ class SetFolderVisibilityInputParams(graphene.InputObjectType):
 
 class GetSpaceFoldersInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
-
-
-class GetFolderPermissionsInputParams(graphene.InputObjectType):
-    folder_id = graphene.String(required=True)
-
-
-class GetUserFolderPermissionInputParams(graphene.InputObjectType):
-    folder_id = graphene.String(required=True)
-    user_id = graphene.String(required=True)
 
 
 class GetFolderInputParams(graphene.InputObjectType):
@@ -325,10 +287,6 @@ class SetListVisibilityInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
     visibility = graphene.String(required=True)
-
-
-class GetListPermissionsInputParams(graphene.InputObjectType):
-    list_id = graphene.String(required=True)
 
 
 class GetFolderListsInputParams(graphene.InputObjectType):
@@ -366,11 +324,68 @@ class TaskFilterInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
     field_filters = graphene.JSONString()
-    assignees = graphene.List(graphene.String,)
+    assignees = graphene.List(graphene.String, )
     offset = graphene.Int(required=False, default_value=1)
     limit = graphene.Int(required=False, default_value=10)
+
 
 class CreateTaskAssigneeInputParams(graphene.InputObjectType):
     task_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
     assigned_by = graphene.String(required=True)
+
+
+class RemoveTaskAssigneeInputParams(graphene.InputObjectType):
+    assign_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+
+
+class GetTaskAssigneesInputParams(graphene.InputObjectType):
+    task_id = graphene.String(required=True)
+
+
+class ReorderFieldInputParams(graphene.InputObjectType):
+    field_id = graphene.String(required=True)
+    template_id = graphene.String(required=True)
+    new_order = graphene.Int(required=True)
+    user_id = graphene.String(required=True)
+
+
+class DeleteFieldInputParams(graphene.InputObjectType):
+    field_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+
+
+class GetFieldsForTemplateInputParams(graphene.InputObjectType):
+    template_id = graphene.String(required=True)
+
+
+class GetFieldInputParams(graphene.InputObjectType):
+    field_id = graphene.String(required=True)
+
+
+class ApplyListViewInputParams(graphene.InputObjectType):
+    view_id = graphene.String(required=True)
+    list_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+
+
+class RemoveListViewInputParams(graphene.InputObjectType):
+    list_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+    view_id = graphene.String(required=True)
+
+
+class GetListViewsInputParams(graphene.InputObjectType):
+    list_id = graphene.String(required=True)
+
+
+class UpdateAccountMemberRoleInputParams(graphene.InputObjectType):
+    account_member_id = graphene.Int(required=True)
+    role = graphene.String(required=True)
+    changed_by = graphene.String(required=True)
+
+
+class RemoveAccountMemberInputParams(graphene.InputObjectType):
+    account_member_id = graphene.Int(required=True)
+    removed_by = graphene.String(required=True)

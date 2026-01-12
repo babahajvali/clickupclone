@@ -20,3 +20,7 @@ class ListViewsStorageInterface(ABC):
         # get the active list_view only
         pass
 
+    @abstractmethod
+    def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
+        pass
+

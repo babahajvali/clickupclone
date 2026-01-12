@@ -33,3 +33,11 @@ class TaskAssigneeStorageInterface(ABC):
         # get today active tasks
         pass
 
+    @abstractmethod
+    def get_user_task_assignee(self,user_id: str, task_id: str,assigned_by: str) -> TaskAssigneeDTO:
+        pass
+
+    @abstractmethod
+    def reassign_task_assignee(self, assign_id: str)-> TaskAssigneeDTO:
+        pass
+

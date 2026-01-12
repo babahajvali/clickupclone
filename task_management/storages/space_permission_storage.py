@@ -20,12 +20,15 @@ class SpacePermissionStorage(SpacePermissionStorageInterface):
         )
 
     def get_user_permission_for_space(self, user_id: str,
-                                      space_id: str) -> UserSpacePermissionDTO:
-        permission = SpacePermission.objects.get(
-            user_id=user_id,
-            space_id=space_id
-        )
-        return self._to_dto(permission)
+                                      space_id: str) -> UserSpacePermissionDTO | None:
+        try:
+            permission = SpacePermission.objects.get(
+                user_id=user_id,
+                space_id=space_id
+            )
+            return self._to_dto(permission)
+        except SpacePermission.DoesNotExist:
+            return None
 
     def update_user_permission_for_space(
             self, user_id: str, space_id: str,

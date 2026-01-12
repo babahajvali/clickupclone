@@ -157,7 +157,7 @@ class TestAccountInteractor:
             (),
             {"is_active": True}
         )()
-        permission = type("Permission", (), {"role": Role.GUEST})()
+        permission = type("Permission", (), {"role": Role.GUEST.value})()
         self.account_member_storage.get_user_permission_for_account.return_value = permission
 
         with pytest.raises(ModificationNotAllowedException) as exc:

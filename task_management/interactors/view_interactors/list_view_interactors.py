@@ -1,3 +1,5 @@
+from task_management.exceptions.custom_exceptions import \
+    ListViewNotExistedException
 from task_management.interactors.dtos import ListViewDTO, RemoveListViewDTO
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
@@ -5,8 +7,6 @@ from task_management.interactors.storage_interface.list_views_storage_interface 
     ListViewsStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.view_storage_interface import \
     ViewStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
@@ -55,3 +55,10 @@ class ListViewInteractor(ValidationMixin):
                                      list_storage=self.list_storage)
 
         return self.list_view_storage.get_list_views(list_id=list_id)
+
+    def _validate_list_view_exist(self, list_id: str, view_id: str):
+        is_exist = self.list_view_storage.is_list_view_exist(list_id=list_id,
+                                                             view_id=view_id)
+
+        if not is_exist:
+            raise ListViewNotExistedException(view_id=view_id, list_id=list_id)

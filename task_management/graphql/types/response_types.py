@@ -17,13 +17,15 @@ from task_management.graphql.types.error_types import \
     UserDoesNotHaveListPermissionType, NotExistedEmailFoundType, \
     WrongPasswordFoundType, InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffsetNumberType, \
-    InvalidLimitType
+    InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotExistedType, \
+    AccountMemberNotFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TemplateType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
     UserFolderPermissionType, UserListPermissionType, AccountMemberType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
-    TaskAssigneeType
+    TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
+    ListViewsType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -309,7 +311,8 @@ class CreateAccountMemberResponse(graphene.Union):
             InactiveAccountType,
             UserNotFoundType,
             InactiveUserType,
-            UnexpectedRoleType
+            UnexpectedRoleType,
+            ModificationNotAllowedType
         )
 
 
@@ -392,6 +395,7 @@ class SetSpaceVisibilityResponse(graphene.Union):
             ModificationNotAllowedType,
             UnsupportedVisibilityType
         )
+
 
 class ReorderFolderResponse(graphene.Union):
     class Meta:
@@ -547,6 +551,7 @@ class GetListResponse(graphene.Union):
             InactiveListType
         )
 
+
 class DeleteTaskResponse(graphene.Union):
     class Meta:
         types = (
@@ -597,6 +602,7 @@ class TaskFilterResponse(graphene.Union):
             InvalidLimitType
         )
 
+
 class CreateTaskAssigneeResponse(graphene.Union):
     class Meta:
         types = (TaskAssigneeType,
@@ -605,3 +611,119 @@ class CreateTaskAssigneeResponse(graphene.Union):
                  InactiveUserType,
                  DeletedTaskType,
                  ModificationNotAllowedType)
+
+
+class RemoveTaskAssigneeResponse(graphene.Union):
+    class Meta:
+        types = (TaskAssigneeType,
+                 TaskAssigneeNotFoundType,
+                 ListNotFoundType,
+                 InactiveListType,
+                 ModificationNotAllowedType)
+
+
+class GetTaskAssigneesResponse(graphene.Union):
+    class Meta:
+        types = (TaskAssigneesType,
+                 DeletedTaskType,
+                 TaskNotFoundType)
+
+
+class GetViewsResponse(graphene.Union):
+    class Meta:
+        types = (
+            ViewsType,
+            ViewNotFoundType
+        )
+
+
+class ReorderFieldResponse(graphene.Union):
+    class Meta:
+        types = (
+            FieldType,
+            FieldNotFoundType,
+            TemplateNotFoundType,
+            ModificationNotAllowedType,
+            InvalidOrderType
+        )
+
+
+class DeleteFieldResponse(graphene.Union):
+    class Meta:
+        types = (
+            FieldType,
+            FieldNotFoundType,
+            TemplateNotFoundType,
+            ModificationNotAllowedType
+        )
+
+
+class GetFieldsForTemplateResponse(graphene.Union):
+    class Meta:
+        types = (
+            FieldsType,
+            TemplateNotFoundType
+        )
+
+
+class GetFieldResponse(graphene.Union):
+    class Meta:
+        types = (
+            FieldType,
+            FieldNotFoundType
+        )
+
+class ApplyListViewResponse(graphene.Union):
+    class Meta:
+        types = (
+            ListViewType,
+            ListNotFoundType,
+            ViewNotFoundType,
+            InactiveListType,
+            ModificationNotAllowedType
+        )
+
+class RemoveListViewResponse(graphene.Union):
+    class Meta:
+        types = (
+            ListViewType,
+            ListNotFoundType,
+            ModificationNotAllowedType,
+            ListViewNotExistedType,
+            InactiveListType
+        )
+
+
+
+
+
+class GetListViewsResponse(graphene.Union):
+    class Meta:
+        types = (
+            ListViewsType,
+            ListNotFoundType,
+            InactiveListType
+        )
+
+
+class UpdateAccountMemberRoleResponse(graphene.Union):
+    class Meta:
+        types = (
+            AccountMemberType,
+            AccountNotFoundType,
+            AccountMemberNotFoundType,
+            InactiveAccountType,
+            UnexpectedRoleType,
+            ModificationNotAllowedType
+        )
+
+
+class RemoveAccountMemberResponse(graphene.Union):
+    class Meta:
+        types = (
+            AccountMemberType,
+            AccountNotFoundType,
+            AccountMemberNotFoundType,
+            InactiveAccountType,
+            ModificationNotAllowedType
+        )

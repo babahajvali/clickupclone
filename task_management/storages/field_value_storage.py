@@ -9,17 +9,20 @@ class FieldValueStorage(FieldValueStorageInterface):
 
     def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> \
             TaskFieldValueDTO:
-        field_value_data = FieldValue.objects.get(
+        field_value_obj = FieldValue.objects.select_related(
+            'task', 'field'
+        ).get(
             task_id=field_value_data.task_id,
-            field_id=field_value_data.field_id)
-        field_value_data.value = field_value_data.value
-        field_value_data.save()
+            field_id=field_value_data.field_id
+        )
+        field_value_obj.value = field_value_data.value
+        field_value_obj.save()
 
         return TaskFieldValueDTO(
-            id=field_value_data.pk,
-            task_id=field_value_data.task.task_id,
-            field_id=field_value_data.field.field_id,
-            value=field_value_data.value,
+            id=field_value_obj.pk,
+            task_id=field_value_obj.task.task_id,
+            field_id=field_value_obj.field.field_id,
+            value=field_value_obj.value,
         )
 
     def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[

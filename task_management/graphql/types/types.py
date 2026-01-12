@@ -52,7 +52,7 @@ class WorkspaceSpacesType(graphene.ObjectType):
     spaces = graphene.List(SpaceType)
 
 class FolderType(graphene.ObjectType):
-    folder_id = graphene.String(required=True)
+    folder_id = graphene.String()
     name = graphene.String(required=True)
     description = graphene.String(required=True)
     space_id = graphene.String(required=True)
@@ -99,6 +99,9 @@ class TaskAssigneeType(graphene.ObjectType):
     assigned_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
 
+class TaskAssigneesType(graphene.ObjectType):
+    assignees = graphene.List(TaskAssigneeType)
+
 
 class TemplateType(graphene.ObjectType):
     template_id = graphene.String(required=True)
@@ -114,11 +117,14 @@ class FieldType(graphene.ObjectType):
     description = graphene.String(required=True)
     template_id = graphene.String(required=True)
     field_name = graphene.String(required=True)
+    is_active = graphene.String(required=True)
     order = graphene.Int(required=True)
     config = graphene.JSONString(required=True)
     is_required = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
+class FieldsType(graphene.ObjectType):
+    fields = graphene.List(FieldType)
 
 class ViewType(graphene.ObjectType):
     view_id = graphene.String(required=True)
@@ -126,6 +132,9 @@ class ViewType(graphene.ObjectType):
     description = graphene.String(required=True)
     view_type = graphene.String(required=True)
     created_by = graphene.String(required=True)
+
+class ViewsType(graphene.ObjectType):
+    views = graphene.List(ViewType)
 
 
 class UserSpacePermissionType(graphene.ObjectType):
@@ -162,3 +171,13 @@ class AccountMemberType(graphene.ObjectType):
     role = graphene.String(required=True)
     added_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
+
+class ListViewType(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    list_id = graphene.String(required=True)
+    view_id = graphene.String(required=True)
+    applied_by = graphene.String(required=True)
+    is_active = graphene.Boolean(required=True)
+
+class ListViewsType(graphene.ObjectType):
+    list_views = graphene.List(ListViewType)

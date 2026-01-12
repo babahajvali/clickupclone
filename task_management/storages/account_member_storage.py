@@ -33,15 +33,9 @@ class AccountMemberStorage(AccountMemberStorageInterface):
 
     def add_member_to_account(self,
                               user_data: CreateAccountMemberDTO) -> AccountMemberDTO:
-        user_ids = [user_data.user_id]
-        if user_data.added_by:
-            user_ids.append(user_data.added_by)
 
-        users = User.objects.filter(user_id__in=user_ids)
-        user_dict = {u.user_id: u for u in users}
-
-        user = user_dict[user_data.user_id]
-        added_by = user_dict.get(user_data.added_by)
+        user = User.objects.get(user_id=user_data.user_id)
+        added_by = User.objects.get(user_id=user_data.added_by)
 
         account = Account.objects.get(account_id=user_data.account_id)
 

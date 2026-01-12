@@ -18,26 +18,38 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             is_active=data.is_active,
         )
 
-    def get_workspace(self, workspace_id: str) -> WorkspaceDTO:
-        workspace_data = Workspace.objects.get(workspace_id=workspace_id)
+    def get_workspace(self, workspace_id: str) -> WorkspaceDTO | None:
+        try:
+            workspace_data = Workspace.objects.select_related(
+                'created_by', 'account'
+            ).get(workspace_id=workspace_id)
 
-        return self._workspace_dto(data=workspace_data)
+            return self._workspace_dto(data=workspace_data)
+        except Workspace.DoesNotExist:
+            return None
 
     def create_workspace(self,
                          workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
         created_by = User.objects.get(user_id=workspace_data.user_id)
         account = Account.objects.get(account_id=workspace_data.account_id)
 
-        workspace_data = Workspace.objects.create(
+        workspace_obj = Workspace.objects.create(
             name=workspace_data.name, description=workspace_data.description,
-            created_by=created_by, account=account)
+            created_by=created_by, account=account
+        )
+        
+        # Refresh with related objects for DTO conversion
+        workspace_obj = Workspace.objects.select_related(
+            'created_by', 'account'
+        ).get(workspace_id=workspace_obj.workspace_id)
 
-        return self._workspace_dto(data=workspace_data)
+        return self._workspace_dto(data=workspace_obj)
 
     def update_workspace(self,
                          workspace_data: UpdateWorkspaceDTO) -> WorkspaceDTO:
-        workspace_obj = Workspace.objects.get(
-            workspace_id=workspace_data.workspace_id)
+        workspace_obj = Workspace.objects.select_related(
+            'created_by', 'account'
+        ).get(workspace_id=workspace_data.workspace_id)
         if workspace_data.name:
             workspace_obj.name = workspace_data.name
 
@@ -54,7 +66,9 @@ class WorkspaceStorage(WorkspaceStorageInterface):
                                      user_id=user_id)
 
     def delete_workspace(self, workspace_id: str) -> WorkspaceDTO:
-        workspace_data = Workspace.objects.get(workspace_id=workspace_id)
+        workspace_data = Workspace.objects.select_related(
+            'created_by', 'account'
+        ).get(workspace_id=workspace_id)
         workspace_data.is_active = False
         workspace_data.save()
 
@@ -64,15 +78,24 @@ class WorkspaceStorage(WorkspaceStorageInterface):
                            new_user_id: str) -> WorkspaceDTO:
         # change the owner id with new_user_id
         new_owner = User.objects.get(user_id=new_user_id)
-        workspace_data = Workspace.objects.get(workspace_id=workspace_id)
+        workspace_data = Workspace.objects.select_related(
+            'account'
+        ).get(workspace_id=workspace_id)
         workspace_data.created_by = new_owner
         workspace_data.save()
+        
+        # Refresh with related objects for DTO conversion
+        workspace_data = Workspace.objects.select_related(
+            'created_by', 'account'
+        ).get(workspace_id=workspace_id)
 
         return self._workspace_dto(data=workspace_data)
 
     def get_workspaces_by_account(self, account_id: str) -> list[WorkspaceDTO]:
-        account_workspaces = Workspace.objects.filter(account_id=account_id,
-                                                      is_active=True)
+        account_workspaces = Workspace.objects.filter(
+            account_id=account_id,
+            is_active=True
+        ).select_related('created_by', 'account')
 
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]

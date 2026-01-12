@@ -50,3 +50,6 @@ class ListViewStorage(ListViewsStorageInterface):
             applied_by=list_view_data.applied_by.user_id,
             is_active=list_view_data.is_active,
         )for list_view_data in list_views]
+
+    def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
+        return ListView.objects.filter(list_id=list_id,view_id=view_id).exists()
