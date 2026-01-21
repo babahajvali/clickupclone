@@ -85,7 +85,7 @@ class TestCreateList:
         dto = CreateListDTOFactory(folder_id="folder_123",space_id="space_123")
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = (
-            make_folder_permission(PermissionsEnum.FULL_EDIT)
+            make_folder_permission(PermissionsEnum.FULL_EDIT.value)
         )
 
         self.list_storage.create_list.return_value = type("List", (), {
@@ -105,7 +105,7 @@ class TestCreateList:
         dto = CreateListDTOFactory(folder_id=None)
 
         self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.VIEW
+            PermissionsEnum.VIEW.value
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -123,7 +123,7 @@ class TestCreateList:
         dto.space_id = "space_123"  # ✅ REQUIRED
 
         self.space_permission_storage.get_user_permission_for_space.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.space_storage.get_space.return_value = None
 
@@ -140,7 +140,7 @@ class TestCreateList:
         dto.space_id = "space_123"
 
         self.space_permission_storage.get_user_permission_for_space.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": False}

@@ -38,6 +38,10 @@ class WorkspaceMemberType(graphene.ObjectType):
     added_by = graphene.String(required=True)
 
 
+class WorkspaceMembersType(graphene.ObjectType):
+    members = graphene.List(WorkspaceMemberType)
+
+
 class SpaceType(graphene.ObjectType):
     space_id = graphene.String(required=True)
     name = graphene.String(required=True)

@@ -15,13 +15,14 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
-    GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews
+    GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
+    GetUserWorkspaces
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
                  GetSpaceLists, GetTaskFilters, GetTask, GetListTasks,
                  GetTaskAssignees, GetViews, GetTemplateFields, GetField,
-                 GetListViews]
+                 GetListViews, GetUserWorkspaces]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,

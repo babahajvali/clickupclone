@@ -40,6 +40,7 @@ class FieldDTOFactory(factory.Factory):
     template_id = factory.Faker("uuid4")
     field_name = factory.Faker("name")
     description = factory.Faker("text")
+    is_active = factory.Faker("boolean")
     field_type = factory.Iterator([x.value for x in FieldType])
     order = factory.sequence(lambda n: n + 1)
     config = factory.LazyFunction(dict)
@@ -142,7 +143,7 @@ class TaskDTOFactory(factory.Factory):
     list_id = factory.Faker('uuid4')
     order = factory.sequence(lambda n: n + 1)
     created_by = factory.Faker('uuid4')
-    is_delete = False
+    is_deleted = False
 
 
 class TaskAssigneeDTOFactory(factory.Factory):

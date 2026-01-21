@@ -70,7 +70,7 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.template_storage.is_template_name_exist.return_value = False
         self.template_storage.update_template.return_value = updated_template
@@ -114,7 +114,7 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(PermissionsEnum.VIEW.value)
         )
         with pytest.raises(ModificationNotAllowedException):
             self.interactor.update_template(update_dto,user_id="user_id")
@@ -128,7 +128,7 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.template_storage.check_template_name_exist_except_this_template.return_value = True
 

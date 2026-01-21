@@ -46,12 +46,12 @@ def task_filter_resolver(root, info, params):
 
         tasks_output = [
             TaskType(
-                task_id=str(task.task_id),
+                task_id=task.task_id,
                 title=task.title,
                 description=task.description,
-                list_id=str(task.list_id),
+                list_id=task.list_id,
                 order=task.order,
-                created_by=str(task.created_by),
+                created_by=task.created_by,
                 is_delete=task.is_deleted
             ) for task in tasks_data
         ]

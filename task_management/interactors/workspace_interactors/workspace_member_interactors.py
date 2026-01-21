@@ -303,6 +303,11 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 permission_type=permission_type
             )
 
+    def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
+
+        return self.workspace_member_storage.get_user_workspaces(
+            user_id=user_id)
+
     @staticmethod
     def _get_permission_type_by_role(role: str) -> PermissionsEnum:
         if role == Role.GUEST.value:

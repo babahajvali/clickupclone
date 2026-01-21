@@ -35,7 +35,7 @@ class FieldStorage(FieldStorageInterface):
             template=template, is_active=True).order_by('-order').first()
         next_order = (last_field.order + 1) if last_field else 1
 
-        field_obj = Field.objects.create(
+        field_data = Field.objects.create(
             field_name=create_field_data.field_name,
             description=create_field_data.description,
             field_type=create_field_data.field_type,
@@ -45,13 +45,8 @@ class FieldStorage(FieldStorageInterface):
             is_required=create_field_data.is_required,
             created_by=created_by
         )
-        
-        # Refresh with related objects for DTO conversion
-        field_obj = Field.objects.select_related(
-            'template', 'created_by'
-        ).get(field_id=field_obj.field_id)
 
-        return self._field_dto(field_data=field_obj)
+        return self._field_dto(field_data=field_data)
 
     def is_field_name_exists(self, field_name: str, template_id: str) -> bool:
         return Field.objects.filter(field_name=field_name,
@@ -59,18 +54,14 @@ class FieldStorage(FieldStorageInterface):
 
     def get_field_by_id(self, field_id: str) -> FieldDTO | None:
         try:
-            field_data = Field.objects.select_related(
-                'template', 'created_by'
-            ).get(field_id=field_id)
+            field_data = Field.objects.get(field_id=field_id)
 
             return self._field_dto(field_data=field_data)
         except ObjectDoesNotExist:
             return None
 
     def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
-        field_data = Field.objects.select_related(
-            'template', 'created_by'
-        ).get(field_id=update_field_data.field_id)
+        field_data = Field.objects.get(field_id=update_field_data.field_id)
         if update_field_data.description is not None:
             field_data.description = update_field_data.description
 
@@ -97,10 +88,8 @@ class FieldStorage(FieldStorageInterface):
             field_id=field_id).exists()
 
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
-        fields_data = Field.objects.filter(
-            template_id=template_id,
-            is_active=True
-        ).select_related('template', 'created_by')
+        fields_data = Field.objects.filter(template_id=template_id,
+                                           is_active=True)
 
         return [self._field_dto(field_data=field_data) for field_data in
                 fields_data]
@@ -108,9 +97,7 @@ class FieldStorage(FieldStorageInterface):
     @transaction.atomic
     def reorder_fields(self, field_id: str, template_id: str,
                        new_order: int) -> FieldDTO:
-        field_data = Field.objects.select_related(
-            'template', 'created_by'
-        ).get(field_id=field_id)
+        field_data = Field.objects.get(field_id=field_id)
         old_order = field_data.order
 
         if old_order == new_order:
@@ -141,9 +128,7 @@ class FieldStorage(FieldStorageInterface):
                                     is_active=True).count()
 
     def delete_field(self, field_id: str):
-        field_data = Field.objects.select_related('template').get(
-            field_id=field_id
-        )
+        field_data = Field.objects.get(field_id=field_id)
         field_data.is_active = False
         field_data.save()
 

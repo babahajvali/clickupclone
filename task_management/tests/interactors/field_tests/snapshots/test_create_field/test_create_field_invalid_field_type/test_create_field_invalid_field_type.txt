@@ -1,1 +1,1 @@
-'invalid'
+<InvalidFieldEnum.INVALID: 'invalid'>

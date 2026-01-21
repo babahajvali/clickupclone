@@ -25,7 +25,7 @@ from task_management.graphql.types.types import AccountType, UserType, \
     UserFolderPermissionType, UserListPermissionType, AccountMemberType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
-    ListViewsType
+    ListViewsType, WorkspaceMembersType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -90,32 +90,13 @@ class UpdateFieldResponse(graphene.Union):
         )
 
 
-class CreateTemplateResponse(graphene.Union):
-    class Meta:
-        types = (
-            TemplateType,
-            ListNotFoundType,
-            InactiveListType,
-            TemplateNameAlreadyExistsType
-        )
-
-
-class UpdateTemplateResponse(graphene.Union):
-    class Meta:
-        types = (
-            TemplateType,
-            TemplateNotFoundType,
-            TemplateNameAlreadyExistsType
-        )
-
-
 class CreateTaskResponse(graphene.Union):
     class Meta:
         types = (
             TaskType,
             ListNotFoundType,
             InactiveListType,
-            UserDoesNotHaveListPermissionType
+            ModificationNotAllowedType
         )
 
 
@@ -428,15 +409,6 @@ class GetSpaceFoldersResponse(graphene.Union):
         )
 
 
-class GetFolderPermissionsResponse(graphene.Union):
-    class Meta:
-        types = (
-            graphene.List(UserFolderPermissionType),
-            FolderNotFoundType,
-            InactiveFolderType
-        )
-
-
 class GetUserFolderPermissionResponse(graphene.Union):
     class Meta:
         types = (
@@ -695,8 +667,6 @@ class RemoveListViewResponse(graphene.Union):
 
 
 
-
-
 class GetListViewsResponse(graphene.Union):
     class Meta:
         types = (
@@ -726,4 +696,11 @@ class RemoveAccountMemberResponse(graphene.Union):
             AccountMemberNotFoundType,
             InactiveAccountType,
             ModificationNotAllowedType
+        )
+
+class GetUserWorkspacesResponse(graphene.Union):
+    class Meta:
+        types = (
+            WorkspaceMembersType,
+            UserNotFoundType
         )

@@ -1,5 +1,4 @@
 import graphene
-from django.db.models.expressions import result
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \

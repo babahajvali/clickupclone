@@ -32,12 +32,12 @@ def get_task_resolver(root, info, params):
         task_data = interactor.get_task(task_id=task_id)
 
         task_output = TaskType(
-            task_id=str(task_data.task_id),
+            task_id=task_data.task_id,
             title=task_data.title,
             description=task_data.description,
-            list_id=str(task_data.list_id),
+            list_id=task_data.list_id,
             order=task_data.order,
-            created_by=str(task_data.created_by),
+            created_by=task_data.created_by,
             is_delete=task_data.is_deleted
         )
 

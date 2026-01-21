@@ -25,48 +25,32 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
         task = Task.objects.get(task_id=task_id)
         assigned_by = User.objects.get(user_id=assigned_by)
 
-        assignment_obj = TaskAssignee.objects.create(
-            assigned_by=assigned_by,
-            task=task, user=user
-        )
-        
-        # Refresh with related objects for DTO conversion
-        assignment_obj = TaskAssignee.objects.select_related(
-            'task', 'user', 'assigned_by'
-        ).get(assign_id=assignment_obj.assign_id)
+        assignment_data = TaskAssignee.objects.create(assigned_by=assigned_by,
+                                                      task=task, user=user)
 
-        return self._assignee_dto(assignee_data=assignment_obj)
+        return self._assignee_dto(assignee_data=assignment_data)
 
     def remove_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.select_related(
-            'task', 'user', 'assigned_by'
-        ).get(assign_id=assign_id)
+        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
         assignee_data.is_active = False
         assignee_data.save()
 
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.select_related(
-            'task', 'user', 'assigned_by'
-        ).get(assign_id=assign_id)
+        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
 
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
-        task_assignees = TaskAssignee.objects.filter(
-            task_id=task_id
-        ).select_related('task', 'user', 'assigned_by')
+        task_assignees = TaskAssignee.objects.filter(task_id=task_id)
 
         return [self._assignee_dto(assignee_data=data) for data in
                 task_assignees]
 
     def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
         assignees = TaskAssignee.objects.filter(
-            user_id=user_id, is_active=True, task__is_deleted=False
-        ).select_related(
-            'task__list', 'task__created_by', 'task'
-        )
+            user_id=user_id, is_active=True, task__is_deleted=False)
 
         tasks = []
         for assignee in assignees:
@@ -93,8 +77,6 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
             is_active=True,
             task__is_deleted=False,
             assigned_at__date=today
-        ).select_related(
-            'task__list', 'task__created_by', 'task'
         )
 
         tasks = []
@@ -118,20 +100,15 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
             self, user_id: str, task_id: str,
             assigned_by: str) -> TaskAssigneeDTO | None:
         try:
-            assignee_data = TaskAssignee.objects.select_related(
-                'task', 'user', 'assigned_by'
-            ).get(
-                user_id=user_id, task_id=task_id, assigned_by=assigned_by
-            )
+            assignee_data = TaskAssignee.objects.get(
+                user_id=user_id,task_id=task_id,assigned_by=assigned_by)
 
             return self._assignee_dto(assignee_data=assignee_data)
         except TaskAssignee.DoesNotExist:
             return None
 
     def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.select_related(
-            'task', 'user', 'assigned_by'
-        ).get(assign_id=assign_id)
+        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
         assignee_data.is_active = True
         assignee_data.save()
 

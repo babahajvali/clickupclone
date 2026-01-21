@@ -45,15 +45,15 @@ def get_list_resolver(root, info, params):
         list_data = interactor.get_list(list_id=params.list_id)
 
         list_output = ListType(
-            list_id=str(list_data.list_id),
+            list_id=list_data.list_id,
             name=list_data.name,
             description=list_data.description,
-            space_id=str(list_data.space_id),
+            space_id=list_data.space_id,
             is_active=list_data.is_active,
             order=list_data.order,
             is_private=list_data.is_private,
-            created_by=str(list_data.created_by),
-            folder_id=str(list_data.folder_id) if list_data.folder_id else None
+            created_by=list_data.created_by,
+            folder_id=list_data.folder_id if list_data.folder_id else None
         )
 
         return list_output

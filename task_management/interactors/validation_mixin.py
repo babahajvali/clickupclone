@@ -401,5 +401,7 @@ class ValidationMixin:
     @staticmethod
     def validate_role(role: str):
         existed_roles = [x.value for x in Role]
+        print("Baba")
+
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)

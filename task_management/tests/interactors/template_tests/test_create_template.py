@@ -64,7 +64,7 @@ class TestCreateTemplateInteractor:
         self.permission_storage.get_user_permission_for_list.return_value = UserListPermissionDTO(
             id=1,
             list_id="list_id",
-            permission_type=PermissionsEnum.FULL_EDIT,
+            permission_type=PermissionsEnum.FULL_EDIT.value,
             user_id="user_id",
             is_active=True,
             added_by="admin"

@@ -389,3 +389,6 @@ class UpdateAccountMemberRoleInputParams(graphene.InputObjectType):
 class RemoveAccountMemberInputParams(graphene.InputObjectType):
     account_member_id = graphene.Int(required=True)
     removed_by = graphene.String(required=True)
+
+class GetUserWorkspacesInputParams(graphene.InputObjectType):
+    user_id = graphene.String(required=True)

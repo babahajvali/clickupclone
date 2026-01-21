@@ -83,7 +83,7 @@ class TestAccountMemberInteractor:
     # ---------------- ADD MEMBER ---------------- #
 
     def test_add_member_to_account_success(self, snapshot):
-        create_data = CreateAccountMemberFactory(role=Role.MEMBER.value)
+        create_data = CreateAccountMemberFactory(role=Role.MEMBER)
         expected = AccountMemberDTOFactory(role=Role.MEMBER)
 
         # ValidationMixin dependencies
@@ -112,11 +112,11 @@ class TestAccountMemberInteractor:
         account_member_id = 1
         changed_by = "user-123"
 
-        existing = AccountMemberDTOFactory(role=Role.MEMBER.value)
-        updated = AccountMemberDTOFactory(role=Role.ADMIN.value)
+        existing = AccountMemberDTOFactory(role=Role.MEMBER)
+        updated = AccountMemberDTOFactory(role=Role.ADMIN)
 
         self.account_member_storage.get_account_member_permission.return_value = existing
-        permission = type("Permission", (), {"role": Role.OWNER.value})()
+        permission = type("Permission", (), {"role": Role.OWNER})()
         self.account_member_storage.get_user_permission_for_account.return_value = permission
 
         self.account_member_storage.update_member_role.return_value = updated
@@ -124,7 +124,7 @@ class TestAccountMemberInteractor:
 
         result = self.interactor.update_member_role(
             account_member_id=account_member_id,
-            role=Role.ADMIN.value,
+            role=Role.ADMIN,
             changed_by=changed_by
         )
 
@@ -230,7 +230,7 @@ class TestAccountMemberInteractor:
         )
 
     def test_add_member_no_workspaces(self, snapshot):
-        create_data = CreateAccountMemberFactory(role=Role.MEMBER.value)
+        create_data = CreateAccountMemberFactory(role=Role.MEMBER)
         expected = AccountMemberDTOFactory()
 
         self.account_storage.get_account_by_id.return_value = \

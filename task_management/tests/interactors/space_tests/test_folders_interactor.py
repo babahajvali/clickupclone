@@ -65,7 +65,7 @@ class TestFolderInteractor:
         expected = FolderDTOFactory()
 
         self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
@@ -83,7 +83,7 @@ class TestFolderInteractor:
         dto = CreateFolderDTOFactory()
 
         self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.VIEW
+            PermissionsEnum.VIEW.value
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -98,7 +98,7 @@ class TestFolderInteractor:
         dto = CreateFolderDTOFactory()
 
         self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": False}
@@ -118,7 +118,7 @@ class TestFolderInteractor:
         expected = FolderDTOFactory()
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True,
@@ -140,7 +140,7 @@ class TestFolderInteractor:
         dto = UpdateFolderDTOFactory()
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.VIEW
+            PermissionsEnum.VIEW.value
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -155,7 +155,7 @@ class TestFolderInteractor:
         dto = UpdateFolderDTOFactory()
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = None
 
@@ -174,7 +174,7 @@ class TestFolderInteractor:
         expected = FolderDTOFactory(is_active=False)
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True}
@@ -193,7 +193,7 @@ class TestFolderInteractor:
         user_id = "user_1"
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = None
 
@@ -210,7 +210,7 @@ class TestFolderInteractor:
         user_id = "user_1"
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": False}
@@ -231,14 +231,14 @@ class TestFolderInteractor:
         expected = FolderDTOFactory(is_private=True)
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True}
         )()
         self.folder_storage.set_folder_private.return_value = expected
 
-        result = self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PRIVATE)
+        result = self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PRIVATE.value)
 
         snapshot.assert_match(
             repr(result),
@@ -250,14 +250,14 @@ class TestFolderInteractor:
         user_id = "user_1"
 
         self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            PermissionsEnum.FULL_EDIT
+            PermissionsEnum.FULL_EDIT.value
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": False}
         )()
 
         with pytest.raises(InactiveFolderException) as exc:
-            self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC)
+            self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC.value)
 
         snapshot.assert_match(
             repr(exc.value.folder_id),

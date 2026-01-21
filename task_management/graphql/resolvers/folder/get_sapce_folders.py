@@ -30,13 +30,13 @@ def get_space_folders_resolver(root, info, params):
 
         folders_output = [
             FolderType(
-                folder_id=str(folder.folder_id),
+                folder_id=folder.folder_id,
                 name=folder.name,
                 description=folder.description,
-                space_id=str(folder.space_id),
+                space_id=folder.space_id,
                 order=folder.order,
                 is_active=folder.is_active,
-                created_by=str(folder.created_by),
+                created_by=folder.created_by,
                 is_private=folder.is_private
             ) for folder in folders_data
         ]

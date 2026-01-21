@@ -21,11 +21,11 @@ def get_all_views_resolver(root, info):
 
     views_output = [
         ViewType(
-            view_id=str(view.view_id),
+            view_id=view.view_id,
             name=view.name,
             description=view.description,
             view_type=view.view_type,
-            created_by=str(view.created_by)
+            created_by=view.created_by
         ) for view in views_data
     ]
 

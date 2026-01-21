@@ -25,9 +25,7 @@ class SpaceStorage(SpaceStorageInterface):
 
     def get_space(self, space_id: str) -> SpaceDTO | None:
         try:
-            space_data = Space.objects.select_related(
-                'workspace', 'created_by'
-            ).get(space_id=space_id)
+            space_data = Space.objects.get(space_id=space_id)
 
             return self._to_dto(space_data=space_data)
         except Space.DoesNotExist:
@@ -42,7 +40,7 @@ class SpaceStorage(SpaceStorageInterface):
             workspace=workspace, is_active=True).order_by('-order').first()
         next_order = (last_space.order + 1) if last_space else 1
 
-        space_obj = Space.objects.create(
+        space = Space.objects.create(
             name=create_space_data.name,
             description=create_space_data.description,
             workspace=workspace,
@@ -50,18 +48,11 @@ class SpaceStorage(SpaceStorageInterface):
             is_private=create_space_data.is_private,
             created_by=created_by
         )
-        
-        # Refresh with related objects for DTO conversion
-        space_obj = Space.objects.select_related(
-            'workspace', 'created_by'
-        ).get(space_id=space_obj.space_id)
 
-        return self._to_dto(space_obj)
+        return self._to_dto(space)
 
     def update_space(self, update_space_data: UpdateSpaceDTO) -> SpaceDTO:
-        space = Space.objects.select_related(
-            'workspace', 'created_by'
-        ).get(space_id=update_space_data.space_id)
+        space = Space.objects.get(space_id=update_space_data.space_id)
 
         if update_space_data.name is not None:
             space.name = update_space_data.name
@@ -74,9 +65,7 @@ class SpaceStorage(SpaceStorageInterface):
         return self._to_dto(space)
 
     def remove_space(self, space_id: str) -> SpaceDTO:
-        space = Space.objects.select_related('workspace').get(
-            space_id=space_id
-        )
+        space = Space.objects.get(space_id=space_id)
         current_order = space.order
         workspace_id = space.workspace.workspace_id
 
@@ -90,17 +79,13 @@ class SpaceStorage(SpaceStorageInterface):
         return self._to_dto(space)
 
     def set_space_private(self, space_id: str) -> SpaceDTO:
-        space = Space.objects.select_related(
-            'workspace', 'created_by'
-        ).get(space_id=space_id)
+        space = Space.objects.get(space_id=space_id)
         space.is_private = True
         space.save()
         return self._to_dto(space)
 
     def set_space_public(self, space_id: str) -> SpaceDTO:
-        space = Space.objects.select_related(
-            'workspace', 'created_by'
-        ).get(space_id=space_id)
+        space = Space.objects.get(space_id=space_id)
         space.is_private = False
         space.save()
         return self._to_dto(space)
@@ -109,7 +94,7 @@ class SpaceStorage(SpaceStorageInterface):
         spaces = Space.objects.filter(
             workspace_id=workspace_id,
             is_active=True
-        ).select_related('workspace', 'created_by')
+        )
 
         return [self._to_dto(space) for space in spaces]
 
@@ -120,9 +105,7 @@ class SpaceStorage(SpaceStorageInterface):
     @transaction.atomic
     def reorder_space(self, workspace_id: str, space_id: str,
                       new_order: int) -> SpaceDTO:
-        space = Space.objects.select_related(
-            'workspace', 'created_by'
-        ).get(space_id=space_id)
+        space = Space.objects.get(space_id=space_id)
         old_order = space.order
 
         if old_order == new_order:

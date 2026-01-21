@@ -69,7 +69,7 @@ class TestUpdateList:
         "folder_id": None,
         "space_id": "space_1",},)()
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
 
         self.interactor.space_storage.get_space.return_value = type("Space",(),{
@@ -112,7 +112,7 @@ class TestUpdateList:
             "List", (), {"is_active": True}
         )()
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(PermissionsEnum.VIEW.value)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -129,7 +129,7 @@ class TestUpdateList:
         "space_id": "space_1",},)()
 
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.space_storage.get_space.return_value = None
 

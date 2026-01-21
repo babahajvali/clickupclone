@@ -32,6 +32,8 @@ from task_management.graphql.resolvers.views.get_list_views import \
     get_list_views_resolver
 from task_management.graphql.resolvers.views.get_views_resolver import \
     get_all_views_resolver
+from task_management.graphql.resolvers.workspace.get_user_workspaces import \
+    get_user_workspace_resolver
 from task_management.graphql.resolvers.workspace.get_workspace_resolver import \
     get_workspace_resolver
 from task_management.graphql.types.input_types import \
@@ -41,14 +43,14 @@ from task_management.graphql.types.input_types import \
     GetFolderListsInputParams, GetSpaceListsInputParams, \
     GetListTasksInputParams, GetTaskInputParams, TaskFilterInputParams, \
     GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
-    GetFieldInputParams, GetListViewsInputParams
+    GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \
     GetListResponse, GetFolderListsResponse, GetSpaceListsResponse, \
     GetListTasksResponse, GetTaskResponse, TaskFilterResponse, \
     GetTaskAssigneesResponse, GetViewsResponse, GetFieldsForTemplateResponse, \
-    GetFieldResponse, GetListViewsResponse
+    GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -172,4 +174,11 @@ class GetListViews(graphene.ObjectType):
         GetListViewsResponse,
         params=GetListViewsInputParams(required=True),
         resolver=get_list_views_resolver
+    )
+
+class GetUserWorkspaces(graphene.ObjectType):
+    get_user_workspaces = graphene.Field(
+        GetUserWorkspacesResponse,
+        params=GetUserWorkspacesInputParams(required=True),
+        resolver=get_user_workspace_resolver
     )

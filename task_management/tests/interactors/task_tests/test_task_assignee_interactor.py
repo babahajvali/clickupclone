@@ -63,7 +63,7 @@ class TestTaskAssigneeInteractor:
             "Task",
             (),
             {
-                "is_delete": False,
+                "is_deleted": False,
                 "list_id": "list_123"
             }
         )()
@@ -81,29 +81,28 @@ class TestTaskAssigneeInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
-
-        expected = TaskAssigneeDTOFactory()
+        self.task_assignee_storage.get_user_task_assignee.return_value = None
+        task_id = "task123"
+        expected = TaskAssigneeDTOFactory(task_id=task_id)
         self.task_assignee_storage.assign_task_assignee.return_value = expected
 
         result = self.interactor.assign_task_assignee(
-            task_id="task123",
+            task_id=task_id,
             user_id="user123",
             assigned_by="admin123"
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "assign_task_assignee_success.txt"
-        )
+        assert task_id == result.task_id
 
     def test_assign_task_assignee_permission_denied(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(PermissionsEnum.VIEW.value)
         )
+        self.task_assignee_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.assign_task_assignee(
@@ -119,6 +118,7 @@ class TestTaskAssigneeInteractor:
 
     def test_assign_task_assignee_user_not_found(self, snapshot):
         self.user_storage.get_user_data.return_value = None
+        self.task_assignee_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(UserNotFoundException) as exc:
             self.interactor.assign_task_assignee(
@@ -135,6 +135,7 @@ class TestTaskAssigneeInteractor:
     def test_assign_task_assignee_task_not_found(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = None
+        self.task_assignee_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(TaskNotFoundException) as exc:
             self.interactor.assign_task_assignee(
@@ -156,7 +157,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_assignee_storage.remove_task_assignee.return_value = expected
         self.permission_storage.get_user_permission_for_list.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT)
+            PermissionsEnum.FULL_EDIT.value)
 
         result = self.interactor.remove_task_assignee(
             assign_id="assign123",

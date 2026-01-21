@@ -66,7 +66,7 @@ class TestRemoveList:
 
     def test_remove_list_success(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
@@ -80,7 +80,7 @@ class TestRemoveList:
 
     def test_permission_denied(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(PermissionsEnum.VIEW.value)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -90,7 +90,7 @@ class TestRemoveList:
 
     def test_list_not_found(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = None
 
@@ -101,7 +101,7 @@ class TestRemoveList:
 
     def test_list_inactive(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}

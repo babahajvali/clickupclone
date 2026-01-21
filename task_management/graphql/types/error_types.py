@@ -111,10 +111,6 @@ class UserDoesNotHaveListPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
-class InactiveUserPermissionType(graphene.ObjectType):
-    user_id = graphene.String(required=True)
-
-
 class NotExistedEmailFoundType(graphene.ObjectType):
     email = graphene.String(required=True)
 
@@ -133,10 +129,6 @@ class ExistedEmailFoundType(graphene.ObjectType):
 
 class ExistedPhoneNumberFoundType(graphene.ObjectType):
     phone_number = graphene.String(required=True)
-
-
-class UsernameNotFoundType(graphene.ObjectType):
-    username = graphene.String(required=True)
 
 
 class InvalidOffsetNumberType(graphene.ObjectType):

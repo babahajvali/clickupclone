@@ -33,7 +33,7 @@ def make_permission(permission_type: PermissionsEnum):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
-        permission_type=permission_type,
+        permission_type=permission_type.value,
         user_id="user_id",
         is_active=True,
         added_by="admin"

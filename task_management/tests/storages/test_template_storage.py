@@ -1,0 +1,137 @@
+import pytest
+
+from task_management.interactors.dtos import CreateTemplateDTO, UpdateTemplateDTO
+from task_management.storages.template_storage import TemplateStorage
+from task_management.tests.factories.storage_factory import (
+    TemplateFactory,
+    ListFactory,
+    UserFactory,
+    WorkspaceFactory,
+    SpaceFactory,
+    FolderFactory
+)
+class TestTemplateStorage:
+
+    @pytest.mark.django_db
+    def test_get_template_by_id_success(self, snapshot):
+        # Arrange
+        user = UserFactory()
+        workspace = WorkspaceFactory(created_by=user)
+        space = SpaceFactory(workspace=workspace, created_by=user)
+        folder = FolderFactory(space=space, created_by=user)
+        list_obj = ListFactory(space=space, folder=folder, created_by=user)
+        template = TemplateFactory(list=list_obj)
+
+        storage = TemplateStorage()
+
+        # Act
+        result = storage.get_template_by_id(
+            template_id=str(template.template_id)
+        )
+
+        # Assert
+        snapshot.assert_match(
+            repr(result),
+            "test_get_template_by_id_success.txt"
+        )
+
+    @pytest.mark.django_db
+    def test_create_template(self, snapshot):
+        # Arrange
+        user = UserFactory()
+        workspace = WorkspaceFactory(created_by=user)
+        space = SpaceFactory(workspace=workspace, created_by=user)
+        folder = FolderFactory(space=space, created_by=user)
+        list_obj = ListFactory(space=space, folder=folder, created_by=user)
+
+        dto = CreateTemplateDTO(
+            name="Bug Template",
+            description="Bug task template",
+            list_id=str(list_obj.list_id),
+            created_by=list_obj.created_by
+        )
+
+        storage = TemplateStorage()
+
+        # Act
+        result = storage.create_template(template_data=dto)
+
+        # Assert
+        snapshot.assert_match(
+            repr(result),
+            "test_create_template.txt"
+        )
+
+    @pytest.mark.django_db
+    def test_is_template_name_exist_true(self):
+        # Arrange
+        TemplateFactory(name="Existing Template")
+        storage = TemplateStorage()
+
+        # Act & Assert
+        assert storage.is_template_name_exist("Existing Template") is True
+
+    @pytest.mark.django_db
+    def test_is_template_name_exist_false(self):
+        # Arrange
+        storage = TemplateStorage()
+
+        # Act & Assert
+        assert storage.is_template_name_exist("Non Existing") is False
+
+    @pytest.mark.django_db
+    def test_check_template_name_exist_except_this_template_true(self):
+        # Arrange
+        template1 = TemplateFactory(name="Template One")
+        template2 = TemplateFactory(name="Template Two")
+        storage = TemplateStorage()
+
+        # Act & Assert
+        assert storage.check_template_name_exist_except_this_template(
+            template_name="Template One",
+            template_id=str(template2.template_id)
+        ) is True
+
+    @pytest.mark.django_db
+    def test_check_template_name_exist_except_this_template_false(self):
+        # Arrange
+        template = TemplateFactory(name="Only Template")
+        storage = TemplateStorage()
+
+        # Act & Assert
+        assert storage.check_template_name_exist_except_this_template(
+            template_name="Only Template",
+            template_id=str(template.template_id)
+        ) is False
+
+    @pytest.mark.django_db
+    def test_update_template(self, snapshot):
+        # Arrange
+        user = UserFactory()
+        workspace = WorkspaceFactory(created_by=user)
+        space = SpaceFactory(workspace=workspace, created_by=user)
+        folder = FolderFactory(space=space, created_by=user)
+        list_obj = ListFactory(space=space, folder=folder, created_by=user)
+
+        template = TemplateFactory(
+            list=list_obj,
+            name="Old Template",
+            description="Old description"
+        )
+
+        dto = UpdateTemplateDTO(
+            template_id=str(template.template_id),
+            name="Updated Template",
+            description="Updated description"
+        )
+
+        storage = TemplateStorage()
+
+        # Act
+        result = storage.update_template(update_template_data=dto)
+
+        # Assert
+        snapshot.assert_match(
+            repr(result),
+            "test_update_template.txt"
+        )

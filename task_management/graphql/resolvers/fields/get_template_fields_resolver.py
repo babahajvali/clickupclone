@@ -27,15 +27,15 @@ def get_fields_for_template_resolver(root, info, params):
 
         fields_output = [
             FieldType(
-                field_id=str(field.field_id),
-                field_type=field.field_type.value if hasattr(field.field_type, 'value') else field.field_type,
+                field_id=field.field_id,
+                field_type=field.field_type,
                 description=field.description,
-                template_id=str(field.template_id),
+                template_id=field.template_id,
                 field_name=field.field_name,
                 order=field.order,
                 config=field.config,
                 is_required=field.is_required,
-                created_by=str(field.created_by)
+                created_by=field.created_by
             ) for field in fields_data
         ]
 

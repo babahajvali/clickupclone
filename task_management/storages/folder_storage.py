@@ -24,9 +24,7 @@ class FolderStorage(FolderStorageInterface):
 
     def get_folder(self, folder_id: str) -> FolderDTO | None:
         try:
-            folder_data = Folder.objects.select_related(
-                'space', 'created_by'
-            ).get(folder_id=folder_id)
+            folder_data = Folder.objects.get(folder_id=folder_id)
 
             return self._folder_dto(folder_data)
         except Folder.DoesNotExist:
@@ -39,23 +37,16 @@ class FolderStorage(FolderStorageInterface):
             space=space,is_active=True).order_by('-order').first()
         next_order = (last_folder.order + 1) if last_folder else 1
 
-        folder_obj = Folder.objects.create(
+        folder_data = Folder.objects.create(
             name=create_folder_data.name, order=next_order,
             description=create_folder_data.description, space=space,
-            is_private=create_folder_data.is_private, created_by=user
-        )
-        
-        # Refresh with related objects for DTO conversion
-        folder_obj = Folder.objects.select_related(
-            'space', 'created_by'
-        ).get(folder_id=folder_obj.folder_id)
+            is_private=create_folder_data.is_private, created_by=user)
 
-        return self._folder_dto(folder_obj)
+        return self._folder_dto(folder_data)
 
     def update_folder(self, update_folder_data: UpdateFolderDTO) -> FolderDTO:
-        folder_data = Folder.objects.select_related(
-            'space', 'created_by'
-        ).get(folder_id=update_folder_data.folder_id)
+        folder_data = Folder.objects.get(
+            folder_id=update_folder_data.folder_id)
 
         if update_folder_data.name is not None:
             folder_data.name = update_folder_data.name
@@ -68,9 +59,7 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def reorder_folder(self, folder_id: str, new_order: int) -> FolderDTO:
-        folder_data = Folder.objects.select_related('space').get(
-            folder_id=folder_id
-        )
+        folder_data = Folder.objects.get(folder_id=folder_id)
         old_order = folder_data.order
 
         if new_order == old_order:
@@ -97,9 +86,7 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def remove_folder(self, folder_id: str) -> FolderDTO:
-        folder_data = Folder.objects.select_related('space').get(
-            folder_id=folder_id
-        )
+        folder_data = Folder.objects.get(folder_id=folder_id)
         folder_data.is_active = False
         folder_data.save()
 
@@ -111,26 +98,20 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
-        folders_data = Folder.objects.filter(
-            space_id__in=space_ids,
-            is_active=True
-        ).select_related('space', 'created_by')
+        folders_data = Folder.objects.filter(space_id__in=space_ids,
+                                             is_active=True)
 
         return [self._folder_dto(data=data) for data in folders_data]
 
     def set_folder_private(self, folder_id: str) -> FolderDTO:
-        folder_data = Folder.objects.select_related(
-            'space', 'created_by'
-        ).get(folder_id=folder_id)
+        folder_data = Folder.objects.get(folder_id=folder_id)
         folder_data.is_private = True
         folder_data.save()
 
         return self._folder_dto(folder_data)
 
     def set_folder_public(self, folder_id: str) -> FolderDTO:
-        folder_data = Folder.objects.select_related(
-            'space', 'created_by'
-        ).get(folder_id=folder_id)
+        folder_data = Folder.objects.get(folder_id=folder_id)
         folder_data.is_private = False
         folder_data.save()
 

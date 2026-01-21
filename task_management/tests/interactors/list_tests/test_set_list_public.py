@@ -65,28 +65,28 @@ class TestSetListPublic:
 
     def test_set_list_public_success(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True})()
 
-        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC.value)
 
         self.interactor.list_storage.make_list_public.assert_called_once_with("list_1")
 
     def test_permission_denied(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(PermissionsEnum.VIEW.value)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
-            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC.value)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     def test_list_not_found(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = None
 
@@ -97,7 +97,7 @@ class TestSetListPublic:
 
     def test_list_inactive(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}

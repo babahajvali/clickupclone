@@ -1,1 +1,1 @@
-InactiveListFoundException()
+InactiveListException()

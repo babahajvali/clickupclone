@@ -26,15 +26,15 @@ def get_field_resolver(root, info, params):
         field_data = interactor.get_field(field_id=field_id)
 
         return FieldType(
-            field_id=str(field_data.field_id),
-            field_type=field_data.field_type.value if hasattr(field_data.field_type, 'value') else field_data.field_type,
+            field_id=field_data.field_id,
+            field_type=field_data.field_type,
             description=field_data.description,
-            template_id=str(field_data.template_id),
+            template_id=field_data.template_id,
             field_name=field_data.field_name,
             order=field_data.order,
             config=field_data.config,
             is_required=field_data.is_required,
-            created_by=str(field_data.created_by)
+            created_by=field_data.created_by
         )
 
     except custom_exceptions.FieldNotFoundException as e:

@@ -64,7 +64,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.task_storage.create_task.return_value = TaskDTOFactory()
 
@@ -129,7 +129,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(PermissionsEnum.FULL_EDIT.value)
         )
         self.task_storage.update_task.return_value = TaskDTOFactory()
 

@@ -282,5 +282,6 @@ class ChangeAccountMemberRole(graphene.ObjectType):
     change_account_member_role = UpdateAccountMemberRoleMutation.Field(
         required=True)
 
+
 class RemoveAccountMember(graphene.ObjectType):
     remove_account_member = RemoveAccountMemberMutation.Field(required=True)
