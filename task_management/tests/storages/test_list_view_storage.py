@@ -28,9 +28,10 @@ class TestListViewStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         view_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
         view = ViewFactory(view_id=view_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListViewFactory(list=list_obj, view=view, applied_by=user, is_active=True)
         storage = ListViewStorage()
 
@@ -44,11 +45,15 @@ class TestListViewStorage:
     def test_get_list_views_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
+        view_id1 = "12345678-1234-5678-1234-567812345679"
+        view_id2 = "12345678-1234-5678-1234-567812345680"
+        view_id3 = "12345678-1234-5678-1234-567812345681"
+        user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
-        view1 = ViewFactory()
-        view2 = ViewFactory()
-        view3 = ViewFactory()
-        user = UserFactory()
+        view1 = ViewFactory(view_id=view_id1)
+        view2 = ViewFactory(view_id=view_id2)
+        view3 = ViewFactory(view_id=view_id3)
+        user = UserFactory(user_id=user_id)
         ListViewFactory(list=list_obj, view=view1, applied_by=user, is_active=True)
         ListViewFactory(list=list_obj, view=view2, applied_by=user, is_active=True)
         ListViewFactory(list=list_obj, view=view3, applied_by=user, is_active=False)

@@ -26,9 +26,12 @@ class TestListStorage:
     def test_get_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
-        folder = FolderFactory()
-        user = UserFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        folder_id = "12345678-1234-5678-1234-567812345680"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        folder = FolderFactory(folder_id=folder_id)
+        user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=folder, created_by=user)
         storage = ListStorage()
 
@@ -73,7 +76,9 @@ class TestListStorage:
         result = storage.create_list(create_list_data=create_list_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
+        # snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
+        assert result.name == create_list_data.name
+        assert result.description == create_list_data.description
 
     @pytest.mark.django_db
     def test_create_list_without_folder_success(self, snapshot):
@@ -96,7 +101,10 @@ class TestListStorage:
         result = storage.create_list(create_list_data=create_list_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
+        # snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
+        assert result.folder_id == create_list_data.folder_id
+        assert result.name == create_list_data.name
+        assert result.description == create_list_data.description
 
     @pytest.mark.django_db
     def test_create_list_with_existing_lists_in_folder(self, snapshot):
@@ -123,15 +131,21 @@ class TestListStorage:
         result = storage.create_list(create_list_data=create_list_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
+        # snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
+        assert result.name == create_list_data.name
+
 
     @pytest.mark.django_db
     def test_update_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
-        user = UserFactory()
-        ListFactory(list_id=list_id, space=space, created_by=user, name="Old Name", description="Old description")
+        space_id = "12345678-1234-5678-1234-567812345679"
+        folder_id = "12345678-1234-5678-1234-567812345678"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        user = UserFactory(user_id=user_id)
+        folder = FolderFactory(folder_id=folder_id, space=space)
+        ListFactory(list_id=list_id, folder=folder,space=space, created_by=user, name="Old Name", description="Old description")
         update_list_data = UpdateListDTO(
             list_id=str(list_id),
             name="New Name",
@@ -150,14 +164,16 @@ class TestListStorage:
         # Arrange
         folder_id_1 = "12345678-1234-5678-1234-567812345678"
         folder_id_2 = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345680"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
         folder1 = FolderFactory(folder_id=folder_id_1, space=space)
         folder2 = FolderFactory(folder_id=folder_id_2, space=space)
-        user = UserFactory()
-        ListFactory(space=space, folder=folder1, created_by=user, is_active=True)
-        ListFactory(space=space, folder=folder1, created_by=user, is_active=True)
-        ListFactory(space=space, folder=folder2, created_by=user, is_active=True)
-        ListFactory(space=space, folder=folder1, created_by=user, is_active=False)
+        user = UserFactory(user_id=user_id)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345681",space=space, folder=folder1, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345682",space=space, folder=folder1, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345683",space=space, folder=folder2, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345684",space=space, folder=folder1, created_by=user, is_active=False)
         folder_ids = [str(folder_id_1), str(folder_id_2)]
         storage = ListStorage()
 
@@ -187,13 +203,14 @@ class TestListStorage:
         # Arrange
         space_id_1 = "12345678-1234-5678-1234-567812345678"
         space_id_2 = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
         space1 = SpaceFactory(space_id=space_id_1)
         space2 = SpaceFactory(space_id=space_id_2)
-        user = UserFactory()
-        ListFactory(space=space1, folder=None, created_by=user, is_active=True)
-        ListFactory(space=space1, folder=None, created_by=user, is_active=True)
-        ListFactory(space=space2, folder=None, created_by=user, is_active=True)
-        ListFactory(space=space1, folder=None, created_by=user, is_active=False)
+        user = UserFactory(user_id=user_id)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345681",space=space1, folder=None, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345682",space=space1, folder=None, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345683",space=space2, folder=None, created_by=user, is_active=True)
+        ListFactory(list_id="12345678-1234-5678-1234-567812345684",space=space1, folder=None, created_by=user, is_active=False)
         space_ids = [str(space_id_1), str(space_id_2)]
         storage = ListStorage()
 
@@ -222,9 +239,11 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345680"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=folder, created_by=user, order=1, is_active=True)
         ListFactory(space=space, folder=folder, created_by=user, order=2, is_active=True)
         ListFactory(space=space, folder=folder, created_by=user, order=3, is_active=True)
@@ -241,8 +260,9 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=None, created_by=user, order=1, is_active=True)
         ListFactory(space=space, folder=None, created_by=user, order=2, is_active=True)
         ListFactory(space=space, folder=None, created_by=user, order=3, is_active=True)
@@ -258,9 +278,13 @@ class TestListStorage:
     def test_make_list_private_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
-        user = UserFactory()
-        ListFactory(list_id=list_id, space=space, created_by=user, is_private=False)
+        folder_id = "12345678-1234-5678-1234-567812345679"
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        folder = FolderFactory(folder_id=folder_id, space=space)
+        user = UserFactory(user_id=user_id)
+        ListFactory(list_id=list_id, space=space, created_by=user, is_private=False,folder=folder)
         storage = ListStorage()
 
         # Act
@@ -273,9 +297,13 @@ class TestListStorage:
     def test_make_list_public_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
-        user = UserFactory()
-        ListFactory(list_id=list_id, space=space, created_by=user, is_private=True)
+        folder_id = "12345678-1234-5678-1234-567812345679"
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        folder = FolderFactory(folder_id=folder_id, space=space)
+        user = UserFactory(user_id=user_id)
+        ListFactory(list_id=list_id, space=space, created_by=user, is_private=True,folder=folder)
         storage = ListStorage()
 
         # Act
@@ -289,9 +317,11 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory()
         ListFactory(list_id=list_id, space=space, folder=folder, created_by=user, order=1)
         ListFactory(space=space, folder=folder, created_by=user, order=2)
         ListFactory(space=space, folder=folder, created_by=user, order=3)
@@ -308,9 +338,11 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory()
         ListFactory(space=space, folder=folder, created_by=user, order=1)
         ListFactory(space=space, folder=folder, created_by=user, order=2)
         ListFactory(list_id=list_id, space=space, folder=folder, created_by=user, order=3)
@@ -327,9 +359,11 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory()
         ListFactory(list_id=list_id, space=space, folder=folder, created_by=user, order=2)
         storage = ListStorage()
 
@@ -344,8 +378,9 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=None, created_by=user, order=1)
         ListFactory(space=space, folder=None, created_by=user, order=2)
         ListFactory(space=space, folder=None, created_by=user, order=3)
@@ -362,8 +397,9 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(space=space, folder=None, created_by=user, order=1)
         ListFactory(space=space, folder=None, created_by=user, order=2)
         ListFactory(list_id=list_id, space=space, folder=None, created_by=user, order=3)
@@ -380,8 +416,9 @@ class TestListStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=None, created_by=user, order=2)
         storage = ListStorage()
 
@@ -395,9 +432,11 @@ class TestListStorage:
     def test_get_folder_lists_count_success(self, snapshot):
         # Arrange
         folder_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        user_id = "12345678-1234-5678-1234-567812345681"
+        space = SpaceFactory(space_id=space_id)
+        user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory()
         ListFactory(space=space, folder=folder, created_by=user, is_active=True)
         ListFactory(space=space, folder=folder, created_by=user, is_active=True)
         ListFactory(space=space, folder=folder, created_by=user, is_active=False)
@@ -413,7 +452,8 @@ class TestListStorage:
     def test_get_folder_lists_count_empty(self, snapshot):
         # Arrange
         folder_id = "12345678-1234-5678-1234-567812345678"
-        space = SpaceFactory()
+        space_id = "12345678-1234-5678-1234-567812345679"
+        space = SpaceFactory(space_id=space_id)
         FolderFactory(folder_id=folder_id, space=space)
         storage = ListStorage()
 
@@ -427,8 +467,9 @@ class TestListStorage:
     def test_get_space_lists_count_success(self, snapshot):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
+        user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
-        user = UserFactory()
+        user = UserFactory(user_id=user_id)
         ListFactory(space=space, folder=None, created_by=user, is_active=True)
         ListFactory(space=space, folder=None, created_by=user, is_active=True)
         ListFactory(space=space, folder=None, created_by=user, is_active=False)

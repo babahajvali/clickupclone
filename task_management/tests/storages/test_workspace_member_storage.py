@@ -37,8 +37,9 @@ class TestWorkspaceMemberStorage:
         workspace_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
         workspace = WorkspaceFactory(workspace_id=workspace_id)
+        added_by_id = "12345678-1234-5678-1234-567812345680"
         user = UserFactory(user_id=user_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by)
         storage = WorkspaceMemberStorage()
 
@@ -64,9 +65,12 @@ class TestWorkspaceMemberStorage:
     @pytest.mark.django_db
     def test_get_workspace_member_by_id_success(self, snapshot):
         # Arrange
-        workspace = WorkspaceFactory()
-        user = UserFactory()
-        added_by = UserFactory()
+        workspace_id = "12345678-1234-5678-1234-567812345678"
+        user_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
+        workspace = WorkspaceFactory(workspace_id=workspace_id)
+        user = UserFactory(user_id=user_id)
+        added_by = UserFactory(user_id=added_by_id)
         workspace_member = WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by)
         storage = WorkspaceMemberStorage()
 
@@ -79,9 +83,12 @@ class TestWorkspaceMemberStorage:
     @pytest.mark.django_db
     def test_remove_member_from_workspace_success(self, snapshot):
         # Arrange
-        workspace = WorkspaceFactory()
-        user = UserFactory()
-        added_by = UserFactory()
+        workspace_id = "12345678-1234-5678-1234-567812345678"
+        user_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
+        workspace = WorkspaceFactory(workspace_id=workspace_id)
+        user = UserFactory(user_id=user_id)
+        added_by = UserFactory(user_id=added_by_id)
         workspace_member = WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by, is_active=True)
         storage = WorkspaceMemberStorage()
 
@@ -98,7 +105,8 @@ class TestWorkspaceMemberStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
-        added_by = UserFactory()
+        added_by_id = "12345678-1234-5678-1234-567812345680"
+        added_by = UserFactory(user_id=added_by_id)
         WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by, role="member")
         storage = WorkspaceMemberStorage()
 
@@ -113,9 +121,12 @@ class TestWorkspaceMemberStorage:
         # Arrange
         workspace_id = "12345678-1234-5678-1234-567812345678"
         workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user1 = UserFactory()
-        user2 = UserFactory()
-        added_by = UserFactory()
+        user_id1 = "12345678-1234-5678-1234-567812345679"
+        user_id2 = "12345678-1234-5678-1234-567812345690"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
+        user1 = UserFactory(user_id=user_id1)
+        user2 = UserFactory(user_id=user_id2)
+        added_by = UserFactory(user_id=added_by_id)
         WorkspaceMemberFactory(workspace=workspace, user=user1, added_by=added_by, is_active=True)
         WorkspaceMemberFactory(workspace=workspace, user=user2, added_by=added_by, is_active=True)
         WorkspaceMemberFactory(workspace=workspace, user=user1, added_by=added_by, is_active=False)

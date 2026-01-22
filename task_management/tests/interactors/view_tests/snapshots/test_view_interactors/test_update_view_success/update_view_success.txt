@@ -1,1 +1,1 @@
-ViewDTO(view_id='b52f6009-76c0-4651-b361-c49764e0dab3', name='now', description='Throughout region again debate take.', view_type='board', created_by='ca6cb87c-dfb8-4708-91d2-125a95e19cb6')
+ViewDTO(view_id='2e42facd-1505-46ec-9dd4-d20b42ddaae0', name='soon', description='Must door local various however become southern.', view_type='board', created_by='843f58b3-4a9f-4442-9b8c-06788df534e4')

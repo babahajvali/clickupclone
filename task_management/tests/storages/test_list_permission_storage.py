@@ -13,9 +13,10 @@ class TestListPermissionStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by, permission_type="view")
         storage = ListPermissionStorage()
 
@@ -33,10 +34,13 @@ class TestListPermissionStorage:
     def test_get_list_permissions_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
+        user_id1 = "12345678-1234-5678-1234-567812345679"
+        user_id2 = "12345678-1234-5678-1234-567812345680"
+        added_by_id = "12345678-1234-5678-1234-567812345681"
         list_obj = ListFactory(list_id=list_id)
-        user1 = UserFactory()
-        user2 = UserFactory()
-        added_by = UserFactory()
+        user1 = UserFactory(user_id=user_id1)
+        user2 = UserFactory(user_id=user_id2)
+        added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user1, added_by=added_by, permission_type="view")
         ListPermissionFactory(list=list_obj, user=user2, added_by=added_by, permission_type="edit")
         storage = ListPermissionStorage()
@@ -65,9 +69,10 @@ class TestListPermissionStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by, permission_type="view")
         storage = ListPermissionStorage()
 
@@ -95,9 +100,10 @@ class TestListPermissionStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by, is_active=True)
         storage = ListPermissionStorage()
 

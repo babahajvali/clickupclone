@@ -13,9 +13,10 @@ class TestSpacePermissionStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         space = SpaceFactory(space_id=space_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by, permission_type="view")
         storage = SpacePermissionStorage()
 
@@ -43,9 +44,10 @@ class TestSpacePermissionStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         space = SpaceFactory(space_id=space_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by, permission_type="view")
         storage = SpacePermissionStorage()
 
@@ -64,9 +66,10 @@ class TestSpacePermissionStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
+        added_by_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         space = SpaceFactory(space_id=space_id)
-        added_by = UserFactory()
+        added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by, is_active=True)
         storage = SpacePermissionStorage()
 
@@ -80,10 +83,13 @@ class TestSpacePermissionStorage:
     def test_get_space_permissions_success(self, snapshot):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345679"
+        user_id1 = "12345678-1234-5678-1234-567812345680"
+        user_id2 = "12345678-1234-5678-1234-567812345681"
+        added_by_id = "12345678-1234-5678-1234-567812345682"
         space = SpaceFactory(space_id=space_id)
-        user1 = UserFactory()
-        user2 = UserFactory()
-        added_by = UserFactory()
+        user1 = UserFactory(user_id=user_id1)
+        user2 = UserFactory(user_id=user_id2)
+        added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user1, space=space, added_by=added_by, permission_type="view", is_active=True)
         SpacePermissionFactory(user=user2, space=space, added_by=added_by, permission_type="edit", is_active=True)
         SpacePermissionFactory(user=user1, space=space, added_by=added_by, permission_type="admin", is_active=False)

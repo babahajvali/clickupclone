@@ -1,1 +1,1 @@
-FolderDTO(folder_id='b6e355f6-95bb-440d-89cd-4af97d161f29', name='respond', description='Institution happy write end since.', space_id='1d7173e5-5bc7-4deb-b123-4efe6e648043', order=1, is_active=True, created_by='da54f267-dd13-4266-926d-53961058fe8c', is_private=False)
+FolderDTO(folder_id='e6069a56-40cf-45b6-bd00-cf89739a4023', name='message', description='Adult career smile still can can interview.', space_id='4e709341-0209-4d76-bca0-522d79e5068e', order=1, is_active=True, created_by='0b0a4dd4-cbfc-400c-b2b3-a6457bde1268', is_private=False)
