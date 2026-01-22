@@ -85,6 +85,7 @@ class TestUpdateFieldInteractor:
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
         permission_storage = create_autospec(ListPermissionStorageInterface)
+        list_storage = create_autospec(ListPermissionStorageInterface)
 
         field_storage.is_field_exists.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
@@ -106,6 +107,7 @@ class TestUpdateFieldInteractor:
             field_storage=field_storage,
             permission_storage=permission_storage,
             template_storage=template_storage,
+            list_storage=list_storage,
         )
 
     @staticmethod

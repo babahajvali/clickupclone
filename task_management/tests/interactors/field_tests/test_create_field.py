@@ -69,6 +69,7 @@ class TestCreateFieldInteractor:
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
         permission_storage = create_autospec(ListPermissionStorageInterface)
+        list_storage = create_autospec(ListPermissionStorageInterface)
 
         # template mock
         if template_exists:
@@ -93,6 +94,7 @@ class TestCreateFieldInteractor:
             field_storage=field_storage,
             template_storage=template_storage,
             permission_storage=permission_storage,
+            list_storage=list_storage
         )
 
     def test_create_field_success(self, snapshot):

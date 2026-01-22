@@ -1,11 +1,15 @@
 import pytest
 from unittest.mock import create_autospec
 
+from task_management.exceptions.custom_exceptions import \
+    TemplateNotFoundException
 from task_management.interactors.field_interactors.field_interactors import \
     FieldInteractor
 from task_management.interactors.storage_interface.field_storage_interface import FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import TemplateStorageInterface
 from task_management.tests.factories.interactor_factory import FieldDTOFactory
 
@@ -16,14 +20,17 @@ class TestGetFieldForTemplateInteractor:
         self.field_storage = create_autospec(FieldStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.list_storage = create_autospec(ListStorageInterface)
         
         self.interactor = FieldInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
-            permission_storage=self.permission_storage
+            permission_storage=self.permission_storage,
+            list_storage=self.list_storage
         )
 
     def test_get_fields_for_template_success(self, snapshot):
+        list_id = "list-123"
         template_id = "template-123"
 
         expected_fields = [
@@ -44,14 +51,20 @@ class TestGetFieldForTemplateInteractor:
 
     def test_get_fields_for_template_not_found(self, snapshot):
         template_id = "non-existent-template"
+        list_id = "list-123"
+
+        self.interactor.validate_list_is_active.return_value = True
+
+        self.list_storage.get_template_id_by_list_id.return_value = template_id
 
         self.template_storage.get_template_by_id.return_value = False
 
-        with pytest.raises(Exception) as exc:
-            self.interactor.get_fields_for_template(template_id)
+        with pytest.raises(TemplateNotFoundException) as exc:
+            self.interactor.get_fields_for_template(list_id=list_id)
 
         snapshot.assert_match(
-            repr(exc.value),
+            exc.value.template_id,
             "template_not_found.txt"
         )
+
 

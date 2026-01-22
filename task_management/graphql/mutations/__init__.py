@@ -18,6 +18,8 @@ from task_management.graphql.mutations.field.delete_field_mutation import \
     DeleteFieldMutation
 from task_management.graphql.mutations.field.reorder_field_mutation import \
     ReorderFieldMutation
+from task_management.graphql.mutations.field.set_field_value_mutation import \
+    SetFieldValueMutation
 from task_management.graphql.mutations.field.update_field_mutation import \
     UpdateFieldMutation
 from task_management.graphql.mutations.folder.create_folder_mutation import \
@@ -285,3 +287,7 @@ class ChangeAccountMemberRole(graphene.ObjectType):
 
 class RemoveAccountMember(graphene.ObjectType):
     remove_account_member = RemoveAccountMemberMutation.Field(required=True)
+
+
+class UpdateFieldValue(graphene.ObjectType):
+    update_field_value = SetFieldValueMutation.Field(required=True)

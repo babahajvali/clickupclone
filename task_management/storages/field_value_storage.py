@@ -9,17 +9,17 @@ class FieldValueStorage(FieldValueStorageInterface):
 
     def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> \
             TaskFieldValueDTO:
-        field_value_data = FieldValue.objects.get(
+        field_value_data_obj = FieldValue.objects.get(
             task_id=field_value_data.task_id,
             field_id=field_value_data.field_id)
-        field_value_data.value = field_value_data.value
-        field_value_data.save()
+        field_value_data_obj.value = field_value_data.value
+        field_value_data_obj.save()
 
         return TaskFieldValueDTO(
-            id=field_value_data.pk,
-            task_id=field_value_data.task.task_id,
-            field_id=field_value_data.field.field_id,
-            value=field_value_data.value,
+            id=field_value_data_obj.pk,
+            task_id=field_value_data_obj.task.task_id,
+            field_id=field_value_data_obj.field.field_id,
+            value=field_value_data_obj.value,
         )
 
     def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
@@ -30,7 +30,9 @@ class FieldValueStorage(FieldValueStorageInterface):
 
         task_values_map = {}
         for fv in field_values:
-            task_id = fv.task.task_id
+            if fv.value is None:
+                continue
+            task_id = str(fv.task.task_id)
             if task_id not in task_values_map:
                 task_values_map[task_id] = []
 
@@ -40,7 +42,6 @@ class FieldValueStorage(FieldValueStorageInterface):
                     value=fv.value
                 )
             )
-
         result = []
         for task_id in task_ids:
             result.append(
@@ -49,7 +50,6 @@ class FieldValueStorage(FieldValueStorageInterface):
                     values=task_values_map.get(task_id, [])
                 )
             )
-
         return result
 
     def create_bulk_field_values(self,

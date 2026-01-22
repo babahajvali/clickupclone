@@ -185,3 +185,21 @@ class ListViewType(graphene.ObjectType):
 
 class ListViewsType(graphene.ObjectType):
     list_views = graphene.List(ListViewType)
+
+
+class FieldValueType(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    task_id = graphene.String(required=True)
+    field_id = graphene.String(required=True)
+    value = graphene.String(required=True)
+
+class FieldValuesType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+    value = graphene.String(required=True)
+
+class TaskFieldValuesType(graphene.ObjectType):
+    task_id=graphene.String(required=True)
+    values = graphene.List(FieldValuesType,required=True)
+
+class TasksValuesType(graphene.ObjectType):
+    task_values = graphene.List(TaskFieldValuesType)

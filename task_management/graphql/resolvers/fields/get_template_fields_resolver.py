@@ -5,25 +5,28 @@ from task_management.graphql.types.types import FieldType, FieldsType
 from task_management.interactors.field_interactors.field_interactors import \
     FieldInteractor
 from task_management.storages.field_storage import FieldStorage
+from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
 from task_management.storages.list_permission_storage import ListPermissionStorage
 
 
 def get_fields_for_template_resolver(root, info, params):
-    template_id = params.template_id
+    list_id = params.list_id
 
     field_storage = FieldStorage()
     template_storage = TemplateStorage()
     permission_storage = ListPermissionStorage()
+    list_storage = ListStorage()
 
     interactor = FieldInteractor(
         field_storage=field_storage,
         template_storage=template_storage,
-        permission_storage=permission_storage
+        permission_storage=permission_storage,
+        list_storage=list_storage,
     )
 
     try:
-        fields_data = interactor.get_fields_for_template(template_id=template_id)
+        fields_data = interactor.get_fields_for_template(list_id=list_id)
 
         fields_output = [
             FieldType(
@@ -34,6 +37,7 @@ def get_fields_for_template_resolver(root, info, params):
                 field_name=field.field_name,
                 order=field.order,
                 config=field.config,
+                is_active=field.is_active,
                 is_required=field.is_required,
                 created_by=field.created_by
             ) for field in fields_data

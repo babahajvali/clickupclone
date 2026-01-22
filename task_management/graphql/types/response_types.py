@@ -10,22 +10,21 @@ from task_management.graphql.types.error_types import \
     WorkspaceNotFoundType, UnsupportedFieldTypeType, \
     FieldNameAlreadyExistsType, ModificationNotAllowedType, \
     InvalidFieldConfigType, InvalidFieldDefaultValueType, \
-    TemplateNameAlreadyExistsType, \
     DeletedTaskType, InactiveListType, InactiveSpaceType, \
     InactiveFolderType, ViewTypeNotFoundType, InactiveWorkspaceType, \
-    UserNotWorkspaceOwnerType, UnexpectedRoleType, \
-    UserDoesNotHaveListPermissionType, NotExistedEmailFoundType, \
+    UserNotWorkspaceOwnerType, UnexpectedRoleType, NotExistedEmailFoundType, \
     WrongPasswordFoundType, InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffsetNumberType, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotExistedType, \
     AccountMemberNotFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
-    FieldType, TemplateType, TaskType, ListType, ViewType, FolderType, \
+    FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
     UserFolderPermissionType, UserListPermissionType, AccountMemberType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
-    ListViewsType, WorkspaceMembersType
+    ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
+    FieldValueType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -704,3 +703,15 @@ class GetUserWorkspacesResponse(graphene.Union):
             WorkspaceMembersType,
             UserNotFoundType
         )
+
+
+class GetTaskFieldValuesResponse(graphene.Union):
+    class Meta:
+        types = (TasksValuesType,
+                 )
+
+
+class SetTaskFieldValueResponse(graphene.Union):
+    class Meta:
+        types = (FieldValueType,
+                 ModificationNotAllowedType)

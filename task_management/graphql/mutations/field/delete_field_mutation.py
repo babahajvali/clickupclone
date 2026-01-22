@@ -9,6 +9,7 @@ from task_management.graphql.types.types import FieldType
 from task_management.interactors.field_interactors.field_interactors import \
     FieldInteractor
 from task_management.storages.field_storage import FieldStorage
+from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
 from task_management.storages.list_permission_storage import ListPermissionStorage
 
@@ -25,10 +26,13 @@ class DeleteFieldMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         permission_storage = ListPermissionStorage()
 
+        list_storage = ListStorage()
+
         interactor = FieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            permission_storage=permission_storage
+            permission_storage=permission_storage,
+            list_storage=list_storage
         )
 
         try:

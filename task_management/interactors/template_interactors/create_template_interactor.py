@@ -45,7 +45,8 @@ class CreateTemplateInteractor(ValidationMixin):
         create_field_interactor = FieldInteractor(
             template_storage=self.template_storage,
             permission_storage=self.permission_storage,
-            field_storage=self.field_storage)
+            field_storage=self.field_storage,
+            list_storage=self.list_storage,)
         for field in FIXED_FIELDS:
             create_field_dto = CreateFieldDTO(
                 field_type=field["field_type"],

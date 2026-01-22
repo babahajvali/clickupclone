@@ -357,7 +357,7 @@ class DeleteFieldInputParams(graphene.InputObjectType):
 
 
 class GetFieldsForTemplateInputParams(graphene.InputObjectType):
-    template_id = graphene.String(required=True)
+    list_id = graphene.String(required=True)
 
 
 class GetFieldInputParams(graphene.InputObjectType):
@@ -391,4 +391,14 @@ class RemoveAccountMemberInputParams(graphene.InputObjectType):
     removed_by = graphene.String(required=True)
 
 class GetUserWorkspacesInputParams(graphene.InputObjectType):
+    user_id = graphene.String(required=True)
+
+class GetTaskFieldValuesInputParams(graphene.InputObjectType):
+    task_ids = graphene.List(graphene.String,required=True)
+
+
+class SetFieldValuesInputParams(graphene.InputObjectType):
+    task_id = graphene.String(required=True)
+    field_id = graphene.String(required=True)
+    value = graphene.String(required=True)
     user_id = graphene.String(required=True)

@@ -101,13 +101,6 @@ class TemplateDTO:
 
 FIXED_FIELDS = [
     {
-        "field_type": FieldType.TEXT.value,
-        "field_name": "Title",
-        "description": "Task title",
-        "config": {"max_length": 255},
-        "is_required": True
-    },
-    {
         "field_type": FieldType.USER.value,
         "field_name": "Assignee",
         "description": "task Assignees"

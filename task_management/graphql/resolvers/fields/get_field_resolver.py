@@ -6,6 +6,7 @@ from task_management.interactors.field_interactors.field_interactors import \
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_permission_storage import \
     ListPermissionStorage
+from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
 
 
@@ -15,11 +16,13 @@ def get_field_resolver(root, info, params):
     field_storage = FieldStorage()
     template_storage = TemplateStorage()
     permission_storage = ListPermissionStorage()
+    list_storage = ListStorage()
 
     interactor = FieldInteractor(
         field_storage=field_storage,
         template_storage=template_storage,
-        permission_storage=permission_storage
+        permission_storage=permission_storage,
+        list_storage=list_storage
     )
 
     try:

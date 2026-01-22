@@ -12,7 +12,7 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveUserException, UserNotWorkspaceOwnerException, \
     InactiveWorkspaceMemberException, AccountNotFoundException, \
     InactiveAccountException, UnexpectedRoleException, \
-    UnsupportedVisibilityTypeException
+    UnsupportedVisibilityTypeException, FieldNotFoundException
 from task_management.exceptions.enums import PermissionsEnum, FieldType, \
     ViewTypeEnum, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -405,3 +405,10 @@ class ValidationMixin:
 
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)
+
+    @staticmethod
+    def validate_field(field_id: str,field_storage: FieldStorageInterface):
+        is_exist = field_storage.is_field_exists(field_id=field_id)
+
+        if not is_exist:
+            raise FieldNotFoundException(field_id=field_id)
