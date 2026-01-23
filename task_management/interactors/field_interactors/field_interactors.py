@@ -10,7 +10,8 @@ from task_management.interactors.storage_interface.list_storage_interface import
     ListStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.interactors.validation_mixin import ValidationMixin, \
+    interactor_cache, invalidate_interactor_cache
 
 
 class FieldInteractor(ValidationMixin):
@@ -24,6 +25,7 @@ class FieldInteractor(ValidationMixin):
         self.permission_storage = permission_storage
         self.list_storage = list_storage
 
+    @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
         list_id = self.get_template_list_id(
             template_id=create_field_data.template_id,
@@ -44,6 +46,7 @@ class FieldInteractor(ValidationMixin):
         return self.field_storage.create_field(
             create_field_data=create_field_data)
 
+    @invalidate_interactor_cache(cache_name="fields")
     def update_field(self, update_field_data: UpdateFieldDTO,
                      user_id: str) -> FieldDTO:
         self.validate_field(field_id=update_field_data.field_id,
@@ -66,6 +69,7 @@ class FieldInteractor(ValidationMixin):
         return self.field_storage.update_field(
             update_field_data=update_field_data)
 
+    @invalidate_interactor_cache(cache_name="fields")
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> FieldDTO:
         self._validate_field_order(template_id=template_id, order=new_order)
@@ -80,6 +84,7 @@ class FieldInteractor(ValidationMixin):
                                                  template_id=template_id,
                                                  new_order=new_order)
 
+    @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
         self.validate_field(field_id=field_id,field_storage=self.field_storage)
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
@@ -92,6 +97,7 @@ class FieldInteractor(ValidationMixin):
 
         return self.field_storage.delete_field(field_id=field_id)
 
+    @interactor_cache(cache_name="fields",timeout=5*60)
     def get_fields_for_template(self, list_id: str) -> list[FieldDTO]:
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)

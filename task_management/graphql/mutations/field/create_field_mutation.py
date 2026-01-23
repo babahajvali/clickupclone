@@ -51,7 +51,7 @@ class CreateFieldMutation(graphene.Mutation):
 
             return FieldType(
                 field_id=result.field_id,
-                field_type=result.field_type.value,
+                field_type=result.field_type,
                 description=result.description,
                 template_id=result.template_id,
                 field_name=result.field_name,

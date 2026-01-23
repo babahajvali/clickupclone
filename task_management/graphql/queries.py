@@ -26,6 +26,8 @@ from task_management.graphql.resolvers.task.get_task_assignees_resolver import \
     get_task_assignees_resolver
 from task_management.graphql.resolvers.task.get_task_resolver import \
     get_task_resolver
+from task_management.graphql.resolvers.task.get_user_tasks_resolver import \
+    get_user_tasks_resolver
 from task_management.graphql.resolvers.task.task_filter_resolver import \
     task_filter_resolver
 from task_management.graphql.resolvers.user.get_user_resolver import \
@@ -36,6 +38,8 @@ from task_management.graphql.resolvers.views.get_views_resolver import \
     get_all_views_resolver
 from task_management.graphql.resolvers.workspace.get_user_workspaces import \
     get_user_workspace_resolver
+from task_management.graphql.resolvers.workspace.get_workspace_members_resolver import \
+    get_workspace_members_resolver
 from task_management.graphql.resolvers.workspace.get_workspace_resolver import \
     get_workspace_resolver
 from task_management.graphql.types.input_types import \
@@ -46,7 +50,8 @@ from task_management.graphql.types.input_types import \
     GetListTasksInputParams, GetTaskInputParams, TaskFilterInputParams, \
     GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
     GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams, \
-    GetTaskFieldValuesInputParams
+    GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
+    GetUserTasksInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \
@@ -54,7 +59,7 @@ from task_management.graphql.types.response_types import \
     GetListTasksResponse, GetTaskResponse, TaskFilterResponse, \
     GetTaskAssigneesResponse, GetViewsResponse, GetFieldsForTemplateResponse, \
     GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse, \
-    GetTaskFieldValuesResponse
+    GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, GetUserTasksResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -193,4 +198,18 @@ class GetTaskValues(graphene.ObjectType):
         GetTaskFieldValuesResponse,
         params=GetTaskFieldValuesInputParams(required=True),
         resolver=get_task_field_values_resolver
+    )
+
+class GetWorkspaceMembers(graphene.ObjectType):
+    get_workspace_members = graphene.Field(
+        GetWorkspaceUsersResponse,
+        params=GetWorkspaceMemberInputParams(required=True),
+        resolver=get_workspace_members_resolver
+    )
+
+class GetUserTasks(graphene.ObjectType):
+    get_user_tasks = graphene.Field(
+        GetUserTasksResponse,
+        params=GetUserTasksInputParams(required=True),
+        resolver=get_user_tasks_resolver
     )

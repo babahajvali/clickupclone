@@ -59,7 +59,7 @@ class TaskAssigneeInteractor(ValidationMixin):
 
         return self.task_assignee_storage.get_task_assignees(task_id=task_id)
 
-    def get_user_assigned_tasks(self, user_id: str) -> list[UserTasksDTO]:
+    def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
         self.validate_user_is_active(user_id=user_id,
                                      user_storage=self.user_storage)
 

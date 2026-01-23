@@ -13,7 +13,8 @@ from task_management.interactors.storage_interface.task_field_values_storage_int
     FieldValueStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.interactors.validation_mixin import ValidationMixin, \
+    interactor_cache, invalidate_interactor_cache
 
 
 class TaskInteractor(ValidationMixin):
@@ -28,6 +29,7 @@ class TaskInteractor(ValidationMixin):
         self.field_storage = field_storage
         self.field_value_storage = field_value_storage
 
+    @invalidate_interactor_cache(cache_name="tasks")
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         self.validate_list_is_active(list_id=task_data.list_id,
                                      list_storage=self.list_storage)
@@ -42,6 +44,7 @@ class TaskInteractor(ValidationMixin):
 
         return result
 
+    @invalidate_interactor_cache(cache_name="tasks")
     def update_task(self, update_task_data: UpdateTaskDTO,
                     user_id: str) -> TaskDTO:
         list_id = self.get_active_task_list_id(
@@ -56,6 +59,7 @@ class TaskInteractor(ValidationMixin):
 
         return self.task_storage.update_task(update_task_data=update_task_data)
 
+    @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)
@@ -65,6 +69,7 @@ class TaskInteractor(ValidationMixin):
 
         return self.task_storage.remove_task(task_id=task_id)
 
+    @interactor_cache(cache_name="tasks",timeout=5 * 60)
     def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)

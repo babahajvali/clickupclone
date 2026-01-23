@@ -10,7 +10,8 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.interactors.validation_mixin import ValidationMixin, \
+    interactor_cache, invalidate_interactor_cache
 
 
 class FolderInteractor(ValidationMixin):
@@ -24,6 +25,7 @@ class FolderInteractor(ValidationMixin):
         self.space_permission_storage = space_permission_storage
         self.space_storage = space_storage
 
+    @invalidate_interactor_cache(cache_name="folders")
     def create_folder(self, create_folder_data: CreateFolderDTO) -> FolderDTO:
         self.validate_user_has_access_to_space(
             user_id=create_folder_data.created_by,
@@ -41,6 +43,7 @@ class FolderInteractor(ValidationMixin):
                                               created_by=result.created_by)
         return result
 
+    @invalidate_interactor_cache(cache_name="folders")
     def update_folder(self, update_folder_data: UpdateFolderDTO,
                       user_id: str) -> FolderDTO:
         self.validate_user_has_access_to_folder(
@@ -59,6 +62,7 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_storage.update_folder(update_folder_data)
 
+    @invalidate_interactor_cache(cache_name="folders")
     def reorder_folder(self, space_id: str, folder_id: str, user_id: str,
                        order: int) -> FolderDTO:
         self.validate_folder_is_active(folder_id=folder_id,
@@ -71,6 +75,7 @@ class FolderInteractor(ValidationMixin):
         return self.folder_storage.reorder_folder(folder_id=folder_id,
                                                   new_order=order)
 
+    @invalidate_interactor_cache(cache_name="folders")
     def remove_folder(self, folder_id: str, user_id: str) -> FolderDTO:
         self.validate_user_has_access_to_folder(
             user_id=user_id, folder_id=folder_id,
@@ -80,6 +85,7 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_storage.remove_folder(folder_id)
 
+    @invalidate_interactor_cache(cache_name="folders")
     def set_folder_visibility(self, folder_id: str, user_id: str,
                               visibility: Visibility) -> FolderDTO:
         self.validate_user_has_access_to_folder(
@@ -93,6 +99,7 @@ class FolderInteractor(ValidationMixin):
 
         return self.folder_storage.set_folder_private(folder_id=folder_id)
 
+    @interactor_cache(cache_name="folders",timeout=5*60)
     def get_space_folders(self, space_id: str) -> list[FolderDTO]:
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)

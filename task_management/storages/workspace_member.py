@@ -2,6 +2,7 @@ from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
+from task_management.interactors.validation_mixin import interactor_cache
 from task_management.models import Workspace, User, WorkspaceMember
 
 
@@ -75,6 +76,7 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
         return [self._workspace_member_dto(data=each) for each in
                 workspace_members]
 
+    @interactor_cache(cache_name="workspace_users",timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
         user_workspaces = WorkspaceMember.objects.filter(

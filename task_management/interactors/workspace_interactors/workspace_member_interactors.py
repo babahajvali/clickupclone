@@ -20,7 +20,8 @@ from task_management.interactors.storage_interface.workspace_member_storage_inte
     WorkspaceMemberStorageInterface
 from task_management.interactors.storage_interface.workspace_storage_interface import \
     WorkspaceStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.interactors.validation_mixin import ValidationMixin, \
+    interactor_cache, invalidate_interactor_cache
 
 
 class WorkspaceMemberInteractor(ValidationMixin):
@@ -45,6 +46,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
         self.folder_storage = folder_storage
         self.list_storage = list_storage
 
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
         existed_member = self.workspace_member_storage.get_workspace_member(
@@ -78,6 +80,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         return workspace_member
 
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def remove_member_from_workspace(self, workspace_member_id: int,
                                      removed_by: str) -> WorkspaceMemberDTO:
         self.validate_workspace_member_is_active(
@@ -101,6 +104,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
 
         return workspace_member
 
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def change_member_role(
             self, workspace_id: str, user_id: str, role: str,
             changed_by: str) -> WorkspaceMemberDTO:
@@ -303,6 +307,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
                 permission_type=permission_type
             )
 
+    @interactor_cache(cache_name="user_workspaces",timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
         return self.workspace_member_storage.get_user_workspaces(

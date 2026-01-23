@@ -16,13 +16,14 @@ from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
-    GetUserWorkspaces, GetTaskValues
+    GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
                  GetSpaceLists, GetTaskFilters, GetTask, GetListTasks,
                  GetTaskAssignees, GetViews, GetTemplateFields, GetField,
-                 GetListViews, GetUserWorkspaces,GetTaskValues]
+                 GetListViews, GetUserWorkspaces, GetTaskValues,
+                 GetWorkspaceMembers,GetUserTasks]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,
@@ -37,7 +38,7 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     RemoveTaskAssignee, UpdateView, UpdateField, CreateField,
                     DeleteField, ReorderField, ApplyListView, RemoveListView,
                     AddAccountMember, ChangeAccountMemberRole,
-                    RemoveAccountMember,UpdateFieldValue]
+                    RemoveAccountMember, UpdateFieldValue]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

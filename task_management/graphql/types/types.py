@@ -203,3 +203,23 @@ class TaskFieldValuesType(graphene.ObjectType):
 
 class TasksValuesType(graphene.ObjectType):
     task_values = graphene.List(TaskFieldValuesType)
+
+class WorkspaceUserType(graphene.ObjectType):
+    id = graphene.Int(required=True)
+    workspace_id = graphene.String(required=True)
+    is_active = graphene.Boolean(required=True)
+    role = graphene.String(required=True)
+    added_by = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+    full_name = graphene.String(required=True)
+    email = graphene.String(required=True)
+    image_url = graphene.String()
+
+
+class WorkspaceUsersType(graphene.ObjectType):
+    workspace_users = graphene.List(WorkspaceUserType)
+
+
+class GetUserTaskType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+    tasks = graphene.List(TaskType)

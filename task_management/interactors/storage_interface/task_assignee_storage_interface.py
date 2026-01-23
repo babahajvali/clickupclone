@@ -24,7 +24,7 @@ class TaskAssigneeStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_assigned_tasks(self, user_id: str) -> list[UserTasksDTO]:
+    def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
         # get tasks only active tasks
         pass
 

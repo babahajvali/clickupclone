@@ -101,11 +101,6 @@ class TemplateDTO:
 
 FIXED_FIELDS = [
     {
-        "field_type": FieldType.USER.value,
-        "field_name": "Assignee",
-        "description": "task Assignees"
-    },
-    {
         "field_type": FieldType.DATE.value,
         "field_name": "Due Date",
         "description": "Due date for complete task",

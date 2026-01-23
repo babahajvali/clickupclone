@@ -402,3 +402,9 @@ class SetFieldValuesInputParams(graphene.InputObjectType):
     field_id = graphene.String(required=True)
     value = graphene.String(required=True)
     user_id = graphene.String(required=True)
+
+class GetWorkspaceMemberInputParams(graphene.InputObjectType):
+    workspace_id = graphene.String(required=True)
+
+class GetUserTasksInputParams(graphene.InputObjectType):
+    user_id = graphene.String(required=True)

@@ -24,7 +24,7 @@ from task_management.graphql.types.types import AccountType, UserType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
     ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
-    FieldValueType
+    FieldValueType, WorkspaceUsersType, GetUserTaskType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -715,3 +715,14 @@ class SetTaskFieldValueResponse(graphene.Union):
     class Meta:
         types = (FieldValueType,
                  ModificationNotAllowedType)
+
+class GetWorkspaceUsersResponse(graphene.Union):
+    class Meta:
+        types = (WorkspaceUsersType,)
+
+
+class GetUserTasksResponse(graphene.Union):
+    class Meta:
+        types = (GetUserTaskType,
+                 InactiveUserType,
+                 UserNotFoundType)
