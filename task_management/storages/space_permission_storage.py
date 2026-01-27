@@ -10,6 +10,7 @@ class SpacePermissionStorage(SpacePermissionStorageInterface):
 
     @staticmethod
     def _to_dto(permission: SpacePermission) -> UserSpacePermissionDTO:
+        permission_type = PermissionsEnum(permission.permission_type)
         return UserSpacePermissionDTO(
             id=permission.pk,
             space_id=str(permission.space.space_id),

@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from typing import Optional, Dict
 
-from task_management.exceptions.enums import ViewTypeEnum, FieldType, \
+from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
     GenderEnum, Role, PermissionsEnum
 
 
@@ -43,7 +43,7 @@ class CreateUserDTO:
 
 @dataclass
 class CreateFieldDTO:
-    field_type: FieldType
+    field_type: FieldTypeEnum
     field_name: str
     description: str
     template_id: str
@@ -64,7 +64,7 @@ class UpdateFieldDTO:
 @dataclass
 class FieldDTO:
     field_id: str
-    field_type: FieldType
+    field_type: FieldTypeEnum
     description: str
     template_id: str
     field_name: str
@@ -101,12 +101,12 @@ class TemplateDTO:
 
 FIXED_FIELDS = [
     {
-        "field_type": FieldType.DATE.value,
+        "field_type": FieldTypeEnum.DATE.value,
         "field_name": "Due Date",
         "description": "Due date for complete task",
     },
     {
-        "field_type": FieldType.DROPDOWN.value,
+        "field_type": FieldTypeEnum.DROPDOWN.value,
         "field_name": "Priority",
         "config": {
             "options": ["Low", "Medium", "High"],
@@ -114,7 +114,7 @@ FIXED_FIELDS = [
         }
     },
     {
-        "field_type": FieldType.DROPDOWN.value,
+        "field_type": FieldTypeEnum.DROPDOWN.value,
         "field_name": "Status",
         "config": {
             "options": ["Todo", "In Progress", "Done"],

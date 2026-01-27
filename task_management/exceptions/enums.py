@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class FieldType(Enum):
+class FieldTypeEnum(Enum):
     DROPDOWN = "dropdown"
     USER = "user"
     TEXT = "text"

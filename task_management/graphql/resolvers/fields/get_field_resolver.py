@@ -30,7 +30,7 @@ def get_field_resolver(root, info, params):
 
         return FieldType(
             field_id=field_data.field_id,
-            field_type=field_data.field_type,
+            field_type=field_data.field_type.value,
             description=field_data.description,
             template_id=field_data.template_id,
             field_name=field_data.field_name,

@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -59,10 +59,11 @@ class TestGetSpaceLists:
         snapshot.assert_match(repr(result), "get_space_lists_success.json")
 
     def test_space_not_found(self, snapshot):
-        self.interactor.space_storage.get_space.return_value = None
+        with patch("django.core.cache.cache.get", return_value=None):
+            self.interactor.space_storage.get_space.return_value = None
 
-        with pytest.raises(SpaceNotFoundException) as exc:
-            self.interactor.get_space_lists("space_1")
+            with pytest.raises(SpaceNotFoundException) as exc:
+                self.interactor.get_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 

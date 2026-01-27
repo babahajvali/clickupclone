@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldType, PermissionsEnum
+from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
 from task_management.interactors.dtos import (
     FieldDTO,
     UserListPermissionDTO,
@@ -64,7 +64,7 @@ class TestUpdateFieldInteractor:
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldType.TEXT.value,
+            field_type=FieldTypeEnum.TEXT.value,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",

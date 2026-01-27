@@ -11,6 +11,7 @@ class AccountMemberStorage(AccountMemberStorageInterface):
     @staticmethod
     def _account_member_dto(
             account_member_data: AccountMember) -> AccountMemberDTO:
+
         return AccountMemberDTO(
             id=account_member_data.pk,
             account_id=account_member_data.account.account_id,
@@ -51,7 +52,7 @@ class AccountMemberStorage(AccountMemberStorageInterface):
     def update_member_role(
             self, account_member_id: int, role: Role) -> AccountMemberDTO:
         account_member_data = AccountMember.objects.get(pk=account_member_id)
-        account_member_data.role = role
+        account_member_data.role = role.value
         account_member_data.save()
 
         return self._account_member_dto(

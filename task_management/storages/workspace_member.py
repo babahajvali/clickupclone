@@ -1,3 +1,4 @@
+from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
@@ -10,11 +11,12 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
 
     @staticmethod
     def _workspace_member_dto(data: WorkspaceMember) -> WorkspaceMemberDTO:
+        role = Role(data.role)
         return WorkspaceMemberDTO(
             id=data.pk,
             workspace_id=data.workspace.workspace_id,
             user_id=data.user.user_id,
-            role=data.role,
+            role=role,
             added_by=data.added_by.user_id,
             is_active=data.is_active,
         )

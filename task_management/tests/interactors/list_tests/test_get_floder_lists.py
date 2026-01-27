@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -72,26 +72,24 @@ class TestGetFolderLists:
             "get_folder_lists_success.json"
         )
 
-    # ❌ FOLDER NOT FOUND
     def test_folder_not_found(self, snapshot):
-        self.folder_storage.get_folder.return_value = None
-
-        with pytest.raises(FolderNotFoundException) as exc:
-            self.interactor.get_folder_lists("folder_1")
+        with patch("django.core.cache.cache.get", return_value=None):
+            self.interactor.folder_storage.get_folder.return_value = None
+            with pytest.raises(FolderNotFoundException) as exc:
+                self.interactor.get_folder_lists("folder_1")
 
         snapshot.assert_match(
             repr(exc.value),
             "folder_not_found.txt"
         )
 
-    # ❌ FOLDER INACTIVE
     def test_folder_inactive(self, snapshot):
-        self.folder_storage.get_folder.return_value = type(
-            "Folder", (), {"is_active": False}
-        )()
-
-        with pytest.raises(InactiveFolderException) as exc:
-            self.interactor.get_folder_lists("folder_1")
+        with patch("django.core.cache.cache.get", return_value=None):
+            self.interactor.folder_storage.get_folder.return_value = type(
+                "Folder", (), {"is_active": False}
+            )()
+            with pytest.raises(InactiveFolderException) as exc:
+                self.interactor.get_folder_lists("folder_1")
 
         snapshot.assert_match(
             repr(exc.value),

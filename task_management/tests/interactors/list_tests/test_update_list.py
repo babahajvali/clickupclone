@@ -72,8 +72,8 @@ class TestUpdateList:
             make_permission(PermissionsEnum.FULL_EDIT.value)
         )
 
-        self.interactor.space_storage.get_space.return_value = type("Space",(),{
-        "is_active": True,},)()
+        self.interactor.space_storage.get_space.return_value = type("Space", (), {
+        "is_active": True,}, )()
         self.interactor.list_storage.get_folder_lists_count.return_value = 100
         self.interactor.list_storage.update_list.return_value = "UPDATED_LIST_DTO"
 

@@ -107,10 +107,9 @@ class AccountMemberInteractor(ValidationMixin):
 
         result = self.account_member_storage.update_member_role(
             account_member_id=account_member_id, role=role)
-
         self._update_member_role_in_workspaces(
             account_id=result.account_id, user_id=result.user_id,
-            changed_by=changed_by, new_role=result.role)
+            changed_by=changed_by, new_role=Role(result.role))
 
         return result
 

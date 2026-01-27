@@ -209,6 +209,7 @@ class WorkspaceUserType(graphene.ObjectType):
     workspace_id = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
     role = graphene.String(required=True)
+    gender = graphene.String(required=True)
     added_by = graphene.String(required=True)
     user_id = graphene.String(required=True)
     full_name = graphene.String(required=True)

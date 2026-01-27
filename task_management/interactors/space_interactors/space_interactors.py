@@ -109,7 +109,7 @@ class SpaceInteractor(ValidationMixin):
 
         return self.space_storage.set_space_private(space_id=space_id)
 
-    @interactor_cache(cache_name="spaces",timeout=5 * 60)
+    @interactor_cache(cache_name="spaces",timeout=30 * 60)
     def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
         self.validate_workspace_is_active(workspace_id=workspace_id,
                                           workspace_storage=self.workspace_storage)

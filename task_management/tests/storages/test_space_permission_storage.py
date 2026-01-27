@@ -91,7 +91,7 @@ class TestSpacePermissionStorage:
         user2 = UserFactory(user_id=user_id2)
         added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user1, space=space, added_by=added_by, permission_type="view", is_active=True)
-        SpacePermissionFactory(user=user2, space=space, added_by=added_by, permission_type="edit", is_active=True)
+        SpacePermissionFactory(user=user2, space=space, added_by=added_by, permission_type="full_edit", is_active=True)
         SpacePermissionFactory(user=user1, space=space, added_by=added_by, permission_type="admin", is_active=False)
         storage = SpacePermissionStorage()
 
@@ -122,11 +122,11 @@ class TestSpacePermissionStorage:
         user_id_1 = "12345678-1234-5678-1234-567812345680"
         user_id_2 = "12345678-1234-5678-1234-567812345681"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        space1 = SpaceFactory(space_id=space_id_1)
-        space2 = SpaceFactory(space_id=space_id_2)
-        user1 = UserFactory(user_id=user_id_1)
-        user2 = UserFactory(user_id=user_id_2)
-        added_by = UserFactory(user_id=added_by_id)
+        SpaceFactory(space_id=space_id_1)
+        SpaceFactory(space_id=space_id_2)
+        UserFactory(user_id=user_id_1)
+        UserFactory(user_id=user_id_2)
+        UserFactory(user_id=added_by_id)
         permission_data = [
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id_1),

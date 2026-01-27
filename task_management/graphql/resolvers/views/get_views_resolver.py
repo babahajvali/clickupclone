@@ -24,7 +24,7 @@ def get_all_views_resolver(root, info):
             view_id=view.view_id,
             name=view.name,
             description=view.description,
-            view_type=view.view_type,
+            view_type=view.view_type.value,
             created_by=view.created_by
         ) for view in views_data
     ]

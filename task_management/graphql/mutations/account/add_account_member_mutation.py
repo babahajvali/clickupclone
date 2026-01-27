@@ -74,7 +74,6 @@ class CreateAccountMemberMutation(graphene.Mutation):
 
         try:
             role_enum = Role(params.role)
-            print(role_enum)
 
             account_member_dto = CreateAccountMemberDTO(
                 account_id=params.account_id,

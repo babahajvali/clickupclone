@@ -1,3 +1,5 @@
+from django.core.cache import cache
+
 from task_management.exceptions.custom_exceptions import \
     UserDoesNotHaveListPermissionException, InactiveUserPermissionException, \
     InvalidOrderException
@@ -178,7 +180,7 @@ class ListInteractor(ValidationMixin):
         return self.list_storage.get_list(list_id=list_id)
 
     # Permission section
-    @interactor_cache(5*60)
+    @interactor_cache(timeout=5*60,cache_name="list_permissions")
     def get_list_permissions(self, list_id: str) -> list[
         UserListPermissionDTO]:
         self.validate_list_is_active(list_id=list_id,
@@ -187,14 +189,15 @@ class ListInteractor(ValidationMixin):
         return self.list_permission_storage.get_list_permissions(
             list_id=list_id)
 
-    @interactor_cache(5 * 60)
+    @interactor_cache(timeout=5 * 60,cache_name="folder_lists")
     def get_folder_lists(self, folder_id: str):
         self.validate_folder_is_active(folder_id=folder_id,
                                        folder_storage=self.folder_storage)
         return self.list_storage.get_folder_lists(folder_ids=[folder_id])
 
-    @interactor_cache(5 * 60)
+    @interactor_cache(timeout=5 * 60,cache_name="space_lists")
     def get_space_lists(self, space_id: str):
+        cache.clear()
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
         return self.list_storage.get_space_lists(space_ids=[space_id])

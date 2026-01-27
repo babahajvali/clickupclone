@@ -13,7 +13,7 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveWorkspaceMemberException, AccountNotFoundException, \
     InactiveAccountException, UnexpectedRoleException, \
     UnsupportedVisibilityTypeException, FieldNotFoundException
-from task_management.exceptions.enums import PermissionsEnum, FieldType, \
+from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum, \
     ViewTypeEnum, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
@@ -94,37 +94,37 @@ def invalidate_interactor_cache(cache_name: str):
 
 
 FIELD_TYPE_RULES = {
-    FieldType.TEXT.value: {
+    FieldTypeEnum.TEXT.value: {
         "config_keys": {"max_length", "default"},
         "default_type": str,
         "default_required": False,
     },
-    FieldType.USER.value: {
+    FieldTypeEnum.USER.value: {
         "config_keys": {"multiple", "allow_groups"},
         "default_type": str,  # User ID as string (UUID)
         "default_required": False,
     },
-    FieldType.NUMBER.value: {
+    FieldTypeEnum.NUMBER.value: {
         "config_keys": {"min", "max", "default"},
         "default_type": (int, float),
         "default_required": False,
     },
-    FieldType.DROPDOWN.value: {
+    FieldTypeEnum.DROPDOWN.value: {
         "config_keys": {"options", "default"},
         "default_type": str,
         "default_required": False,
     },
-    FieldType.DATE.value: {
+    FieldTypeEnum.DATE.value: {
         "config_keys": set("default"),
         "default_type": str,
         "default_required": False,
     },
-    FieldType.CHECKBOX.value: {
+    FieldTypeEnum.CHECKBOX.value: {
         "config_keys": set("default"),
         "default_type": bool,
         "default_required": False,
     },
-    FieldType.EMAIL.value: {
+    FieldTypeEnum.EMAIL.value: {
         "config_keys": set("default"),
         "default_type": str,
         "default_required": False,
@@ -161,7 +161,7 @@ class ValidationMixin:
     @staticmethod
     def check_field_type(field_type: str):
 
-        field_types = [x.value for x in FieldType]
+        field_types = [x.value for x in FieldTypeEnum]
 
         if field_type not in field_types:
             raise UnsupportedFieldTypeException(field_type=field_type)
@@ -218,7 +218,7 @@ class ValidationMixin:
                 invalid_keys=list(invalid_keys)
             )
 
-        if field_type == FieldType.DROPDOWN.value:
+        if field_type == FieldTypeEnum.DROPDOWN.value:
             if "options" not in config or not config["options"]:
                 raise InvalidFieldConfigException(
                     field_type=field_type,
@@ -226,14 +226,14 @@ class ValidationMixin:
                 )
 
         if default_value is not None:
-            if field_type == FieldType.DROPDOWN.value:
+            if field_type == FieldTypeEnum.DROPDOWN.value:
                 if default_value not in config.get("options", []):
                     raise InvalidFieldDefaultValueException(
                         field_type=field_type,
                         message="Default value must be one of dropdown options"
                     )
 
-        if field_type == FieldType.NUMBER.value and default_value is not None:
+        if field_type == FieldTypeEnum.NUMBER.value and default_value is not None:
             min_val = config.get("min")
             max_val = config.get("max")
 
@@ -249,7 +249,7 @@ class ValidationMixin:
                     message=f"Default value {default_value} is greater than maximum {max_val}"
                 )
 
-        if field_type == FieldType.TEXT.value and default_value is not None:
+        if field_type == FieldTypeEnum.TEXT.value and default_value is not None:
             max_length = config.get("max_length")
 
             if max_length is not None and len(default_value) > max_length:
@@ -448,8 +448,6 @@ class ValidationMixin:
     @staticmethod
     def validate_role(role: str):
         existed_roles = [x.value for x in Role]
-        print("Baba")
-
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)
 

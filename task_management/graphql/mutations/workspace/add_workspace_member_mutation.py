@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import Role
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
     InactiveWorkspaceType, UserNotFoundType, InactiveUserType, \
     UnexpectedRoleType
@@ -61,7 +62,7 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
             workspace_member_dto = AddMemberToWorkspaceDTO(
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,
-                role=params.role,
+                role=Role(params.role),
                 added_by=params.added_by
             )
 
@@ -71,7 +72,7 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
                 id=result.id,
                 workspace_id=result.workspace_id,
                 user_id=result.user_id,
-                role=result.role,
+                role=result.role.value,
                 is_active=result.is_active,
                 added_by=result.added_by
             )

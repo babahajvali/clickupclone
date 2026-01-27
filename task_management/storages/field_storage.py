@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import F
 
+from task_management.exceptions.enums import FieldTypeEnum
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -13,11 +14,12 @@ class FieldStorage(FieldStorageInterface):
 
     @staticmethod
     def _field_dto(field_data: Field) -> FieldDTO:
+        field_type = FieldTypeEnum(field_data.field_type)
         return FieldDTO(
             field_id=field_data.field_id,
             field_name=field_data.field_name,
             description=field_data.description,
-            field_type=field_data.field_type,
+            field_type=field_type,
             template_id=field_data.template.template_id,
             is_active=field_data.is_active,
             order=field_data.order,
@@ -38,7 +40,7 @@ class FieldStorage(FieldStorageInterface):
         field_data = Field.objects.create(
             field_name=create_field_data.field_name,
             description=create_field_data.description,
-            field_type=create_field_data.field_type,
+            field_type=create_field_data.field_type.value,
             template=template,
             order=next_order,
             config=create_field_data.config,

@@ -28,7 +28,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(AccountMember)
 class AccountMemberAdmin(admin.ModelAdmin):
-    list_display = ('account', 'user', 'role', 'is_active', 'added_by',
+    list_display = ('account', 'id','user', 'role', 'is_active', 'added_by',
                     'created_at')
     list_filter = ('role', 'is_active', 'created_at')
     search_fields = ('account__name', 'user__username')

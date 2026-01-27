@@ -14,6 +14,7 @@ def get_workspace_members_resolver(root, info, params):
         workspace_id=workspace_id,
         user_id=each.user.user_id,
         role=each.role,
+        gender = each.user.gender,
         is_active=each.is_active,
         added_by=each.added_by.user_id,
         full_name=each.user.full_name,
