@@ -87,3 +87,8 @@ class WorkspaceInteractor(ValidationMixin):
         self.validate_workspace_is_active(workspace_id, workspace_storage=self.workspace_storage)
 
         return self.workspace_storage.get_workspace(workspace_id=workspace_id)
+
+    def account_workspaces(self,account_id: str)-> list[WorkspaceDTO]:
+        self.validate_account_is_active(account_id, account_storage=self.account_storage)
+
+        return self.workspace_storage.get_workspaces_by_account(account_id=account_id)

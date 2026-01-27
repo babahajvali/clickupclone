@@ -57,6 +57,11 @@ class AccountInteractor(ValidationMixin):
 
         return self.account_storage.delete_account(account_id=account_id)
 
+    def get_account(self, account_id: str):
+        self.validate_account_is_active(account_id=account_id,account_storage=self.account_storage)
+
+        return self.account_storage.get_account_by_id(account_id=account_id)
+
     # Helping functions
 
     def _validate_account_name_exists(self, account_name: str):

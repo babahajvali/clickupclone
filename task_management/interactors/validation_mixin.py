@@ -56,11 +56,9 @@ def interactor_cache(cache_name: str, timeout=60):
         def wrapper(*args, **kwargs):
             key_parts = [str(func.__name__)]
 
-            # args (skip self)
             for a in args[1:]:
                 key_parts.append(str(a))
 
-            # kwargs
             for k, v in sorted(kwargs.items()):
                 key_parts.append(f"{k}={v}")
 
@@ -68,7 +66,6 @@ def interactor_cache(cache_name: str, timeout=60):
 
             cached = cache.get(cache_key)
             if cached is not None:
-                print("Cached data")
                 return cached
 
             result = func(*args, **kwargs)
@@ -76,20 +73,16 @@ def interactor_cache(cache_name: str, timeout=60):
             return result
 
         return wrapper
+
     return decorator
 
 
-
-
 def invalidate_interactor_cache(cache_name: str):
-
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # 1️⃣ Run the write operation first
             result = func(*args, **kwargs)
 
-            # 2️⃣ Invalidate related cache
             pattern = f"storage:{cache_name}:*"
             cache.delete_pattern(pattern)
 
@@ -112,12 +105,12 @@ FIELD_TYPE_RULES = {
         "default_required": False,
     },
     FieldType.NUMBER.value: {
-        "config_keys": {"min", "max","default"},
+        "config_keys": {"min", "max", "default"},
         "default_type": (int, float),
         "default_required": False,
     },
     FieldType.DROPDOWN.value: {
-        "config_keys": {"options","default"},
+        "config_keys": {"options", "default"},
         "default_type": str,
         "default_required": False,
     },
@@ -461,7 +454,7 @@ class ValidationMixin:
             raise UnexpectedRoleException(role=role)
 
     @staticmethod
-    def validate_field(field_id: str,field_storage: FieldStorageInterface):
+    def validate_field(field_id: str, field_storage: FieldStorageInterface):
         is_exist = field_storage.is_field_exists(field_id=field_id)
 
         if not is_exist:
