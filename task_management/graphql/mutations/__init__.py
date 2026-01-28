@@ -70,6 +70,8 @@ from task_management.graphql.mutations.user.block_user_mutation import \
     BlockUserMutation
 from task_management.graphql.mutations.user.create_user_mutation import \
     CreateUserMutation
+from task_management.graphql.mutations.user.forgot_password_mutation import \
+    ForgotPasswordMutation, ResetPasswordMutation
 from task_management.graphql.mutations.user.update_user_mutation import \
     UpdateUserMutation
 from task_management.graphql.mutations.user.user_login_mutation import \
@@ -291,3 +293,11 @@ class RemoveAccountMember(graphene.ObjectType):
 
 class UpdateFieldValue(graphene.ObjectType):
     update_field_value = SetFieldValueMutation.Field(required=True)
+
+
+class ForgotPassword(graphene.ObjectType):
+    forget_password = ForgotPasswordMutation.Field(required=True)
+
+
+class ResetPassword(graphene.ObjectType):
+    reset_password = ResetPasswordMutation.Field(required=True)

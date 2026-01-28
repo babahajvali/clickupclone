@@ -176,3 +176,10 @@ class ListViewNotExistedType(graphene.ObjectType):
 
 class AccountMemberNotFoundType(graphene.ObjectType):
     account_member_id = graphene.Int(required=True)
+
+
+class InvalidResetTokenFoundType(graphene.ObjectType):
+    token = graphene.String(required=True)
+
+class ResetTokenExpiredType(graphene.ObjectType):
+    token = graphene.String(required=True)

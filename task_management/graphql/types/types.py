@@ -240,3 +240,8 @@ class WorkspaceUsersType(graphene.ObjectType):
 class GetUserTaskType(graphene.ObjectType):
     user_id = graphene.String(required=True)
     tasks = graphene.List(TaskType)
+
+
+class PasswordResetResponseType(graphene.ObjectType):
+    success = graphene.Boolean(required=True)
+    message = graphene.String(required=True)

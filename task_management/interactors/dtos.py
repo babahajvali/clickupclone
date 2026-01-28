@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from datetime import datetime
 from typing import Optional, Dict
 
 from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
@@ -435,3 +435,22 @@ class CreateAccountMemberDTO:
     user_id: str
     role: Role
     added_by: str |None
+
+
+@dataclass
+class PasswordResetRequestDTO:
+    email: str
+
+
+@dataclass
+class PasswordResetDTO:
+    token: str
+    new_password: str
+
+
+@dataclass
+class PasswordResetTokenDTO:
+    user_id: str
+    token: str
+    created_at: datetime
+    expires_at: datetime

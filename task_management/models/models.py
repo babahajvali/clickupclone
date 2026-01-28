@@ -520,3 +520,22 @@ class ListPermission(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='password_reset_tokens'
+    )
+    token = models.CharField(max_length=255, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'password_reset_tokens'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Reset token for {self.user.email} - {self.token[:10]}..."

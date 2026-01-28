@@ -1,6 +1,9 @@
-from task_management.exceptions.custom_exceptions import NotExistedEmailFoundException, \
-    WrongPasswordFoundException, ExistedUsernameFoundException, ExistedEmailFoundException, \
-    ExistedPhoneNumberFoundException, UsernameNotFoundException
+from task_management.exceptions.custom_exceptions import \
+    NotExistedEmailFoundException, \
+    WrongPasswordFoundException, ExistedUsernameFoundException, \
+    ExistedEmailFoundException, \
+    ExistedPhoneNumberFoundException, UsernameNotFoundException, \
+    InactiveUserException
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -47,10 +50,15 @@ class UserInteractor(ValidationMixin):
             raise NotExistedEmailFoundException(email=email)
         user_data = self.user_storage.get_user_details(email=email)
 
+        if not user_data.is_active:
+            raise InactiveUserException(user_id=user_data.user_id)
+
         if user_data.password == password:
             return user_data
 
         raise WrongPasswordFoundException(password=password)
+
+
 
     def _is_username_taken(self, username: str):
         is_existed_user_name = self.user_storage.check_username_exists(

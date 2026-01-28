@@ -251,3 +251,14 @@ class ListViewNotExistedException(Exception):
 class AccountMemberNotFoundException(Exception):
     def __init__(self, account_member_id: int):
         self.account_member_id = account_member_id
+
+class InvalidResetTokenFound(Exception):
+    def __init__(self, token: str):
+        self.token = token
+        super().__init__(f"Invalid or expired reset token: {token}")
+
+
+class ResetTokenExpired(Exception):
+    def __init__(self, token: str):
+        self.token = token
+        super().__init__(f"Reset token has expired: {token}")

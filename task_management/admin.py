@@ -5,6 +5,7 @@ from task_management.models import (
     List, ListPermission, Task, TaskAssignee,
     Template, Field, FieldValue, View, ListView
 )
+from task_management.models.models import PasswordResetToken
 
 
 @admin.register(User)
@@ -183,3 +184,17 @@ class ListViewAdmin(admin.ModelAdmin):
     search_fields = ('list__name', 'view__name')
     readonly_fields = ('created_at',)
     raw_id_fields = ('list', 'view', 'applied_by')
+
+
+@admin.register(PasswordResetToken)
+class PasswordResetTokenAdmin(admin.ModelAdmin):
+    list_display = ('user', 'token_preview', 'created_at', 'expires_at',
+                    'is_used')
+    list_filter = ('is_used', 'created_at', 'expires_at')
+    search_fields = ('user__email', 'user__username', 'token')
+    readonly_fields = ('token', 'created_at')
+
+    def token_preview(self, obj):
+        return f"{obj.token[:20]}..."
+
+    token_preview.short_description = 'Token'

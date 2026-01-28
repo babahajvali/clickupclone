@@ -119,6 +119,17 @@ CACHES = {
 }
 
 
+# 1. Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'babavali3109@gmail.com'
+EMAIL_HOST_PASSWORD = 'nqbx etho jfwv kkpz'
+
+
+FRONTEND_URL = "https://y8hh59.csb.app"
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 

@@ -1,9 +1,9 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import InactiveUserException
 from task_management.graphql.types.error_types import NotExistedEmailFoundType, \
-    WrongPasswordFoundType
+    WrongPasswordFoundType, InactiveUserType
 from task_management.graphql.types.input_types import UserLoginInputParams
 from task_management.graphql.types.response_types import UserLoginResponse
 from task_management.graphql.types.types import UserType
@@ -46,5 +46,5 @@ class UserLoginMutation(graphene.Mutation):
         except custom_exceptions.WrongPasswordFoundException as e:
             return WrongPasswordFoundType(password=e.password)
 
-        except ObjectDoesNotExist:
-            return NotExistedEmailFoundType(email=params.email)
+        except custom_exceptions.InactiveUserException as e:
+            return InactiveUserType(user_id=e.user_id)

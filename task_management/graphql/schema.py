@@ -11,7 +11,8 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace, TaskAssignee, \
     RemoveTaskAssignee, UpdateView, UpdateField, CreateField, DeleteField, \
     ReorderField, ApplyListView, RemoveListView, AddAccountMember, \
-    ChangeAccountMemberRole, RemoveAccountMember, UpdateFieldValue
+    ChangeAccountMemberRole, RemoveAccountMember, UpdateFieldValue, \
+    ForgotPassword, ResetPassword
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
@@ -37,8 +38,8 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace,
                     RemoveTaskAssignee, UpdateView, UpdateField, CreateField,
                     DeleteField, ReorderField, ApplyListView, RemoveListView,
-                    AddAccountMember, ChangeAccountMemberRole,
-                    RemoveAccountMember, UpdateFieldValue]
+                    AddAccountMember, ChangeAccountMemberRole, ResetPassword,
+                    RemoveAccountMember, UpdateFieldValue, ForgotPassword]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

@@ -412,3 +412,11 @@ class GetWorkspaceMemberInputParams(graphene.InputObjectType):
 
 class GetUserTasksInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)
+
+
+class ForgotPasswordReqParams(graphene.InputObjectType):
+    email = graphene.String(required=True)
+
+class ResetPasswordReqParams(graphene.InputObjectType):
+    token = graphene.String(required=True)
+    new_password = graphene.String(required=True)
