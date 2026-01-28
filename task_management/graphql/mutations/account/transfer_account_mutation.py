@@ -1,6 +1,5 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import AccountNotFoundType, \
     InactiveAccountType, UserNotAccountOwnerType, UserNotFoundType, \

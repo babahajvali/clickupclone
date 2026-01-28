@@ -52,7 +52,7 @@ class UpdateFieldMutation(graphene.Mutation):
 
             return FieldType(
                 field_id=result.field_id,
-                field_type=result.field_type,
+                field_type=result.field_type.value,
                 description=result.description,
                 template_id=result.template_id,
                 field_name=result.field_name,

@@ -80,7 +80,7 @@ class FieldStorage(FieldStorageInterface):
         return self._field_dto(field_data=field_data)
 
     def is_field_exists(self, field_id: str) -> bool:
-        return Field.objects.filter(field_id=field_id).exists()
+        return Field.objects.filter(field_id=field_id, is_active=True).exists()
 
     def check_field_name_except_this_field(self, field_id: str,
                                            field_name: str,

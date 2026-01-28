@@ -7,7 +7,7 @@ from task_management.graphql.types.error_types import (
     UserNotFoundType,
     InactiveUserType,
     UnexpectedRoleType,
-    UserDoesNotHaveAccountPermissionType, ModificationNotAllowedType
+    ModificationNotAllowedType
 )
 from task_management.graphql.types.input_types import (
     CreateAccountMemberInputParams,

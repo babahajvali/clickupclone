@@ -151,18 +151,15 @@ class UserNotWorkspaceOwnerException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+
 class UnsupportedVisibilityTypeException(Exception):
     def __init__(self, visibility_type: str):
         self.visibility_type = visibility_type
 
+
 class UnexpectedRoleException(Exception):
     def __init__(self, role: str):
         self.role = role
-
-
-class UserDoesNotHaveListPermissionException(Exception):
-    def __init__(self, user_id: str):
-        self.user_id = user_id
 
 
 class InactiveUserPermissionException(Exception):
@@ -239,12 +236,14 @@ class UserNotAccountOwnerException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+
 class UserDoesNotHaveAccountPermissionException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+
 class ListViewNotExistedException(Exception):
-    def __init__(self, list_id: str,view_id: str):
+    def __init__(self, list_id: str, view_id: str):
         self.list_id = list_id
         self.view_id = view_id
 

@@ -52,8 +52,10 @@ class SpaceType(graphene.ObjectType):
     is_private = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
+
 class WorkspaceSpacesType(graphene.ObjectType):
     spaces = graphene.List(SpaceType)
+
 
 class FolderType(graphene.ObjectType):
     folder_id = graphene.String()
@@ -81,8 +83,10 @@ class ListType(graphene.ObjectType):
     created_by = graphene.String(required=True)
     folder_id = graphene.String()
 
+
 class ListsType(graphene.ObjectType):
     lists = graphene.List(ListType)
+
 
 class TaskType(graphene.ObjectType):
     task_id = graphene.String(required=True)
@@ -93,8 +97,10 @@ class TaskType(graphene.ObjectType):
     created_by = graphene.String(required=True)
     is_delete = graphene.Boolean(required=True)
 
+
 class TasksType(graphene.ObjectType):
     tasks = graphene.List(TaskType)
+
 
 class TaskAssigneeType(graphene.ObjectType):
     assign_id = graphene.String(required=True)
@@ -102,6 +108,7 @@ class TaskAssigneeType(graphene.ObjectType):
     task_id = graphene.String(required=True)
     assigned_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
+
 
 class TaskAssigneesType(graphene.ObjectType):
     assignees = graphene.List(TaskAssigneeType)
@@ -127,8 +134,10 @@ class FieldType(graphene.ObjectType):
     is_required = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
+
 class FieldsType(graphene.ObjectType):
     fields = graphene.List(FieldType)
+
 
 class ViewType(graphene.ObjectType):
     view_id = graphene.String(required=True)
@@ -136,6 +145,7 @@ class ViewType(graphene.ObjectType):
     description = graphene.String(required=True)
     view_type = graphene.String(required=True)
     created_by = graphene.String(required=True)
+
 
 class ViewsType(graphene.ObjectType):
     views = graphene.List(ViewType)
@@ -176,12 +186,14 @@ class AccountMemberType(graphene.ObjectType):
     added_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
 
+
 class ListViewType(graphene.ObjectType):
     id = graphene.Int(required=True)
     list_id = graphene.String(required=True)
     view_id = graphene.String(required=True)
     applied_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
+
 
 class ListViewsType(graphene.ObjectType):
     list_views = graphene.List(ListViewType)
@@ -193,16 +205,20 @@ class FieldValueType(graphene.ObjectType):
     field_id = graphene.String(required=True)
     value = graphene.String(required=True)
 
+
 class FieldValuesType(graphene.ObjectType):
     field_id = graphene.String(required=True)
     value = graphene.String(required=True)
 
+
 class TaskFieldValuesType(graphene.ObjectType):
-    task_id=graphene.String(required=True)
-    values = graphene.List(FieldValuesType,required=True)
+    task_id = graphene.String(required=True)
+    values = graphene.List(FieldValuesType, required=True)
+
 
 class TasksValuesType(graphene.ObjectType):
     task_values = graphene.List(TaskFieldValuesType)
+
 
 class WorkspaceUserType(graphene.ObjectType):
     id = graphene.Int(required=True)

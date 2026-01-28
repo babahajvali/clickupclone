@@ -1,7 +1,6 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import DeletedTaskException
 from task_management.graphql.types.error_types import InactiveListType, \
     ListNotFoundType, ModificationNotAllowedType, TaskNotFoundType, \
     DeletedTaskType

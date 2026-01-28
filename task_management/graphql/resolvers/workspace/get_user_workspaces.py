@@ -1,8 +1,7 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
-    UserNotFoundType
-from task_management.graphql.types.types import WorkspaceType, \
-    WorkspaceMemberType, WorkspaceMembersType
+from task_management.graphql.types.error_types import UserNotFoundType
+from task_management.graphql.types.types import WorkspaceMemberType, \
+    WorkspaceMembersType
 
 from task_management.interactors.workspace_interactors.workspace_member_interactors import \
     WorkspaceMemberInteractor

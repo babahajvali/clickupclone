@@ -390,11 +390,13 @@ class RemoveAccountMemberInputParams(graphene.InputObjectType):
     account_member_id = graphene.Int(required=True)
     removed_by = graphene.String(required=True)
 
+
 class GetUserWorkspacesInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)
 
+
 class GetTaskFieldValuesInputParams(graphene.InputObjectType):
-    task_ids = graphene.List(graphene.String,required=True)
+    task_ids = graphene.List(graphene.String, required=True)
 
 
 class SetFieldValuesInputParams(graphene.InputObjectType):
@@ -403,8 +405,10 @@ class SetFieldValuesInputParams(graphene.InputObjectType):
     value = graphene.String(required=True)
     user_id = graphene.String(required=True)
 
+
 class GetWorkspaceMemberInputParams(graphene.InputObjectType):
     workspace_id = graphene.String(required=True)
+
 
 class GetUserTasksInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)

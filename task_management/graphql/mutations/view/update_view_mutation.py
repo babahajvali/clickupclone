@@ -1,6 +1,5 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ViewNotFoundType
 from task_management.graphql.types.input_types import UpdateViewInputParams
@@ -45,12 +44,9 @@ class UpdateViewMutation(graphene.Mutation):
                 view_id=str(result.view_id),
                 name=result.name,
                 description=result.description,
-                view_type=result.view_type.value if hasattr(result.view_type, 'value') else result.view_type,
+                view_type=result.view_type.value,
                 created_by=str(result.created_by)
             )
 
         except custom_exceptions.ViewNotFoundException as e:
             return ViewNotFoundType(view_id=e.view_id)
-
-        except ObjectDoesNotExist:
-            return ViewNotFoundType(view_id=params.view_id)

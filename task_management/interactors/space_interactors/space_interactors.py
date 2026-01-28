@@ -14,8 +14,9 @@ from task_management.interactors.storage_interface.workspace_member_storage_inte
     WorkspaceMemberStorageInterface
 from task_management.interactors.storage_interface.workspace_storage_interface import \
     WorkspaceStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin, \
-    interactor_cache, invalidate_interactor_cache
+from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.decorators.caching_decorators import interactor_cache, \
+    invalidate_interactor_cache
 
 
 class SpaceInteractor(ValidationMixin):

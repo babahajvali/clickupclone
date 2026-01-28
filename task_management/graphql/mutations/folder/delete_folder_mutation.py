@@ -1,6 +1,5 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
     InactiveFolderType, ModificationNotAllowedType
@@ -11,8 +10,10 @@ from task_management.interactors.space_interactors.folders_interactor import \
     FolderInteractor
 
 from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
 
 
@@ -52,9 +53,6 @@ class DeleteFolderMutation(graphene.Mutation):
                 created_by=str(result.created_by),
                 is_private=result.is_private
             )
-
-        except ObjectDoesNotExist:
-            return ModificationNotAllowedType(user_id=params.user_id)
 
         except custom_exceptions.FolderNotFoundException as e:
             return FolderNotFoundType(folder_id=e.folder_id)

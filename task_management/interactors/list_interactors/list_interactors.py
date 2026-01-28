@@ -1,8 +1,6 @@
 from django.core.cache import cache
 
-from task_management.exceptions.custom_exceptions import \
-    UserDoesNotHaveListPermissionException, InactiveUserPermissionException, \
-    InvalidOrderException
+from task_management.exceptions.custom_exceptions import InvalidOrderException
 from task_management.exceptions.enums import PermissionsEnum, Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO, \
@@ -27,8 +25,8 @@ from task_management.interactors.storage_interface.template_storage_interface im
     TemplateStorageInterface
 from task_management.interactors.template_interactors.create_template_interactor import \
     CreateTemplateInteractor
-from task_management.interactors.validation_mixin import ValidationMixin, \
-    interactor_cache
+from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.decorators.caching_decorators import interactor_cache
 
 
 class ListInteractor(ValidationMixin):
@@ -88,13 +86,12 @@ class ListInteractor(ValidationMixin):
             field_storage=self.field_storage
         )
         create_template_dto = CreateTemplateDTO(
-            name=create_list_data.name + "template",
+            name=create_list_data.name + " template",
             description=create_list_data.description,
             list_id=result.list_id,
             created_by=result.created_by
         )
         template_interactor.create_template(template_data=create_template_dto)
-
 
         return result
 
@@ -175,12 +172,13 @@ class ListInteractor(ValidationMixin):
         return self.list_storage.make_list_private(list_id=list_id)
 
     def get_list(self, list_id: str):
-        self.validate_list_is_active(list_id=list_id,list_storage=self.list_storage)
+        self.validate_list_is_active(list_id=list_id,
+                                     list_storage=self.list_storage)
 
         return self.list_storage.get_list(list_id=list_id)
 
     # Permission section
-    @interactor_cache(timeout=5*60,cache_name="list_permissions")
+    @interactor_cache(timeout=5 * 60, cache_name="list_permissions")
     def get_list_permissions(self, list_id: str) -> list[
         UserListPermissionDTO]:
         self.validate_list_is_active(list_id=list_id,
@@ -189,13 +187,13 @@ class ListInteractor(ValidationMixin):
         return self.list_permission_storage.get_list_permissions(
             list_id=list_id)
 
-    @interactor_cache(timeout=5 * 60,cache_name="folder_lists")
+    @interactor_cache(timeout=5 * 60, cache_name="folder_lists")
     def get_folder_lists(self, folder_id: str):
         self.validate_folder_is_active(folder_id=folder_id,
                                        folder_storage=self.folder_storage)
         return self.list_storage.get_folder_lists(folder_ids=[folder_id])
 
-    @interactor_cache(timeout=5 * 60,cache_name="space_lists")
+    @interactor_cache(timeout=5 * 60, cache_name="space_lists")
     def get_space_lists(self, space_id: str):
         cache.clear()
         self.validate_space_is_active(space_id=space_id,
@@ -203,16 +201,6 @@ class ListInteractor(ValidationMixin):
         return self.list_storage.get_space_lists(space_ids=[space_id])
 
     # Helping functions
-
-    def _check_user_list_permission(self, list_id: str, user_id: str):
-        user_permission = self.list_permission_storage.get_user_permission_for_list(
-            list_id=list_id, user_id=user_id)
-
-        if not user_permission:
-            raise UserDoesNotHaveListPermissionException(user_id=user_id)
-
-        if not user_permission.is_active:
-            raise InactiveUserPermissionException(user_id=user_id)
 
     def _create_list_users_permissions(self, list_id: str, space_id: str,
                                        created_by: str) -> list[

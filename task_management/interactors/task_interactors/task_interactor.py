@@ -13,8 +13,9 @@ from task_management.interactors.storage_interface.task_field_values_storage_int
     FieldValueStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin, \
-    interactor_cache, invalidate_interactor_cache
+from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.decorators.caching_decorators import interactor_cache, \
+    invalidate_interactor_cache
 
 
 class TaskInteractor(ValidationMixin):
@@ -40,7 +41,7 @@ class TaskInteractor(ValidationMixin):
         result = self.task_storage.create_task(task_data=task_data)
         self._set_default_field_values_at_task(
             task_id=result.task_id, list_id=task_data.list_id,
-            created_by=task_data.created_by,title=result.title)
+            created_by=task_data.created_by)
 
         return result
 
@@ -124,7 +125,7 @@ class TaskInteractor(ValidationMixin):
             raise InvalidOrderException(order=order)
 
     def _set_default_field_values_at_task(self, task_id: str, list_id: str,
-                                          created_by: str, title: str):
+                                          created_by: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
         template_fields = self.field_storage.get_fields_for_template(
@@ -133,8 +134,6 @@ class TaskInteractor(ValidationMixin):
         field_values = []
         for field in template_fields:
             default_value = field.config.get('default')
-            if field.field_name == "Title":
-                default_value = title
 
             field_values.append(
                 CreateFieldValueDTO(

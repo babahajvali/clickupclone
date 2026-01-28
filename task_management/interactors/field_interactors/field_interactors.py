@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    FieldNotFoundException, InvalidOrderException
+    InvalidOrderException
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -10,8 +10,9 @@ from task_management.interactors.storage_interface.list_storage_interface import
     ListStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin, \
-    interactor_cache, invalidate_interactor_cache
+from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.decorators.caching_decorators import interactor_cache, \
+    invalidate_interactor_cache
 
 
 class FieldInteractor(ValidationMixin):
@@ -63,7 +64,7 @@ class FieldInteractor(ValidationMixin):
                                         field_name=update_field_data.field_name,
                                         template_id=field_data.template_id,
                                         field_storage=self.field_storage)
-        self.validate_field_config(field_type=field_data.field_type,
+        self.validate_field_config(field_type=field_data.field_type.value,
                                    config=update_field_data.config)
 
         return self.field_storage.update_field(

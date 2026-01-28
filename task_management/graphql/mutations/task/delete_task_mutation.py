@@ -1,6 +1,5 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
     DeletedTaskType, ModificationNotAllowedType
@@ -12,7 +11,8 @@ from task_management.interactors.task_interactors.task_interactor import \
 from task_management.storages.field_value_storage import FieldValueStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
 from task_management.storages.field_storage import FieldStorage
 
 

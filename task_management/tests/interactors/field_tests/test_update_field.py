@@ -64,7 +64,7 @@ class TestUpdateFieldInteractor:
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldTypeEnum.TEXT.value,
+            field_type=FieldTypeEnum.TEXT,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",

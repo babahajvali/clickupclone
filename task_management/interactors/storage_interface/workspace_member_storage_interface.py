@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import WorkspaceMemberDTO, \
-    AddMemberToWorkspaceDTO, WorkspaceDTO
+    AddMemberToWorkspaceDTO
 
 
 class WorkspaceMemberStorageInterface(ABC):
@@ -38,9 +38,12 @@ class WorkspaceMemberStorageInterface(ABC):
         WorkspaceMemberDTO]:
         pass
 
-
     @abstractmethod
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
         pass
 
-
+    @abstractmethod
+    def re_add_member_to_workspace(
+            self,workspace_member_data: AddMemberToWorkspaceDTO) ->\
+            WorkspaceMemberDTO:
+        pass

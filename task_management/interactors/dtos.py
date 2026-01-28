@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from typing import Optional, Dict
 
@@ -97,31 +97,6 @@ class TemplateDTO:
     list_id: str
     description: str
     created_by: str
-
-
-FIXED_FIELDS = [
-    {
-        "field_type": FieldTypeEnum.DATE.value,
-        "field_name": "Due Date",
-        "description": "Due date for complete task",
-    },
-    {
-        "field_type": FieldTypeEnum.DROPDOWN.value,
-        "field_name": "Priority",
-        "config": {
-            "options": ["Low", "Medium", "High"],
-            "default": "Medium"
-        }
-    },
-    {
-        "field_type": FieldTypeEnum.DROPDOWN.value,
-        "field_name": "Status",
-        "config": {
-            "options": ["Todo", "In Progress", "Done"],
-            "default": "Todo"
-        }
-    }
-]
 
 
 @dataclass
@@ -396,21 +371,6 @@ class FilterDTO:
     assignees: Optional[list[str]] = None
     offset: int = 1
     limit: int = 10
-
-
-@dataclass
-class TaskWithDetailsDTO:
-    task: TaskDTO
-    field_values: Dict[str, str] = field(default_factory=dict)
-    assignees: list[str] = field(default_factory=list)
-
-    @property
-    def status(self) -> Optional[str]:
-        return self.field_values.get('Status')
-
-    @property
-    def priority(self) -> Optional[str]:
-        return self.field_values.get('Priority')
 
 
 @dataclass

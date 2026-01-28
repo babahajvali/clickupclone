@@ -85,6 +85,7 @@ class GetWorkspaceSpaces(graphene.ObjectType):
         resolver=get_workspace_spaces_resolver
     )
 
+
 class GetSpace(graphene.ObjectType):
     get_space = graphene.Field(
         GetSpaceResponse,
@@ -92,6 +93,7 @@ class GetSpace(graphene.ObjectType):
         resolver=get_space_resolver
 
     )
+
 
 class GetSpaceFolders(graphene.ObjectType):
     get_space_folders = graphene.Field(
@@ -116,12 +118,14 @@ class GetList(graphene.ObjectType):
         resolver=get_list_resolver
     )
 
+
 class GetFolderLists(graphene.ObjectType):
     get_folder_lists = graphene.Field(
         GetFolderListsResponse,
         params=GetFolderListsInputParams(required=True),
         resolver=get_folder_lists_resolver
     )
+
 
 class GetSpaceLists(graphene.ObjectType):
     get_space_lists = graphene.Field(
@@ -130,12 +134,14 @@ class GetSpaceLists(graphene.ObjectType):
         resolver=get_space_lists_resolver
     )
 
+
 class GetListTasks(graphene.ObjectType):
     get_list_tasks = graphene.Field(
         GetListTasksResponse,
         params=GetListTasksInputParams(required=True),
         resolver=get_list_tasks_resolver
     )
+
 
 class GetTask(graphene.ObjectType):
     get_task = graphene.Field(
@@ -144,12 +150,14 @@ class GetTask(graphene.ObjectType):
         resolver=get_task_resolver
     )
 
+
 class GetTaskFilters(graphene.ObjectType):
     get_task_filters = graphene.Field(
         TaskFilterResponse,
         params=TaskFilterInputParams(required=True),
         resolver=task_filter_resolver
     )
+
 
 class GetTaskAssignees(graphene.ObjectType):
     get_task_assignees = graphene.Field(
@@ -158,11 +166,13 @@ class GetTaskAssignees(graphene.ObjectType):
         resolver=get_task_assignees_resolver
     )
 
+
 class GetViews(graphene.ObjectType):
     get_views = graphene.Field(
         GetViewsResponse,
         resolver=get_all_views_resolver
     )
+
 
 class GetTemplateFields(graphene.ObjectType):
     get_template_fields = graphene.Field(
@@ -171,6 +181,7 @@ class GetTemplateFields(graphene.ObjectType):
         resolver=get_fields_for_template_resolver
     )
 
+
 class GetField(graphene.ObjectType):
     get_fields = graphene.Field(
         GetFieldResponse,
@@ -178,12 +189,14 @@ class GetField(graphene.ObjectType):
         resolver=get_field_resolver
     )
 
+
 class GetListViews(graphene.ObjectType):
     get_list_views = graphene.Field(
         GetListViewsResponse,
         params=GetListViewsInputParams(required=True),
         resolver=get_list_views_resolver
     )
+
 
 class GetUserWorkspaces(graphene.ObjectType):
     get_user_workspaces = graphene.Field(
@@ -200,12 +213,14 @@ class GetTaskValues(graphene.ObjectType):
         resolver=get_task_field_values_resolver
     )
 
+
 class GetWorkspaceMembers(graphene.ObjectType):
     get_workspace_members = graphene.Field(
         GetWorkspaceUsersResponse,
         params=GetWorkspaceMemberInputParams(required=True),
         resolver=get_workspace_members_resolver
     )
+
 
 class GetUserTasks(graphene.ObjectType):
     get_user_tasks = graphene.Field(

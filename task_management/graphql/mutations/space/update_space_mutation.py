@@ -1,6 +1,5 @@
 import graphene
 
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     InactiveSpaceType, ModificationNotAllowedType, WorkspaceNotFoundType, \
@@ -15,7 +14,8 @@ from task_management.interactors.space_interactors.space_interactors import \
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 

@@ -1,5 +1,6 @@
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
-    CreateFieldDTO, FIXED_FIELDS
+    CreateFieldDTO
+from task_management.constants.field_constants import FIXED_FIELDS
 from task_management.interactors.field_interactors.field_interactors import \
     FieldInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \

@@ -644,6 +644,7 @@ class GetFieldResponse(graphene.Union):
             FieldNotFoundType
         )
 
+
 class ApplyListViewResponse(graphene.Union):
     class Meta:
         types = (
@@ -654,6 +655,7 @@ class ApplyListViewResponse(graphene.Union):
             ModificationNotAllowedType
         )
 
+
 class RemoveListViewResponse(graphene.Union):
     class Meta:
         types = (
@@ -663,7 +665,6 @@ class RemoveListViewResponse(graphene.Union):
             ListViewNotExistedType,
             InactiveListType
         )
-
 
 
 class GetListViewsResponse(graphene.Union):
@@ -697,6 +698,7 @@ class RemoveAccountMemberResponse(graphene.Union):
             ModificationNotAllowedType
         )
 
+
 class GetUserWorkspacesResponse(graphene.Union):
     class Meta:
         types = (
@@ -715,6 +717,7 @@ class SetTaskFieldValueResponse(graphene.Union):
     class Meta:
         types = (FieldValueType,
                  ModificationNotAllowedType)
+
 
 class GetWorkspaceUsersResponse(graphene.Union):
     class Meta:
