@@ -417,6 +417,11 @@ class GetUserTasksInputParams(graphene.InputObjectType):
 class ForgotPasswordReqParams(graphene.InputObjectType):
     email = graphene.String(required=True)
 
+
 class ResetPasswordReqParams(graphene.InputObjectType):
     token = graphene.String(required=True)
     new_password = graphene.String(required=True)
+
+
+class GetListTaskAssigneesInputParams(graphene.InputObjectType):
+    list_id = graphene.String(required=True)

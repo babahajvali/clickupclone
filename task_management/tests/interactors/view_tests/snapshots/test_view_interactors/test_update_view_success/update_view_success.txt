@@ -1,1 +1,1 @@
-ViewDTO(view_id='2e42facd-1505-46ec-9dd4-d20b42ddaae0', name='soon', description='Must door local various however become southern.', view_type='board', created_by='843f58b3-4a9f-4442-9b8c-06788df534e4')
+ViewDTO(view_id='852d2092-05f0-4ed2-9c6d-be2b71f1bf1e', name='learn', description='Wonder phone expect source kitchen foreign score.', view_type='board', created_by='bff95db1-1504-4f8e-9dcd-3057035bb5cb')

@@ -20,6 +20,8 @@ from task_management.graphql.resolvers.space.get_space_resolver import \
     get_space_resolver
 from task_management.graphql.resolvers.space.get_workspace_spaces_resolver import \
     get_workspace_spaces_resolver
+from task_management.graphql.resolvers.task.get_list_task_assignees_resolver import \
+    get_list_task_assignees_resolver
 from task_management.graphql.resolvers.task.get_list_tasks_resolver import \
     get_list_tasks_resolver
 from task_management.graphql.resolvers.task.get_task_assignees_resolver import \
@@ -51,7 +53,7 @@ from task_management.graphql.types.input_types import \
     GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
     GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams, \
     GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
-    GetUserTasksInputParams
+    GetUserTasksInputParams, GetListTaskAssigneesInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \
@@ -59,7 +61,8 @@ from task_management.graphql.types.response_types import \
     GetListTasksResponse, GetTaskResponse, TaskFilterResponse, \
     GetTaskAssigneesResponse, GetViewsResponse, GetFieldsForTemplateResponse, \
     GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse, \
-    GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, GetUserTasksResponse
+    GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, \
+    GetUserTasksResponse, GetListTaskAssigneesResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -227,4 +230,12 @@ class GetUserTasks(graphene.ObjectType):
         GetUserTasksResponse,
         params=GetUserTasksInputParams(required=True),
         resolver=get_user_tasks_resolver
+    )
+
+
+class GetListTaskAssignees(graphene.ObjectType):
+    get_list_task_assignees = graphene.Field(
+        GetListTaskAssigneesResponse,
+        params=GetListTaskAssigneesInputParams(required=True),
+        resolver=get_list_task_assignees_resolver
     )

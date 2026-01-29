@@ -1,6 +1,6 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import TaskNotFoundType, \
-    DeletedTaskType
+from task_management.graphql.types.error_types import InactiveListType, \
+    ListNotFoundType
 from task_management.graphql.types.types import TaskAssigneeType, \
     TaskAssigneesType
 from task_management.interactors.task_interactors.task_assignee_interactor import \
@@ -13,8 +13,8 @@ from task_management.storages.task_storage import TaskStorage
 from task_management.storages.user_storage import UserStorage
 
 
-def get_task_assignees_resolver(root,info,params):
-    task_id = params.task_id
+def get_list_task_assignees_resolver(root,info, params):
+    list_id = params.list_id
 
     user_storage = UserStorage()
     task_storage = TaskStorage()
@@ -31,9 +31,9 @@ def get_task_assignees_resolver(root,info,params):
     )
 
     try:
-        assignees_data = interactor.get_task_assignees(task_id=task_id)
+        assignees_data = interactor.get_list_task_assignees(list_id=list_id)
 
-        result = [ TaskAssigneeType(
+        result = [TaskAssigneeType(
             assign_id=each.assign_id,
             user_id=each.user_id,
             task_id=each.task_id,
@@ -42,7 +42,7 @@ def get_task_assignees_resolver(root,info,params):
         ) for each in assignees_data]
 
         return TaskAssigneesType(assignees=result)
-    except custom_exceptions.TaskNotFoundException as e:
-        return TaskNotFoundType(task_id=e.task_id)
-    except custom_exceptions.DeletedTaskException as e:
-        return DeletedTaskType(task_id=e.task_id)
+    except custom_exceptions.InactiveListException as e:
+        return InactiveListType(list_id=e.list_id)
+    except custom_exceptions.ListNotFoundException as e:
+        return ListNotFoundType(list_id=e.list_id)

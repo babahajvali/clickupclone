@@ -1,1 +1,1 @@
-ViewDTO(view_id='520df467-6327-4f97-a7ad-5f30dd2bd1b3', name='do', description='International firm north sometimes hotel place.', view_type='list', created_by='5a0c526e-4a84-4cd1-807a-c589e0135fe7')
+ViewDTO(view_id='51809910-a7da-42c1-8e6f-d2c987348846', name='benefit', description='Field simple knowledge.', view_type='list', created_by='a8cb9f13-b4f6-48de-9e1a-5b29d26133c7')

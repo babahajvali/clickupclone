@@ -1,8 +1,12 @@
+from task_management.decorators.caching_decorators import interactor_cache, \
+    invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
     TaskAssigneeNotFoundException
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
     ListPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
@@ -16,12 +20,15 @@ class TaskAssigneeInteractor(ValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  task_assignee_storage: TaskAssigneeStorageInterface,
                  user_storage: UserStorageInterface,
-                 permission_storage: ListPermissionStorageInterface):
+                 permission_storage: ListPermissionStorageInterface,
+                 list_storage: ListStorageInterface):
         self.task_storage = task_storage
         self.task_assignee_storage = task_assignee_storage
         self.user_storage = user_storage
         self.permission_storage = permission_storage
+        self.list_storage = list_storage
 
+    @invalidate_interactor_cache(cache_name="list_task_assignees")
     def assign_task_assignee(self, task_id: str, user_id: str,
                              assigned_by: str) -> TaskAssigneeDTO:
         existing_assignment = self.task_assignee_storage.get_user_task_assignee(
@@ -41,6 +48,7 @@ class TaskAssigneeInteractor(ValidationMixin):
         return self.task_assignee_storage.assign_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
 
+    @invalidate_interactor_cache(cache_name="list_task_assignees")
     def remove_task_assignee(self, assign_id: str,
                              user_id: str) -> TaskAssigneeDTO:
         assignee_data = self._validate_task_assignee_exists(
@@ -58,6 +66,12 @@ class TaskAssigneeInteractor(ValidationMixin):
                                      task_storage=self.task_storage)
 
         return self.task_assignee_storage.get_task_assignees(task_id=task_id)
+
+    @interactor_cache(timeout=30*60, cache_name="list_task_assignees")
+    def get_list_task_assignees(self, list_id: str) -> list[TaskAssigneeDTO]:
+        self.validate_list_is_active(list_id=list_id,list_storage=self.list_storage)
+
+        return self.task_assignee_storage.get_list_task_assignees(list_id=list_id)
 
     def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
         self.validate_user_is_active(user_id=user_id,

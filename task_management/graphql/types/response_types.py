@@ -749,3 +749,10 @@ class ResetPasswordResponse(graphene.Union):
         types = (UserType, InvalidResetTokenFoundType, ResetTokenExpiredType)
 
     resolve_type = staticmethod(_resolve_union_type)
+
+
+class GetListTaskAssigneesResponse(graphene.Union):
+    class Meta:
+        types = (TaskAssigneesType,
+                 InactiveListType,
+                 ListNotFoundType)

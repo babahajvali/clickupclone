@@ -155,55 +155,6 @@ class TestTaskAssigneeStorage:
         snapshot.assert_match(repr(result), "test_get_user_assigned_tasks_empty.txt")
 
     @pytest.mark.django_db
-    def test_get_user_today_tasks_success(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345678"
-        assigned_by_id = "12345678-1234-5678-1234-567812345680"
-        task_id1 = "12345678-1234-5678-1234-567812345678"
-        task_id2 = "12345678-1234-5678-1234-567812345679"
-        task_id3 = "12345678-1234-5678-1234-567812345680"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
-        assigned_by = UserFactory(user_id=assigned_by_id)
-        task1 = TaskFactory(task_id=task_id1,list=list_obj, created_by=user, is_deleted=False)
-        task2 = TaskFactory(task_id=task_id2,list=list_obj, created_by=user, is_deleted=False)
-        task3 = TaskFactory(task_id=task_id3,list=list_obj, created_by=user, is_deleted=False)
-        today = timezone.now()
-        yesterday = today - timedelta(days=1)
-        TaskAssigneeFactory(task=task1, user=user, assigned_by=assigned_by, is_active=True, assigned_at=today)
-        TaskAssigneeFactory(task=task2, user=user, assigned_by=assigned_by, is_active=True, assigned_at=today)
-        TaskAssigneeFactory(task=task3, user=user, assigned_by=assigned_by, is_active=True, assigned_at=yesterday)
-        storage = TaskAssigneeStorage()
-
-        # Act
-        result = storage.get_user_today_tasks(user_id=str(user_id))
-
-        # Assert
-        snapshot.assert_match(repr(result), "test_get_user_today_tasks_success.txt")
-
-    @pytest.mark.django_db
-    def test_get_user_today_tasks_empty(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345678"
-        assigned_by_id = "12345678-1234-5678-1234-567812345680"
-        task_id = "12345678-1234-5678-1234-567812345678"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
-        assigned_by = UserFactory(user_id=assigned_by_id)
-        task = TaskFactory(task_id=task_id,list=list_obj, created_by=user, is_deleted=False)
-        yesterday = timezone.now() - timedelta(days=1)
-        TaskAssigneeFactory(task=task, user=user, assigned_by=assigned_by, is_active=True, assigned_at=yesterday)
-        storage = TaskAssigneeStorage()
-
-        # Act
-        result = storage.get_user_today_tasks(user_id=str(user_id))
-
-        # Assert
-        snapshot.assert_match(repr(result), "test_get_user_today_tasks_empty.txt")
-
-    @pytest.mark.django_db
     def test_get_user_task_assignee_success(self, snapshot):
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"

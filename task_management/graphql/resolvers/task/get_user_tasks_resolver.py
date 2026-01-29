@@ -6,6 +6,7 @@ from task_management.interactors.task_interactors.task_assignee_interactor impor
     TaskAssigneeInteractor
 from task_management.storages.list_permission_storage import \
     ListPermissionStorage
+from task_management.storages.list_storage import ListStorage
 from task_management.storages.task_assignee_storage import TaskAssigneeStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.user_storage import UserStorage
@@ -18,12 +19,14 @@ def get_user_tasks_resolver(root, info,params):
     task_storage = TaskStorage()
     list_permission_storage = ListPermissionStorage()
     task_assignee_storage = TaskAssigneeStorage()
+    list_storage = ListStorage()
 
     interactor = TaskAssigneeInteractor(
         user_storage=user_storage,
         task_storage=task_storage,
         permission_storage=list_permission_storage,
         task_assignee_storage=task_assignee_storage,
+        list_storage=list_storage,
     )
 
     try:
