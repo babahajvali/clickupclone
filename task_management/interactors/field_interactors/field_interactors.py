@@ -34,7 +34,7 @@ class FieldInteractor(ValidationMixin):
         self.validate_user_has_access_to_list(
             user_id=create_field_data.created_by, list_id=list_id,
             permission_storage=self.permission_storage)
-        self.check_field_type(field_type=create_field_data.field_type.value)
+        self.validate_field_type(field_type=create_field_data.field_type.value)
         self.validate_field_name_not_exists(
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id,
@@ -79,7 +79,8 @@ class FieldInteractor(ValidationMixin):
         self.validate_user_has_access_to_list(list_id=list_id,
                                               user_id=user_id,
                                               permission_storage=self.permission_storage)
-        self.validate_field(field_id=field_id,field_storage=self.field_storage)
+        self.validate_field(field_id=field_id,
+                            field_storage=self.field_storage)
 
         return self.field_storage.reorder_fields(field_id=field_id,
                                                  template_id=template_id,
@@ -87,7 +88,8 @@ class FieldInteractor(ValidationMixin):
 
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
-        self.validate_field(field_id=field_id,field_storage=self.field_storage)
+        self.validate_field(field_id=field_id,
+                            field_storage=self.field_storage)
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
         list_id = self.get_template_list_id(
             template_id=field_data.template_id,
@@ -98,7 +100,7 @@ class FieldInteractor(ValidationMixin):
 
         return self.field_storage.delete_field(field_id=field_id)
 
-    @interactor_cache(cache_name="fields",timeout=5*60)
+    @interactor_cache(cache_name="fields", timeout=5 * 60)
     def get_fields_for_template(self, list_id: str) -> list[FieldDTO]:
         self.validate_list_is_active(list_id=list_id,
                                      list_storage=self.list_storage)
@@ -111,7 +113,8 @@ class FieldInteractor(ValidationMixin):
             template_id=template_id)
 
     def get_field(self, field_id: str) -> FieldDTO:
-        self.validate_field(field_id=field_id,field_storage=self.field_storage)
+        self.validate_field(field_id=field_id,
+                            field_storage=self.field_storage)
 
         return self.field_storage.get_field_by_id(field_id=field_id)
 

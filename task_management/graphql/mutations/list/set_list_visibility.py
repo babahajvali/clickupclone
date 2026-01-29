@@ -4,8 +4,10 @@ from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import ListNotFoundType, \
     InactiveListType, ModificationNotAllowedType, UnsupportedVisibilityType
-from task_management.graphql.types.input_types import SetListVisibilityInputParams
-from task_management.graphql.types.response_types import SetListVisibilityResponse
+from task_management.graphql.types.input_types import \
+    SetListVisibilityInputParams
+from task_management.graphql.types.response_types import \
+    SetListVisibilityResponse
 from task_management.graphql.types.types import ListType
 from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
@@ -15,9 +17,12 @@ from task_management.storages.task_storage import TaskStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 
 
 class SetListVisibilityMutation(graphene.Mutation):
@@ -52,6 +57,10 @@ class SetListVisibilityMutation(graphene.Mutation):
 
         try:
             visibility = Visibility(params.visibility)
+        except Exception:
+            return UnsupportedVisibilityType(visibility=params.visibility)
+
+        try:
             result = interactor.set_list_visibility(
                 list_id=params.list_id,
                 visibility=visibility,
@@ -59,15 +68,15 @@ class SetListVisibilityMutation(graphene.Mutation):
             )
 
             return ListType(
-                list_id=str(result.list_id),
+                list_id=result.list_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 is_active=result.is_active,
                 order=result.order,
                 is_private=result.is_private,
-                created_by=str(result.created_by),
-                folder_id=str(result.folder_id) if result.folder_id else None
+                created_by=result.created_by,
+                folder_id=result.folder_id if result.folder_id else None
             )
 
         except custom_exceptions.ListNotFoundException as e:

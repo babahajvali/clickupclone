@@ -41,6 +41,10 @@ class SetFolderVisibilityMutation(graphene.Mutation):
 
         try:
             visibility = Visibility(params.visibility)
+        except Exception:
+            return UnsupportedVisibilityType(visibility=params.visibility)
+
+        try:
             result = interactor.set_folder_visibility(
                 folder_id=params.folder_id,
                 user_id=params.user_id,
@@ -51,10 +55,10 @@ class SetFolderVisibilityMutation(graphene.Mutation):
                 folder_id=result.folder_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 order=result.order,
                 is_active=result.is_active,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_private=result.is_private
             )
 

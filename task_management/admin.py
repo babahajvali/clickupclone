@@ -29,7 +29,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(AccountMember)
 class AccountMemberAdmin(admin.ModelAdmin):
-    list_display = ('account', 'id','user', 'role', 'is_active', 'added_by',
+    list_display = ('account', 'id', 'user', 'role', 'is_active', 'added_by',
                     'created_at')
     list_filter = ('role', 'is_active', 'created_at')
     search_fields = ('account__name', 'user__username')
@@ -39,7 +39,8 @@ class AccountMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Workspace)
 class WorkspaceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'workspace_id','account', 'created_by', 'is_active', 'created_at')
+    list_display = ('name', 'workspace_id', 'account', 'created_by',
+                    'is_active', 'created_at')
     list_filter = ('is_active', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('workspace_id', 'created_at', 'updated_at')
@@ -48,7 +49,7 @@ class WorkspaceAdmin(admin.ModelAdmin):
 
 @admin.register(WorkspaceMember)
 class WorkspaceMemberAdmin(admin.ModelAdmin):
-    list_display = ('workspace',"pk", 'user', 'role', 'is_active', 'added_by',
+    list_display = ('workspace', "pk", 'user', 'role', 'is_active', 'added_by',
                     'created_at')
     list_filter = ('role', 'is_active', 'created_at')
     search_fields = ('workspace__name', 'user__username')
@@ -58,7 +59,8 @@ class WorkspaceMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Space)
 class SpaceAdmin(admin.ModelAdmin):
-    list_display = ('name','space_id', 'workspace', 'order', 'is_active', 'is_private',
+    list_display = ('name', 'space_id', 'workspace', 'order', 'is_active',
+                    'is_private',
                     'created_by', 'created_at')
     list_filter = ('is_active', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -79,7 +81,8 @@ class SpacePermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Folder)
 class FolderAdmin(admin.ModelAdmin):
-    list_display = ('name','folder_id', 'space', 'order', 'is_active', 'is_private',
+    list_display = ('name', 'folder_id', 'space', 'order', 'is_active',
+                    'is_private',
                     'created_by', 'created_at')
     list_filter = ('is_active', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -100,7 +103,7 @@ class FolderPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ('name','list_id' ,'space', 'folder', 'order', 'is_active',
+    list_display = ('name', 'list_id', 'space', 'folder', 'order', 'is_active',
                     'is_private', 'created_by', 'created_at')
     list_filter = ('is_active', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -121,7 +124,8 @@ class ListPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('title','task_id' ,'list', 'order', 'is_deleted', 'created_by',
+    list_display = ('title', 'task_id', 'list', 'order', 'is_deleted',
+                    'created_by',
                     'created_at')
     list_filter = ('is_deleted', 'created_at')
     search_fields = ('title', 'description')
@@ -132,7 +136,8 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(TaskAssignee)
 class TaskAssigneeAdmin(admin.ModelAdmin):
-    list_display = ('task',"assign_id", 'user', 'is_active', 'assigned_by', 'assigned_at')
+    list_display = ('task', "assign_id", 'user', 'is_active', 'assigned_by',
+                    'assigned_at')
     list_filter = ('is_active', 'assigned_at')
     search_fields = ('task__title', 'user__username')
     readonly_fields = ('assign_id', 'assigned_at')
@@ -141,7 +146,7 @@ class TaskAssigneeAdmin(admin.ModelAdmin):
 
 @admin.register(Template)
 class TemplateAdmin(admin.ModelAdmin):
-    list_display = ('name','template_id', 'list', 'created_at')
+    list_display = ('name', 'template_id', 'list', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('name', 'description')
     readonly_fields = ('template_id', 'created_at', 'updated_at')
@@ -150,7 +155,8 @@ class TemplateAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('field_name','field_id', 'field_type',"is_active" ,'template', 'order',
+    list_display = ('field_name', 'field_id', 'field_type', "is_active",
+                    'template', 'order',
                     'is_required', 'created_by', 'created_at')
     list_filter = ('field_type', 'is_required', 'created_at')
     search_fields = ('field_name', 'description')
@@ -161,7 +167,7 @@ class FieldAdmin(admin.ModelAdmin):
 
 @admin.register(FieldValue)
 class FieldValueAdmin(admin.ModelAdmin):
-    list_display = ('field', 'task', 'value','created_by', 'created_at')
+    list_display = ('field', 'task', 'value', 'created_by', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('field__field_name', 'task__title')
     readonly_fields = ('created_at', 'updated_at')
@@ -170,7 +176,7 @@ class FieldValueAdmin(admin.ModelAdmin):
 
 @admin.register(View)
 class ViewAdmin(admin.ModelAdmin):
-    list_display = ('name', 'view_id','view_type', 'created_by', 'created_at')
+    list_display = ('name', 'view_id', 'view_type', 'created_by', 'created_at')
     list_filter = ('view_type', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('view_id', 'created_at', 'updated_at')
@@ -188,7 +194,7 @@ class ListViewAdmin(admin.ModelAdmin):
 
 @admin.register(PasswordResetToken)
 class PasswordResetTokenAdmin(admin.ModelAdmin):
-    list_display = ('user', 'token_preview', 'created_at', 'expires_at',
+    list_display = ('user', 'token_preview', 'created_at', 'id', 'expires_at',
                     'is_used')
     list_filter = ('is_used', 'created_at', 'expires_at')
     search_fields = ('user__email', 'user__username', 'token')

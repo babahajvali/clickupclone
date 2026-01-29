@@ -75,7 +75,7 @@ class ValidationMixin:
         return template
 
     @staticmethod
-    def check_field_type(field_type: str):
+    def validate_field_type(field_type: str):
 
         field_types = [x.value for x in FieldTypeEnum]
 

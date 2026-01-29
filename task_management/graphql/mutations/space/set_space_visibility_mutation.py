@@ -47,6 +47,10 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
 
         try:
             visibility = Visibility(params.visibility)
+        except Exception:
+            return UnsupportedVisibilityType(visibility=params.visibility)
+
+        try:
             result = interactor.set_space_visibility(
                 space_id=params.space_id,
                 user_id=params.user_id,

@@ -33,7 +33,8 @@ class UserStorage(UserStorageInterface):
             user_data = User.objects.get(email=email)
             return self._user_dto(data=user_data)
         except User.DoesNotExist:
-            raise None
+            return None
+
     def create_user(self, user_data: CreateUserDTO) -> UserDTO:
         user_obj = User.objects.create(
             username=user_data.username, full_name=user_data.full_name,
