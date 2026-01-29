@@ -103,9 +103,9 @@ class SpaceInteractor(ValidationMixin):
             permission_storage=self.permission_storage)
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
-        self._validate_visibility_type(visibility=visibility)
+        self._validate_visibility_type(visibility=visibility.value)
 
-        if visibility == Visibility.PUBLIC.value:
+        if visibility == Visibility.PUBLIC:
             return self.space_storage.set_space_public(space_id=space_id)
 
         return self.space_storage.set_space_private(space_id=space_id)

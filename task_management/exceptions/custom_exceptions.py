@@ -92,6 +92,10 @@ class TaskNotFoundException(Exception):
         self.task_id = task_id
 
 
+class TasksNotFoundExceptions(Exception):
+    def __init__(self, task_ids: list[str]):
+        self.task_ids = task_ids
+
 class TaskAssigneeNotFoundException(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id

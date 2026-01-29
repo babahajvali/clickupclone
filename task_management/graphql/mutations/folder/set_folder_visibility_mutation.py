@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import FolderNotFoundType, \
     InactiveFolderType, ModificationNotAllowedType, UnsupportedVisibilityType
 from task_management.graphql.types.input_types import \
@@ -39,14 +40,15 @@ class SetFolderVisibilityMutation(graphene.Mutation):
         )
 
         try:
+            visibility = Visibility(params.visibility)
             result = interactor.set_folder_visibility(
                 folder_id=params.folder_id,
                 user_id=params.user_id,
-                visibility=params.visibility
+                visibility=visibility
             )
 
             return FolderType(
-                folder_id=str(result.folder_id),
+                folder_id=result.folder_id,
                 name=result.name,
                 description=result.description,
                 space_id=str(result.space_id),

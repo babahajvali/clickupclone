@@ -28,7 +28,7 @@ from task_management.graphql.mutations.folder.delete_folder_mutation import \
     DeleteFolderMutation
 from task_management.graphql.mutations.folder.reorder_folder_mutation import \
     ReorderFolderMutation
-from task_management.graphql.mutations.folder.set_folder_visibility import \
+from task_management.graphql.mutations.folder.set_folder_visibility_mutation import \
     SetFolderVisibilityMutation
 from task_management.graphql.mutations.folder.update_folder_mutation import \
     UpdateFolderMutation

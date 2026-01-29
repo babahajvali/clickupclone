@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import ListNotFoundType, \
     InactiveListType, ModificationNotAllowedType, UnsupportedVisibilityType
 from task_management.graphql.types.input_types import SetListVisibilityInputParams
@@ -50,9 +51,10 @@ class SetListVisibilityMutation(graphene.Mutation):
         )
 
         try:
+            visibility = Visibility(params.visibility)
             result = interactor.set_list_visibility(
                 list_id=params.list_id,
-                visibility=params.visibility,
+                visibility=visibility,
                 user_id=params.user_id
             )
 

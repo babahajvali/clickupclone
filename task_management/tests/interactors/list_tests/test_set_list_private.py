@@ -70,7 +70,7 @@ class TestSetListPrivate:
             "List", (), {"is_active": True}
         )()
 
-        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PRIVATE.value)
+        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PRIVATE)
 
         self.interactor.list_storage.make_list_private.assert_called_once_with("list_1")
 

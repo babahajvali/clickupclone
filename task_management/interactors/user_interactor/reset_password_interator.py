@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from task_management.interactors.email_service_interface.email_service_interface import \
     EmailServiceInterface
-from task_management.interactors.storage_interface.PasswordResetStorageInteraface import \
+from task_management.interactors.storage_interface.password_reset_storage_interface import \
     PasswordResetStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
@@ -12,7 +12,7 @@ from task_management.interactors.storage_interface.user_storage_interface import
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
-class UserPasswordInteractor(ValidationMixin):
+class PasswordResetInteractor(ValidationMixin):
     def __init__(self, password_reset_storage: PasswordResetStorageInterface,
                  user_storage: UserStorageInterface,
                  email_service: EmailServiceInterface = None,
@@ -22,8 +22,6 @@ class UserPasswordInteractor(ValidationMixin):
         self.email_service = email_service
         self.reset_token_expiry_hours = reset_token_expiry_hours
 
-
-    # ... existing methods ...
 
     def request_password_reset(self, email: str, base_url: str) -> bool:
         """Request password reset for a user"""
@@ -35,23 +33,18 @@ class UserPasswordInteractor(ValidationMixin):
                 NotExistedEmailFoundException
             raise NotExistedEmailFoundException(email=email)
 
-        # Generate secure token
         reset_token = secrets.token_urlsafe(32)
 
-        # Use timezone-aware datetime (FIXED!)
         expires_at = timezone.now() + timedelta(hours=self.reset_token_expiry_hours)
 
-        # Save token to database
         self.password_reset_storage.create_password_reset_token(
             user_id=user_data.user_id,
             token=reset_token,
             expires_at=expires_at
         )
 
-        # Create reset link
         reset_link = f"{base_url}/reset-password?token={reset_token}"
 
-        # Send email
         if self.email_service:
             return self.email_service.send_password_reset_email(
                 email=email,
@@ -64,7 +57,6 @@ class UserPasswordInteractor(ValidationMixin):
         """Reset user password using token"""
 
 
-        # Get token from database
         reset_token_data = self.password_reset_storage.get_reset_token(token=token)
 
         if not reset_token_data:
@@ -72,21 +64,18 @@ class UserPasswordInteractor(ValidationMixin):
                 InvalidResetTokenFound
             raise InvalidResetTokenFound(token=token)
 
-        # Check if token expired (use timezone-aware comparison)
         if timezone.now() > reset_token_data.expires_at:
-            self.password_reset_storage.delete_reset_token(token=token)
+            self.password_reset_storage.used_reset_token(token=token)
             from task_management.exceptions.custom_exceptions import \
                 ResetTokenExpired
             raise ResetTokenExpired(token=token)
 
-        # Update password
         updated_user = self.password_reset_storage.update_user_password(
             user_id=reset_token_data.user_id,
             new_password=new_password
         )
 
-        # Mark token as used
-        self.password_reset_storage.delete_reset_token(token=token)
+        self.password_reset_storage.used_reset_token(token=token)
 
         return updated_user
 

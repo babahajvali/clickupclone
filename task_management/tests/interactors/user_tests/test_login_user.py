@@ -27,7 +27,7 @@ class TestGetUserProfile:
             email="test@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=GenderEnum.MALE,
             is_active=True,
             image_url="https://example.com/image.png",
         )
@@ -72,7 +72,7 @@ class TestGetUserProfile:
             email="inactive@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=GenderEnum.MALE,
             is_active=False,
             image_url="url",
         )

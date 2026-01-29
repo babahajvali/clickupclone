@@ -150,7 +150,7 @@ class TemplateAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('field_name','field_id', 'field_type', 'template', 'order',
+    list_display = ('field_name','field_id', 'field_type',"is_active" ,'template', 'order',
                     'is_required', 'created_by', 'created_at')
     list_filter = ('field_type', 'is_required', 'created_at')
     search_fields = ('field_name', 'description')

@@ -70,7 +70,7 @@ class TestSetListPublic:
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True})()
 
-        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC.value)
+        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         self.interactor.list_storage.make_list_public.assert_called_once_with("list_1")
 
@@ -80,7 +80,7 @@ class TestSetListPublic:
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
-            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC.value)
+            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 

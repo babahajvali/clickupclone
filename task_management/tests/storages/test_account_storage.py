@@ -1,6 +1,3 @@
-from unittest.mock import patch
-from uuid import UUID
-
 import pytest
 
 from task_management.interactors.dtos import CreateAccountDTO

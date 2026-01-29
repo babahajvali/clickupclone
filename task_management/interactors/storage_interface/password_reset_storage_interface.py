@@ -16,7 +16,7 @@ class PasswordResetStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def delete_reset_token(self, token: str) -> bool:
+    def used_reset_token(self, token: str) -> bool:
         pass
 
     @abstractmethod

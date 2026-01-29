@@ -205,7 +205,7 @@ class TestSpaceInteractor:
         self.space_storage.set_space_private.return_value = expected_result
 
         # Act
-        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PRIVATE.value)
+        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PRIVATE)
 
         # Assert
         assert result == expected_result
@@ -225,7 +225,7 @@ class TestSpaceInteractor:
         self.space_storage.set_space_public.return_value = expected_result
 
         # Act
-        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PUBLIC.value)
+        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PUBLIC)
 
         # Assert
         assert result == expected_result

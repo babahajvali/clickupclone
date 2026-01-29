@@ -238,7 +238,7 @@ class TestFolderInteractor:
         )()
         self.folder_storage.set_folder_private.return_value = expected
 
-        result = self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PRIVATE.value)
+        result = self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PRIVATE)
 
         snapshot.assert_match(
             repr(result),
@@ -257,7 +257,7 @@ class TestFolderInteractor:
         )()
 
         with pytest.raises(InactiveFolderException) as exc:
-            self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC.value)
+            self.interactor.set_folder_visibility(folder_id, user_id,Visibility.PUBLIC)
 
         snapshot.assert_match(
             repr(exc.value.folder_id),

@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     InactiveSpaceType, ModificationNotAllowedType, UnsupportedVisibilityType
 from task_management.graphql.types.input_types import \
@@ -45,10 +46,11 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
         )
 
         try:
+            visibility = Visibility(params.visibility)
             result = interactor.set_space_visibility(
                 space_id=params.space_id,
                 user_id=params.user_id,
-                visibility=params.visibility
+                visibility=visibility
             )
 
             return SpaceType(

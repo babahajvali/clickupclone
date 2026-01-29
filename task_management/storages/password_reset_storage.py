@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from task_management.interactors.dtos import PasswordResetTokenDTO, UserDTO
-from task_management.interactors.storage_interface.PasswordResetStorageInteraface import \
+from task_management.interactors.storage_interface.password_reset_storage_interface import \
     PasswordResetStorageInterface
 from task_management.models.models import PasswordResetToken, User
 
@@ -11,13 +11,11 @@ class PasswordResetStorage(PasswordResetStorageInterface):
     def create_password_reset_token(self, user_id: str, token: str,
                                     expires_at: datetime) -> PasswordResetTokenDTO:
         try:
-            # Delete any existing unused tokens for this user
             PasswordResetToken.objects.filter(
                 user_id=user_id,
                 is_used=False
             ).delete()
 
-            # Create new token
             reset_token = PasswordResetToken.objects.create(
                 user_id=user_id,
                 token=token,
@@ -26,7 +24,7 @@ class PasswordResetStorage(PasswordResetStorageInterface):
             )
 
             return PasswordResetTokenDTO(
-                user_id=str(reset_token.user_id),
+                user_id=str(reset_token.user.user_id),
                 token=reset_token.token,
                 created_at=reset_token.created_at,
                 expires_at=reset_token.expires_at
@@ -44,7 +42,7 @@ class PasswordResetStorage(PasswordResetStorageInterface):
             )
 
             return PasswordResetTokenDTO(
-                user_id=str(reset_token.user_id),
+                user_id=str(reset_token.user.user_id),
                 token=reset_token.token,
                 created_at=reset_token.created_at,
                 expires_at=reset_token.expires_at
@@ -56,16 +54,13 @@ class PasswordResetStorage(PasswordResetStorageInterface):
         except Exception as e:
             raise Exception(f"Failed to get reset token: {str(e)}")
 
-    def delete_reset_token(self, token: str) -> bool:
-        try:
-            updated = PasswordResetToken.objects.filter(
-                token=token
-            ).update(is_used=True)
+    def used_reset_token(self, token: str) -> bool:
 
-            return updated > 0
+        token_data = PasswordResetToken.objects.get(token=token)
+        token_data.is_used = True
+        token_data.save()
 
-        except Exception as e:
-            raise Exception(f"Failed to delete reset token: {str(e)}")
+        return token_data.is_used
 
     def update_user_password(self, user_id: str, new_password: str) -> UserDTO:
         try:
@@ -77,10 +72,10 @@ class PasswordResetStorage(PasswordResetStorageInterface):
             return UserDTO(
                 user_id=str(user.user_id),
                 full_name=user.full_name,
-                gender=getattr(user, 'gender', ''),
+                gender=user.gender,
                 username=user.username,
                 email=user.email,
-                phone_number=getattr(user, 'phone_number', ''),
+                phone_number=user.phone_number,
                 is_active=user.is_active,
                 password=None,
                 image_url=user.image_url,
