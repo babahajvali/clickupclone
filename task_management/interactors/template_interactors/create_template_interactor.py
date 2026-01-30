@@ -1,3 +1,4 @@
+from task_management.exceptions.enums import FieldTypeEnum
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     CreateFieldDTO
 from task_management.constants.field_constants import FIXED_FIELDS
@@ -31,8 +32,6 @@ class CreateTemplateInteractor(ValidationMixin):
         self.validate_user_has_access_to_list(
             user_id=template_data.created_by, list_id=template_data.list_id,
             permission_storage=self.permission_storage)
-        self.validate_template_name_not_exists(
-            template_name=template_data.name,template_storage=self.template_storage)
 
         result = self.template_storage.create_template(template_data)
         self.create_template_default_fields(template_id=result.template_id,
@@ -50,7 +49,7 @@ class CreateTemplateInteractor(ValidationMixin):
             list_storage=self.list_storage,)
         for field in FIXED_FIELDS:
             create_field_dto = CreateFieldDTO(
-                field_type=field["field_type"],
+                field_type=FieldTypeEnum(field["field_type"]),
                 field_name=field["field_name"],
                 description=field.get("description", ""),
                 template_id=template_id,

@@ -62,11 +62,9 @@ class ForgotPasswordMutation(graphene.Mutation):
                 )
 
         except NotExistedEmailFoundException as e:
-            print(f"❌ Email not found: {e.email}")
             return NotExistedEmailFoundType(email=e.email)
 
         except Exception as e:
-            print(f"❌ Unexpected error: {str(e)}")
             import traceback
             traceback.print_exc()
             return PasswordResetResponseType(
@@ -98,7 +96,7 @@ class ResetPasswordMutation(graphene.Mutation):
             )
 
             return UserType(
-                user_id=str(result.user_id),
+                user_id=result.user_id,
                 full_name=result.full_name,
                 gender=result.gender,
                 username=result.username,

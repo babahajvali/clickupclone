@@ -18,6 +18,7 @@ class UserType(graphene.ObjectType):
     phone_number = graphene.String(required=True)
     gender = graphene.String(required=True)
     image_url = graphene.String()
+    access_token = graphene.String()
 
 
 class WorkspaceType(graphene.ObjectType):

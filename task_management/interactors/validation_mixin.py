@@ -91,16 +91,6 @@ class ValidationMixin:
         if is_exist:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
-    @staticmethod
-    def validate_template_name_not_exists(template_name: str,
-                                          template_storage: TemplateStorageInterface):
-
-        is_exist = template_storage.is_template_name_exist(
-            template_name=template_name)
-
-        if is_exist:
-            raise TemplateNameAlreadyExistsException(
-                template_name=template_name)
 
     @staticmethod
     def validate_field_name_unique(field_id: str, field_name: str,

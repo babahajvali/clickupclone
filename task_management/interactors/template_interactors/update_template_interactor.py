@@ -28,9 +28,6 @@ class UpdateTemplateInteractor(ValidationMixin):
         self.validate_user_has_access_to_list(
             user_id=user_id, list_id=template_data.list_id,
             permission_storage=self.permission_storage)
-        self.validate_template_name_not_exists(
-            template_name=update_template_data.name,
-            template_storage=self.template_storage)
 
         return self.template_storage.update_template(
             update_template_data=update_template_data)

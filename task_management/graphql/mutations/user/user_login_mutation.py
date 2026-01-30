@@ -1,7 +1,9 @@
+from datetime import datetime, timedelta
 import graphene
+import jwt
+from django.conf import settings
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import InactiveUserException
 from task_management.graphql.types.error_types import NotExistedEmailFoundType, \
     WrongPasswordFoundType, InactiveUserType
 from task_management.graphql.types.input_types import UserLoginInputParams
@@ -28,7 +30,8 @@ class UserLoginMutation(graphene.Mutation):
                 email=params.email,
                 password=params.password
             )
-
+            access_token = UserLoginMutation._generate_access_token(
+                result.user_id)
             return UserType(
                 user_id=result.user_id,
                 username=result.username,
@@ -38,6 +41,7 @@ class UserLoginMutation(graphene.Mutation):
                 image_url=result.image_url,
                 is_active=result.is_active,
                 gender=result.gender,
+                access_token=access_token
             )
 
         except custom_exceptions.NotExistedEmailFoundException as e:
@@ -48,3 +52,18 @@ class UserLoginMutation(graphene.Mutation):
 
         except custom_exceptions.InactiveUserException as e:
             return InactiveUserType(user_id=e.user_id)
+
+    @staticmethod
+    def _generate_access_token(user_id):
+        """Generate JWT access token (no expiry)"""
+        payload = {
+            'user_id': str(user_id),
+            'iat': datetime.utcnow(),
+            'type': 'access'
+        }
+        token = jwt.encode(
+            payload,
+            settings.SECRET_KEY,
+            algorithm='HS256'
+        )
+        return token

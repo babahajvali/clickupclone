@@ -47,11 +47,12 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'task_management.middleware.rate_limit_middleware.RateLimitMiddleware',
+    'task_management.middleware.auth_middleware.JWTAuthenticationMiddleware'
 ]
 
 
@@ -128,7 +129,7 @@ EMAIL_HOST_USER = 'babavali3109@gmail.com'
 EMAIL_HOST_PASSWORD = 'nqbx etho jfwv kkpz'
 
 
-FRONTEND_URL = "https://y8hh59.csb.app"
+FRONTEND_URL = "http://localhost:3000/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -188,3 +189,7 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with"
 ]
+
+JWT_SECRET_KEY = SECRET_KEY  # Or use separate secret
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24
