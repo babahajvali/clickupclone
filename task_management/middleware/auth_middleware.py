@@ -72,12 +72,13 @@ class JWTAuthenticationMiddleware:
                 'register',
                 'createuser',
                 'signup',
-                'forgotpassword',
+                'forgetpassword',
                 'resetpassword',
                 'introspectionquery',
             ]
 
             is_public = operation_name in public_operations
+
 
             return is_public
 

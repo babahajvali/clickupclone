@@ -97,14 +97,14 @@ class UserInteractor(ValidationMixin):
         is_user_exist_username = self.user_storage.check_user_username_exists(
             user_id=user_id, username=username)
 
-        if not is_user_exist_username:
+        if  is_user_exist_username:
             self._is_username_taken(username=username)
     def _check_updated_email_exist(self, user_id: str, email: str):
 
         is_user_exist_email = self.user_storage.check_user_email_exists(
             user_id=user_id, email=email)
 
-        if not is_user_exist_email:
+        if is_user_exist_email:
             self._is_email_registered(email=email)
 
     def _check_updated_phone_number_exist(self, user_id: str,
@@ -113,5 +113,5 @@ class UserInteractor(ValidationMixin):
         is_user_exist_phone_number = self.user_storage.check_user_phone_number_exists(
             user_id=user_id, phone_number=phone_number)
 
-        if not is_user_exist_phone_number:
+        if is_user_exist_phone_number:
             self._is_phone_number_exists(phone_number=phone_number)

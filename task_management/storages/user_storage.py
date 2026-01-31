@@ -40,7 +40,7 @@ class UserStorage(UserStorageInterface):
             username=user_data.username, full_name=user_data.full_name,
             email=user_data.email, phone_number=user_data.phone_number,
             image_url=user_data.image_url, password=user_data.password,
-            gender=user_data.gender,
+            gender=user_data.gender.value,
         )
 
         return self._user_dto(data=user_obj)
@@ -53,8 +53,7 @@ class UserStorage(UserStorageInterface):
             user_obj.email = user_data.email
         if user_data.phone_number:
             user_obj.phone_number = user_data.phone_number
-        if user_data.image_url:
-            user_obj.image_url = user_data.image_url
+        user_obj.image_url = user_data.image_url
         if user_data.gender:
             user_obj.gender = user_data.gender
 

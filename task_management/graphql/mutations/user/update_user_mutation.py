@@ -25,13 +25,13 @@ class UpdateUserMutation(graphene.Mutation):
 
         try:
             user_update_data = UpdateUserDTO(
-                user_id=params.user_id,
+                user_id=info.context.user_id,
                 username=params.username if params.username else None,
                 email=params.email if params.email else None,
                 full_name=params.full_name if params.full_name else None,
                 phone_number=params.phone_number if params.phone_number else None,
                 gender=params.gender if params.gender else None,
-                image_url=params.image_url if params.image_url else None,
+                image_url=params.image_url,
             )
 
             result = interactor.update_user(user_update_data=user_update_data)

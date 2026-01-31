@@ -46,6 +46,6 @@ class PermissionScopeTypeEnum(Enum):
 
 
 class GenderEnum(Enum):
-    MALE = "male"
-    FEMALE = "female"
-    OTHER = "other"
+    MALE = "MALE"
+    FEMALE = "FEMALE"
+    OTHER = "OTHER"

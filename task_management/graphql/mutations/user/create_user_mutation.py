@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import GenderEnum
 from task_management.graphql.types.error_types import ExistedUsernameFoundType, \
     ExistedEmailFoundType, ExistedPhoneNumberFoundType
 from task_management.graphql.types.input_types import CreateUserInputParams
@@ -24,13 +25,14 @@ class CreateUserMutation(graphene.Mutation):
         interactor = UserInteractor(user_storage=user_storage)
 
         try:
+            gender = GenderEnum(params.gender)
             user_input_data = CreateUserDTO(
                 username=params.username,
                 email=params.email,
                 password=params.password,
                 full_name=params.full_name,
                 phone_number=params.phone_number,
-                gender=params.gender,
+                gender=gender,
                 image_url=params.image_url,
             )
 
