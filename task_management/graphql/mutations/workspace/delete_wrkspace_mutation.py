@@ -18,7 +18,6 @@ from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
-
 class DeleteWorkspaceMutation(graphene.Mutation):
     class Arguments:
         params = DeleteWorkspaceInputParams(required=True)
@@ -44,7 +43,7 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         try:
             result = interactor.delete_workspace(
                 workspace_id=params.workspace_id,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return WorkspaceType(
@@ -61,5 +60,3 @@ class DeleteWorkspaceMutation(graphene.Mutation):
 
         except custom_exceptions.InactiveWorkspaceException as e:
             return InactiveWorkspaceType(workspace_id=e.workspace_id)
-
-    

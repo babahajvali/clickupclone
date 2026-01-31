@@ -41,16 +41,16 @@ class DeleteTaskMutation(graphene.Mutation):
         try:
             result = interactor.delete_task(
                 task_id=params.task_id,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return TaskType(
-                task_id=str(result.task_id),
+                task_id=result.task_id,
                 title=result.title,
                 description=result.description,
-                list_id=str(result.list_id),
+                list_id=result.list_id,
                 order=result.order,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_delete=result.is_deleted
             )
 

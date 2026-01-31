@@ -12,7 +12,8 @@ from task_management.interactors.space_interactors.space_interactors import \
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
@@ -47,10 +48,11 @@ class CreateSpaceMutation(graphene.Mutation):
                 description=params.description,
                 workspace_id=params.workspace_id,
                 is_private=params.is_private,
-                created_by=params.created_by
+                created_by=info.context.user_id
             )
 
-            result = interactor.create_space(create_space_data=create_space_data)
+            result = interactor.create_space(
+                create_space_data=create_space_data)
 
             return SpaceType(
                 space_id=result.space_id,

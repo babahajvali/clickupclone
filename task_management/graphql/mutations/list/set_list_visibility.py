@@ -64,7 +64,7 @@ class SetListVisibilityMutation(graphene.Mutation):
             result = interactor.set_list_visibility(
                 list_id=params.list_id,
                 visibility=visibility,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return ListType(

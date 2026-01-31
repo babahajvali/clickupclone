@@ -41,7 +41,8 @@ class RemoveTaskAssigneeMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.remove_task_assignee(assign_id=params.assign_id,user_id=params.user_id)
+            result = interactor.remove_task_assignee(
+                assign_id=params.assign_id, user_id=info.context.user_id)
 
             return TaskAssigneeType(
                 assign_id=result.assign_id,

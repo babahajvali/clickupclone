@@ -23,7 +23,7 @@ class DeleteAccountMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         account_id = params.account_id
-        deleted_by = params.deleted_by
+        deleted_by = info.context.user_id
 
         user_storage = UserStorage()
         account_storage = AccountStorage()

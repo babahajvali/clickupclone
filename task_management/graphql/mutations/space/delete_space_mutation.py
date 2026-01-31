@@ -12,7 +12,8 @@ from task_management.interactors.space_interactors.space_interactors import \
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
@@ -44,7 +45,7 @@ class DeleteSpaceMutation(graphene.Mutation):
         try:
             result = interactor.delete_space(
                 space_id=params.space_id,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return SpaceType(

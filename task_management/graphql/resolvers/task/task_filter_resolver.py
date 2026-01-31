@@ -11,7 +11,8 @@ from task_management.interactors.task_interactors.task_interactor import \
 from task_management.storages.field_value_storage import FieldValueStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
 from task_management.storages.field_storage import FieldStorage
 
 
@@ -41,7 +42,7 @@ def task_filter_resolver(root, info, params):
 
         tasks_data = interactor.task_filter(
             task_filter_data=filter_data,
-            user_id=params.user_id
+            user_id=info.context.user_id
         )
 
         tasks_output = [

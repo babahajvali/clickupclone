@@ -47,7 +47,7 @@ class SetFolderVisibilityMutation(graphene.Mutation):
         try:
             result = interactor.set_folder_visibility(
                 folder_id=params.folder_id,
-                user_id=params.user_id,
+                user_id=info.context.user_id,
                 visibility=visibility
             )
 

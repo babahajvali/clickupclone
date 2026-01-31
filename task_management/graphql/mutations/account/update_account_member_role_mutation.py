@@ -73,7 +73,7 @@ class UpdateAccountMemberRoleMutation(graphene.Mutation):
             result = interactor.update_member_role(
                 account_member_id=params.account_member_id,
                 role=Role(params.role),
-                changed_by=params.changed_by
+                changed_by=info.context.user_id
             )
 
             return AccountMemberType(

@@ -39,7 +39,7 @@ class CreateViewMutation(graphene.Mutation):
                 name=params.name,
                 description=params.description,
                 view_type=view_type,
-                created_by=params.created_by,
+                created_by=info.context.user_id,
             )
 
             result = interactor.create_view(view_input)

@@ -57,6 +57,10 @@ class UserStorage(UserStorageInterface):
         if user_data.gender:
             user_obj.gender = user_data.gender
 
+        if user_data.full_name:
+            user_obj.full_name = user_data.full_name
+
+
         user_obj.save()
 
         return self._user_dto(data=user_obj)

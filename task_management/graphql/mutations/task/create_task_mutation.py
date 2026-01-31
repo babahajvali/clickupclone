@@ -29,7 +29,7 @@ class CreateTaskMutation(graphene.Mutation):
             title=params.title,
             description=params.description,
             list_id=params.list_id,
-            created_by=params.created_by,
+            created_by=info.context.user_id
         )
 
         list_storage = ListStorage()
@@ -38,7 +38,7 @@ class CreateTaskMutation(graphene.Mutation):
         field_storage = FieldStorage()
         field_value_storage = FieldValueStorage()
 
-        interactor =  TaskInteractor(
+        interactor = TaskInteractor(
             list_storage=list_storage,
             task_storage=task_storage,
             permission_storage=list_permission_storage,
@@ -64,7 +64,3 @@ class CreateTaskMutation(graphene.Mutation):
             return ListNotFoundType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowedException as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-
-
-
-

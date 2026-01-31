@@ -17,9 +17,12 @@ from task_management.storages.task_storage import TaskStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 
 
 class UpdateListMutation(graphene.Mutation):
@@ -61,19 +64,19 @@ class UpdateListMutation(graphene.Mutation):
 
             result = interactor.update_list(
                 update_list_data=update_list_data,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return ListType(
-                list_id=str(result.list_id),
+                list_id=result.list_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 is_active=result.is_active,
                 order=result.order,
                 is_private=result.is_private,
-                created_by=str(result.created_by),
-                folder_id=str(result.folder_id) if result.folder_id else None
+                created_by=result.created_by,
+                folder_id=result.folder_id if result.folder_id else None
             )
 
         except custom_exceptions.ListNotFoundException as e:

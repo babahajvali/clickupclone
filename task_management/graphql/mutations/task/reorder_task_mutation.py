@@ -11,7 +11,8 @@ from task_management.interactors.task_interactors.task_interactor import \
 from task_management.storages.field_value_storage import FieldValueStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
 from task_management.storages.field_storage import FieldStorage
 
 
@@ -41,16 +42,16 @@ class ReorderTaskMutation(graphene.Mutation):
             result = interactor.reorder_task(
                 task_id=params.task_id,
                 order=params.order,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return TaskType(
-                task_id=str(result.task_id),
+                task_id=result.task_id,
                 title=result.title,
                 description=result.description,
-                list_id=str(result.list_id),
+                list_id=result.list_id,
                 order=result.order,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_delete=result.is_deleted
             )
 

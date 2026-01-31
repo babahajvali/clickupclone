@@ -71,7 +71,7 @@ class RemoveAccountMemberMutation(graphene.Mutation):
         try:
             result = interactor.remove_member_from_account(
                 account_member_id=params.account_member_id,
-                removed_by=params.removed_by
+                removed_by=info.context.user_id
             )
 
             return AccountMemberType(

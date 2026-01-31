@@ -58,7 +58,7 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
         try:
             result = interactor.remove_member_from_workspace(
                 workspace_member_id=params.workspace_member_id,
-                removed_by=params.removed_by
+                removed_by=info.context.user_id
             )
 
             return WorkspaceMemberType(
@@ -71,7 +71,8 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
             )
 
         except custom_exceptions.InactiveWorkspaceMemberException as e:
-            return InactiveWorkspaceMemberType(workspace_member_id=e.workspace_member_id)
+            return InactiveWorkspaceMemberType(
+                workspace_member_id=e.workspace_member_id)
 
         except custom_exceptions.WorkspaceNotFoundException as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)

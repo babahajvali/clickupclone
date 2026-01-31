@@ -12,8 +12,10 @@ from task_management.interactors.dtos import UpdateFolderDTO
 from task_management.interactors.space_interactors.folders_interactor import \
     FolderInteractor
 from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
 
 
@@ -46,17 +48,17 @@ class UpdateFolderMutation(graphene.Mutation):
 
             result = interactor.update_folder(
                 update_folder_data=update_folder_data,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return FolderType(
-                folder_id=str(result.folder_id),
+                folder_id=result.folder_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 order=result.order,
                 is_active=result.is_active,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_private=result.is_private
             )
 

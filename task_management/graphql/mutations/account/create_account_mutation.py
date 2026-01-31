@@ -25,7 +25,7 @@ class CreateAccountMutation(graphene.Mutation):
     def mutate(root, info, params):
         name = params.name
         description = params.description
-        owner_id = params.owner_id
+        owner_id = info.context.user_id
 
         user_storage = UserStorage()
         account_storage = AccountStorage()

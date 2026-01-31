@@ -41,18 +41,18 @@ class ReorderFolderMutation(graphene.Mutation):
             result = interactor.reorder_folder(
                 space_id=params.space_id,
                 folder_id=params.folder_id,
-                user_id=params.user_id,
+                user_id=info.context.user_id,
                 order=params.order
             )
 
             return FolderType(
-                folder_id=str(result.folder_id),
+                folder_id=result.folder_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 order=result.order,
                 is_active=result.is_active,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_private=result.is_private
             )
 

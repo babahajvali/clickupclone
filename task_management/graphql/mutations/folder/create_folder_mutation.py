@@ -11,8 +11,10 @@ from task_management.interactors.dtos import CreateFolderDTO
 from task_management.interactors.space_interactors.folders_interactor import \
     FolderInteractor
 from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
 
 
@@ -41,20 +43,21 @@ class CreateFolderMutation(graphene.Mutation):
                 name=params.name,
                 description=params.description,
                 space_id=params.space_id,
-                created_by=params.created_by,
+                created_by=info.context.user_id,
                 is_private=params.is_private
             )
 
-            result = interactor.create_folder(create_folder_data=create_folder_data)
+            result = interactor.create_folder(
+                create_folder_data=create_folder_data)
 
             return FolderType(
-                folder_id=str(result.folder_id),
+                folder_id=result.folder_id,
                 name=result.name,
                 description=result.description,
-                space_id=str(result.space_id),
+                space_id=result.space_id,
                 order=result.order,
                 is_active=result.is_active,
-                created_by=str(result.created_by),
+                created_by=result.created_by,
                 is_private=result.is_private
             )
 

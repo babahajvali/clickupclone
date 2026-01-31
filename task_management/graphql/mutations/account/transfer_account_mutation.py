@@ -4,8 +4,10 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import AccountNotFoundType, \
     InactiveAccountType, UserNotAccountOwnerType, UserNotFoundType, \
     InactiveUserType
-from task_management.graphql.types.input_types import TransferAccountInputParams
-from task_management.graphql.types.response_types import TransferAccountResponse
+from task_management.graphql.types.input_types import \
+    TransferAccountInputParams
+from task_management.graphql.types.response_types import \
+    TransferAccountResponse
 from task_management.graphql.types.types import AccountType
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
@@ -24,7 +26,7 @@ class TransferAccountMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         account_id = params.account_id
-        old_owner_id = params.old_owner_id
+        old_owner_id = info.context.old_owner_id
         new_owner_id = params.new_owner_id
 
         user_storage = UserStorage()

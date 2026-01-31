@@ -38,20 +38,20 @@ class DeleteFieldMutation(graphene.Mutation):
         try:
             result = interactor.delete_field(
                 field_id=params.field_id,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return FieldType(
-                field_id=str(result.field_id),
-                field_type=result.field_type.value if hasattr(result.field_type, 'value') else result.field_type,
+                field_id=result.field_id,
+                field_type=result.field_type.value,
                 description=result.description,
-                template_id=str(result.template_id),
+                template_id=result.template_id,
                 field_name=result.field_name,
                 is_active=result.is_active,
                 order=result.order,
                 config=result.config,
                 is_required=result.is_required,
-                created_by=str(result.created_by)
+                created_by=result.created_by
             )
 
         except custom_exceptions.FieldNotFoundException as e:

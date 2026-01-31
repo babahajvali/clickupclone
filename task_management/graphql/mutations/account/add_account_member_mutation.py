@@ -79,7 +79,7 @@ class CreateAccountMemberMutation(graphene.Mutation):
                 account_id=params.account_id,
                 user_id=params.user_id,
                 role=role_enum,
-                added_by=params.added_by
+                added_by=info.context.user_id
             )
 
             result = interactor.add_member_to_account(account_member_dto)

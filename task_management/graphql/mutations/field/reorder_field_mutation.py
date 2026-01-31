@@ -11,7 +11,8 @@ from task_management.interactors.field_interactors.field_interactors import \
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
 
 
 class ReorderFieldMutation(graphene.Mutation):
@@ -39,7 +40,7 @@ class ReorderFieldMutation(graphene.Mutation):
                 field_id=params.field_id,
                 template_id=params.template_id,
                 new_order=params.new_order,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return FieldType(

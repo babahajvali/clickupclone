@@ -39,7 +39,7 @@ class RemoveListViewMutation(graphene.Mutation):
         try:
             result = interactor.remove_view_for_list(
                 list_id=params.list_id, view_id=params.view_id,
-                user_id=params.user_id)
+                user_id=info.context.user_id)
 
             return ListViewType(
                 id=result.id,

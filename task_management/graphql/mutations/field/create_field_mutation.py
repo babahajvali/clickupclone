@@ -4,7 +4,8 @@ from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import FieldTypeEnum
 from task_management.graphql.types.error_types import TemplateNotFoundType, \
     UnsupportedFieldTypeType, FieldNameAlreadyExistsType, \
-    ModificationNotAllowedType, InvalidFieldConfigType, InvalidFieldDefaultValueType
+    ModificationNotAllowedType, InvalidFieldConfigType, \
+    InvalidFieldDefaultValueType
 from task_management.graphql.types.input_types import CreateFieldInputParams
 from task_management.graphql.types.response_types import CreateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -14,7 +15,8 @@ from task_management.interactors.dtos import CreateFieldDTO
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
 
 
 class CreateFieldMutation(graphene.Mutation):
@@ -46,10 +48,11 @@ class CreateFieldMutation(graphene.Mutation):
                 template_id=params.template_id,
                 config=params.config,
                 is_required=params.is_required,
-                created_by=params.created_by
+                created_by=info.context.user_id
             )
 
-            result = interactor.create_field(create_field_data=create_field_data)
+            result = interactor.create_field(
+                create_field_data=create_field_data)
 
             return FieldType(
                 field_id=result.field_id,

@@ -43,7 +43,7 @@ class TransferWorkspaceMutation(graphene.Mutation):
         try:
             result = interactor.transfer_workspace(
                 workspace_id=params.workspace_id,
-                user_id=params.user_id,
+                user_id=info.context.user_id,
                 new_user_id=params.new_user_id
             )
 

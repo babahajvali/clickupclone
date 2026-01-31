@@ -53,7 +53,7 @@ class UpdateSpaceMutation(graphene.Mutation):
 
             result = interactor.update_space(
                 update_space_data=update_space_data,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return SpaceType(

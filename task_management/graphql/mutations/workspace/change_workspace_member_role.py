@@ -60,7 +60,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,
                 role=params.role,
-                changed_by=params.changed_by
+                changed_by=info.context.user_id
             )
 
             return WorkspaceMemberType(

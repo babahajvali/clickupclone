@@ -46,7 +46,7 @@ class UpdateTaskMutation(graphene.Mutation):
                 description=params.description,
             )
             result = interactor.update_task(update_task_data=update_input,
-                                            user_id=params.user_id)
+                                            user_id=info.context.user_id)
 
             return TaskType(
                 task_id=result.task_id,

@@ -50,7 +50,7 @@ class UpdateWorkspaceMutation(graphene.Mutation):
 
             result = interactor.update_workspace(
                 update_workspace_data=update_workspace_data,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return WorkspaceType(

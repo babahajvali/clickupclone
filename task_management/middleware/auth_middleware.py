@@ -12,6 +12,9 @@ class JWTAuthenticationMiddleware:
         if not request.path.startswith('/graphql'):
             return self.get_response(request)
 
+        if request.method == 'GET':
+            return self.get_response(request)
+
         if request.method == 'OPTIONS':
             return self.get_response(request)
 

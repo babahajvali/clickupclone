@@ -63,7 +63,7 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,
                 role=Role(params.role),
-                added_by=params.added_by
+                added_by=info.context.user_id
             )
 
             result = interactor.add_member_to_workspace(workspace_member_dto)

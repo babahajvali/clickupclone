@@ -5,7 +5,7 @@ from task_management.models import (
     List, ListPermission, Task, TaskAssignee,
     Template, Field, FieldValue, View, ListView
 )
-from task_management.models.models import PasswordResetToken
+from task_management.models.user_models import PasswordResetToken
 
 
 @admin.register(User)

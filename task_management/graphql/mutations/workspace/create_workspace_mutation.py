@@ -47,7 +47,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
             create_workspace_data = CreateWorkspaceDTO(
                 name=params.name,
                 description=params.description,
-                user_id=params.user_id,
+                user_id=info.context.user_id,
                 account_id=params.account_id
             )
 
