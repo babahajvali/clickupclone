@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    AccountNameAlreadyExistsException, UserNotAccountOwnerException
+    AccountNameAlreadyExistsException, UserNotAccountOwnerException, \
+    InvalidAccountIdsFoundException
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
     CreateAccountMemberDTO, CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
@@ -110,11 +111,10 @@ class AccountInteractor(ValidationMixin):
 
         return self.account_storage.delete_account(account_id=account_id)
 
-    def get_account(self, account_id: str):
-        self.validate_account_is_active(account_id=account_id,
-                                        account_storage=self.account_storage)
+    def get_accounts(self, account_ids: list[str])-> list[AccountDTO]:
+        self._check_accounts_active(account_ids=account_ids)
 
-        return self.account_storage.get_account_by_id(account_id=account_id)
+        return self.account_storage.get_accounts(account_ids=account_ids)
 
     # Helping functions
 
@@ -199,3 +199,18 @@ class AccountInteractor(ValidationMixin):
         )
 
         return list_interactor.create_list(list_input_data)
+
+    def _check_accounts_active(self, account_ids: list[str]):
+        accounts_data = self.account_storage.get_accounts(account_ids=account_ids)
+
+        existed_account_ids = [str(obj.account_id) for obj in accounts_data]
+        invalid_accounts_ids = []
+
+        for account_id in account_ids:
+            if account_id not in existed_account_ids:
+                invalid_accounts_ids.append(account_id)
+
+
+        if invalid_accounts_ids:
+            raise InvalidAccountIdsFoundException(account_ids=invalid_accounts_ids)
+

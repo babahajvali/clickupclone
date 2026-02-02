@@ -7,19 +7,22 @@ from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
 class WorkspaceStorageInterface(ABC):
 
     @abstractmethod
-    def get_workspace(self,workspace_id: str)-> WorkspaceDTO:
+    def get_workspace(self, workspace_id: str) -> WorkspaceDTO:
         pass
 
     @abstractmethod
-    def create_workspace(self,workspace_data: CreateWorkspaceDTO)-> WorkspaceDTO:
+    def create_workspace(self,
+                         workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass
 
     @abstractmethod
-    def update_workspace(self,workspace_data: UpdateWorkspaceDTO)-> WorkspaceDTO:
+    def update_workspace(self,
+                         workspace_data: UpdateWorkspaceDTO) -> WorkspaceDTO:
         pass
 
     @abstractmethod
-    def validate_user_is_workspace_owner(self, user_id: str, workspace_id: str):
+    def validate_user_is_workspace_owner(self, user_id: str,
+                                         workspace_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -27,13 +30,11 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def transfer_workspace(self, workspace_id: str, new_user_id: str)-> WorkspaceDTO:
+    def transfer_workspace(self, workspace_id: str,
+                           new_user_id: str) -> WorkspaceDTO:
         # change the owner id with new_user_id
         pass
 
     @abstractmethod
-    def get_workspaces_by_account(self,account_id: str) -> list[WorkspaceDTO]:
+    def get_workspaces_by_account(self, account_id: str) -> list[WorkspaceDTO]:
         pass
-
-
-

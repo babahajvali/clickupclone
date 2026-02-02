@@ -9,6 +9,9 @@ class AccountType(graphene.ObjectType):
     is_active = graphene.Boolean(required=True)
 
 
+class AccountsType(graphene.ObjectType):
+    accounts = graphene.List(AccountType)
+
 class UserType(graphene.ObjectType):
     user_id = graphene.String(required=True)
     username = graphene.String(required=True)
@@ -187,6 +190,10 @@ class AccountMemberType(graphene.ObjectType):
     added_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
 
+
+
+class AccountMembersType(graphene.ObjectType):
+    accounts = graphene.List(AccountMemberType)
 
 class ListViewType(graphene.ObjectType):
     id = graphene.Int(required=True)

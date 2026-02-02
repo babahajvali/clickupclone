@@ -31,3 +31,7 @@ class AccountMemberStorageInterface(ABC):
     def delete_account_member_permission(
             self,account_member_id: int) -> AccountMemberDTO:
         pass
+
+    @abstractmethod
+    def get_user_accounts(self,user_id: str) -> list[AccountMemberDTO]:
+        pass

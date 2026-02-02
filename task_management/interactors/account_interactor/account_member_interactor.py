@@ -131,6 +131,12 @@ class AccountMemberInteractor(ValidationMixin):
 
         return result
 
+    def get_user_accounts(self,user_id: str) -> list[AccountMemberDTO]:
+        self.validate_user_is_active(user_id=user_id,user_storage=self.user_storage)
+
+        return self.account_member_storage.get_user_accounts(user_id=user_id)
+
+
     def _add_member_to_account_workspaces(self, account_id: str, user_id: str,
                                           account_role: Role,
                                           added_by: str):

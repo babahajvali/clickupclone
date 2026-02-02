@@ -183,3 +183,7 @@ class InvalidResetTokenFoundType(graphene.ObjectType):
 
 class ResetTokenExpiredType(graphene.ObjectType):
     token = graphene.String(required=True)
+
+
+class InvalidAccountIdsFoundType(graphene.ObjectType):
+    account_ids = graphene.List(graphene.String,required=True)

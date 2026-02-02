@@ -68,11 +68,12 @@ class TestGetSpaceLists:
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
     def test_space_inactive(self, snapshot):
-        self.interactor.space_storage.get_space.return_value = type(
-            "Space", (), {"is_active": False}
-        )()
+        with patch("django.core.cache.cache.get", return_value=None):
+            self.interactor.space_storage.get_space.return_value = type(
+                "Space", (), {"is_active": False}
+            )()
 
-        with pytest.raises(InactiveSpaceException) as exc:
-            self.interactor.get_space_lists("space_1")
+            with pytest.raises(InactiveSpaceException) as exc:
+                self.interactor.get_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")

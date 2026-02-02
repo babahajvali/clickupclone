@@ -43,11 +43,8 @@ class TestCreateTemplateInteractor:
             list_storage=self.list_storage
         )
 
-    @patch(
-        "task_management.interactors.template_interactors.create_template_interactor.FieldInteractor"
-    )
-    def test_create_template_success(self, mock_field_interactor, snapshot):
-        mock_field_interactor.return_value.create_field.return_value = None
+
+    def test_create_template_success(self, snapshot):
 
         create_template_dto = CreateTemplateDTOFactory()
 
@@ -70,7 +67,6 @@ class TestCreateTemplateInteractor:
             added_by="admin"
         )
 
-        self.template_storage.is_template_name_exist.return_value = False
         self.template_storage.create_template.return_value = template_dto
 
         result = self.interactor.create_template(create_template_dto)

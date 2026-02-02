@@ -52,9 +52,10 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return self._workspace_dto(data=workspace_obj)
 
     def validate_user_is_workspace_owner(self, user_id: str,
-                                         workspace_id: str):
-        return Workspace.objects.get(workspace_id=workspace_id,
-                                     user_id=user_id)
+                                         workspace_id: str) -> bool:
+        workspace_data = Workspace.objects.filter(workspace_id=workspace_id,
+                                     created_by_id=user_id).exists()
+        return workspace_data
 
     def delete_workspace(self, workspace_id: str) -> WorkspaceDTO:
         workspace_data = Workspace.objects.get(workspace_id=workspace_id)

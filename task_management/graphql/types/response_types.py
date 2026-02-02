@@ -17,7 +17,7 @@ from task_management.graphql.types.error_types import \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffsetNumberType, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotExistedType, \
     AccountMemberNotFoundType, InvalidResetTokenFoundType, \
-    ResetTokenExpiredType
+    ResetTokenExpiredType, InvalidAccountIdsFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -26,7 +26,7 @@ from task_management.graphql.types.types import AccountType, UserType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
     ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
     FieldValueType, WorkspaceUsersType, GetUserTaskType, \
-    PasswordResetResponseType
+    PasswordResetResponseType, AccountsType, AccountMembersType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -120,7 +120,8 @@ class CreateListResponse(graphene.Union):
             SpaceNotFoundType,
             InactiveSpaceType,
             FolderNotFoundType,
-            InactiveFolderType
+            InactiveFolderType,
+            ModificationNotAllowedType
         )
 
 
@@ -757,3 +758,18 @@ class GetListTaskAssigneesResponse(graphene.Union):
         types = (TaskAssigneesType,
                  InactiveListType,
                  ListNotFoundType)
+
+
+class GetUserAccountsResponse(graphene.Union):
+    class Meta:
+        types = (
+            AccountMembersType,
+            InactiveUserType,
+            UserNotFoundType
+        )
+
+
+class GetAccountsResponse(graphene.Union):
+    class Meta:
+        types = (AccountsType,
+                 InvalidAccountIdsFoundType)

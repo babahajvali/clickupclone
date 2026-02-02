@@ -24,8 +24,9 @@ class AccountMemberStorage(AccountMemberStorageInterface):
     def get_user_permission_for_account(self, account_id: str,
                                         user_id: str) -> AccountMemberDTO | None:
         try:
-            account_member_data = AccountMember.objects.get(account_id=account_id,
-                                                            user_id=user_id)
+            account_member_data = AccountMember.objects.get(
+                account_id=account_id,
+                user_id=user_id)
 
             return self._account_member_dto(
                 account_member_data=account_member_data)
@@ -73,3 +74,10 @@ class AccountMemberStorage(AccountMemberStorageInterface):
 
         return self._account_member_dto(
             account_member_data=account_member_data)
+
+    def get_user_accounts(self, user_id: str) -> list[AccountMemberDTO]:
+        accounts_data = AccountMember.objects.filter(user_id=user_id,
+                                                     is_active=True).distinct()
+
+        return [self._account_member_dto(account_member_data=data) for data in
+                accounts_data]

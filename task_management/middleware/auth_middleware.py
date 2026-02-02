@@ -9,23 +9,18 @@ class JWTAuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Skip non-GraphQL paths
         if not request.path.startswith('/graphql'):
             return self.get_response(request)
 
-        # Allow GET requests (GraphiQL UI)
         if request.method == 'GET':
             return self.get_response(request)
 
-        # Allow OPTIONS (CORS)
         if request.method == 'OPTIONS':
             return self.get_response(request)
 
-        # Check if public operation
         if self._is_public_operation(request):
             return self.get_response(request)
 
-        # Require authentication for protected operations
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
 
         if not auth_header.startswith('Bearer '):
@@ -37,7 +32,6 @@ class JWTAuthenticationMiddleware:
         token = auth_header.split(' ')[1]
 
         try:
-            # Decode and verify JWT
             payload = jwt.decode(
                 token,
                 settings.SECRET_KEY,
@@ -46,7 +40,6 @@ class JWTAuthenticationMiddleware:
 
             user_id = payload.get('user_id')
 
-            # ✅ Set user_id on request
             request.user_id = user_id
 
         except jwt.ExpiredSignatureError:
@@ -87,19 +80,15 @@ class JWTAuthenticationMiddleware:
                 'forgotpassword',
                 'resetpassword',
                 'createaccount',
+                'introspectionquery'
             ]
 
-            # Check operation name
             if operation_name in public_operations:
                 return True
 
-            # Check query content
             for op in public_operations:
                 if f'{op}(' in query or f'{op}{{' in query:
                     return True
-
-            # ✅ REMOVED: __type and __schema check
-            # This was causing false positives!
 
             return False
 

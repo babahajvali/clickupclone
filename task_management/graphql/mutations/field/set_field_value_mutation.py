@@ -45,7 +45,7 @@ class SetFieldValueMutation(graphene.Mutation):
 
         try:
             result = interactor.set_task_field_value(
-                set_value_data=update_data, user_id=params.user_id)
+                set_value_data=update_data, user_id=info.context.user_id)
 
             return FieldValueType(
                 id=result.id,
@@ -55,4 +55,4 @@ class SetFieldValueMutation(graphene.Mutation):
             )
 
         except custom_exceptions.ModificationNotAllowedException as exc:
-            return ModificationNotAllowedType(userid=exc.user_id)
+            return ModificationNotAllowedType(user_id=exc.user_id)

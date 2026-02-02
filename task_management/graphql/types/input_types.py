@@ -360,7 +360,6 @@ class SetFieldValuesInputParams(graphene.InputObjectType):
     task_id = graphene.String(required=True)
     field_id = graphene.String(required=True)
     value = graphene.String(required=True)
-    user_id = graphene.String(required=True)
 
 
 class GetWorkspaceMemberInputParams(graphene.InputObjectType):
@@ -382,3 +381,7 @@ class ResetPasswordReqParams(graphene.InputObjectType):
 
 class GetListTaskAssigneesInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
+
+
+class GetAccountsInputParams(graphene.InputObjectType):
+    account_ids = graphene.List(graphene.String, required=True)

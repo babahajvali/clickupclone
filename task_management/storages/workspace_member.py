@@ -82,7 +82,7 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
         user_workspaces = WorkspaceMember.objects.filter(
-            user_id=user_id).distinct()
+            user_id=user_id,is_active=True).distinct()
 
         return [self._workspace_member_dto(data=each) for each in
                 user_workspaces]

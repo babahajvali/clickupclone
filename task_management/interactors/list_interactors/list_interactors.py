@@ -205,7 +205,6 @@ class ListInteractor(ValidationMixin):
 
     @interactor_cache(timeout=30 * 60, cache_name="space_lists")
     def get_space_lists(self, space_id: str):
-        cache.clear()
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
         return self.list_storage.get_space_lists(space_ids=[space_id])

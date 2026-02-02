@@ -90,7 +90,7 @@ from task_management.graphql.mutations.workspace.change_workspace_member_role im
     ChangeMemberRoleMutation
 from task_management.graphql.mutations.workspace.create_workspace_mutation import \
     CreateWorkspaceMutation
-from task_management.graphql.mutations.workspace.delete_wrkspace_mutation import \
+from task_management.graphql.mutations.workspace.delete_workspace_mutation import \
     DeleteWorkspaceMutation
 from task_management.graphql.mutations.workspace.remove_workspace_member_mutation import \
     RemoveMemberFromWorkspaceMutation

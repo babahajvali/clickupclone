@@ -231,6 +231,10 @@ class AccountNotFoundException(Exception):
         self.account_id = account_id
 
 
+class InvalidAccountIdsFoundException(Exception):
+    def __init__(self, account_ids: list[str]):
+        self.account_ids = account_ids
+
 class InactiveAccountException(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id

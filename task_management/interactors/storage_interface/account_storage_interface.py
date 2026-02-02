@@ -26,3 +26,7 @@ class AccountStorageInterface(ABC):
     def delete_account(self, account_id: str) -> AccountDTO:
         # soft delete change the is_active is False
         pass
+
+    @abstractmethod
+    def get_accounts(self,account_ids: list[str]) -> list[AccountDTO]:
+        pass

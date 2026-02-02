@@ -13,6 +13,15 @@ from task_management.interactors.workspace_interactors.workspace_interactors imp
 from task_management.storages.account_member_storage import \
     AccountMemberStorage
 from task_management.storages.account_storage import AccountStorage
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.storages.folder_storage import FolderStorage
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
+from task_management.storages.list_storage import ListStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
+from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
@@ -31,13 +40,25 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         account_storage = AccountStorage()
         account_member_storage = AccountMemberStorage()
         workspace_member_storage = WorkspaceMemberStorage()
+        space_storage = SpaceStorage()
+        space_permission_storage = SpacePermissionStorage()
+        folder_storage = FolderStorage()
+        folder_permission_storage = FolderPermissionStorage()
+        list_storage = ListStorage()
+        list_permission_storage = ListPermissionStorage()
 
         interactor = WorkspaceInteractor(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
             account_member_storage=account_member_storage,
-            workspace_member_storage=workspace_member_storage
+            workspace_member_storage=workspace_member_storage,
+            space_storage=space_storage,
+            space_permission_storage=space_permission_storage,
+            list_storage=list_storage,
+            list_permission_storage=list_permission_storage,
+            folder_storage=folder_storage,
+            folder_permission_storage=folder_permission_storage,
         )
 
         try:
