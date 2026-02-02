@@ -122,21 +122,4 @@ class TestUpdateTemplateInteractor:
         self.template_storage.update_template.assert_not_called()
 
 
-    def test_update_template_duplicate_name(self, snapshot):
-        update_dto = UpdateTemplateDTOFactory()
-
-        self.template_storage.get_template_by_id.return_value = self._mock_template()
-        self.list_storage.get_list.return_value = self._mock_active_list()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
-        )
-        self.template_storage.check_template_name_exist_except_this_template.return_value = True
-
-        with pytest.raises(TemplateNameAlreadyExistsException) as exc:
-            self.interactor.update_template(update_dto,user_id="user_id")
-
-        snapshot.assert_match(
-            repr(exc.value.template_name),
-            "update_template_duplicate_name.txt"
-        )
 

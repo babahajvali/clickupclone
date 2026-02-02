@@ -2,8 +2,6 @@ from task_management.exceptions.enums import FieldTypeEnum
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     CreateFieldDTO
 from task_management.constants.field_constants import FIXED_FIELDS
-from task_management.interactors.field_interactors.field_interactors import \
-    FieldInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
@@ -42,11 +40,7 @@ class CreateTemplateInteractor(ValidationMixin):
     def create_template_default_fields(self, template_id: str,
                                        created_by: str):
 
-        create_field_interactor = FieldInteractor(
-            template_storage=self.template_storage,
-            permission_storage=self.permission_storage,
-            field_storage=self.field_storage,
-            list_storage=self.list_storage,)
+        fixed_fields = []
         for field in FIXED_FIELDS:
             create_field_dto = CreateFieldDTO(
                 field_type=FieldTypeEnum(field["field_type"]),
@@ -57,6 +51,6 @@ class CreateTemplateInteractor(ValidationMixin):
                 is_required=field.get("is_required", False),
                 created_by=created_by
             )
-
-            create_field_interactor.create_field(create_field_dto)
+            fixed_fields.append(create_field_dto)
+        self.field_storage.create_bulk_fields(fields_data=fixed_fields)
 

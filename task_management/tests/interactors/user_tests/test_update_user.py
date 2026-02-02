@@ -69,7 +69,7 @@ class TestUpdateUser:
         user_storage = create_autospec(UserStorageInterface)
         self._mock_storage_defaults(user_storage)
 
-        user_storage.check_user_username_exists.return_value = False
+        user_storage.check_user_username_exists.return_value = True
         user_storage.check_username_exists.return_value = True
 
         interactor = UserInteractor(user_storage=user_storage)
@@ -99,7 +99,7 @@ class TestUpdateUser:
         user_storage = create_autospec(UserStorageInterface)
         self._mock_storage_defaults(user_storage)
 
-        user_storage.check_user_email_exists.return_value = False
+        user_storage.check_user_email_exists.return_value = True
         user_storage.check_email_exists.return_value = True
 
         interactor = UserInteractor(user_storage=user_storage)
@@ -129,7 +129,7 @@ class TestUpdateUser:
         user_storage = create_autospec(UserStorageInterface)
         self._mock_storage_defaults(user_storage)
 
-        user_storage.check_user_phone_number_exists.return_value = False
+        user_storage.check_user_phone_number_exists.return_value = True
         user_storage.check_phone_number_exists.return_value = True
 
         interactor = UserInteractor(user_storage=user_storage)

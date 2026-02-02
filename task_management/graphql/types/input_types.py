@@ -4,6 +4,7 @@ import graphene
 class CreateAccountInputParams(graphene.InputObjectType):
     name = graphene.String(required=True)
     description = graphene.String(required=True)
+    owner_id = graphene.String(required=True)
 
 
 class CreateUserInputParams(graphene.InputObjectType):

@@ -2,30 +2,80 @@ from task_management.exceptions.custom_exceptions import \
     AccountNameAlreadyExistsException, UserNotAccountOwnerException
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
-    CreateAccountMemberDTO
+    CreateAccountMemberDTO, CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
+from task_management.interactors.list_interactors.list_interactors import \
+    ListInteractor
+from task_management.interactors.space_interactors.space_interactors import \
+    SpaceInteractor
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.account_member_storage_interface import \
     AccountMemberStorageInterface
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interface.task_storage_interface import \
+    TaskStorageInterface
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
+from task_management.interactors.storage_interface.workspace_storage_interface import \
+    WorkspaceStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.interactors.workspace_interactors.workspace_interactors import \
+    WorkspaceInteractor
 
 
 class AccountInteractor(ValidationMixin):
     def __init__(self, account_storage: AccountStorageInterface,
                  user_storage: UserStorageInterface,
-                 account_member_storage: AccountMemberStorageInterface):
+                 account_member_storage: AccountMemberStorageInterface,
+                 workspace_storage: WorkspaceStorageInterface,
+                 workspace_member_storage: WorkspaceMemberStorageInterface,
+                 space_storage: SpaceStorageInterface,
+                 space_permission_storage: SpacePermissionStorageInterface,
+                 list_storage: ListStorageInterface,
+                 list_permission_storage: ListPermissionStorageInterface,
+                 template_storage: TemplateStorageInterface,
+                 field_storage: FieldStorageInterface,
+                 folder_storage: FolderStorageInterface,
+                 task_storage: TaskStorageInterface,
+                 folder_permission_storage: FolderPermissionStorageInterface, ):
         self.account_storage = account_storage
         self.user_storage = user_storage
         self.account_member_storage = account_member_storage
+        self.workspace_storage = workspace_storage
+        self.workspace_member_storage = workspace_member_storage
+        self.space_storage = space_storage
+        self.space_permission_storage = space_permission_storage
+        self.list_storage = list_storage
+        self.list_permission_storage = list_permission_storage
+        self.template_storage = template_storage
+        self.field_storage = field_storage
+        self.folder_storage = folder_storage
+        self.task_storage = task_storage
+        self.folder_permission_storage = folder_permission_storage
 
     def create_account(self,
                        create_account_data: CreateAccountDTO) -> AccountDTO:
         self._validate_account_name_exists(
             account_name=create_account_data.name)
 
-        result =  self.account_storage.create_account(create_account_data)
+        result = self.account_storage.create_account(create_account_data)
         account_member_data = CreateAccountMemberDTO(
             account_id=result.account_id,
             user_id=result.owner_id,
@@ -33,6 +83,9 @@ class AccountInteractor(ValidationMixin):
             added_by=result.owner_id
         )
         self.account_member_storage.add_member_to_account(account_member_data)
+        self._create_workspace(account_id=result.account_id,
+                               owner_id=result.owner_id, name=result.name)
+
         return result
 
     def transfer_account(self, account_id: str, old_owner_id: str,
@@ -58,7 +111,8 @@ class AccountInteractor(ValidationMixin):
         return self.account_storage.delete_account(account_id=account_id)
 
     def get_account(self, account_id: str):
-        self.validate_account_is_active(account_id=account_id,account_storage=self.account_storage)
+        self.validate_account_is_active(account_id=account_id,
+                                        account_storage=self.account_storage)
 
         return self.account_storage.get_account_by_id(account_id=account_id)
 
@@ -77,3 +131,71 @@ class AccountInteractor(ValidationMixin):
 
         if account_data.owner_id != user_id:
             raise UserNotAccountOwnerException(user_id=user_id)
+
+    def _create_workspace(self, owner_id: str, account_id: str, name: str):
+        workspace_interactor = WorkspaceInteractor(
+            workspace_storage=self.workspace_storage,
+            user_storage=self.user_storage,
+            account_storage=self.account_storage,
+            account_member_storage=self.account_member_storage,
+            workspace_member_storage=self.workspace_member_storage,
+        )
+
+        workspace_input_data = CreateWorkspaceDTO(
+            name=name + "'s Workspace",
+            description="Default workspace",
+            user_id=owner_id,
+            account_id=account_id
+        )
+        workspace_data = workspace_interactor.create_workspace(
+            workspace_input_data)
+
+        return self._create_space(workspace_id=workspace_data.workspace_id,
+                                  user_id=owner_id)
+
+    def _create_space(self, user_id: str, workspace_id: str):
+        space_interactor = SpaceInteractor(
+            space_storage=self.space_storage,
+            permission_storage=self.space_permission_storage,
+            list_storage=self.list_storage,
+            workspace_storage=self.workspace_storage,
+            workspace_member_storage=self.workspace_member_storage,
+            folder_storage=self.folder_storage
+        )
+
+        space_input_data = CreateSpaceDTO(
+            name="Team_space",
+            description="Default space",
+            created_by=user_id,
+            workspace_id=workspace_id,
+            is_private=False
+        )
+
+        space_data = space_interactor.create_space(space_input_data)
+
+        return self._create_list(space_id=space_data.space_id,
+                                 user_id=user_id, )
+
+    def _create_list(self, space_id: str, user_id: str):
+        list_interactor = ListInteractor(
+            list_storage=self.list_storage,
+            template_storage=self.template_storage,
+            list_permission_storage=self.list_permission_storage,
+            folder_storage=self.folder_storage,
+            folder_permission_storage=self.folder_permission_storage,
+            space_storage=self.space_storage,
+            space_permission_storage=self.space_permission_storage,
+            task_storage=self.task_storage,
+            field_storage=self.field_storage,
+        )
+
+        list_input_data = CreateListDTO(
+            name="Project 1",
+            description="Default list",
+            created_by=user_id,
+            space_id=space_id,
+            is_private=False,
+            folder_id=None
+        )
+
+        return list_interactor.create_list(list_input_data)

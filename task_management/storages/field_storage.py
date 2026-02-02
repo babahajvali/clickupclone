@@ -140,3 +140,29 @@ class FieldStorage(FieldStorageInterface):
             order__gt=current_order).update(order=F("order") - 1)
 
         return self._field_dto(field_data=field_data)
+
+    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+        template = Template.objects.get(template_id=fields_data[0].template_id)
+        user = User.objects.get(user_id=fields_data[0].created_by)
+
+        create_fields_data = []
+
+        for i, field_data in enumerate(fields_data):
+            create_fields_data.append(
+                Field(
+                    field_name=field_data.field_name,
+                    description=field_data.description,
+                    field_type=field_data.field_type.value,
+                    template=template,
+                    order=i,
+                    config=field_data.config,
+                    is_required=field_data.is_required,
+                    created_by=user
+                )
+            )
+
+        created_fields = Field.objects.bulk_create(create_fields_data)
+
+        # Convert to DTOs
+        return [self._field_dto(field) for field in created_fields]
+

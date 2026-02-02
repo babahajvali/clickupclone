@@ -46,5 +46,8 @@ class FieldStorageInterface(ABC):
     def delete_field(self, field_id: str):
         pass
 
+    @abstractmethod
+    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+        pass
 
 

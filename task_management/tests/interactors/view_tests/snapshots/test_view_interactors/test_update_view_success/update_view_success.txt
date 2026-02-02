@@ -1,1 +1,1 @@
-ViewDTO(view_id='852d2092-05f0-4ed2-9c6d-be2b71f1bf1e', name='learn', description='Wonder phone expect source kitchen foreign score.', view_type='board', created_by='bff95db1-1504-4f8e-9dcd-3057035bb5cb')
+ViewDTO(view_id='dcf75c47-e199-45af-a000-d3ea9caad43e', name='north', description='Else trial thousand knowledge.', view_type='board', created_by='882b6cbe-6f49-4bdc-852d-209205f0fed2')

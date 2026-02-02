@@ -9,19 +9,23 @@ class JWTAuthenticationMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # Skip non-GraphQL paths
         if not request.path.startswith('/graphql'):
             return self.get_response(request)
 
+        # Allow GET requests (GraphiQL UI)
         if request.method == 'GET':
             return self.get_response(request)
 
+        # Allow OPTIONS (CORS)
         if request.method == 'OPTIONS':
             return self.get_response(request)
 
-        is_public = self._is_public_operation(request)
-        if is_public:
+        # Check if public operation
+        if self._is_public_operation(request):
             return self.get_response(request)
 
+        # Require authentication for protected operations
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
 
         if not auth_header.startswith('Bearer '):
@@ -33,12 +37,17 @@ class JWTAuthenticationMiddleware:
         token = auth_header.split(' ')[1]
 
         try:
+            # Decode and verify JWT
             payload = jwt.decode(
                 token,
                 settings.SECRET_KEY,
                 algorithms=['HS256']
             )
-            request.user_id = payload.get('user_id')
+
+            user_id = payload.get('user_id')
+
+            # ✅ Set user_id on request
+            request.user_id = user_id
 
         except jwt.ExpiredSignatureError:
             return JsonResponse(
@@ -46,7 +55,7 @@ class JWTAuthenticationMiddleware:
                     {'message': 'Token has expired. Please login again.'}]},
                 status=401
             )
-        except jwt.InvalidTokenError as e:
+        except jwt.InvalidTokenError:
             return JsonResponse(
                 {'errors': [{'message': 'Invalid token'}]},
                 status=401
@@ -55,7 +64,7 @@ class JWTAuthenticationMiddleware:
         return self.get_response(request)
 
     def _is_public_operation(self, request):
-        """Check if operation is public (login, register, etc.)"""
+        """Check if operation is public"""
         try:
             if not hasattr(request, '_cached_body'):
                 request._cached_body = request.body
@@ -66,7 +75,7 @@ class JWTAuthenticationMiddleware:
 
             data = json.loads(body.decode('utf-8'))
             operation_name = data.get('operationName', '').lower()
-
+            query = data.get('query', '').lower()
 
             public_operations = [
                 'userlogin',
@@ -75,16 +84,25 @@ class JWTAuthenticationMiddleware:
                 'register',
                 'createuser',
                 'signup',
-                'forgetpassword',
+                'forgotpassword',
                 'resetpassword',
-                'introspectionquery',
+                'createaccount',
             ]
 
-            is_public = operation_name in public_operations
+            # Check operation name
+            if operation_name in public_operations:
+                return True
 
+            # Check query content
+            for op in public_operations:
+                if f'{op}(' in query or f'{op}{{' in query:
+                    return True
 
-            return is_public
+            # ✅ REMOVED: __type and __schema check
+            # This was causing false positives!
+
+            return False
 
         except Exception as e:
             print(f"⚠️ Auth middleware error: {e}")
-            return False  # ✅ Fail secure
+            return False

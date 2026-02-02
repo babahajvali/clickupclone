@@ -245,7 +245,8 @@ class AddMemberToWorkspaceResponse(graphene.Union):
             InactiveWorkspaceType,
             UserNotFoundType,
             InactiveUserType,
-            UnexpectedRoleType
+            UnexpectedRoleType,
+            ModificationNotAllowedType
         )
 
 

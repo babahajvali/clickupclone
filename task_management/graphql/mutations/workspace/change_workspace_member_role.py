@@ -67,7 +67,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
                 id=result.id,
                 workspace_id=result.workspace_id,
                 user_id=result.user_id,
-                role=result.role,
+                role=result.role.value,
                 is_active=result.is_active,
                 added_by=result.added_by
             )
