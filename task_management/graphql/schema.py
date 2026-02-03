@@ -10,15 +10,14 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     UpdateTask, ReorderTask, DeleteTask, CreateView, AddMemberToWorkspace, \
     ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace, TaskAssignee, \
     RemoveTaskAssignee, UpdateView, UpdateField, CreateField, DeleteField, \
-    ReorderField, ApplyListView, RemoveListView, AddAccountMember, \
-    ChangeAccountMemberRole, RemoveAccountMember, UpdateFieldValue, \
+    ReorderField, ApplyListView, RemoveListView, UpdateFieldValue, \
     ForgotPassword, ResetPassword
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
     GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks, \
-    GetListTaskAssignees, GetUserAccounts, GetAccounts
+    GetListTaskAssignees, GetAccounts
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
@@ -26,7 +25,7 @@ QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetTaskAssignees, GetViews, GetTemplateFields, GetField,
                  GetListViews, GetUserWorkspaces, GetTaskValues,
                  GetWorkspaceMembers, GetUserTasks, GetListTaskAssignees,
-                 GetUserAccounts, GetAccounts]
+                 GetAccounts]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,
@@ -40,8 +39,7 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace,
                     RemoveTaskAssignee, UpdateView, UpdateField, CreateField,
                     DeleteField, ReorderField, ApplyListView, RemoveListView,
-                    AddAccountMember, ChangeAccountMemberRole, ResetPassword,
-                    RemoveAccountMember, UpdateFieldValue, ForgotPassword]
+                    ResetPassword, UpdateFieldValue, ForgotPassword]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

@@ -29,9 +29,7 @@ from task_management.interactors.storage_interface.template_storage_interface im
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface
 )
-from task_management.interactors.storage_interface.account_member_storage_interface import (
-    AccountMemberStorageInterface
-)
+
 from task_management.exceptions.custom_exceptions import (
     AccountNameAlreadyExistsException,
     UserNotAccountOwnerException, ModificationNotAllowedException
@@ -51,8 +49,6 @@ class TestAccountInteractor:
     def setup_method(self):
         self.account_storage = create_autospec(AccountStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.account_member_storage = create_autospec(
-            AccountMemberStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
@@ -179,8 +175,8 @@ class TestAccountInteractor:
             {"is_active": True}
         )()
 
-        permission = type("Permission", (), {"role": Role.ADMIN})()
-        self.account_member_storage.get_user_permission_for_account.return_value = permission
+        permission = type("Account")()
+        self.account_storage.get_account_by_id.return_value = permission
 
         self.account_storage.delete_account.return_value = None
 
@@ -203,8 +199,8 @@ class TestAccountInteractor:
             (),
             {"is_active": True}
         )()
-        permission = type("Permission", (), {"role": Role.GUEST.value})()
-        self.account_member_storage.get_user_permission_for_account.return_value = permission
+        permission = type("Account")()
+        self.account_storage.get_account_by_id.return_value = permission
 
         with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.delete_account(

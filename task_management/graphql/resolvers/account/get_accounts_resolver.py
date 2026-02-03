@@ -4,8 +4,7 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.types import AccountType, AccountsType
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
-from task_management.storages.account_member_storage import \
-    AccountMemberStorage
+
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
@@ -27,7 +26,6 @@ from task_management.storages.workspace_storage import WorkspaceStorage
 def get_accounts_resolver(root, info, params):
     user_storage = UserStorage()
     account_storage = AccountStorage()
-    account_member_storage = AccountMemberStorage()
     workspace_storage = WorkspaceStorage()
     workspace_member_storage = WorkspaceMemberStorage()
     space_storage = SpaceStorage()
@@ -42,7 +40,6 @@ def get_accounts_resolver(root, info, params):
 
     interactor = AccountInteractor(
         user_storage=user_storage,
-        account_member_storage=account_member_storage,
         account_storage=account_storage,
         workspace_storage=workspace_storage,
         workspace_member_storage=workspace_member_storage,

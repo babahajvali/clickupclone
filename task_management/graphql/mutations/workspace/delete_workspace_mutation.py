@@ -10,8 +10,7 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspace_interactors.workspace_interactors import \
     WorkspaceInteractor
-from task_management.storages.account_member_storage import \
-    AccountMemberStorage
+
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.folder_permission_storage import \
     FolderPermissionStorage
@@ -38,7 +37,6 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        account_member_storage = AccountMemberStorage()
         workspace_member_storage = WorkspaceMemberStorage()
         space_storage = SpaceStorage()
         space_permission_storage = SpacePermissionStorage()
@@ -51,7 +49,6 @@ class DeleteWorkspaceMutation(graphene.Mutation):
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
-            account_member_storage=account_member_storage,
             workspace_member_storage=workspace_member_storage,
             space_storage=space_storage,
             space_permission_storage=space_permission_storage,

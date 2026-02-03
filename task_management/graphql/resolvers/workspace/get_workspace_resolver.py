@@ -3,8 +3,6 @@ from task_management.graphql.types.error_types import WorkspaceNotFoundType
 from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspace_interactors.workspace_interactors import \
     WorkspaceInteractor
-from task_management.storages.account_member_storage import \
-    AccountMemberStorage
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.folder_permission_storage import \
     FolderPermissionStorage
@@ -26,7 +24,6 @@ def get_workspace_resolver(root, info, params):
     workspace_storage = WorkspaceStorage()
     user_storage = UserStorage()
     account_storage = AccountStorage()
-    account_member_storage = AccountMemberStorage()
     workspace_member_storage = WorkspaceMemberStorage()
     space_storage = SpaceStorage()
     space_permission_storage = SpacePermissionStorage()
@@ -39,7 +36,6 @@ def get_workspace_resolver(root, info, params):
         workspace_storage=workspace_storage,
         user_storage=user_storage,
         account_storage=account_storage,
-        account_member_storage=account_member_storage,
         workspace_member_storage=workspace_member_storage,
         space_storage=space_storage,
         space_permission_storage=space_permission_storage,

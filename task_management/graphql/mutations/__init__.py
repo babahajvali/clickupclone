@@ -1,15 +1,10 @@
 import graphene
 
-from task_management.graphql.mutations.account.update_account_member_role_mutation import \
-    UpdateAccountMemberRoleMutation
-from task_management.graphql.mutations.account.add_account_member_mutation import \
-    CreateAccountMemberMutation
 from task_management.graphql.mutations.account.create_account_mutation import \
     CreateAccountMutation
 from task_management.graphql.mutations.account.delete_account_mutation import \
     DeleteAccountMutation
-from task_management.graphql.mutations.account.remove_account_member import \
-    RemoveAccountMemberMutation
+
 from task_management.graphql.mutations.account.transfer_account_mutation import \
     TransferAccountMutation
 from task_management.graphql.mutations.field.create_field_mutation import \
@@ -277,18 +272,6 @@ class ApplyListView(graphene.ObjectType):
 class RemoveListView(graphene.ObjectType):
     remove_list_view = RemoveListViewMutation.Field(required=True)
 
-
-class AddAccountMember(graphene.ObjectType):
-    add_account_member = CreateAccountMemberMutation.Field(required=True)
-
-
-class ChangeAccountMemberRole(graphene.ObjectType):
-    change_account_member_role = UpdateAccountMemberRoleMutation.Field(
-        required=True)
-
-
-class RemoveAccountMember(graphene.ObjectType):
-    remove_account_member = RemoveAccountMemberMutation.Field(required=True)
 
 
 class UpdateFieldValue(graphene.ObjectType):

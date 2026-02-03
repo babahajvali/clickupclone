@@ -78,7 +78,6 @@ class WorkspaceMemberStorage(WorkspaceMemberStorageInterface):
         return [self._workspace_member_dto(data=each) for each in
                 workspace_members]
 
-    @interactor_cache(cache_name="workspace_users", timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
         user_workspaces = WorkspaceMember.objects.filter(

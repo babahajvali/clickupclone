@@ -26,8 +26,7 @@ from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.account_storage import AccountStorage
-from task_management.storages.account_member_storage import \
-    AccountMemberStorage
+
 
 
 class CreateWorkspaceMutation(graphene.Mutation):
@@ -41,7 +40,6 @@ class CreateWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        account_member_storage = AccountMemberStorage()
         workspace_member_storage = WorkspaceMemberStorage()
         space_storage = SpaceStorage()
         space_permission_storage = SpacePermissionStorage()
@@ -54,7 +52,6 @@ class CreateWorkspaceMutation(graphene.Mutation):
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
-            account_member_storage=account_member_storage,
             workspace_member_storage=workspace_member_storage,
             space_storage=space_storage,
             space_permission_storage=space_permission_storage,

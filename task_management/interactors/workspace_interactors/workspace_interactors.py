@@ -3,8 +3,7 @@ from task_management.decorators.caching_decorators import \
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
     UpdateWorkspaceDTO, AddMemberToWorkspaceDTO
-from task_management.interactors.storage_interface.account_member_storage_interface import \
-    AccountMemberStorageInterface
+
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -34,7 +33,6 @@ class WorkspaceInteractor(ValidationMixin):
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  user_storage: UserStorageInterface,
                  account_storage: AccountStorageInterface,
-                 account_member_storage: AccountMemberStorageInterface,
                  workspace_member_storage: WorkspaceMemberStorageInterface,
                  space_storage: SpaceStorageInterface,
                  space_permission_storage: SpacePermissionStorageInterface,
@@ -45,7 +43,6 @@ class WorkspaceInteractor(ValidationMixin):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
-        self.account_member_storage = account_member_storage
         self.workspace_member_storage = workspace_member_storage
         self.space_storage = space_storage
         self.space_permission_storage = space_permission_storage
@@ -54,17 +51,17 @@ class WorkspaceInteractor(ValidationMixin):
         self.list_storage = list_storage
         self.list_permission_storage = list_permission_storage
 
-    @invalidate_interactor_cache(cache_name="workspace_users")
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def create_workspace(self, create_workspace_data: CreateWorkspaceDTO) \
             -> WorkspaceDTO:
         self.validate_user_is_active(create_workspace_data.user_id,
                                      user_storage=self.user_storage)
         self.validate_account_is_active(create_workspace_data.account_id,
                                         account_storage=self.account_storage)
-        self.validate_user_access_for_account(
+        self.validate_user_is_account_owner(
             create_workspace_data.user_id,
             account_id=create_workspace_data.account_id,
-            account_member_storage=self.account_member_storage)
+            account_storage=self.account_storage)
 
         result = self.workspace_storage.create_workspace(
             workspace_data=create_workspace_data)
@@ -93,7 +90,7 @@ class WorkspaceInteractor(ValidationMixin):
         return self.workspace_storage.update_workspace(
             workspace_data=update_workspace_data)
 
-    @invalidate_interactor_cache(cache_name="workspace_users")
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(self, workspace_id: str,
                          user_id: str) -> WorkspaceDTO:
         self.validate_user_access_for_workspace(
@@ -104,7 +101,7 @@ class WorkspaceInteractor(ValidationMixin):
         return self.workspace_storage.delete_workspace(
             workspace_id=workspace_id)
 
-    @invalidate_interactor_cache(cache_name="workspace_users")
+    @invalidate_interactor_cache(cache_name="user_workspaces")
     def transfer_workspace(self, workspace_id: str, user_id: str,
                            new_user_id: str) -> WorkspaceDTO:
         self.validate_user_is_workspace_owner(user_id=user_id,

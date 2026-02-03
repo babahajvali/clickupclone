@@ -1,9 +1,7 @@
 import pytest
 from unittest.mock import create_autospec, MagicMock
 
-from task_management.exceptions.enums import Role
-from task_management.interactors.storage_interface.account_member_storage_interface import \
-    AccountMemberStorageInterface
+
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
@@ -33,14 +31,12 @@ class TestWorkspaceInteractor:
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
-        self.account_members_storage = create_autospec(AccountMemberStorageInterface)
         self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
 
         self.interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
-            account_member_storage=self.account_members_storage,
             workspace_member_storage=self.workspace_member_storage
         )
 
@@ -63,10 +59,8 @@ class TestWorkspaceInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.create_workspace.return_value = expected
 
-        mock_account_member = MagicMock()
-        mock_account_member.role = Role.ADMIN
-
-        self.account_members_storage.get_user_permission_for_account.return_value = mock_account_member
+        permission = type("Account")()
+        self.account_storage.get_account_by_id.return_value = permission
 
         result = self.interactor.create_workspace(create_data)
 

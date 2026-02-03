@@ -2,8 +2,6 @@ import graphene
 
 from task_management.graphql.resolvers.account.get_accounts_resolver import \
     get_accounts_resolver
-from task_management.graphql.resolvers.account.get_user_accounts import \
-    get_user_account_resolver
 from task_management.graphql.resolvers.fields.get_field_resolver import \
     get_field_resolver
 from task_management.graphql.resolvers.fields.get_task_field_values_resolver import \
@@ -68,7 +66,7 @@ from task_management.graphql.types.response_types import \
     GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse, \
     GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, \
     GetUserTasksResponse, GetListTaskAssigneesResponse, \
-    GetUserAccountsResponse, GetAccountsResponse
+    GetAccountsResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -247,11 +245,6 @@ class GetListTaskAssignees(graphene.ObjectType):
     )
 
 
-class GetUserAccounts(graphene.ObjectType):
-    get_user_accounts = graphene.Field(
-        GetUserAccountsResponse,
-        resolver=get_user_account_resolver
-    )
 
 class GetAccounts(graphene.ObjectType):
     get_accounts = graphene.Field(

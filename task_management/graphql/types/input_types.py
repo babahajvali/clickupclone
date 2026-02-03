@@ -211,12 +211,6 @@ class CreateFieldValueInputParams(graphene.InputObjectType):
     value = graphene.String(required=True)
 
 
-class CreateAccountMemberInputParams(graphene.InputObjectType):
-    account_id = graphene.String(required=True)
-    user_id = graphene.String(required=True)
-    role = graphene.String(required=True)
-
-
 class ReorderFolderInputParams(graphene.InputObjectType):
     space_id = graphene.String(required=True)
     folder_id = graphene.String(required=True)
@@ -337,16 +331,6 @@ class RemoveListViewInputParams(graphene.InputObjectType):
 
 class GetListViewsInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
-
-
-class UpdateAccountMemberRoleInputParams(graphene.InputObjectType):
-    account_member_id = graphene.Int(required=True)
-    role = graphene.String(required=True)
-
-
-class RemoveAccountMemberInputParams(graphene.InputObjectType):
-    account_member_id = graphene.Int(required=True)
-
 
 class GetUserWorkspacesInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)

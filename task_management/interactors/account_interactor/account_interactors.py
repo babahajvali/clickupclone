@@ -1,17 +1,14 @@
 from task_management.exceptions.custom_exceptions import \
-    AccountNameAlreadyExistsException, UserNotAccountOwnerException, \
-    InvalidAccountIdsFoundException
-from task_management.exceptions.enums import Role
+    AccountNameAlreadyExistsException, InvalidAccountIdsFoundException
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
-    CreateAccountMemberDTO, CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
+    CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
 from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
-from task_management.interactors.storage_interface.account_member_storage_interface import \
-    AccountMemberStorageInterface
+
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -44,7 +41,6 @@ from task_management.interactors.workspace_interactors.workspace_interactors imp
 class AccountInteractor(ValidationMixin):
     def __init__(self, account_storage: AccountStorageInterface,
                  user_storage: UserStorageInterface,
-                 account_member_storage: AccountMemberStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
                  workspace_member_storage: WorkspaceMemberStorageInterface,
                  space_storage: SpaceStorageInterface,
@@ -58,7 +54,6 @@ class AccountInteractor(ValidationMixin):
                  folder_permission_storage: FolderPermissionStorageInterface, ):
         self.account_storage = account_storage
         self.user_storage = user_storage
-        self.account_member_storage = account_member_storage
         self.workspace_storage = workspace_storage
         self.workspace_member_storage = workspace_member_storage
         self.space_storage = space_storage
@@ -77,13 +72,6 @@ class AccountInteractor(ValidationMixin):
             account_name=create_account_data.name)
 
         result = self.account_storage.create_account(create_account_data)
-        account_member_data = CreateAccountMemberDTO(
-            account_id=result.account_id,
-            user_id=result.owner_id,
-            role=Role.OWNER,
-            added_by=result.owner_id
-        )
-        self.account_member_storage.add_member_to_account(account_member_data)
         self._create_workspace(account_id=result.account_id,
                                owner_id=result.owner_id, name=result.name)
 
@@ -93,8 +81,9 @@ class AccountInteractor(ValidationMixin):
                          new_owner_id: str) -> AccountDTO:
         self.validate_account_is_active(account_id=account_id,
                                         account_storage=self.account_storage)
-        self._validate_user_is_account_owner(account_id=account_id,
-                                             user_id=old_owner_id)
+        self.validate_user_is_account_owner(
+            account_id=account_id, user_id=old_owner_id,
+            account_storage=self.account_storage)
         self.validate_user_is_active(user_id=new_owner_id,
                                      user_storage=self.user_storage)
 
@@ -105,13 +94,13 @@ class AccountInteractor(ValidationMixin):
         self.validate_account_is_active(account_id=account_id,
                                         account_storage=self.account_storage)
 
-        self.validate_user_access_for_account(
+        self.validate_user_is_account_owner(
             account_id=account_id, user_id=deleted_by,
-            account_member_storage=self.account_member_storage)
+            account_storage=self.account_storage)
 
         return self.account_storage.delete_account(account_id=account_id)
 
-    def get_accounts(self, account_ids: list[str])-> list[AccountDTO]:
+    def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
         self._check_accounts_active(account_ids=account_ids)
 
         return self.account_storage.get_accounts(account_ids=account_ids)
@@ -125,20 +114,19 @@ class AccountInteractor(ValidationMixin):
         if is_name_exist:
             raise AccountNameAlreadyExistsException(name=account_name)
 
-    def _validate_user_is_account_owner(self, user_id: str, account_id: str):
-        account_data = self.account_storage.get_account_by_id(
-            account_id=account_id)
-
-        if account_data.owner_id != user_id:
-            raise UserNotAccountOwnerException(user_id=user_id)
 
     def _create_workspace(self, owner_id: str, account_id: str, name: str):
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
-            account_member_storage=self.account_member_storage,
             workspace_member_storage=self.workspace_member_storage,
+            space_storage=self.space_storage,
+            space_permission_storage=self.space_permission_storage,
+            folder_storage=self.folder_storage,
+            folder_permission_storage=self.folder_permission_storage,
+            list_storage=self.list_storage,
+            list_permission_storage=self.list_permission_storage,
         )
 
         workspace_input_data = CreateWorkspaceDTO(
@@ -201,7 +189,8 @@ class AccountInteractor(ValidationMixin):
         return list_interactor.create_list(list_input_data)
 
     def _check_accounts_active(self, account_ids: list[str]):
-        accounts_data = self.account_storage.get_accounts(account_ids=account_ids)
+        accounts_data = self.account_storage.get_accounts(
+            account_ids=account_ids)
 
         existed_account_ids = [str(obj.account_id) for obj in accounts_data]
         invalid_accounts_ids = []
@@ -210,7 +199,6 @@ class AccountInteractor(ValidationMixin):
             if account_id not in existed_account_ids:
                 invalid_accounts_ids.append(account_id)
 
-
         if invalid_accounts_ids:
-            raise InvalidAccountIdsFoundException(account_ids=invalid_accounts_ids)
-
+            raise InvalidAccountIdsFoundException(
+                account_ids=invalid_accounts_ids)

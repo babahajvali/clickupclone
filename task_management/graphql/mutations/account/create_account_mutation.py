@@ -9,8 +9,7 @@ from task_management.graphql.types.types import AccountType
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
 from task_management.interactors.dtos import CreateAccountDTO
-from task_management.storages.account_member_storage import \
-    AccountMemberStorage
+
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
@@ -43,7 +42,6 @@ class CreateAccountMutation(graphene.Mutation):
 
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        account_member_storage = AccountMemberStorage()
         workspace_storage = WorkspaceStorage()
         workspace_member_storage = WorkspaceMemberStorage()
         space_storage = SpaceStorage()
@@ -58,7 +56,6 @@ class CreateAccountMutation(graphene.Mutation):
 
         interactor = AccountInteractor(
             user_storage=user_storage,
-            account_member_storage=account_member_storage,
             account_storage=account_storage,
             workspace_storage=workspace_storage,
             workspace_member_storage=workspace_member_storage,

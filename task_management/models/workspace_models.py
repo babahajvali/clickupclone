@@ -2,8 +2,12 @@ import uuid
 
 from django.db import models
 
-from task_management.models.account_models import RoleType
 
+class RoleType(models.TextChoices):
+    OWNER = "owner", "Owner"
+    ADMIN = "admin", "Admin"
+    MEMBER = "member", "Member"
+    GUEST = "guest", "Guest"
 
 class Workspace(models.Model):
     workspace_id = models.UUIDField(primary_key=True, default=uuid.uuid4,

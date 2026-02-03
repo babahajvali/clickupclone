@@ -16,17 +16,17 @@ from task_management.graphql.types.error_types import \
     WrongPasswordFoundType, InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffsetNumberType, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotExistedType, \
-    AccountMemberNotFoundType, InvalidResetTokenFoundType, \
+    InvalidResetTokenFoundType, \
     ResetTokenExpiredType, InvalidAccountIdsFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
-    UserFolderPermissionType, UserListPermissionType, AccountMemberType, \
+    UserFolderPermissionType, UserListPermissionType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
     ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
     FieldValueType, WorkspaceUsersType, GetUserTaskType, \
-    PasswordResetResponseType, AccountsType, AccountMembersType
+    PasswordResetResponseType, AccountsType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -287,17 +287,6 @@ class CreateUserListPermissionResponse(graphene.Union):
         )
 
 
-class CreateAccountMemberResponse(graphene.Union):
-    class Meta:
-        types = (
-            AccountMemberType,
-            AccountNotFoundType,
-            InactiveAccountType,
-            UserNotFoundType,
-            InactiveUserType,
-            UnexpectedRoleType,
-            ModificationNotAllowedType
-        )
 
 
 class UserLoginResponse(graphene.Union):
@@ -681,28 +670,6 @@ class GetListViewsResponse(graphene.Union):
         )
 
 
-class UpdateAccountMemberRoleResponse(graphene.Union):
-    class Meta:
-        types = (
-            AccountMemberType,
-            AccountNotFoundType,
-            AccountMemberNotFoundType,
-            InactiveAccountType,
-            UnexpectedRoleType,
-            ModificationNotAllowedType
-        )
-
-
-class RemoveAccountMemberResponse(graphene.Union):
-    class Meta:
-        types = (
-            AccountMemberType,
-            AccountNotFoundType,
-            AccountMemberNotFoundType,
-            InactiveAccountType,
-            ModificationNotAllowedType
-        )
-
 
 class GetUserWorkspacesResponse(graphene.Union):
     class Meta:
@@ -759,14 +726,6 @@ class GetListTaskAssigneesResponse(graphene.Union):
                  InactiveListType,
                  ListNotFoundType)
 
-
-class GetUserAccountsResponse(graphene.Union):
-    class Meta:
-        types = (
-            AccountMembersType,
-            InactiveUserType,
-            UserNotFoundType
-        )
 
 
 class GetAccountsResponse(graphene.Union):

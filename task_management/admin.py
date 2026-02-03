@@ -1,6 +1,6 @@
 from django.contrib import admin
 from task_management.models import (
-    User, Account, AccountMember, Workspace, WorkspaceMember,
+    User, Account, Workspace, WorkspaceMember,
     Space, SpacePermission, Folder, FolderPermission,
     List, ListPermission, Task, TaskAssignee,
     Template, Field, FieldValue, View, ListView
@@ -26,15 +26,6 @@ class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ('account_id', 'created_at', 'updated_at')
     raw_id_fields = ('owner',)
 
-
-@admin.register(AccountMember)
-class AccountMemberAdmin(admin.ModelAdmin):
-    list_display = ('account', 'id', 'user', 'role', 'is_active', 'added_by',
-                    'created_at')
-    list_filter = ('role', 'is_active', 'created_at')
-    search_fields = ('account__name', 'user__username')
-    readonly_fields = ('created_at', 'updated_at')
-    raw_id_fields = ('account', 'user', 'added_by')
 
 
 @admin.register(Workspace)

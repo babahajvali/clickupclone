@@ -13,13 +13,12 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveUserException, UserNotWorkspaceOwnerException, \
     InactiveWorkspaceMemberException, AccountNotFoundException, \
     InactiveAccountException, UnexpectedRoleException, \
-    UnsupportedVisibilityTypeException, FieldNotFoundException
+    UnsupportedVisibilityTypeException, FieldNotFoundException, \
+    UserNotAccountOwnerException
 from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum, \
     ViewTypeEnum, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
-from task_management.interactors.storage_interface.account_member_storage_interface import \
-    AccountMemberStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -90,7 +89,6 @@ class ValidationMixin:
 
         if is_exist:
             raise FieldNameAlreadyExistsException(field_name=field_name)
-
 
     @staticmethod
     def validate_field_name_unique(field_id: str, field_name: str,
@@ -334,13 +332,6 @@ class ValidationMixin:
         if not account_data.is_active:
             raise InactiveAccountException(account_id=account_id)
 
-    @staticmethod
-    def validate_user_access_for_account(user_id: str, account_id: str,
-                                         account_member_storage: AccountMemberStorageInterface):
-        account_user_data = account_member_storage.get_user_permission_for_account(
-            user_id=user_id, account_id=account_id)
-        if account_user_data.role == Role.GUEST.value:
-            raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_user_access_for_workspace(user_id: str, workspace_id: str,
@@ -363,3 +354,12 @@ class ValidationMixin:
 
         if not is_exist:
             raise FieldNotFoundException(field_id=field_id)
+
+    @staticmethod
+    def validate_user_is_account_owner(user_id: str, account_id: str,
+                                       account_storage: AccountStorageInterface):
+        account_data = account_storage.get_account_by_id(
+            account_id=account_id)
+
+        if account_data.owner_id != user_id:
+            raise UserNotAccountOwnerException(user_id=user_id)

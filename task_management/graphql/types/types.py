@@ -182,18 +182,6 @@ class UserListPermissionType(graphene.ObjectType):
     added_by = graphene.String(required=True)
 
 
-class AccountMemberType(graphene.ObjectType):
-    id = graphene.Int(required=True)
-    user_id = graphene.String(required=True)
-    account_id = graphene.String(required=True)
-    role = graphene.String(required=True)
-    added_by = graphene.String(required=True)
-    is_active = graphene.Boolean(required=True)
-
-
-
-class AccountMembersType(graphene.ObjectType):
-    accounts = graphene.List(AccountMemberType)
 
 class ListViewType(graphene.ObjectType):
     id = graphene.Int(required=True)
