@@ -64,7 +64,6 @@ class TestAccountInteractor:
         self.interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
-            account_member_storage=self.account_member_storage,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage,
             space_storage=self.space_storage,
@@ -172,11 +171,10 @@ class TestAccountInteractor:
         self.account_storage.get_account_by_id.return_value = type(
             "Account",
             (),
-            {"is_active": True}
+            {"is_active": True,
+             "owner_id": owner_id}
         )()
 
-        permission = type("Account")()
-        self.account_storage.get_account_by_id.return_value = permission
 
         self.account_storage.delete_account.return_value = None
 
@@ -197,12 +195,11 @@ class TestAccountInteractor:
         self.account_storage.get_account_by_id.return_value = type(
             "Account",
             (),
-            {"is_active": True}
+            {"is_active": True,
+             "owner_id": "some-other-user"}
         )()
-        permission = type("Account")()
-        self.account_storage.get_account_by_id.return_value = permission
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(UserNotAccountOwnerException) as exc:
             self.interactor.delete_account(
                 account_id=account_id,
                 deleted_by=user_id

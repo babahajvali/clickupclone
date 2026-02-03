@@ -4,6 +4,18 @@ from unittest.mock import create_autospec, MagicMock
 
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.workspace_interactors.workspace_interactors import (
@@ -32,25 +44,41 @@ class TestWorkspaceInteractor:
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
         self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
 
         self.interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
-            workspace_member_storage=self.workspace_member_storage
+            workspace_member_storage=self.workspace_member_storage,
+            space_storage=self.space_storage,
+            space_permission_storage=self.space_permission_storage,
+            folder_storage=self.folder_storage,
+            folder_permission_storage=self.folder_permission_storage,
+            list_storage=self.list_storage,
+            list_permission_storage=self.list_permission_storage,
         )
 
 
     def _mock_active_user(self):
         return type("User", (), {"is_active": True})()
 
-    def _mock_active_workspace(self, owner_id):
+    def _mock_active_workspace(self,owner_id):
         return type(
             "Workspace",
             (),
-            {"owner_id": owner_id, "is_active": True}
+            {
+                "workspace_id": "workspace-123",
+                "user_id": owner_id,
+                "account_id": "account-123",
+                "is_active": True,
+            }
         )()
-
 
     def test_create_workspace_success(self, snapshot):
         create_data = CreateWorkspaceFactory()
@@ -59,8 +87,12 @@ class TestWorkspaceInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.create_workspace.return_value = expected
 
-        permission = type("Account")()
-        self.account_storage.get_account_by_id.return_value = permission
+        self.account_storage.get_account_by_id.return_value = type(
+            "Account",
+            (),
+            {"is_active": True,
+             "owner_id": create_data.user_id}
+        )()
 
         result = self.interactor.create_workspace(create_data)
 
@@ -141,9 +173,9 @@ class TestWorkspaceInteractor:
         self.workspace_storage.transfer_workspace.return_value = expected
 
         result = self.interactor.transfer_workspace(
-            workspace_id,
-            user_id,
-            new_user_id
+            workspace_id=workspace_id,
+            user_id=user_id,
+            new_user_id=new_user_id
         )
 
         snapshot.assert_match(

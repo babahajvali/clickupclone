@@ -1,1 +1,1 @@
-TaskAssigneeDTO(assign_id='ce54aa68-3a1f-4f8e-ac63-eceeb1b34f55', user_id='4c34229b-2914-43f1-87de-d8e36cf08a30', task_id='02146e8d-6deb-4d25-ac47-4a75fe537cf9', assigned_by='a0c12dc1-ea34-40e4-af78-41f83ed7e894', is_active=True)
+TaskAssigneeDTO(assign_id='b98f2abb-810a-4079-8e6f-597834a5b5a4', user_id='9be1a19a-a366-47b3-b5d3-f62f1a6d49d8', task_id='630dcfba-76ac-470a-aa08-1b28e86b2916', assigned_by='a3b1d782-0513-45c1-bb01-b41f79b28b6f', is_active=True)

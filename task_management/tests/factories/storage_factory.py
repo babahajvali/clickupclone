@@ -4,7 +4,7 @@ from factory.django import DjangoModelFactory
 from faker import Faker
 
 from task_management.models import (
-    User, Account, AccountMember, Workspace, Space, Folder, List,
+    User, Account, Workspace, Space, Folder, List,
     Task, Template, View, ListView, TaskAssignee, Field, FieldValue,
     WorkspaceMember, SpacePermission, FolderPermission, ListPermission
 )
@@ -39,15 +39,6 @@ class AccountFactory(DjangoModelFactory):
     is_active = True
 
 
-class AccountMemberFactory(DjangoModelFactory):
-    class Meta:
-        model = AccountMember
-
-    account = factory.SubFactory(AccountFactory)
-    user = factory.SubFactory(UserFactory)
-    role = "member"
-    is_active = True
-    added_by = factory.SubFactory(UserFactory)
 
 
 class WorkspaceFactory(DjangoModelFactory):
