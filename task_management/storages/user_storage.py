@@ -89,7 +89,7 @@ class UserStorage(UserStorageInterface):
         return User.objects.filter(email=email).exclude(
             user_id=user_id).exists()
 
-    def check_user_phone_number_exists(self, user_id: str,
-                                       phone_number: str) -> bool:
+    def check_phone_number_except_current_user(self, user_id: str,
+                                               phone_number: str) -> bool:
         return User.objects.filter(phone_number=phone_number).exclude(
             user_id=user_id).exists()

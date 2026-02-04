@@ -10,7 +10,6 @@ from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.task_storage import TaskStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.space_storage import SpaceStorage
@@ -32,7 +31,6 @@ class DeleteListMutation(graphene.Mutation):
     def mutate(root, info, params):
         list_storage = ListStorage()
         template_storage = TemplateStorage()
-        task_storage = TaskStorage()
         field_storage = FieldStorage()
         folder_storage = FolderStorage()
         space_storage = SpaceStorage()
@@ -43,7 +41,6 @@ class DeleteListMutation(graphene.Mutation):
         interactor = ListInteractor(
             list_storage=list_storage,
             template_storage=template_storage,
-            task_storage=task_storage,
             field_storage=field_storage,
             folder_storage=folder_storage,
             space_storage=space_storage,

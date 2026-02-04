@@ -10,9 +10,9 @@ from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
 
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.space_permission_storage import \
+    SpacePermissionStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
@@ -26,7 +26,6 @@ class ReorderSpaceMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         space_storage = SpaceStorage()
-        folder_storage = FolderStorage()
         list_storage = ListStorage()
         permission_storage = SpacePermissionStorage()
         workspace_storage = WorkspaceStorage()
@@ -34,7 +33,6 @@ class ReorderSpaceMutation(graphene.Mutation):
 
         interactor = SpaceInteractor(
             space_storage=space_storage,
-            folder_storage=folder_storage,
             list_storage=list_storage,
             permission_storage=permission_storage,
             workspace_storage=workspace_storage,
@@ -71,4 +69,3 @@ class ReorderSpaceMutation(graphene.Mutation):
 
         except custom_exceptions.InvalidOrderException as e:
             return InvalidOrderType(order=e.order)
-

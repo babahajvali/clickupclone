@@ -44,7 +44,6 @@ class TestSpaceInteractor:
 
     def setup_method(self):
         self.space_storage = create_autospec(SpaceStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
         self.permission_storage = create_autospec(
             SpacePermissionStorageInterface)
@@ -54,7 +53,6 @@ class TestSpaceInteractor:
 
         self.interactor = SpaceInteractor(
             space_storage=self.space_storage,
-            folder_storage=self.folder_storage,
             list_storage=self.list_storage,
             permission_storage=self.permission_storage,
             workspace_storage=self.workspace_storage,

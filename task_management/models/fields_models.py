@@ -10,7 +10,7 @@ class Field(models.Model):
                                 editable=False)
     field_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     field_type = models.CharField(max_length=50,
                                   choices=FieldTypes.get_list_of_tuples())
     template = models.ForeignKey(

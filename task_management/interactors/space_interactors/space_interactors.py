@@ -2,8 +2,6 @@ from task_management.exceptions.custom_exceptions import InvalidOrderException
 from task_management.exceptions.enums import Permissions, Role, Visibility
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     UserSpacePermissionDTO, CreateUserSpacePermissionDTO, UpdateSpaceDTO
-from task_management.interactors.storage_interface.folder_storage_interface import \
-    FolderStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
 from task_management.interactors.storage_interface.space_permission_storage_interface import \
@@ -22,13 +20,11 @@ from task_management.decorators.caching_decorators import interactor_cache, \
 class SpaceInteractor(ValidationMixin):
 
     def __init__(self, space_storage: SpaceStorageInterface,
-                 folder_storage: FolderStorageInterface,
                  list_storage: ListStorageInterface,
                  permission_storage: SpacePermissionStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
                  workspace_member_storage: WorkspaceMemberStorageInterface):
         self.space_storage = space_storage
-        self.folder_storage = folder_storage
         self.list_storage = list_storage
         self.permission_storage = permission_storage
         self.workspace_storage = workspace_storage

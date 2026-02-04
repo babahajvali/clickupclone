@@ -1,4 +1,5 @@
-from task_management.interactors.dtos import AccountDTO, CreateAccountDTO
+from task_management.interactors.dtos import AccountDTO, CreateAccountDTO, \
+    UpdateAccountDTO
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.models import Account, User
@@ -87,3 +88,25 @@ class AccountStorage(AccountStorageInterface):
             owner_id=account_data.owner.user_id,
             is_active=account_data.is_active,
         ) for account_data in accounts_data]
+
+    def validate_account_name_except_current(self,name: str, account_id: str) -> bool:
+        return Account.objects.filter(name=name).exclude(account_id=account_id).exists()
+
+    def update_account(self, update_data: UpdateAccountDTO) -> AccountDTO:
+        account_data = Account.objects.get(account_id=update_data.account_id)
+        if update_data.name is not None:
+            account_data.name = update_data.name
+
+        if update_data.description is not None:
+            account_data.description = update_data.description
+
+        account_data.save()
+
+        return AccountDTO(
+            account_id=account_data.account_id,
+            name=account_data.name,
+            description=account_data.description,
+            owner_id=account_data.owner.user_id,
+            is_active=account_data.is_active,
+        )
+

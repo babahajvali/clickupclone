@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from task_management.interactors.dtos import AccountDTO, CreateAccountDTO
+from task_management.interactors.dtos import AccountDTO, CreateAccountDTO, \
+    UpdateAccountDTO
 
 
 class AccountStorageInterface(ABC):
@@ -34,4 +35,13 @@ class AccountStorageInterface(ABC):
 
     @abstractmethod
     def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
+        pass
+
+    @abstractmethod
+    def validate_account_name_except_current(self,name: str, account_id: str) -> bool:
+        pass
+
+
+    @abstractmethod
+    def update_account(self, update_data: UpdateAccountDTO) -> AccountDTO:
         pass

@@ -1,0 +1,41 @@
+import graphene
+
+from task_management.exceptions import custom_exceptions
+from task_management.graphql.types.error_types import InvalidResetToken, \
+    ResetTokenExpired
+from task_management.graphql.types.response_types import \
+    ValidateResetTokenResponse
+from task_management.graphql.types.types import ValidateResetTokenType
+from task_management.interactors.user_interactor.reset_password_interator import \
+    PasswordResetInteractor
+from task_management.storages.password_reset_storage import \
+    PasswordResetStorage
+from task_management.storages.user_storage import UserStorage
+
+
+class ValidateResetTokenMutation(graphene.Mutation):
+    class Arguments:
+        token = graphene.String(required=True)
+
+    Output = ValidateResetTokenResponse
+
+    @staticmethod
+    def mutate(root, info, token):
+        user_storage = UserStorage()
+        password_reset_storage = PasswordResetStorage()
+
+        interactor = PasswordResetInteractor(
+            password_reset_storage=password_reset_storage,
+            user_storage=user_storage)
+        try:
+            interactor.validate_reset_token(token=token)
+            return ValidateResetTokenType(is_valid=True)
+
+        except custom_exceptions.InvalidResetTokenException as e:
+            return InvalidResetToken(token=e.token)
+
+        except custom_exceptions.ResetTokenExpiredException as e:
+            return ResetTokenExpired(token=e.token)
+
+
+

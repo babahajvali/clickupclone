@@ -78,3 +78,26 @@ class PasswordResetInteractor(ValidationMixin):
         self.password_reset_storage.used_reset_token(token=token)
 
         return updated_user
+
+    def validate_reset_token(self, token: str) -> bool:
+        """Validate if reset token is valid and not expired - call this when page loads"""
+
+        reset_token_data = self.password_reset_storage.get_reset_token(
+            token=token)
+
+        if not reset_token_data:
+            from task_management.exceptions.custom_exceptions import \
+                InvalidResetTokenException
+            raise InvalidResetTokenException(token=token)
+
+        if reset_token_data.is_used:
+            from task_management.exceptions.custom_exceptions import \
+                InvalidResetTokenException
+            raise InvalidResetTokenException(token=token)
+
+        if timezone.now() > reset_token_data.expires_at:
+            from task_management.exceptions.custom_exceptions import \
+                ResetTokenExpiredException
+            raise ResetTokenExpiredException(token=token)
+
+        return True

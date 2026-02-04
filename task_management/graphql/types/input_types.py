@@ -374,3 +374,8 @@ class GetAccountsInputParams(graphene.InputObjectType):
 class GetUserWithEmailInputParams(graphene.InputObjectType):
     email = graphene.String(required=True)
 
+
+class UpdateAccountInputParams(graphene.InputObjectType):
+    account_id = graphene.String(required=True)
+    name = graphene.String()
+    description = graphene.String()

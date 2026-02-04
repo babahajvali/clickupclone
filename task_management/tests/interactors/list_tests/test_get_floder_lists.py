@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import create_autospec, patch
 
-from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.list_interactors.list_interactors import \
+    ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import (
@@ -9,9 +10,6 @@ from task_management.interactors.storage_interface.folder_storage_interface impo
 )
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
-)
-from task_management.interactors.storage_interface.task_storage_interface import (
-    TaskStorageInterface
 )
 from task_management.interactors.storage_interface.space_storage_interface import (
     SpaceStorageInterface
@@ -39,15 +37,17 @@ class TestGetFolderLists:
         self.list_storage = create_autospec(ListStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
 
-        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
-        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
-        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.list_permission_storage = create_autospec(
+            ListPermissionStorageInterface)
+        self.folder_permission_storage = create_autospec(
+            FolderPermissionStorageInterface)
+        self.space_permission_storage = create_autospec(
+            SpacePermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
-            task_storage=create_autospec(TaskStorageInterface),
             folder_storage=self.folder_storage,
             space_storage=create_autospec(SpaceStorageInterface),
             list_permission_storage=self.list_permission_storage,

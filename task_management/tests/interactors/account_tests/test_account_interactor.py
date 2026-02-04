@@ -1,7 +1,6 @@
 import pytest
-from unittest.mock import create_autospec, MagicMock, Mock
+from unittest.mock import create_autospec, Mock
 
-from task_management.exceptions.enums import Role
 from task_management.interactors.account_interactor.account_interactors import (
     AccountInteractor
 )
@@ -22,8 +21,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
-    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import (
@@ -31,8 +28,7 @@ from task_management.interactors.storage_interface.user_storage_interface import
 )
 
 from task_management.exceptions.custom_exceptions import (
-    AccountNameAlreadyExistsException,
-    UserNotAccountOwnerException, ModificationNotAllowedException
+    AccountNameAlreadyExistsException, UserNotAccountOwnerException
 )
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
@@ -58,7 +54,6 @@ class TestAccountInteractor:
         self.list_storage = create_autospec(ListStorageInterface)
         self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.task_storage = create_autospec(TaskStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = AccountInteractor(
@@ -73,7 +68,6 @@ class TestAccountInteractor:
             list_storage=self.list_storage,
             list_permission_storage=self.list_permission_storage,
             template_storage=self.template_storage,
-            task_storage=self.task_storage,
             field_storage=self.field_storage,
         )
 
@@ -134,7 +128,7 @@ class TestAccountInteractor:
 
         result = self.interactor.transfer_account(
             account_id=account_id,
-            old_owner_id=old_owner_id,
+            current_owner_id=old_owner_id,
             new_owner_id=new_owner_id
         )
 
@@ -155,7 +149,7 @@ class TestAccountInteractor:
         with pytest.raises(UserNotAccountOwnerException) as exc:
             self.interactor.transfer_account(
                 account_id=account_id,
-                old_owner_id=non_owner_id,
+                current_owner_id=non_owner_id,
                 new_owner_id=new_owner_id
             )
 

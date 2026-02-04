@@ -2,11 +2,8 @@ from task_management.exceptions.custom_exceptions import \
     AccountNameAlreadyExistsException, InvalidAccountIdsException, \
     InactiveAccountIdsException
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
-    CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
-from task_management.interactors.list_interactors.list_interactors import \
-    ListInteractor
-from task_management.interactors.space_interactors.space_interactors import \
-    SpaceInteractor
+    CreateWorkspaceDTO, UpdateAccountDTO
+
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 
@@ -24,8 +21,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
-    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -51,7 +46,6 @@ class AccountInteractor(ValidationMixin):
                  template_storage: TemplateStorageInterface,
                  field_storage: FieldStorageInterface,
                  folder_storage: FolderStorageInterface,
-                 task_storage: TaskStorageInterface,
                  folder_permission_storage: FolderPermissionStorageInterface, ):
         self.account_storage = account_storage
         self.user_storage = user_storage
@@ -64,7 +58,6 @@ class AccountInteractor(ValidationMixin):
         self.template_storage = template_storage
         self.field_storage = field_storage
         self.folder_storage = folder_storage
-        self.task_storage = task_storage
         self.folder_permission_storage = folder_permission_storage
 
     def create_account(self,
@@ -78,12 +71,25 @@ class AccountInteractor(ValidationMixin):
 
         return result
 
-    def transfer_account(self, account_id: str, old_owner_id: str,
+    def update_account(self, update_data: UpdateAccountDTO,
+                       user_id: str) -> AccountDTO:
+        self.validate_account_is_active(account_id=update_data.account_id,
+                                        account_storage=self.account_storage)
+        self.validate_user_is_account_owner(user_id=user_id,
+                                            account_id=update_data.account_id,
+                                            account_storage=self.account_storage)
+        if update_data.name is not None:
+            self._validate_account_name_except_current(
+                account_id=update_data.account_id, name=update_data.name)
+
+        return self.account_storage.update_account(update_data=update_data)
+
+    def transfer_account(self, account_id: str, current_owner_id: str,
                          new_owner_id: str) -> AccountDTO:
         self.validate_account_is_active(account_id=account_id,
                                         account_storage=self.account_storage)
         self.validate_user_is_account_owner(
-            account_id=account_id, user_id=old_owner_id,
+            account_id=account_id, user_id=current_owner_id,
             account_storage=self.account_storage)
         self.validate_user_is_active(user_id=new_owner_id,
                                      user_storage=self.user_storage)
@@ -115,6 +121,14 @@ class AccountInteractor(ValidationMixin):
         if is_name_exist:
             raise AccountNameAlreadyExistsException(name=account_name)
 
+    def _validate_account_name_except_current(self, name: str,
+                                              account_id: str):
+        is_name_exist = self.account_storage.validate_account_name_except_current(
+            name=name, account_id=account_id)
+
+        if is_name_exist:
+            raise AccountNameAlreadyExistsException(name=name)
+
     def _create_workspace(self, owner_id: str, account_id: str, name: str):
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
@@ -128,7 +142,6 @@ class AccountInteractor(ValidationMixin):
             list_storage=self.list_storage,
             list_permission_storage=self.list_permission_storage,
             template_storage=self.template_storage,
-            task_storage=self.task_storage,
             field_storage=self.field_storage
         )
 

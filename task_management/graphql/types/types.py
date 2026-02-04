@@ -241,3 +241,7 @@ class GetUserTaskType(graphene.ObjectType):
 class PasswordResetResponseType(graphene.ObjectType):
     success = graphene.Boolean(required=True)
     message = graphene.String(required=True)
+
+
+class ValidateResetTokenType(graphene.ObjectType):
+    is_valid = graphene.Boolean()

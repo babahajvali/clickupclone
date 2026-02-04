@@ -1,5 +1,3 @@
-from django.core.cache import cache
-
 from task_management.exceptions.custom_exceptions import InvalidOrderException
 from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
@@ -19,8 +17,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
-    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.template_interactors.create_template_interactor import \
@@ -34,7 +30,6 @@ class ListInteractor(ValidationMixin):
 
     def __init__(self, list_storage: ListStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 task_storage: TaskStorageInterface,
                  field_storage: FieldStorageInterface,
                  folder_storage: FolderStorageInterface,
                  space_storage: SpaceStorageInterface,
@@ -44,7 +39,6 @@ class ListInteractor(ValidationMixin):
         self.list_storage = list_storage
         self.template_storage = template_storage
         self.field_storage = field_storage
-        self.task_storage = task_storage
         self.folder_storage = folder_storage
         self.space_storage = space_storage
         self.list_permission_storage = list_permission_storage

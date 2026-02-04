@@ -27,12 +27,13 @@ class UserInteractor(ValidationMixin):
         user_id = user_update_data.user_id
         self.validate_user_is_active(user_id=user_update_data.user_id,
                                      user_storage=self.user_storage)
-        self._check_updated_username_exist(username=user_update_data.username,
-                                           user_id=user_id)
-        self._check_updated_email_exist(email=user_update_data.email,
-                                        user_id=user_id)
-        self._check_updated_phone_number_exist(user_id=user_id,
-                                               phone_number=user_update_data.phone_number)
+        self._validate_username_except_current_user(
+            username=user_update_data.username,
+            user_id=user_id)
+        self._validate_email_except_current_user(email=user_update_data.email,
+                                                 user_id=user_id)
+        self._validate_phone_number_except_current_user(user_id=user_id,
+                                                        phone_number=user_update_data.phone_number)
 
         return self.user_storage.update_user(user_data=user_update_data)
 
@@ -95,26 +96,27 @@ class UserInteractor(ValidationMixin):
         if not is_existed_email:
             raise EmailAlreadyExistsException(email=email)
 
-    def _check_updated_username_exist(self, username: str, user_id: str):
+    def _validate_username_except_current_user(self, username: str,
+                                               user_id: str):
         is_user_exist_username = self.user_storage.check_user_username_exists(
             user_id=user_id, username=username)
 
         if is_user_exist_username:
-            self._is_username_taken(username=username)
+            raise UsernameAlreadyExistsException(username=username)
 
-    def _check_updated_email_exist(self, user_id: str, email: str):
+    def _validate_email_except_current_user(self, user_id: str, email: str):
 
         is_user_exist_email = self.user_storage.check_user_email_exists(
             user_id=user_id, email=email)
 
         if is_user_exist_email:
-            self._is_email_registered(email=email)
+            raise EmailAlreadyExistsException(email=email)
 
-    def _check_updated_phone_number_exist(self, user_id: str,
-                                          phone_number: str):
+    def _validate_phone_number_except_current_user(self, user_id: str,
+                                                   phone_number: str):
 
-        is_user_exist_phone_number = self.user_storage.check_user_phone_number_exists(
+        is_user_exist_phone_number = self.user_storage.check_phone_number_except_current_user(
             user_id=user_id, phone_number=phone_number)
 
         if is_user_exist_phone_number:
-            self._is_phone_number_exists(phone_number=phone_number)
+            raise PhoneNumberAlreadyExistsException(phone_number=phone_number)

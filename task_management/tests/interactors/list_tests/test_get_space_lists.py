@@ -1,16 +1,22 @@
 import pytest
 from unittest.mock import create_autospec, patch
 
-from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.list_interactors.list_interactors import \
+    ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     SpaceNotFoundException,
     InactiveSpaceException,
@@ -23,7 +29,6 @@ class TestGetSpaceLists:
 
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.task_storage = create_autospec(TaskStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
 
@@ -38,7 +43,6 @@ class TestGetSpaceLists:
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
-            task_storage=self.task_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             list_permission_storage=self.list_permission_storage,

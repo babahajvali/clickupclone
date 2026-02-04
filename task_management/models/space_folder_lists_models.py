@@ -37,7 +37,7 @@ class Space(models.Model):
 class Folder(models.Model):
     folder_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     space = models.ForeignKey(
         "Space",
         on_delete=models.CASCADE,
@@ -67,7 +67,7 @@ class Folder(models.Model):
 class List(models.Model):
     list_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     space = models.ForeignKey(
         "Space",
         on_delete=models.CASCADE,

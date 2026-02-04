@@ -22,7 +22,6 @@ from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_permission_storage import \
     SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.task_storage import TaskStorage
 from task_management.storages.template_storage import TemplateStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
@@ -53,7 +52,6 @@ class TransferAccountMutation(graphene.Mutation):
         list_permission_storage = ListPermissionStorage()
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
-        task_storage = TaskStorage()
 
         interactor = AccountInteractor(
             user_storage=user_storage,
@@ -67,13 +65,12 @@ class TransferAccountMutation(graphene.Mutation):
             list_storage=list_storage,
             list_permission_storage=list_permission_storage,
             template_storage=template_storage,
-            field_storage=field_storage,
-            task_storage=task_storage)
+            field_storage=field_storage)
 
         try:
             result = interactor.transfer_account(
                 account_id=account_id,
-                old_owner_id=old_owner_id,
+                current_owner_id=old_owner_id,
                 new_owner_id=new_owner_id
             )
 

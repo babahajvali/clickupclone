@@ -77,7 +77,8 @@ class JWTAuthenticationMiddleware:
                 'forgetpassword',
                 'resetpassword',
                 'createaccount',
-                'introspectionquery'
+                'introspectionquery',
+                'validateresettoken'
             ]
 
             if operation_name in public_operations:

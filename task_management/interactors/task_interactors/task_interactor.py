@@ -89,7 +89,7 @@ class TaskInteractor(ValidationMixin):
         self._validate_filter_parameters(filter_data=task_filter_data)
 
         return self.task_storage.task_filter_data(filter_data=task_filter_data)
-
+    @invalidate_interactor_cache(cache_name="tasks")
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)

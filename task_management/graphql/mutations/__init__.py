@@ -7,6 +7,8 @@ from task_management.graphql.mutations.account.delete_account_mutation import \
 
 from task_management.graphql.mutations.account.transfer_account_mutation import \
     TransferAccountMutation
+from task_management.graphql.mutations.account.update_account_mutation import \
+    UpdateAccountMutation
 from task_management.graphql.mutations.field.create_field_mutation import \
     CreateFieldMutation
 from task_management.graphql.mutations.field.delete_field_mutation import \
@@ -71,6 +73,8 @@ from task_management.graphql.mutations.user.update_user_mutation import \
     UpdateUserMutation
 from task_management.graphql.mutations.user.user_login_mutation import \
     UserLoginMutation
+from task_management.graphql.mutations.user.valiate_reset_token_mutation import \
+    ValidateResetTokenMutation
 from task_management.graphql.mutations.view.apply_list_view_mutation import \
     ApplyListViewMutation
 from task_management.graphql.mutations.view.create_view_mutation import \
@@ -273,7 +277,6 @@ class RemoveListView(graphene.ObjectType):
     remove_list_view = RemoveListViewMutation.Field(required=True)
 
 
-
 class UpdateFieldValue(graphene.ObjectType):
     update_field_value = SetFieldValueMutation.Field(required=True)
 
@@ -284,3 +287,12 @@ class ForgotPassword(graphene.ObjectType):
 
 class ResetPassword(graphene.ObjectType):
     reset_password = ResetPasswordMutation.Field(required=True)
+
+
+class ValidateResetToken(graphene.ObjectType):
+    validate_reset_token = ValidateResetTokenMutation.Field()
+
+
+class UpdateAccount(graphene.ObjectType):
+    update_account = UpdateAccountMutation.Field(required=True)
+

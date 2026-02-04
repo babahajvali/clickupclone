@@ -2,14 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    AccountNameAlreadyExistsType
-from task_management.graphql.types.input_types import CreateAccountInputParams
-from task_management.graphql.types.response_types import CreateAccountResponse
+    AccountNameAlreadyExistsType, AccountNotFoundType, InactiveAccountType, \
+    UserNotAccountOwnerType
+from task_management.graphql.types.input_types import UpdateAccountInputParams
+from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
-from task_management.interactors.dtos import CreateAccountDTO
-
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
@@ -27,17 +26,15 @@ from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
-class CreateAccountMutation(graphene.Mutation):
+class UpdateAccountMutation(graphene.Mutation):
     class Arguments:
-        params = CreateAccountInputParams(required=True)
+        params = UpdateAccountInputParams(required=True)
 
-    Output = CreateAccountResponse
+    Output = UpdateAccountResponse
 
     @staticmethod
     def mutate(root, info, params):
-        name = params.name
-        description = params.description
-        owner_id = params.owner_id
+        user_id = info.context.user.id
 
         user_storage = UserStorage()
         account_storage = AccountStorage()
@@ -67,11 +64,13 @@ class CreateAccountMutation(graphene.Mutation):
             field_storage=field_storage)
 
         try:
-            create_account_dto = CreateAccountDTO(name=name,
-                                                  description=description,
-                                                  owner_id=owner_id)
-            result = interactor.create_account(
-                create_account_data=create_account_dto)
+            update_data = UpdateAccountInputParams(
+                account_id=params.account_id,
+                name=params.name,
+                description=params.description,
+            )
+
+            result = interactor.update_account(update_data=update_data,user_id=user_id)
 
             return AccountType(
                 account_id=result.account_id,
@@ -80,5 +79,13 @@ class CreateAccountMutation(graphene.Mutation):
                 owner_id=result.owner_id,
                 is_active=result.is_active,
             )
+
         except custom_exceptions.AccountNameAlreadyExistsException as e:
             return AccountNameAlreadyExistsType(name=e.name)
+        except custom_exceptions.AccountNotFoundException as e:
+            return AccountNotFoundType(account_id=e.account_id)
+        except custom_exceptions.InactiveAccountException as e:
+            return InactiveAccountType(account_id=e.account_id)
+        except custom_exceptions.UserNotAccountOwnerException as e:
+            return UserNotAccountOwnerType(user_id=e.user_id)
+

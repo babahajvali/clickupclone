@@ -9,7 +9,7 @@ class Template(models.Model):
     template_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                    editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     list = models.OneToOneField(
         'List',
         on_delete=models.CASCADE,
@@ -26,7 +26,7 @@ class View(models.Model):
     view_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                editable=False)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     view_type = models.CharField(max_length=20,
                                  choices=ViewType.get_list_of_tuples(),
                                  default=ViewType.LIST.value)

@@ -27,6 +27,7 @@ class PasswordResetStorage(PasswordResetStorageInterface):
                 user_id=str(reset_token.user.user_id),
                 token=reset_token.token,
                 created_at=reset_token.created_at,
+                is_used=reset_token.is_used,
                 expires_at=reset_token.expires_at
             )
 
@@ -44,6 +45,7 @@ class PasswordResetStorage(PasswordResetStorageInterface):
             return PasswordResetTokenDTO(
                 user_id=str(reset_token.user.user_id),
                 token=reset_token.token,
+                is_used=reset_token.is_used,
                 created_at=reset_token.created_at,
                 expires_at=reset_token.expires_at
             )

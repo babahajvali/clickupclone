@@ -415,6 +415,12 @@ class CreateAccountDTO:
     description: str
     owner_id: str
 
+@dataclass
+class UpdateAccountDTO:
+    account_id: str
+    name: Optional[str]
+    description: Optional[str]
+
 
 @dataclass
 class AccountDTO:
@@ -458,5 +464,6 @@ class PasswordResetDTO:
 class PasswordResetTokenDTO:
     user_id: str
     token: str
+    is_used: bool
     created_at: datetime
     expires_at: datetime

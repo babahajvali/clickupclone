@@ -24,8 +24,6 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
-    TaskStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
@@ -51,7 +49,6 @@ class WorkspaceInteractor(ValidationMixin):
                  list_storage: ListStorageInterface,
                  list_permission_storage: ListPermissionStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 task_storage: TaskStorageInterface,
                  field_storage: FieldStorageInterface,):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
@@ -64,7 +61,6 @@ class WorkspaceInteractor(ValidationMixin):
         self.list_storage = list_storage
         self.list_permission_storage = list_permission_storage
         self.template_storage = template_storage
-        self.task_storage = task_storage
         self.field_storage = field_storage
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
@@ -176,7 +172,6 @@ class WorkspaceInteractor(ValidationMixin):
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage,
-            folder_storage=self.folder_storage
         )
 
         space_input_data = CreateSpaceDTO(
@@ -201,7 +196,6 @@ class WorkspaceInteractor(ValidationMixin):
             folder_permission_storage=self.folder_permission_storage,
             space_storage=self.space_storage,
             space_permission_storage=self.space_permission_storage,
-            task_storage=self.task_storage,
             field_storage=self.field_storage,
         )
 

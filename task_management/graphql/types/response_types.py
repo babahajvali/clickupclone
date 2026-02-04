@@ -26,7 +26,7 @@ from task_management.graphql.types.types import AccountType, UserType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
     ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
     FieldValueType, WorkspaceUsersType, GetUserTaskType, \
-    PasswordResetResponseType, AccountsType
+    PasswordResetResponseType, AccountsType, ValidateResetTokenType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -42,7 +42,9 @@ class UpdateAccountResponse(graphene.Union):
         types = (
             AccountType,
             AccountNotFoundType,
-            InactiveAccountType
+            InactiveAccountType,
+            UserNotAccountOwnerType,
+            AccountNameAlreadyExistsType
         )
 
 
@@ -733,4 +735,13 @@ class GetUserWithEmailResponse(graphene.Union):
     class Meta:
         types = (
             UserType,
+        )
+
+
+class ValidateResetTokenResponse(graphene.Union):
+    class Meta:
+        types = (
+            ValidateResetTokenType,
+            InvalidResetToken,
+            ResetTokenExpired
         )

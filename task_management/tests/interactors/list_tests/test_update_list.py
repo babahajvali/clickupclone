@@ -3,23 +3,31 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.list_interactors.list_interactors import \
+    ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     ListNotFoundException, InactiveListException, SpaceNotFoundException,
     ModificationNotAllowedException,
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
-from task_management.tests.factories.interactor_factory import UpdateListDTOFactory
+from task_management.tests.factories.interactor_factory import \
+    UpdateListDTOFactory
+
 
 def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
@@ -36,7 +44,6 @@ class TestUpdateList:
 
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.task_storage = create_autospec(TaskStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
 
@@ -51,7 +58,6 @@ class TestUpdateList:
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
-            task_storage=self.task_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             list_permission_storage=self.list_permission_storage,
@@ -64,20 +70,21 @@ class TestUpdateList:
     def test_update_list_success(self, snapshot):
         dto = UpdateListDTOFactory()
 
-        self.interactor.list_storage.get_list.return_value = type("List",(),{
-        "is_active": True,
-        "folder_id": None,
-        "space_id": "space_1",},)()
+        self.interactor.list_storage.get_list.return_value = type("List", (), {
+            "is_active": True,
+            "folder_id": None,
+            "space_id": "space_1", }, )()
         self.list_permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT.value)
         )
 
-        self.interactor.space_storage.get_space.return_value = type("Space", (), {
-        "is_active": True,}, )()
+        self.interactor.space_storage.get_space.return_value = type("Space",
+                                                                    (), {
+                                                                        "is_active": True, }, )()
         self.interactor.list_storage.get_folder_lists_count.return_value = 100
         self.interactor.list_storage.update_list.return_value = "UPDATED_LIST_DTO"
 
-        result = self.interactor.update_list(dto,user_id="user_id1")
+        result = self.interactor.update_list(dto, user_id="user_id1")
 
         snapshot.assert_match(
             repr(result),
@@ -91,7 +98,6 @@ class TestUpdateList:
         with pytest.raises(ListNotFoundException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
-
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
     def test_list_inactive(self, snapshot):
@@ -102,7 +108,6 @@ class TestUpdateList:
 
         with pytest.raises(InactiveListException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
-
 
         snapshot.assert_match(repr(exc.value), "list_inactive.txt")
 
@@ -118,15 +123,14 @@ class TestUpdateList:
         with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
-
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     def test_space_not_found(self, snapshot):
         dto = UpdateListDTOFactory()
-        self.interactor.list_storage.get_list.return_value = type("List",(),{
-        "is_active": True,
-        "folder_id": None,
-        "space_id": "space_1",},)()
+        self.interactor.list_storage.get_list.return_value = type("List", (), {
+            "is_active": True,
+            "folder_id": None,
+            "space_id": "space_1", }, )()
 
         self.list_permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT.value)
@@ -136,6 +140,4 @@ class TestUpdateList:
         with pytest.raises(SpaceNotFoundException) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
-
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
-
