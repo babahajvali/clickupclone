@@ -127,6 +127,9 @@ class AccountInteractor(ValidationMixin):
             folder_permission_storage=self.folder_permission_storage,
             list_storage=self.list_storage,
             list_permission_storage=self.list_permission_storage,
+            template_storage=self.template_storage,
+            task_storage=self.task_storage,
+            field_storage=self.field_storage
         )
 
         workspace_input_data = CreateWorkspaceDTO(
@@ -135,58 +138,8 @@ class AccountInteractor(ValidationMixin):
             user_id=owner_id,
             account_id=account_id
         )
-        workspace_data = workspace_interactor.create_workspace(
-            workspace_input_data)
+        return workspace_interactor.create_workspace(workspace_input_data)
 
-        return self._create_space(workspace_id=workspace_data.workspace_id,
-                                  user_id=owner_id)
-
-    def _create_space(self, user_id: str, workspace_id: str):
-        space_interactor = SpaceInteractor(
-            space_storage=self.space_storage,
-            permission_storage=self.space_permission_storage,
-            list_storage=self.list_storage,
-            workspace_storage=self.workspace_storage,
-            workspace_member_storage=self.workspace_member_storage,
-            folder_storage=self.folder_storage
-        )
-
-        space_input_data = CreateSpaceDTO(
-            name="Team_space",
-            description="Default space",
-            created_by=user_id,
-            workspace_id=workspace_id,
-            is_private=False
-        )
-
-        space_data = space_interactor.create_space(space_input_data)
-
-        return self._create_list(space_id=space_data.space_id,
-                                 user_id=user_id, )
-
-    def _create_list(self, space_id: str, user_id: str):
-        list_interactor = ListInteractor(
-            list_storage=self.list_storage,
-            template_storage=self.template_storage,
-            list_permission_storage=self.list_permission_storage,
-            folder_storage=self.folder_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            space_storage=self.space_storage,
-            space_permission_storage=self.space_permission_storage,
-            task_storage=self.task_storage,
-            field_storage=self.field_storage,
-        )
-
-        list_input_data = CreateListDTO(
-            name="Project 1",
-            description="Default list",
-            created_by=user_id,
-            space_id=space_id,
-            is_private=False,
-            folder_id=None
-        )
-
-        return list_interactor.create_list(list_input_data)
 
     def _check_accounts_active(self, account_ids: list[str]):
         accounts_data = self.account_storage.get_accounts(

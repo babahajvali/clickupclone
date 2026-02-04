@@ -73,3 +73,14 @@ class AccountStorage(AccountStorageInterface):
             owner_id=account_data.owner.user_id,
             is_active=account_data.is_active,
         ) for account_data in accounts_data]
+
+    def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
+        accounts_data = Account.objects.filter(owner_id=user_id, is_active=True)
+
+        return [AccountDTO(
+            account_id=account_data.account_id,
+            name=account_data.name,
+            description=account_data.description,
+            owner_id=account_data.owner.user_id,
+            is_active=account_data.is_active,
+        ) for account_data in accounts_data]

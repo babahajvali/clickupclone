@@ -1,9 +1,11 @@
 import pytest
 from unittest.mock import create_autospec, MagicMock
 
-
+from task_management.exceptions.enums import PermissionsEnum
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
+from task_management.interactors.storage_interface.field_storage_interface import \
+    FieldStorageInterface
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -16,6 +18,10 @@ from task_management.interactors.storage_interface.space_permission_storage_inte
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
+from task_management.interactors.storage_interface.task_storage_interface import \
+    TaskStorageInterface
+from task_management.interactors.storage_interface.template_storage_interface import \
+    TemplateStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.workspace_interactors.workspace_interactors import (
@@ -50,6 +56,9 @@ class TestWorkspaceInteractor:
         self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
         self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.task_storage = create_autospec(TaskStorageInterface)
+        self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
@@ -62,6 +71,9 @@ class TestWorkspaceInteractor:
             folder_permission_storage=self.folder_permission_storage,
             list_storage=self.list_storage,
             list_permission_storage=self.list_permission_storage,
+            template_storage=self.template_storage,
+            task_storage=self.task_storage,
+            field_storage=self.field_storage,
         )
 
 
@@ -92,6 +104,18 @@ class TestWorkspaceInteractor:
             (),
             {"is_active": True,
              "owner_id": create_data.user_id}
+        )()
+
+        self.space_permission_storage.get_user_permission_for_space.return_value = type(
+            "Permission",
+            (),
+            {"permission_type": PermissionsEnum.FULL_EDIT.value}
+        )()
+
+        self.list_permission_storage.get_user_permission_for_list.return_value = type(
+            "Permission",
+            (),
+            {"permission_type": PermissionsEnum.FULL_EDIT.value}
         )()
 
         result = self.interactor.create_workspace(create_data)

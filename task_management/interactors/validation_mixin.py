@@ -308,7 +308,7 @@ class ValidationMixin:
             user_id=user_id
         )
 
-        if not member_permission or member_permission.role == Role.GUEST.value:
+        if not member_permission or member_permission.role == Role.GUEST:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
@@ -361,5 +361,5 @@ class ValidationMixin:
         account_data = account_storage.get_account_by_id(
             account_id=account_id)
 
-        if account_data.owner_id != user_id:
+        if str(account_data.owner_id) != user_id:
             raise UserNotAccountOwnerException(user_id=user_id)

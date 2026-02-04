@@ -77,7 +77,7 @@ class JWTAuthenticationMiddleware:
                 'register',
                 'createuser',
                 'signup',
-                'forgotpassword',
+                'forgetpassword',
                 'resetpassword',
                 'createaccount',
                 'introspectionquery'

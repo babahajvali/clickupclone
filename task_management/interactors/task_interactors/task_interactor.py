@@ -84,9 +84,6 @@ class TaskInteractor(ValidationMixin):
         return self.task_storage.get_task_by_id(task_id=task_id)
 
     def task_filter(self, task_filter_data: FilterDTO, user_id: str):
-        self.validate_user_has_access_to_list(user_id=user_id,
-                                              list_id=task_filter_data.list_id,
-                                              permission_storage=self.permission_storage)
         self.validate_list_is_active(list_id=task_filter_data.list_id,
                                      list_storage=self.list_storage)
         self._validate_filter_parameters(filter_data=task_filter_data)

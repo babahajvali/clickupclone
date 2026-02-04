@@ -17,7 +17,7 @@ from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
     GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks, \
-    GetListTaskAssignees, GetAccounts
+    GetListTaskAssignees, GetAccounts, GetUserWithEmail
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
@@ -25,7 +25,7 @@ QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetTaskAssignees, GetViews, GetTemplateFields, GetField,
                  GetListViews, GetUserWorkspaces, GetTaskValues,
                  GetWorkspaceMembers, GetUserTasks, GetListTaskAssignees,
-                 GetAccounts]
+                 GetAccounts,GetUserWithEmail]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,

@@ -68,9 +68,6 @@ def task_filter_resolver(root, info, params):
     except custom_exceptions.InactiveListException as e:
         return InactiveListType(list_id=e.list_id)
 
-    except custom_exceptions.ModificationNotAllowedException as e:
-        return ModificationNotAllowedType(user_id=e.user_id)
-
     except custom_exceptions.InvalidOffsetNumberException as e:
         return InvalidOffsetNumberType(offset=e.offset)
 

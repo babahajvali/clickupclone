@@ -91,7 +91,7 @@ class TaskAssigneeStorage(TaskAssigneeStorageInterface):
     def get_list_task_assignees(self, list_id: str) -> list[TaskAssigneeDTO]:
         task_ids = (Task.objects.filter(list_id=list_id,is_deleted=False).
                     values_list('task_id',flat=True))
-        task_assignees = TaskAssignee.objects.filter(task_id__in=task_ids)
+        task_assignees = TaskAssignee.objects.filter(task_id__in=task_ids, is_active=True)
 
         return [self._assignee_dto(assignee_data=data) for data in
                 task_assignees]

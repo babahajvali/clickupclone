@@ -30,3 +30,8 @@ class AccountStorageInterface(ABC):
     @abstractmethod
     def get_accounts(self,account_ids: list[str]) -> list[AccountDTO]:
         pass
+
+
+    @abstractmethod
+    def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
+        pass

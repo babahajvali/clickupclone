@@ -369,3 +369,8 @@ class GetListTaskAssigneesInputParams(graphene.InputObjectType):
 
 class GetAccountsInputParams(graphene.InputObjectType):
     account_ids = graphene.List(graphene.String, required=True)
+
+
+class GetUserWithEmailInputParams(graphene.InputObjectType):
+    email = graphene.String(required=True)
+

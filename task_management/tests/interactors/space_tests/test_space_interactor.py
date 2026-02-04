@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum, Visibility
+from task_management.exceptions.enums import PermissionsEnum, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
@@ -96,7 +96,7 @@ class TestSpaceInteractor:
 
         self.workspace_member_storage.get_workspace_member.return_value = type(
             "Member", (), {
-                "role": "guest"
+                "role": Role.GUEST
             }
         )()
 

@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.graphql.resolvers.account.get_accounts_resolver import \
-    get_accounts_resolver
+    get_user_accounts_resolver
 from task_management.graphql.resolvers.fields.get_field_resolver import \
     get_field_resolver
 from task_management.graphql.resolvers.fields.get_task_field_values_resolver import \
@@ -36,6 +36,8 @@ from task_management.graphql.resolvers.task.task_filter_resolver import \
     task_filter_resolver
 from task_management.graphql.resolvers.user.get_user_resolver import \
     get_user_profile_resolver
+from task_management.graphql.resolvers.user.get_user_with_email_resolver import \
+    get_user_with_email_resolver
 from task_management.graphql.resolvers.views.get_list_views import \
     get_list_views_resolver
 from task_management.graphql.resolvers.views.get_views_resolver import \
@@ -56,7 +58,7 @@ from task_management.graphql.types.input_types import \
     GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams, \
     GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
     GetUserTasksInputParams, GetListTaskAssigneesInputParams, \
-    GetAccountsInputParams
+    GetAccountsInputParams, GetUserWithEmailInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \
@@ -66,7 +68,7 @@ from task_management.graphql.types.response_types import \
     GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse, \
     GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, \
     GetUserTasksResponse, GetListTaskAssigneesResponse, \
-    GetAccountsResponse
+    GetAccountsResponse, GetUserWithEmailResponse
 
 
 class GetUser(graphene.ObjectType):
@@ -247,8 +249,15 @@ class GetListTaskAssignees(graphene.ObjectType):
 
 
 class GetAccounts(graphene.ObjectType):
-    get_accounts = graphene.Field(
+    get_user_accounts = graphene.Field(
         GetAccountsResponse,
-        params=GetAccountsInputParams(required=True),
-        resolver=get_accounts_resolver
+        resolver=get_user_accounts_resolver
+    )
+
+
+class GetUserWithEmail(graphene.ObjectType):
+    get_user_with_email = graphene.Field(
+        GetUserWithEmailResponse,
+        params=GetUserWithEmailInputParams(required=True),
+        resolver=get_user_with_email_resolver
     )

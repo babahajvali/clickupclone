@@ -562,7 +562,6 @@ class TaskFilterResponse(graphene.Union):
             TasksType,
             ListNotFoundType,
             InactiveListType,
-            ModificationNotAllowedType,
             InvalidOffsetNumberType,
             InvalidLimitType
         )
@@ -730,5 +729,11 @@ class GetListTaskAssigneesResponse(graphene.Union):
 
 class GetAccountsResponse(graphene.Union):
     class Meta:
-        types = (AccountsType,
-                 InvalidAccountIdsFoundType)
+        types = (AccountsType,)
+
+
+class GetUserWithEmailResponse(graphene.Union):
+    class Meta:
+        types = (
+            UserType,
+        )
