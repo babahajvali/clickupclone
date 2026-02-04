@@ -1,61 +1,55 @@
-from task_management.exceptions.enums import FieldTypeEnum
+from task_management.exceptions.enums import FieldTypes
 
 FIELD_TYPE_RULES = {
-    FieldTypeEnum.TEXT.value: {
+    FieldTypes.TEXT.value: {
         "config_keys": {"max_length", "default"},
         "default_type": str,
-        "default_required": False,
     },
-    FieldTypeEnum.USER.value: {
+    FieldTypes.USER.value: {
         "config_keys": {"multiple", "allow_groups"},
         "default_type": str,
-        "default_required": False,
     },
-    FieldTypeEnum.NUMBER.value: {
+    FieldTypes.NUMBER.value: {
         "config_keys": {"min", "max", "default"},
         "default_type": (int, float),
-        "default_required": False,
     },
-    FieldTypeEnum.DROPDOWN.value: {
+    FieldTypes.DROPDOWN.value: {
         "config_keys": {"options", "default"},
         "default_type": str,
-        "default_required": False,
     },
-    FieldTypeEnum.DATE.value: {
+    FieldTypes.DATE.value: {
         "config_keys": set("default"),
         "default_type": str,
-        "default_required": False,
     },
-    FieldTypeEnum.CHECKBOX.value: {
+    FieldTypes.CHECKBOX.value: {
         "config_keys": set("default"),
         "default_type": bool,
-        "default_required": False,
     },
-    FieldTypeEnum.EMAIL.value: {
+    FieldTypes.EMAIL.value: {
         "config_keys": set("default"),
         "default_type": str,
-        "default_required": False,
     },
 }
 
-
 FIXED_FIELDS = [
     {
-        "field_type": FieldTypeEnum.DATE.value,
+        "field_type": FieldTypes.DATE.value,
         "field_name": "Due Date",
         "description": "Due date for complete task",
     },
     {
-        "field_type": FieldTypeEnum.DROPDOWN.value,
+        "field_type": FieldTypes.DROPDOWN.value,
         "field_name": "Priority",
+        "description": "Priority for complete task",
         "config": {
             "options": ["Low", "Medium", "High"],
             "default": "Medium"
         }
     },
     {
-        "field_type": FieldTypeEnum.DROPDOWN.value,
+        "field_type": FieldTypes.DROPDOWN.value,
         "field_name": "Status",
+        "description": "Status for complete task",
         "config": {
             "options": ["Todo", "In Progress", "Done"],
             "default": "Todo"

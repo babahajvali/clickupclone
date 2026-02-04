@@ -4,8 +4,8 @@ import jwt
 from django.conf import settings
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import NotExistedEmailFoundType, \
-    WrongPasswordFoundType, InactiveUserType
+from task_management.graphql.types.error_types import EmailNotFound, \
+    IncorrectPassword, InactiveUserType
 from task_management.graphql.types.input_types import UserLoginInputParams
 from task_management.graphql.types.response_types import UserLoginResponse
 from task_management.graphql.types.types import UserType
@@ -30,7 +30,7 @@ class UserLoginMutation(graphene.Mutation):
                 email=params.email,
                 password=params.password
             )
-            access_token = UserLoginMutation._generate_access_token(
+            jwt_token = UserLoginMutation._generate_access_token(
                 result.user_id)
             return UserType(
                 user_id=result.user_id,
@@ -41,14 +41,14 @@ class UserLoginMutation(graphene.Mutation):
                 image_url=result.image_url,
                 is_active=result.is_active,
                 gender=result.gender,
-                access_token=access_token
+                access_token=jwt_token
             )
 
-        except custom_exceptions.NotExistedEmailFoundException as e:
-            return NotExistedEmailFoundType(email=e.email)
+        except custom_exceptions.EmailNotFoundException as e:
+            return EmailNotFound(email=e.email)
 
-        except custom_exceptions.WrongPasswordFoundException as e:
-            return WrongPasswordFoundType(password=e.password)
+        except custom_exceptions.IncorrectPasswordException as e:
+            return IncorrectPassword(password=e.password)
 
         except custom_exceptions.InactiveUserException as e:
             return InactiveUserType(user_id=e.user_id)

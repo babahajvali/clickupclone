@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    AccountNameAlreadyExistsException, InvalidAccountIdsFoundException
+    AccountNameAlreadyExistsException, InvalidAccountIdsException, \
+    InactiveAccountIdsException
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
     CreateWorkspaceDTO, CreateSpaceDTO, CreateListDTO
 from task_management.interactors.list_interactors.list_interactors import \
@@ -101,9 +102,9 @@ class AccountInteractor(ValidationMixin):
         return self.account_storage.delete_account(account_id=account_id)
 
     def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
-        self._check_accounts_active(account_ids=account_ids)
+        accounts_data = self._check_accounts_active(account_ids=account_ids)
 
-        return self.account_storage.get_accounts(account_ids=account_ids)
+        return accounts_data
 
     # Helping functions
 
@@ -113,7 +114,6 @@ class AccountInteractor(ValidationMixin):
 
         if is_name_exist:
             raise AccountNameAlreadyExistsException(name=account_name)
-
 
     def _create_workspace(self, owner_id: str, account_id: str, name: str):
         workspace_interactor = WorkspaceInteractor(
@@ -140,18 +140,29 @@ class AccountInteractor(ValidationMixin):
         )
         return workspace_interactor.create_workspace(workspace_input_data)
 
-
     def _check_accounts_active(self, account_ids: list[str]):
         accounts_data = self.account_storage.get_accounts(
             account_ids=account_ids)
 
-        existed_account_ids = [str(obj.account_id) for obj in accounts_data]
+        existed_active_account_ids = [str(obj.account_id) for obj in
+                                      accounts_data if obj.is_active]
+        existed_inactive_account_ids = [str(obj.account_id) for obj in
+                                        accounts_data if not obj.is_active]
         invalid_accounts_ids = []
+        inactive_accounts_ids = []
 
         for account_id in account_ids:
-            if account_id not in existed_account_ids:
+            if account_id not in existed_active_account_ids and account_id not in existed_inactive_account_ids:
                 invalid_accounts_ids.append(account_id)
+            elif account_id in existed_inactive_account_ids:
+                inactive_accounts_ids.append(account_id)
 
         if invalid_accounts_ids:
-            raise InvalidAccountIdsFoundException(
+            raise InvalidAccountIdsException(
                 account_ids=invalid_accounts_ids)
+
+        if inactive_accounts_ids:
+            raise InactiveAccountIdsException(
+                account_ids=inactive_accounts_ids)
+
+        return accounts_data

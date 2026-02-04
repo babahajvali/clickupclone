@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
@@ -26,11 +26,11 @@ from task_management.exceptions.custom_exceptions import (
     UserNotFoundException
 )
 from task_management.tests.factories.interactor_factory import (
-    TaskAssigneeDTOFactory,UserTasksDTOFactory
+    TaskAssigneeDTOFactory, UserTasksDTOFactory
 )
 
 
-def make_permission(permission_type: PermissionsEnum):
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -85,7 +85,7 @@ class TestTaskAssigneeInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.task_assignee_storage.get_user_task_assignee.return_value = None
         task_id = "task123"
@@ -104,7 +104,7 @@ class TestTaskAssigneeInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW.value)
+            make_permission(Permissions.VIEW.value)
         )
         self.task_assignee_storage.get_user_task_assignee.return_value = None
 
@@ -161,7 +161,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_assignee_storage.remove_task_assignee.return_value = expected
         self.permission_storage.get_user_permission_for_list.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
 
         result = self.interactor.remove_task_assignee(
             assign_id="assign123",

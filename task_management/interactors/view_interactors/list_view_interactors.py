@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    ListViewNotExistedException
+    ListViewNotFoundException
 from task_management.interactors.dtos import ListViewDTO, RemoveListViewDTO
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
@@ -61,4 +61,4 @@ class ListViewInteractor(ValidationMixin):
                                                              view_id=view_id)
 
         if not is_exist:
-            raise ListViewNotExistedException(view_id=view_id, list_id=list_id)
+            raise ListViewNotFoundException(view_id=view_id, list_id=list_id)

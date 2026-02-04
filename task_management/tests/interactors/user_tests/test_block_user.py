@@ -3,9 +3,9 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     UserNotFoundException,
-    InactiveUserException,   # use your real exception name
+    InactiveUserException,  # use your real exception name
 )
-from task_management.exceptions.enums import GenderEnum
+from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import UserDTO
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface,
@@ -27,7 +27,7 @@ class TestBlockUser:
             email="user@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=True,
             image_url="url",
         )
@@ -74,7 +74,7 @@ class TestBlockUser:
             email="inactive@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=False,
             image_url="url",
         )

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum, Visibility, Role
+from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
@@ -29,7 +29,7 @@ from task_management.tests.factories.interactor_factory import (
 )
 
 
-def make_permission(permission_type: PermissionsEnum):
+def make_permission(permission_type: Permissions):
     return UserSpacePermissionDTO(
         id=1,
         space_id="space_id",
@@ -67,7 +67,7 @@ class TestSpaceInteractor:
         expected_result = SpaceDTOFactory()
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.workspace_storage.get_workspace.return_value = type(
             'Workspace', (), {
                 'is_active': True,
@@ -100,7 +100,6 @@ class TestSpaceInteractor:
             }
         )()
 
-
         with pytest.raises(ModificationNotAllowedException) as exc:
             self.interactor.create_space(create_data)
 
@@ -113,7 +112,7 @@ class TestSpaceInteractor:
         # Arrange
         create_data = CreateSpaceDTOFactory()
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.workspace_storage.get_workspace.return_value = None
 
         # Act & Assert
@@ -126,7 +125,7 @@ class TestSpaceInteractor:
         # Arrange
         create_data = CreateSpaceDTOFactory()
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.workspace_storage.get_workspace.return_value = type('Workspace',
                                                                  (), {
                                                                      'is_active': False})()
@@ -143,7 +142,7 @@ class TestSpaceInteractor:
         expected_result = SpaceDTOFactory()
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True,
                                                           "workspace_id": "workspace_id_1"})()
@@ -163,7 +162,7 @@ class TestSpaceInteractor:
         # Arrange
         update_data = SpaceDTOFactory()
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = None
 
         # Act & Assert
@@ -179,7 +178,7 @@ class TestSpaceInteractor:
         expected_result = SpaceDTOFactory()
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
         self.space_storage.remove_space.return_value = expected_result
@@ -199,13 +198,14 @@ class TestSpaceInteractor:
         expected_result = SpaceDTOFactory()
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
         self.space_storage.set_space_private.return_value = expected_result
 
         # Act
-        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PRIVATE)
+        result = self.interactor.set_space_visibility(space_id, user_id,
+                                                      Visibility.PRIVATE)
 
         # Assert
         assert result == expected_result
@@ -219,13 +219,14 @@ class TestSpaceInteractor:
         expected_result = SpaceDTOFactory()
 
         self.permission_storage.get_user_permission_for_space.return_value = make_permission(
-            PermissionsEnum.FULL_EDIT.value)
+            Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
         self.space_storage.set_space_public.return_value = expected_result
 
         # Act
-        result = self.interactor.set_space_visibility(space_id, user_id,Visibility.PUBLIC)
+        result = self.interactor.set_space_visibility(space_id, user_id,
+                                                      Visibility.PUBLIC)
 
         # Assert
         assert result == expected_result

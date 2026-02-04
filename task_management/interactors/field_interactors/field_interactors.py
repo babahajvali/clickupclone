@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    InvalidOrderException
+    InvalidOrderException, MissingFieldConfigException
+from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -39,6 +40,10 @@ class FieldInteractor(ValidationMixin):
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id,
             field_storage=self.field_storage)
+        if create_field_data.field_type.value == FieldTypes.DROPDOWN.value and not create_field_data.config:
+            raise MissingFieldConfigException(
+                field_type=create_field_data.field_type.value)
+
         if create_field_data.config:
             self.validate_field_config(
                 field_type=create_field_data.field_type.value,
@@ -60,10 +65,11 @@ class FieldInteractor(ValidationMixin):
         self.validate_user_has_access_to_list(
             user_id=user_id, list_id=list_id,
             permission_storage=self.permission_storage)
-        self.validate_field_name_unique(field_id=update_field_data.field_id,
-                                        field_name=update_field_data.field_name,
-                                        template_id=field_data.template_id,
-                                        field_storage=self.field_storage)
+        self.validate_field_name_except_current(
+            field_id=update_field_data.field_id,
+            field_name=update_field_data.field_name,
+            template_id=field_data.template_id,
+            field_storage=self.field_storage)
         self.validate_field_config(field_type=field_data.field_type.value,
                                    config=update_field_data.config)
 
@@ -76,9 +82,9 @@ class FieldInteractor(ValidationMixin):
         self._validate_field_order(template_id=template_id, order=new_order)
         list_id = self.get_template_list_id(template_id=template_id,
                                             template_storage=self.template_storage)
-        self.validate_user_has_access_to_list(list_id=list_id,
-                                              user_id=user_id,
-                                              permission_storage=self.permission_storage)
+        self.validate_user_has_access_to_list(
+            list_id=list_id, user_id=user_id,
+            permission_storage=self.permission_storage)
         self.validate_field(field_id=field_id,
                             field_storage=self.field_storage)
 

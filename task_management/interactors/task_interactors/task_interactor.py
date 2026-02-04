@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    InvalidOffsetNumberException, \
+    InvalidOffsetException, \
     InvalidLimitException, InvalidOrderException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     UpdateTaskDTO, FilterDTO,  CreateFieldValueDTO
@@ -104,7 +104,7 @@ class TaskInteractor(ValidationMixin):
     def _validate_filter_parameters(filter_data: FilterDTO):
 
         if filter_data.offset < 1:
-            raise InvalidOffsetNumberException(
+            raise InvalidOffsetException(
                 offset=filter_data.offset,
             )
 

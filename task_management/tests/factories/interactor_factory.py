@@ -2,7 +2,7 @@ import uuid
 
 import factory
 
-from task_management.exceptions.enums import FieldTypeEnum, Role
+from task_management.exceptions.enums import FieldTypes, Role
 from task_management.interactors.dtos import CreateFieldDTO, \
     FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
@@ -23,12 +23,12 @@ class CreateFieldFactory(factory.Factory):
     template_id = factory.Faker("uuid4")
     field_name = factory.Faker("name")
     description = factory.Faker("text")
-    field_type = factory.Iterator([x.value for x in FieldTypeEnum])
+    field_type = factory.Iterator([x.value for x in FieldTypes])
     is_required = factory.Faker("boolean")
     created_by = factory.Faker("uuid4")
     config = factory.LazyAttribute(lambda o: {
         "options": ["Option 1",
-                    "Option 2"] if o.field_type == FieldTypeEnum.DROPDOWN.value else {}
+                    "Option 2"] if o.field_type == FieldTypes.DROPDOWN.value else {}
     })
 
 
@@ -41,7 +41,7 @@ class FieldDTOFactory(factory.Factory):
     field_name = factory.Faker("name")
     description = factory.Faker("text")
     is_active = factory.Faker("boolean")
-    field_type = factory.Iterator([x.value for x in FieldTypeEnum])
+    field_type = factory.Iterator([x.value for x in FieldTypes])
     order = factory.sequence(lambda n: n + 1)
     config = factory.LazyFunction(dict)
     is_required = factory.Faker("boolean")
@@ -155,7 +155,6 @@ class TaskAssigneeDTOFactory(factory.Factory):
     task_id = factory.Faker('uuid4')
     assigned_by = factory.Faker('uuid4')
     is_active = True
-
 
 
 class UserTasksDTOFactory(factory.Factory):

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.list_interactors.list_interactors import ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -21,7 +21,7 @@ from task_management.interactors.storage_interface.template_storage_interface im
     TemplateStorageInterface
 from task_management.tests.factories.interactor_factory import UpdateListDTOFactory
 
-def make_permission(permission_type: PermissionsEnum):
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -69,7 +69,7 @@ class TestUpdateList:
         "folder_id": None,
         "space_id": "space_1",},)()
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
 
         self.interactor.space_storage.get_space.return_value = type("Space", (), {
@@ -112,7 +112,7 @@ class TestUpdateList:
             "List", (), {"is_active": True}
         )()
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW.value)
+            make_permission(Permissions.VIEW.value)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -129,7 +129,7 @@ class TestUpdateList:
         "space_id": "space_1",},)()
 
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.interactor.space_storage.get_space.return_value = None
 

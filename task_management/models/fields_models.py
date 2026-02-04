@@ -2,22 +2,17 @@ import uuid
 
 from django.db import models
 
+from task_management.exceptions.enums import FieldTypes
+
 
 class Field(models.Model):
-    class FieldType(models.TextChoices):
-        DROPDOWN = "dropdown", "Dropdown"
-        USER = "user", "User"
-        TEXT = "text", "Text"
-        NUMBER = "number", "Number"
-        DATE = "date", "Date"
-        CHECKBOX = "checkbox", "Checkbox"
-        EMAIL = "email", "Email"
-
-    field_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    field_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                                editable=False)
     field_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     description = models.TextField()
-    field_type = models.CharField(max_length=50, choices=FieldType.choices)
+    field_type = models.CharField(max_length=50,
+                                  choices=FieldTypes.get_list_of_tuples())
     template = models.ForeignKey(
         'Template',
         on_delete=models.CASCADE,
@@ -38,7 +33,7 @@ class Field(models.Model):
     class Meta:
         ordering = ['order']
         indexes = [
-            models.Index(fields=['template', 'is_active']),]
+            models.Index(fields=['template', 'is_active']), ]
 
     def __str__(self):
         return self.field_name

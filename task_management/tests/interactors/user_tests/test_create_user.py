@@ -2,11 +2,11 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    ExistedUsernameFoundException,
-    ExistedEmailFoundException,
-    ExistedPhoneNumberFoundException,
+    UsernameAlreadyExistsException,
+    EmailAlreadyExistsException,
+    PhoneNumberAlreadyExistsException,
 )
-from task_management.exceptions.enums import GenderEnum
+from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import CreateUserDTO
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface,
@@ -22,7 +22,6 @@ class TestCreateUser:
         user_storage.check_username_exists.return_value = False
         user_storage.check_email_exists.return_value = False
         user_storage.check_phone_number_exists.return_value = False
-
 
     def test_create_user_successfully(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
@@ -40,7 +39,7 @@ class TestCreateUser:
             password="Baba!2#4",
             phone_number="9815267845",
             email="babahajvali@gmail.com",
-            gender=GenderEnum.MALE,
+            gender=Gender.MALE,
             image_url="https://example.com/image.png",
         )
 
@@ -71,11 +70,11 @@ class TestCreateUser:
             password="Baba!2#4",
             phone_number="9815267845",
             email="babahajvali@gmail.com",
-            gender=GenderEnum.MALE,
+            gender=Gender.MALE,
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedUsernameFoundException) as exc:
+        with pytest.raises(UsernameAlreadyExistsException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -99,11 +98,11 @@ class TestCreateUser:
             password="Baba!2#4",
             phone_number="9815267845",
             email="existingemail@example.com",
-            gender=GenderEnum.MALE,
+            gender=Gender.MALE,
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedEmailFoundException) as exc:
+        with pytest.raises(EmailAlreadyExistsException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -127,11 +126,11 @@ class TestCreateUser:
             password="Baba!2#4",
             phone_number="existingphone",
             email="newemail@example.com",
-            gender=GenderEnum.MALE,
+            gender=Gender.MALE,
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(ExistedPhoneNumberFoundException) as exc:
+        with pytest.raises(PhoneNumberAlreadyExistsException) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(

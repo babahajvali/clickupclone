@@ -1,4 +1,4 @@
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     CreateUserFolderPermissionDTO
 from task_management.interactors.storage_interface.folder_permission_storage_interface import \
@@ -34,7 +34,7 @@ class FolderPermissionStorage(FolderPermissionStorageInterface):
             return None
 
     def update_user_permission_for_folder(self, user_id: str, folder_id: str,
-                                          permission_type: PermissionsEnum) -> UserFolderPermissionDTO:
+                                          permission_type: Permissions) -> UserFolderPermissionDTO:
         user_folder_permission = FolderPermission.objects.get(user_id=user_id,
                                                               folder_id=folder_id)
         user_folder_permission.permission_type = permission_type.value

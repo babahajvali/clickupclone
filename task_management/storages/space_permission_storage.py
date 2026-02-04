@@ -1,4 +1,4 @@
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserSpacePermissionDTO, \
     CreateUserSpacePermissionDTO
 from task_management.interactors.storage_interface.space_permission_storage_interface import \
@@ -10,7 +10,7 @@ class SpacePermissionStorage(SpacePermissionStorageInterface):
 
     @staticmethod
     def _to_dto(permission: SpacePermission) -> UserSpacePermissionDTO:
-        permission_type = PermissionsEnum(permission.permission_type)
+        permission_type = Permissions(permission.permission_type)
         return UserSpacePermissionDTO(
             id=permission.pk,
             space_id=str(permission.space.space_id),
@@ -33,7 +33,7 @@ class SpacePermissionStorage(SpacePermissionStorageInterface):
 
     def update_user_permission_for_space(
             self, user_id: str, space_id: str,
-            permission_type: PermissionsEnum) -> UserSpacePermissionDTO:
+            permission_type: Permissions) -> UserSpacePermissionDTO:
         permission = SpacePermission.objects.get(
             user_id=user_id,
             space_id=space_id

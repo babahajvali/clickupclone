@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
-    InactiveListType, ModificationNotAllowedType, InvalidOffsetNumberType, \
+    InactiveListType, ModificationNotAllowedType, InvalidOffset, \
     InvalidLimitType
 from task_management.graphql.types.types import TaskType, TasksType
 
@@ -68,8 +68,8 @@ def task_filter_resolver(root, info, params):
     except custom_exceptions.InactiveListException as e:
         return InactiveListType(list_id=e.list_id)
 
-    except custom_exceptions.InvalidOffsetNumberException as e:
-        return InvalidOffsetNumberType(offset=e.offset)
+    except custom_exceptions.InvalidOffsetException as e:
+        return InvalidOffset(offset=e.offset)
 
     except custom_exceptions.InvalidLimitException as e:
         return InvalidLimitType(limit=e.limit)

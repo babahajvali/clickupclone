@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import InvalidOrderException
-from task_management.exceptions.enums import PermissionsEnum, Role, Visibility
+from task_management.exceptions.enums import Permissions, Role, Visibility
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     UserSpacePermissionDTO, CreateUserSpacePermissionDTO, UpdateSpaceDTO
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -145,14 +145,14 @@ class SpaceInteractor(ValidationMixin):
                 user_permission = CreateUserSpacePermissionDTO(
                     space_id=space_id,
                     user_id=workspace_member.user_id,
-                    permission_type=PermissionsEnum.FULL_EDIT,
+                    permission_type=Permissions.FULL_EDIT,
                     added_by=created_by
                 )
             else:
                 user_permission = CreateUserSpacePermissionDTO(
                     space_id=space_id,
                     user_id=workspace_member.user_id,
-                    permission_type=PermissionsEnum.VIEW,
+                    permission_type=Permissions.VIEW,
                     added_by=created_by
                 )
             users_permissions.append(user_permission)

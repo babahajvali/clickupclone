@@ -1,8 +1,8 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import ExistedUsernameFoundType, \
-    ExistedEmailFoundType, ExistedPhoneNumberFoundType, UserNotFoundType
+from task_management.graphql.types.error_types import UsernameAlreadyExists, \
+    EmailAlreadyExists, PhoneNumberAlreadyExists, UserNotFoundType
 from task_management.graphql.types.input_types import UpdateUserInputParams
 from task_management.graphql.types.response_types import UpdateUserResponse
 from task_management.graphql.types.types import UserType
@@ -50,11 +50,11 @@ class UpdateUserMutation(graphene.Mutation):
         except custom_exceptions.UserNotFoundException as e:
             return UserNotFoundType(user_id=e.user_id)
 
-        except custom_exceptions.ExistedUsernameFoundException as e:
-            return ExistedUsernameFoundType(username=e.username)
+        except custom_exceptions.UsernameAlreadyExistsException as e:
+            return UsernameAlreadyExists(username=e.username)
 
-        except custom_exceptions.ExistedEmailFoundException as e:
-            return ExistedEmailFoundType(email=e.email)
+        except custom_exceptions.EmailAlreadyExistsException as e:
+            return EmailAlreadyExists(email=e.email)
 
-        except custom_exceptions.ExistedPhoneNumberFoundException as e:
-            return ExistedPhoneNumberFoundType(phone_number=e.phone_number)
+        except custom_exceptions.PhoneNumberAlreadyExistsException as e:
+            return PhoneNumberAlreadyExists(phone_number=e.phone_number)

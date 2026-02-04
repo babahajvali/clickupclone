@@ -1,8 +1,8 @@
 import graphene
 
 from task_management.graphql.types.error_types import \
-    AccountNameAlreadyExistsType, ExistedUsernameFoundType, \
-    ExistedEmailFoundType, ExistedPhoneNumberFoundType, \
+    AccountNameAlreadyExistsType, UsernameAlreadyExists, \
+    EmailAlreadyExists, PhoneNumberAlreadyExists, \
     UserNotFoundType, AccountNotFoundType, InactiveUserType, \
     InactiveAccountType, UserNotAccountOwnerType, FieldNotFoundType, \
     TemplateNotFoundType, TaskNotFoundType, ListNotFoundType, \
@@ -12,12 +12,12 @@ from task_management.graphql.types.error_types import \
     InvalidFieldConfigType, InvalidFieldDefaultValueType, \
     DeletedTaskType, InactiveListType, InactiveSpaceType, \
     InactiveFolderType, ViewTypeNotFoundType, InactiveWorkspaceType, \
-    UserNotWorkspaceOwnerType, UnexpectedRoleType, NotExistedEmailFoundType, \
-    WrongPasswordFoundType, InactiveWorkspaceMemberType, \
-    InvalidOrderType, UnsupportedVisibilityType, InvalidOffsetNumberType, \
-    InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotExistedType, \
-    InvalidResetTokenFoundType, \
-    ResetTokenExpiredType, InvalidAccountIdsFoundType
+    UserNotWorkspaceOwnerType, UnexpectedRoleType, EmailNotFound, \
+    IncorrectPassword, InactiveWorkspaceMemberType, \
+    InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
+    InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
+    InvalidResetToken, \
+    ResetTokenExpired, InvalidAccountIds
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -50,9 +50,9 @@ class CreateUserResponse(graphene.Union):
     class Meta:
         types = (
             UserType,
-            ExistedUsernameFoundType,
-            ExistedEmailFoundType,
-            ExistedPhoneNumberFoundType,
+            UsernameAlreadyExists,
+            EmailAlreadyExists,
+            PhoneNumberAlreadyExists,
         )
 
 
@@ -62,9 +62,9 @@ class UpdateUserResponse(graphene.Union):
             UserType,
             UserNotFoundType,
             InactiveUserType,
-            ExistedUsernameFoundType,
-            ExistedEmailFoundType,
-            ExistedPhoneNumberFoundType,
+            UsernameAlreadyExists,
+            EmailAlreadyExists,
+            PhoneNumberAlreadyExists,
         )
 
 
@@ -287,14 +287,12 @@ class CreateUserListPermissionResponse(graphene.Union):
         )
 
 
-
-
 class UserLoginResponse(graphene.Union):
     class Meta:
         types = (
             UserType,
-            NotExistedEmailFoundType,
-            WrongPasswordFoundType,
+            EmailNotFound,
+            IncorrectPassword,
             InactiveUserType,
         )
 
@@ -562,7 +560,7 @@ class TaskFilterResponse(graphene.Union):
             TasksType,
             ListNotFoundType,
             InactiveListType,
-            InvalidOffsetNumberType,
+            InvalidOffset,
             InvalidLimitType
         )
 
@@ -655,7 +653,7 @@ class RemoveListViewResponse(graphene.Union):
             ListViewType,
             ListNotFoundType,
             ModificationNotAllowedType,
-            ListViewNotExistedType,
+            ListViewNotFound,
             InactiveListType
         )
 
@@ -667,7 +665,6 @@ class GetListViewsResponse(graphene.Union):
             ListNotFoundType,
             InactiveListType
         )
-
 
 
 class GetUserWorkspacesResponse(graphene.Union):
@@ -701,20 +698,21 @@ class GetUserTasksResponse(graphene.Union):
                  InactiveUserType,
                  UserNotFoundType)
 
+
 def _resolve_union_type(obj, info):
     return type(obj)
 
 
 class ForgotPasswordResponse(graphene.Union):
     class Meta:
-        types = (PasswordResetResponseType, NotExistedEmailFoundType)
+        types = (PasswordResetResponseType, EmailNotFound)
 
     resolve_type = staticmethod(_resolve_union_type)
 
 
 class ResetPasswordResponse(graphene.Union):
     class Meta:
-        types = (UserType, InvalidResetTokenFoundType, ResetTokenExpiredType)
+        types = (UserType, InvalidResetToken, ResetTokenExpired)
 
     resolve_type = staticmethod(_resolve_union_type)
 
@@ -724,7 +722,6 @@ class GetListTaskAssigneesResponse(graphene.Union):
         types = (TaskAssigneesType,
                  InactiveListType,
                  ListNotFoundType)
-
 
 
 class GetAccountsResponse(graphene.Union):

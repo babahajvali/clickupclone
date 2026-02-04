@@ -26,7 +26,9 @@ class AccountStorage(AccountStorageInterface):
     def create_account(self, account_dto: CreateAccountDTO) -> AccountDTO:
 
         owner = User.objects.get(user_id=account_dto.owner_id)
-        account_data = Account.objects.create(name=account_dto.name, description=account_dto.description,owner=owner)
+        account_data = Account.objects.create(name=account_dto.name,
+                                              description=account_dto.description,
+                                              owner=owner)
         return AccountDTO(
             account_id=account_data.account_id,
             name=account_data.name,
@@ -63,8 +65,8 @@ class AccountStorage(AccountStorageInterface):
             is_active=account_data.is_active,
         )
 
-    def get_accounts(self,account_ids: list[str]) -> list[AccountDTO]:
-        accounts_data =  Account.objects.filter(account_id__in=account_ids,is_active=True)
+    def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
+        accounts_data = Account.objects.filter(account_id__in=account_ids)
 
         return [AccountDTO(
             account_id=account_data.account_id,
@@ -75,7 +77,8 @@ class AccountStorage(AccountStorageInterface):
         ) for account_data in accounts_data]
 
     def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
-        accounts_data = Account.objects.filter(owner_id=user_id, is_active=True)
+        accounts_data = Account.objects.filter(owner_id=user_id,
+                                               is_active=True)
 
         return [AccountDTO(
             account_id=account_data.account_id,

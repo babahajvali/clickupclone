@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec, MagicMock
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -49,13 +49,17 @@ class TestWorkspaceInteractor:
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
-        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        self.workspace_member_storage = create_autospec(
+            WorkspaceMemberStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
-        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
+        self.space_permission_storage = create_autospec(
+            SpacePermissionStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
-        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
+        self.folder_permission_storage = create_autospec(
+            FolderPermissionStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
-        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.list_permission_storage = create_autospec(
+            ListPermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.task_storage = create_autospec(TaskStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
@@ -76,11 +80,10 @@ class TestWorkspaceInteractor:
             field_storage=self.field_storage,
         )
 
-
     def _mock_active_user(self):
         return type("User", (), {"is_active": True})()
 
-    def _mock_active_workspace(self,owner_id):
+    def _mock_active_workspace(self, owner_id):
         return type(
             "Workspace",
             (),
@@ -109,18 +112,18 @@ class TestWorkspaceInteractor:
         self.space_permission_storage.get_user_permission_for_space.return_value = type(
             "Permission",
             (),
-            {"permission_type": PermissionsEnum.FULL_EDIT.value}
+            {"permission_type": Permissions.FULL_EDIT.value}
         )()
 
         self.list_permission_storage.get_user_permission_for_list.return_value = type(
             "Permission",
             (),
-            {"permission_type": PermissionsEnum.FULL_EDIT.value}
+            {"permission_type": Permissions.FULL_EDIT.value}
         )()
 
         result = self.interactor.create_workspace(create_data)
 
-        snapshot.assert_match(repr(result),"create_workspace_success.txt")
+        snapshot.assert_match(repr(result), "create_workspace_success.txt")
 
     def test_create_workspace_user_not_found(self, snapshot):
         create_data = CreateWorkspaceFactory()
@@ -144,7 +147,8 @@ class TestWorkspaceInteractor:
             self._mock_active_workspace(update_data.user_id)
         self.workspace_storage.update_workspace.return_value = expected
 
-        result = self.interactor.update_workspace(update_data,user_id="user_id")
+        result = self.interactor.update_workspace(update_data,
+                                                  user_id="user_id")
 
         snapshot.assert_match(
             repr(result),
@@ -158,13 +162,12 @@ class TestWorkspaceInteractor:
         self.workspace_storage.get_workspace.return_value = None
 
         with pytest.raises(WorkspaceNotFoundException) as exc:
-            self.interactor.update_workspace(update_data,user_id="user_id")
+            self.interactor.update_workspace(update_data, user_id="user_id")
 
         snapshot.assert_match(
             repr(exc.value),
             "update_workspace_not_found.txt"
         )
-
 
     def test_delete_workspace_success(self, snapshot):
         workspace_id = "workspace-123"
@@ -183,14 +186,14 @@ class TestWorkspaceInteractor:
             "delete_workspace_success.txt"
         )
 
-
     def test_transfer_workspace_success(self, snapshot):
         workspace_id = "workspace-123"
         user_id = "owner-123"
         new_user_id = "new-owner-123"
         expected = WorkspaceDTOFactory()
 
-        self.user_storage.get_user_data.side_effect = [self._mock_active_user(),  # new owner
+        self.user_storage.get_user_data.side_effect = [
+            self._mock_active_user(),  # new owner
         ]
         self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)

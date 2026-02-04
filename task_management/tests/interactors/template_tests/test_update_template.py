@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     TemplateNameAlreadyExistsException,
     ModificationNotAllowedException
 )
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
@@ -27,7 +27,8 @@ from task_management.tests.factories.interactor_factory import (
 
 Faker.seed(0)
 
-def make_permission(permission_type: PermissionsEnum):
+
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -37,12 +38,14 @@ def make_permission(permission_type: PermissionsEnum):
         added_by="admin"
     )
 
+
 class TestUpdateTemplateInteractor:
 
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.permission_storage = create_autospec(
+            ListPermissionStorageInterface)
 
         self.interactor = UpdateTemplateInteractor(
             list_storage=self.list_storage,
@@ -54,7 +57,7 @@ class TestUpdateTemplateInteractor:
         return type("List", (), {"is_active": True})()
 
     def _mock_template(self):
-        return type("Template",(),{"list_id": "list_123"})()
+        return type("Template", (), {"list_id": "list_123"})()
 
     def test_update_template_success(self, snapshot):
         update_dto = UpdateTemplateDTOFactory()
@@ -70,18 +73,17 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.template_storage.is_template_name_exist.return_value = False
         self.template_storage.update_template.return_value = updated_template
 
-        result = self.interactor.update_template(update_dto,user_id="user_id")
+        result = self.interactor.update_template(update_dto, user_id="user_id")
 
         snapshot.assert_match(
             repr(result),
             "update_template_success.json"
         )
-
 
     def test_update_template_template_not_found(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -91,10 +93,9 @@ class TestUpdateTemplateInteractor:
         )
 
         with pytest.raises(Exception):
-            self.interactor.update_template(update_dto,user_id="user_id")
+            self.interactor.update_template(update_dto, user_id="user_id")
 
         self.template_storage.update_template.assert_not_called()
-
 
     def test_update_template_list_not_found(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -103,10 +104,9 @@ class TestUpdateTemplateInteractor:
         self.list_storage.get_list.return_value = None
 
         with pytest.raises(Exception):
-            self.interactor.update_template(update_dto,user_id="user_id")
+            self.interactor.update_template(update_dto, user_id="user_id")
 
         self.template_storage.update_template.assert_not_called()
-
 
     def test_update_template_permission_denied(self):
         update_dto = UpdateTemplateDTOFactory()
@@ -114,12 +114,9 @@ class TestUpdateTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW.value)
+            make_permission(Permissions.VIEW.value)
         )
         with pytest.raises(ModificationNotAllowedException):
-            self.interactor.update_template(update_dto,user_id="user_id")
+            self.interactor.update_template(update_dto, user_id="user_id")
 
         self.template_storage.update_template.assert_not_called()
-
-
-

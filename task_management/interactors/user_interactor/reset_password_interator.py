@@ -22,7 +22,6 @@ class PasswordResetInteractor(ValidationMixin):
         self.email_service = email_service
         self.reset_token_expiry_hours = reset_token_expiry_hours
 
-
     def request_password_reset(self, email: str, base_url: str) -> bool:
         """Request password reset for a user"""
 
@@ -30,12 +29,13 @@ class PasswordResetInteractor(ValidationMixin):
         user_data = self.user_storage.get_user_details(email=email)
         if not user_data:
             from task_management.exceptions.custom_exceptions import \
-                NotExistedEmailFoundException
-            raise NotExistedEmailFoundException(email=email)
+                EmailNotFoundException
+            raise EmailNotFoundException(email=email)
 
         reset_token = secrets.token_urlsafe(32)
 
-        expires_at = timezone.now() + timedelta(hours=self.reset_token_expiry_hours)
+        expires_at = timezone.now() + timedelta(
+            hours=self.reset_token_expiry_hours)
 
         self.password_reset_storage.create_password_reset_token(
             user_id=user_data.user_id,
@@ -56,19 +56,19 @@ class PasswordResetInteractor(ValidationMixin):
     def reset_password(self, token: str, new_password: str):
         """Reset user password using token"""
 
-
-        reset_token_data = self.password_reset_storage.get_reset_token(token=token)
+        reset_token_data = self.password_reset_storage.get_reset_token(
+            token=token)
 
         if not reset_token_data:
             from task_management.exceptions.custom_exceptions import \
-                InvalidResetTokenFound
-            raise InvalidResetTokenFound(token=token)
+                InvalidResetTokenException
+            raise InvalidResetTokenException(token=token)
 
         if timezone.now() > reset_token_data.expires_at:
             self.password_reset_storage.used_reset_token(token=token)
             from task_management.exceptions.custom_exceptions import \
-                ResetTokenExpired
-            raise ResetTokenExpired(token=token)
+                ResetTokenExpiredException
+            raise ResetTokenExpiredException(token=token)
 
         updated_user = self.password_reset_storage.update_user_password(
             user_id=reset_token_data.user_id,
@@ -78,4 +78,3 @@ class PasswordResetInteractor(ValidationMixin):
         self.password_reset_storage.used_reset_token(token=token)
 
         return updated_user
-

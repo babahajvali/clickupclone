@@ -1,4 +1,4 @@
-from task_management.exceptions.enums import PermissionsEnum, Role
+from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO, CreateUserSpacePermissionDTO, \
     CreateUserFolderPermissionDTO, CreateUserListPermissionDTO
@@ -318,8 +318,8 @@ class WorkspaceMemberInteractor(ValidationMixin):
             user_id=user_id)
 
     @staticmethod
-    def _get_permission_type_by_role(role: str) -> PermissionsEnum:
+    def _get_permission_type_by_role(role: str) -> Permissions:
         if role == Role.GUEST.value:
-            return PermissionsEnum.VIEW
+            return Permissions.VIEW
         else:
-            return PermissionsEnum.FULL_EDIT
+            return Permissions.FULL_EDIT

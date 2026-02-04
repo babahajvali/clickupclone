@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import F
 
-from task_management.exceptions.enums import FieldTypeEnum
+from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -14,7 +14,7 @@ class FieldStorage(FieldStorageInterface):
 
     @staticmethod
     def _field_dto(field_data: Field) -> FieldDTO:
-        field_type = FieldTypeEnum(field_data.field_type)
+        field_type = FieldTypes(field_data.field_type)
         return FieldDTO(
             field_id=field_data.field_id,
             field_name=field_data.field_name,
@@ -141,7 +141,8 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[
+        FieldDTO]:
         template = Template.objects.get(template_id=fields_data[0].template_id)
         user = User.objects.get(user_id=fields_data[0].created_by)
 
@@ -154,7 +155,7 @@ class FieldStorage(FieldStorageInterface):
                     description=field_data.description,
                     field_type=field_data.field_type.value,
                     template=template,
-                    order=i,
+                    order=i + 1,
                     config=field_data.config,
                     is_required=field_data.is_required,
                     created_by=user
@@ -165,4 +166,3 @@ class FieldStorage(FieldStorageInterface):
 
         # Convert to DTOs
         return [self._field_dto(field) for field in created_fields]
-

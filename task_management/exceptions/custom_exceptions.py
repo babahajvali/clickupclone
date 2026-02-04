@@ -92,10 +92,6 @@ class TaskNotFoundException(Exception):
         self.task_id = task_id
 
 
-class TasksNotFoundExceptions(Exception):
-    def __init__(self, task_ids: list[str]):
-        self.task_ids = task_ids
-
 class TaskAssigneeNotFoundException(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
@@ -166,32 +162,27 @@ class UnexpectedRoleException(Exception):
         self.role = role
 
 
-class InactiveUserPermissionException(Exception):
-    def __init__(self, user_id: str):
-        self.user_id = user_id
-
-
-class NotExistedEmailFoundException(Exception):
+class EmailNotFoundException(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class WrongPasswordFoundException(Exception):
+class IncorrectPasswordException(Exception):
     def __init__(self, password: str):
         self.password = password
 
 
-class ExistedUsernameFoundException(Exception):
+class UsernameAlreadyExistsException(Exception):
     def __init__(self, username: str):
         self.username = username
 
 
-class ExistedEmailFoundException(Exception):
+class EmailAlreadyExistsException(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class ExistedPhoneNumberFoundException(Exception):
+class PhoneNumberAlreadyExistsException(Exception):
     def __init__(self, phone_number: str):
         self.phone_number = phone_number
 
@@ -201,7 +192,7 @@ class UsernameNotFoundException(Exception):
         self.username = username
 
 
-class InvalidOffsetNumberException(Exception):
+class InvalidOffsetException(Exception):
     def __init__(self, offset: int):
         self.offset = offset
 
@@ -231,9 +222,15 @@ class AccountNotFoundException(Exception):
         self.account_id = account_id
 
 
-class InvalidAccountIdsFoundException(Exception):
+class InvalidAccountIdsException(Exception):
     def __init__(self, account_ids: list[str]):
         self.account_ids = account_ids
+
+
+class InactiveAccountIdsException(Exception):
+    def __init__(self, account_ids: list[str]):
+        self.account_ids = account_ids
+
 
 class InactiveAccountException(Exception):
     def __init__(self, account_id: str):
@@ -250,7 +247,7 @@ class UserDoesNotHaveAccountPermissionException(Exception):
         self.user_id = user_id
 
 
-class ListViewNotExistedException(Exception):
+class ListViewNotFoundException(Exception):
     def __init__(self, list_id: str, view_id: str):
         self.list_id = list_id
         self.view_id = view_id
@@ -260,13 +257,19 @@ class AccountMemberNotFoundException(Exception):
     def __init__(self, account_member_id: int):
         self.account_member_id = account_member_id
 
-class InvalidResetTokenFound(Exception):
+
+class InvalidResetTokenException(Exception):
     def __init__(self, token: str):
         self.token = token
         super().__init__(f"Invalid or expired reset token: {token}")
 
 
-class ResetTokenExpired(Exception):
+class ResetTokenExpiredException(Exception):
     def __init__(self, token: str):
         self.token = token
         super().__init__(f"Reset token has expired: {token}")
+
+
+class MissingFieldConfigException(Exception):
+    def __init__(self, field_type: str):
+        self.field_type = field_type

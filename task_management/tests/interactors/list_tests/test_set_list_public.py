@@ -1,18 +1,26 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum, Visibility
+from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.list_interactors.list_interactors import ListInteractor
+from task_management.interactors.list_interactors.list_interactors import \
+    ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import ListStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import TaskStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import FolderStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import SpaceStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import ListPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import FolderPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.task_storage_interface import \
+    TaskStorageInterface
+from task_management.interactors.storage_interface.folder_storage_interface import \
+    FolderStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interface.space_permission_storage_interface import \
+    SpacePermissionStorageInterface
+from task_management.interactors.storage_interface.list_permission_storage_interface import \
+    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+    FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
     ListNotFoundException,
@@ -22,7 +30,7 @@ from task_management.interactors.storage_interface.template_storage_interface im
     TemplateStorageInterface
 
 
-def make_permission(permission_type: PermissionsEnum):
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -31,7 +39,6 @@ def make_permission(permission_type: PermissionsEnum):
         is_active=True,
         added_by="admin"
     )
-
 
 
 class TestSetListPublic:
@@ -65,45 +72,51 @@ class TestSetListPublic:
 
     def test_set_list_public_success(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True})()
 
-        result = self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+        result = self.interactor.set_list_visibility("list_1",
+                                                     user_id="user_1",
+                                                     visibility=Visibility.PUBLIC)
 
-        self.interactor.list_storage.make_list_public.assert_called_once_with("list_1")
+        self.interactor.list_storage.make_list_public.assert_called_once_with(
+            "list_1")
 
     def test_permission_denied(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW.value)
+            make_permission(Permissions.VIEW.value)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
-            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+            self.interactor.set_list_visibility("list_1", user_id="user_1",
+                                                visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     def test_list_not_found(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFoundException) as exc:
-            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+            self.interactor.set_list_visibility("list_1", user_id="user_1",
+                                                visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
     def test_list_inactive(self, snapshot):
         self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}
         )()
 
         with pytest.raises(InactiveListException) as exc:
-            self.interactor.set_list_visibility("list_1", user_id="user_1",visibility=Visibility.PUBLIC)
+            self.interactor.set_list_visibility("list_1", user_id="user_1",
+                                                visibility=Visibility.PUBLIC)
 
         snapshot.assert_match(repr(exc.value), "list_inactive.txt")

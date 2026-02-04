@@ -72,9 +72,6 @@ class JWTAuthenticationMiddleware:
 
             public_operations = [
                 'userlogin',
-                'login',
-                'userregister',
-                'register',
                 'createuser',
                 'signup',
                 'forgetpassword',

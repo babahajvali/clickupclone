@@ -1,13 +1,14 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.task_field_values_storage_interface import \
     FieldValueStorageInterface
-from task_management.interactors.task_interactors.task_interactor import TaskInteractor
+from task_management.interactors.task_interactors.task_interactor import \
+    TaskInteractor
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
@@ -29,7 +30,8 @@ from task_management.tests.factories.interactor_factory import (
     TaskDTOFactory
 )
 
-def make_permission(permission_type: PermissionsEnum):
+
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -45,7 +47,8 @@ class TestCreateTaskInteractor:
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
-        self.permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.permission_storage = create_autospec(
+            ListPermissionStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
         self.field_value_storage = create_autospec(FieldValueStorageInterface)
 
@@ -64,7 +67,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.task_storage.create_task.return_value = TaskDTOFactory()
 
@@ -82,7 +85,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(Permissions.VIEW)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -129,11 +132,11 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": True}
         )()
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT.value)
+            make_permission(Permissions.FULL_EDIT.value)
         )
         self.task_storage.update_task.return_value = TaskDTOFactory()
 
-        result = self.interactor.update_task(update_data,user_id="user_id")
+        result = self.interactor.update_task(update_data, user_id="user_id")
 
         snapshot.assert_match(
             repr(result),

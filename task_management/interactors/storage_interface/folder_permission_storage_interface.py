@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     CreateUserFolderPermissionDTO
 
@@ -14,7 +14,7 @@ class FolderPermissionStorageInterface(ABC):
 
     @abstractmethod
     def update_user_permission_for_folder(self, user_id: str, folder_id: str,
-                                          permission_type: PermissionsEnum) -> UserFolderPermissionDTO:
+                                          permission_type: Permissions) -> UserFolderPermissionDTO:
         pass
 
     @abstractmethod

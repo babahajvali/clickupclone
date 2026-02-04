@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO, \
     CreateUserListPermissionDTO
 
@@ -9,7 +9,7 @@ class ListPermissionStorageInterface(ABC):
 
     @abstractmethod
     def update_user_permission_for_list(self, list_id: str, user_id: str,
-                                        permission_type: PermissionsEnum) -> UserListPermissionDTO:
+                                        permission_type: Permissions) -> UserListPermissionDTO:
         pass
 
     @abstractmethod
@@ -24,7 +24,7 @@ class ListPermissionStorageInterface(ABC):
 
     @abstractmethod
     def add_user_permission_for_list(self, list_id: str, user_id: str,
-                                     permission_type: PermissionsEnum) -> UserListPermissionDTO:
+                                     permission_type: Permissions) -> UserListPermissionDTO:
         pass
 
     @abstractmethod

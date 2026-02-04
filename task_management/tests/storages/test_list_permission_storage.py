@@ -1,9 +1,11 @@
 import pytest
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateUserListPermissionDTO
-from task_management.storages.list_permission_storage import ListPermissionStorage
-from task_management.tests.factories.storage_factory import ListPermissionFactory, ListFactory, UserFactory
+from task_management.storages.list_permission_storage import \
+    ListPermissionStorage
+from task_management.tests.factories.storage_factory import \
+    ListPermissionFactory, ListFactory, UserFactory
 
 
 class TestListPermissionStorage:
@@ -17,18 +19,20 @@ class TestListPermissionStorage:
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user, added_by=added_by, permission_type="view")
+        ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
+                              permission_type="view")
         storage = ListPermissionStorage()
 
         # Act
         result = storage.update_user_permission_for_list(
             list_id=str(list_id),
             user_id=str(user_id),
-            permission_type=PermissionsEnum.FULL_EDIT
+            permission_type=Permissions.FULL_EDIT
         )
 
         # Assert
-        snapshot.assert_match(repr(result), "test_update_user_permission_for_list_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_update_user_permission_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_get_list_permissions_success(self, snapshot):
@@ -41,15 +45,18 @@ class TestListPermissionStorage:
         user1 = UserFactory(user_id=user_id1)
         user2 = UserFactory(user_id=user_id2)
         added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user1, added_by=added_by, permission_type="view")
-        ListPermissionFactory(list=list_obj, user=user2, added_by=added_by, permission_type="edit")
+        ListPermissionFactory(list=list_obj, user=user1, added_by=added_by,
+                              permission_type="view")
+        ListPermissionFactory(list=list_obj, user=user2, added_by=added_by,
+                              permission_type="edit")
         storage = ListPermissionStorage()
 
         # Act
         result = storage.get_list_permissions(list_id=str(list_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_list_permissions_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_list_permissions_success.txt")
 
     @pytest.mark.django_db
     def test_get_list_permissions_empty(self, snapshot):
@@ -62,7 +69,8 @@ class TestListPermissionStorage:
         result = storage.get_list_permissions(list_id=str(list_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_list_permissions_empty.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_list_permissions_empty.txt")
 
     @pytest.mark.django_db
     def test_get_user_permission_for_list_success(self, snapshot):
@@ -73,14 +81,17 @@ class TestListPermissionStorage:
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user, added_by=added_by, permission_type="view")
+        ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
+                              permission_type="view")
         storage = ListPermissionStorage()
 
         # Act
-        result = storage.get_user_permission_for_list(user_id=str(user_id), list_id=str(list_id))
+        result = storage.get_user_permission_for_list(user_id=str(user_id),
+                                                      list_id=str(list_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_user_permission_for_list_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_user_permission_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_get_user_permission_for_list_failure(self, snapshot):
@@ -90,10 +101,12 @@ class TestListPermissionStorage:
         storage = ListPermissionStorage()
 
         # Act
-        result = storage.get_user_permission_for_list(user_id=str(user_id), list_id=str(list_id))
+        result = storage.get_user_permission_for_list(user_id=str(user_id),
+                                                      list_id=str(list_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_user_permission_for_list_failure.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_user_permission_for_list_failure.txt")
 
     @pytest.mark.django_db
     def test_remove_user_permission_for_list_success(self, snapshot):
@@ -104,14 +117,17 @@ class TestListPermissionStorage:
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user, added_by=added_by, is_active=True)
+        ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
+                              is_active=True)
         storage = ListPermissionStorage()
 
         # Act
-        result = storage.remove_user_permission_for_list(list_id=str(list_id), user_id=str(user_id))
+        result = storage.remove_user_permission_for_list(list_id=str(list_id),
+                                                         user_id=str(user_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_remove_user_permission_for_list_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_remove_user_permission_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_create_list_users_permissions_success(self, snapshot):
@@ -130,29 +146,31 @@ class TestListPermissionStorage:
             CreateUserListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_1),
-                permission_type=PermissionsEnum.VIEW,
+                permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             ),
             CreateUserListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_2),
-                permission_type=PermissionsEnum.FULL_EDIT,
+                permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
             CreateUserListPermissionDTO(
                 list_id=str(list_id_2),
                 user_id=str(user_id_1),
-                permission_type=PermissionsEnum.FULL_EDIT,
+                permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
         storage = ListPermissionStorage()
 
         # Act
-        result = storage.create_list_users_permissions(user_permissions=user_permissions)
+        result = storage.create_list_users_permissions(
+            user_permissions=user_permissions)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_users_permissions_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_create_list_users_permissions_success.txt")
 
     @pytest.mark.django_db
     def test_create_list_users_permissions_single_record(self, snapshot):
@@ -167,14 +185,16 @@ class TestListPermissionStorage:
             CreateUserListPermissionDTO(
                 list_id=str(list_id),
                 user_id=str(user_id),
-                permission_type=PermissionsEnum.VIEW,
+                permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             )
         ]
         storage = ListPermissionStorage()
 
         # Act
-        result = storage.create_list_users_permissions(user_permissions=user_permissions)
+        result = storage.create_list_users_permissions(
+            user_permissions=user_permissions)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_users_permissions_single_record.txt")
+        snapshot.assert_match(repr(result),
+                              "test_create_list_users_permissions_single_record.txt")

@@ -1,6 +1,6 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    InvalidAccountIdsFoundType
+    InvalidAccountIds
 from task_management.graphql.types.types import AccountType, AccountsType
 from task_management.storages.account_storage import AccountStorage
 
@@ -19,10 +19,9 @@ def get_user_accounts_resolver(root, info):
             description=result.description,
             owner_id=result.owner_id,
             is_active=result.is_active,
-        )for result in accounts_data]
+        ) for result in accounts_data]
 
         return AccountsType(accounts=results)
 
-    except custom_exceptions.InvalidAccountIdsFoundException as e:
-        return InvalidAccountIdsFoundType(account_ids=e.account_ids)
-
+    except custom_exceptions.InvalidAccountIdsException as e:
+        return InvalidAccountIds(account_ids=e.account_ids)

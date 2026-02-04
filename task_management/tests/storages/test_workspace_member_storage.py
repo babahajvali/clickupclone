@@ -3,7 +3,8 @@ import pytest
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO
 from task_management.storages.workspace_member import WorkspaceMemberStorage
-from task_management.tests.factories.storage_factory import WorkspaceMemberFactory, WorkspaceFactory, UserFactory
+from task_management.tests.factories.storage_factory import \
+    WorkspaceMemberFactory, WorkspaceFactory, UserFactory
 
 
 class TestWorkspaceMemberStorage:
@@ -26,10 +27,12 @@ class TestWorkspaceMemberStorage:
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.add_member_to_workspace(workspace_member_data=workspace_member_data)
+        result = storage.add_member_to_workspace(
+            workspace_member_data=workspace_member_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_add_member_to_workspace_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_add_member_to_workspace_success.txt")
 
     @pytest.mark.django_db
     def test_get_workspace_member_success(self, snapshot):
@@ -40,14 +43,17 @@ class TestWorkspaceMemberStorage:
         added_by_id = "12345678-1234-5678-1234-567812345680"
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by)
+        WorkspaceMemberFactory(workspace=workspace, user=user,
+                               added_by=added_by)
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.get_workspace_member(workspace_id=str(workspace_id), user_id=str(user_id))
+        result = storage.get_workspace_member(workspace_id=str(workspace_id),
+                                              user_id=str(user_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_workspace_member_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_workspace_member_success.txt")
 
     @pytest.mark.django_db
     def test_get_workspace_member_failure(self, snapshot):
@@ -57,10 +63,12 @@ class TestWorkspaceMemberStorage:
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.get_workspace_member(workspace_id=str(workspace_id), user_id=str(user_id))
+        result = storage.get_workspace_member(workspace_id=str(workspace_id),
+                                              user_id=str(user_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_workspace_member_failure.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_workspace_member_failure.txt")
 
     @pytest.mark.django_db
     def test_get_workspace_member_by_id_success(self, snapshot):
@@ -71,14 +79,17 @@ class TestWorkspaceMemberStorage:
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        workspace_member = WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by)
+        workspace_member = WorkspaceMemberFactory(workspace=workspace,
+                                                  user=user, added_by=added_by)
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.get_workspace_member_by_id(workspace_member_id=workspace_member.pk)
+        result = storage.get_workspace_member_by_id(
+            workspace_member_id=workspace_member.pk)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_workspace_member_by_id_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_workspace_member_by_id_success.txt")
 
     @pytest.mark.django_db
     def test_remove_member_from_workspace_success(self, snapshot):
@@ -89,14 +100,18 @@ class TestWorkspaceMemberStorage:
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
-        workspace_member = WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by, is_active=True)
+        workspace_member = WorkspaceMemberFactory(workspace=workspace,
+                                                  user=user, added_by=added_by,
+                                                  is_active=True)
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.remove_member_from_workspace(workspace_member_id=workspace_member.pk)
+        result = storage.remove_member_from_workspace(
+            workspace_member_id=workspace_member.pk)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_remove_member_from_workspace_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_remove_member_from_workspace_success.txt")
 
     @pytest.mark.django_db
     def test_update_the_member_role_success(self, snapshot):
@@ -107,14 +122,18 @@ class TestWorkspaceMemberStorage:
         user = UserFactory(user_id=user_id)
         added_by_id = "12345678-1234-5678-1234-567812345680"
         added_by = UserFactory(user_id=added_by_id)
-        WorkspaceMemberFactory(workspace=workspace, user=user, added_by=added_by, role="member")
+        WorkspaceMemberFactory(workspace=workspace, user=user,
+                               added_by=added_by, role="MEMBER")
         storage = WorkspaceMemberStorage()
 
         # Act
-        result = storage.update_the_member_role(workspace_id=str(workspace_id), user_id=str(user_id), role="admin")
+        result = storage.update_the_member_role(workspace_id=str(workspace_id),
+                                                user_id=str(user_id),
+                                                role="ADMIN")
 
         # Assert
-        snapshot.assert_match(repr(result), "test_update_the_member_role_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_update_the_member_role_success.txt")
 
     @pytest.mark.django_db
     def test_get_workspace_members_success(self, snapshot):
@@ -127,16 +146,20 @@ class TestWorkspaceMemberStorage:
         user1 = UserFactory(user_id=user_id1)
         user2 = UserFactory(user_id=user_id2)
         added_by = UserFactory(user_id=added_by_id)
-        WorkspaceMemberFactory(workspace=workspace, user=user1, added_by=added_by, is_active=True)
-        WorkspaceMemberFactory(workspace=workspace, user=user2, added_by=added_by, is_active=True)
-        WorkspaceMemberFactory(workspace=workspace, user=user1, added_by=added_by, is_active=False)
+        WorkspaceMemberFactory(workspace=workspace, user=user1,
+                               added_by=added_by, is_active=True)
+        WorkspaceMemberFactory(workspace=workspace, user=user2,
+                               added_by=added_by, is_active=True)
+        WorkspaceMemberFactory(workspace=workspace, user=user1,
+                               added_by=added_by, is_active=False)
         storage = WorkspaceMemberStorage()
 
         # Act
         result = storage.get_workspace_members(workspace_id=str(workspace_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_workspace_members_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_workspace_members_success.txt")
 
     @pytest.mark.django_db
     def test_get_workspace_members_empty(self, snapshot):
@@ -149,4 +172,5 @@ class TestWorkspaceMemberStorage:
         result = storage.get_workspace_members(workspace_id=str(workspace_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_workspace_members_empty.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_workspace_members_empty.txt")

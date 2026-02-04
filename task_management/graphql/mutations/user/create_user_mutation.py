@@ -1,9 +1,9 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.enums import GenderEnum
-from task_management.graphql.types.error_types import ExistedUsernameFoundType, \
-    ExistedEmailFoundType, ExistedPhoneNumberFoundType
+from task_management.exceptions.enums import Gender
+from task_management.graphql.types.error_types import UsernameAlreadyExists, \
+    EmailAlreadyExists, PhoneNumberAlreadyExists
 from task_management.graphql.types.input_types import CreateUserInputParams
 from task_management.graphql.types.response_types import CreateUserResponse
 from task_management.graphql.types.types import UserType
@@ -25,7 +25,7 @@ class CreateUserMutation(graphene.Mutation):
         interactor = UserInteractor(user_storage=user_storage)
 
         try:
-            gender = GenderEnum(params.gender)
+            gender = Gender(params.gender)
             user_input_data = CreateUserDTO(
                 username=params.username,
                 email=params.email,
@@ -49,10 +49,10 @@ class CreateUserMutation(graphene.Mutation):
                 gender=result.gender
             )
 
-        except custom_exceptions.ExistedUsernameFoundException as e:
-            return ExistedUsernameFoundType(username=e.username)
+        except custom_exceptions.UsernameAlreadyExistsException as e:
+            return UsernameAlreadyExists(username=e.username)
 
-        except custom_exceptions.ExistedEmailFoundException as e:
-            return ExistedEmailFoundType(email=e.email)
-        except custom_exceptions.ExistedPhoneNumberFoundException as e:
-            return ExistedPhoneNumberFoundType(phone_number=e.phone_number)
+        except custom_exceptions.EmailAlreadyExistsException as e:
+            return EmailAlreadyExists(email=e.email)
+        except custom_exceptions.PhoneNumberAlreadyExistsException as e:
+            return PhoneNumberAlreadyExists(phone_number=e.phone_number)

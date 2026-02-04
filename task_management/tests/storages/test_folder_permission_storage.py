@@ -1,10 +1,12 @@
 import pytest
 from factory.random import reseed_random
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateUserFolderPermissionDTO
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.tests.factories.storage_factory import FolderPermissionFactory, FolderFactory, UserFactory
+from task_management.storages.folder_permission_storage import \
+    FolderPermissionStorage
+from task_management.tests.factories.storage_factory import \
+    FolderPermissionFactory, FolderFactory, UserFactory
 
 
 class TestFolderPermissionStorage:
@@ -18,14 +20,18 @@ class TestFolderPermissionStorage:
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id)
         added_by = UserFactory(user_id=added_by_id)
-        FolderPermissionFactory(user=user, folder=folder, added_by=added_by, permission_type="view")
+        FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
+                                permission_type="view")
         storage = FolderPermissionStorage()
 
         # Act
-        result = storage.get_user_permission_for_folder(user_id=str(user_id), folder_id=str(folder_id))
+        result = storage.get_user_permission_for_folder(user_id=str(user_id),
+                                                        folder_id=str(
+                                                            folder_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_user_permission_for_folder_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_user_permission_for_folder_success.txt")
 
     @pytest.mark.django_db
     def test_get_user_permission_for_folder_failure(self, snapshot):
@@ -35,10 +41,13 @@ class TestFolderPermissionStorage:
         storage = FolderPermissionStorage()
 
         # Act
-        result = storage.get_user_permission_for_folder(user_id=str(user_id), folder_id=str(folder_id))
+        result = storage.get_user_permission_for_folder(user_id=str(user_id),
+                                                        folder_id=str(
+                                                            folder_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_user_permission_for_folder_failure.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_user_permission_for_folder_failure.txt")
 
     @pytest.mark.django_db
     def test_update_user_permission_for_folder_success(self, snapshot):
@@ -49,18 +58,20 @@ class TestFolderPermissionStorage:
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id)
         added_by = UserFactory(user_id=added_by_id)
-        FolderPermissionFactory(user=user, folder=folder, added_by=added_by, permission_type="view")
+        FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
+                                permission_type="view")
         storage = FolderPermissionStorage()
 
         # Act
         result = storage.update_user_permission_for_folder(
             user_id=str(user_id),
             folder_id=str(folder_id),
-            permission_type=PermissionsEnum.FULL_EDIT
+            permission_type=Permissions.FULL_EDIT
         )
 
         # Assert
-        snapshot.assert_match(repr(result), "test_update_user_permission_for_folder_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_update_user_permission_for_folder_success.txt")
 
     @pytest.mark.django_db
     def test_remove_user_permission_for_folder_success(self, snapshot):
@@ -71,14 +82,17 @@ class TestFolderPermissionStorage:
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id)
         added_by = UserFactory(user_id=added_by_id)
-        FolderPermissionFactory(user=user, folder=folder, added_by=added_by, is_active=True)
+        FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
+                                is_active=True)
         storage = FolderPermissionStorage()
 
         # Act
-        result = storage.remove_user_permission_for_folder(folder_id=str(folder_id), user_id=str(user_id))
+        result = storage.remove_user_permission_for_folder(
+            folder_id=str(folder_id), user_id=str(user_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_remove_user_permission_for_folder_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_remove_user_permission_for_folder_success.txt")
 
     @pytest.mark.django_db
     def test_get_folder_permissions_success(self, snapshot):
@@ -89,15 +103,18 @@ class TestFolderPermissionStorage:
         user1 = UserFactory(user_id="12345678-1234-5678-1234-567812345681")
         user2 = UserFactory(user_id="12345678-1234-5678-1234-567812345682")
         added_by = UserFactory(user_id=added_by_id)
-        FolderPermissionFactory(user=user1, folder=folder, added_by=added_by, permission_type="view")
-        FolderPermissionFactory(user=user2, folder=folder, added_by=added_by, permission_type="edit")
+        FolderPermissionFactory(user=user1, folder=folder, added_by=added_by,
+                                permission_type="view")
+        FolderPermissionFactory(user=user2, folder=folder, added_by=added_by,
+                                permission_type="edit")
         storage = FolderPermissionStorage()
 
         # Act
         result = storage.get_folder_permissions(folder_id=str(folder_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_folder_permissions_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_folder_permissions_success.txt")
 
     @pytest.mark.django_db
     def test_get_folder_permissions_empty(self, snapshot):
@@ -110,7 +127,8 @@ class TestFolderPermissionStorage:
         result = storage.get_folder_permissions(folder_id=str(folder_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_folder_permissions_empty.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_folder_permissions_empty.txt")
 
     @pytest.mark.django_db
     def test_create_folder_users_permissions_success(self, snapshot):
@@ -129,29 +147,31 @@ class TestFolderPermissionStorage:
             CreateUserFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_1),
-                permission_type=PermissionsEnum.VIEW,
+                permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             ),
             CreateUserFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_2),
-                permission_type=PermissionsEnum.FULL_EDIT,
+                permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
             CreateUserFolderPermissionDTO(
                 folder_id=str(folder_id_2),
                 user_id=str(user_id_1),
-                permission_type=PermissionsEnum.FULL_EDIT,
+                permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
         storage = FolderPermissionStorage()
 
         # Act
-        result = storage.create_folder_users_permissions(users_permission_data=users_permission_data)
+        result = storage.create_folder_users_permissions(
+            users_permission_data=users_permission_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_folder_users_permissions_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_create_folder_users_permissions_success.txt")
 
     @pytest.mark.django_db
     def test_create_folder_users_permissions_single_record(self, snapshot):
@@ -166,14 +186,16 @@ class TestFolderPermissionStorage:
             CreateUserFolderPermissionDTO(
                 folder_id=str(folder_id),
                 user_id=str(user_id),
-                permission_type=PermissionsEnum.VIEW,
+                permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             )
         ]
         storage = FolderPermissionStorage()
 
         # Act
-        result = storage.create_folder_users_permissions(users_permission_data=users_permission_data)
+        result = storage.create_folder_users_permissions(
+            users_permission_data=users_permission_data)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_folder_users_permissions_single_record.txt")
+        snapshot.assert_match(repr(result),
+                              "test_create_folder_users_permissions_single_record.txt")

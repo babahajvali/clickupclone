@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.view_interactors.list_view_interactors import (
     ListViewInteractor
@@ -29,7 +29,8 @@ from task_management.tests.factories.interactor_factory import (
     RemoveListViewDTOFactory
 )
 
-def make_permission(permission_type: PermissionsEnum):
+
+def make_permission(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_id",
@@ -46,7 +47,8 @@ class TestListViewInteractor:
         self.list_view_storage = create_autospec(ListViewsStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
         self.view_storage = create_autospec(ViewStorageInterface)
-        self.permission_storage = create_autospec(ListPermissionStorageInterface)
+        self.permission_storage = create_autospec(
+            ListPermissionStorageInterface)
 
         self.interactor = ListViewInteractor(
             list_view_storage=self.list_view_storage,
@@ -57,7 +59,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_list_success(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(Permissions.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -79,7 +81,7 @@ class TestListViewInteractor:
 
     def test_apply_view_without_permission_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(Permissions.VIEW)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -91,7 +93,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_nonexistent_view_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(Permissions.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = None
@@ -105,7 +107,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_nonexistent_list_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(Permissions.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -123,7 +125,7 @@ class TestListViewInteractor:
 
     def test_apply_view_for_inactive_list_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(Permissions.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -141,10 +143,9 @@ class TestListViewInteractor:
 
         snapshot.assert_match(repr(exc.value), "apply_list_inactive.txt")
 
-
     def test_remove_view_for_list_success(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.FULL_EDIT)
+            make_permission(Permissions.FULL_EDIT)
         )
 
         self.view_storage.get_view.return_value = type(
@@ -166,7 +167,7 @@ class TestListViewInteractor:
 
     def test_remove_view_without_permission_raises_exception(self, snapshot):
         self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(PermissionsEnum.VIEW)
+            make_permission(Permissions.VIEW)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -175,7 +176,6 @@ class TestListViewInteractor:
             )
 
         snapshot.assert_match(repr(exc.value), "remove_permission_denied.txt")
-
 
     def test_get_list_views_success(self, snapshot):
         self.list_storage.get_list.return_value = type(

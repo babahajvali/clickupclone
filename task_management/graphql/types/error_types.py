@@ -113,27 +113,27 @@ class UserDoesNotHaveListPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
-class NotExistedEmailFoundType(graphene.ObjectType):
+class EmailNotFound(graphene.ObjectType):
     email = graphene.String(required=True)
 
 
-class WrongPasswordFoundType(graphene.ObjectType):
+class IncorrectPassword(graphene.ObjectType):
     password = graphene.String(required=True)
 
 
-class ExistedUsernameFoundType(graphene.ObjectType):
+class UsernameAlreadyExists(graphene.ObjectType):
     username = graphene.String(required=True)
 
 
-class ExistedEmailFoundType(graphene.ObjectType):
+class EmailAlreadyExists(graphene.ObjectType):
     email = graphene.String(required=True)
 
 
-class ExistedPhoneNumberFoundType(graphene.ObjectType):
+class PhoneNumberAlreadyExists(graphene.ObjectType):
     phone_number = graphene.String(required=True)
 
 
-class InvalidOffsetNumberType(graphene.ObjectType):
+class InvalidOffset(graphene.ObjectType):
     offset = graphene.Int(required=True)
 
 
@@ -169,7 +169,7 @@ class UserDoesNotHaveAccountPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
-class ListViewNotExistedType(graphene.ObjectType):
+class ListViewNotFound(graphene.ObjectType):
     list_id = graphene.String(required=True)
     view_id = graphene.String(required=True)
 
@@ -178,12 +178,13 @@ class AccountMemberNotFoundType(graphene.ObjectType):
     account_member_id = graphene.Int(required=True)
 
 
-class InvalidResetTokenFoundType(graphene.ObjectType):
-    token = graphene.String(required=True)
-
-class ResetTokenExpiredType(graphene.ObjectType):
+class InvalidResetToken(graphene.ObjectType):
     token = graphene.String(required=True)
 
 
-class InvalidAccountIdsFoundType(graphene.ObjectType):
-    account_ids = graphene.List(graphene.String,required=True)
+class ResetTokenExpired(graphene.ObjectType):
+    token = graphene.String(required=True)
+
+
+class InvalidAccountIds(graphene.ObjectType):
+    account_ids = graphene.List(graphene.String, required=True)

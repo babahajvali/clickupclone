@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.enums import FieldTypeEnum
+from task_management.exceptions.enums import FieldTypes
 from task_management.graphql.types.error_types import TemplateNotFoundType, \
     UnsupportedFieldTypeType, FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
@@ -40,9 +40,9 @@ class CreateFieldMutation(graphene.Mutation):
         )
 
         try:
-
+            field_type = FieldTypes(params.field_type)
             create_field_data = CreateFieldDTO(
-                field_type=FieldTypeEnum(params.field_type),
+                field_type=field_type,
                 field_name=params.field_name,
                 description=params.description,
                 template_id=params.template_id,
@@ -56,7 +56,7 @@ class CreateFieldMutation(graphene.Mutation):
 
             return FieldType(
                 field_id=result.field_id,
-                field_type=result.field_type,
+                field_type=result.field_type.value,
                 description=result.description,
                 template_id=result.template_id,
                 field_name=result.field_name,

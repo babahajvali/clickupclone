@@ -1,7 +1,7 @@
 from django.core.cache import cache
 
 from task_management.exceptions.custom_exceptions import InvalidOrderException
-from task_management.exceptions.enums import PermissionsEnum, Visibility
+from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO, \
     CreateTemplateDTO
@@ -219,25 +219,25 @@ class ListInteractor(ValidationMixin):
         list_user_permissions = []
 
         for each in space_user_permissions:
-            if each.permission_type == PermissionsEnum.FULL_EDIT.value:
+            if each.permission_type == Permissions.FULL_EDIT.value:
                 user_permission = CreateUserListPermissionDTO(
                     list_id=list_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.FULL_EDIT,
+                    permission_type=Permissions.FULL_EDIT,
                     added_by=created_by,
                 )
-            elif each.permission_type == PermissionsEnum.COMMENT.value:
+            elif each.permission_type == Permissions.COMMENT.value:
                 user_permission = CreateUserListPermissionDTO(
                     list_id=list_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.COMMENT,
+                    permission_type=Permissions.COMMENT,
                     added_by=created_by,
                 )
             else:
                 user_permission = CreateUserListPermissionDTO(
                     list_id=list_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.VIEW,
+                    permission_type=Permissions.VIEW,
                     added_by=created_by,
                 )
 

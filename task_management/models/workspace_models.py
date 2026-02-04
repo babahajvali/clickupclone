@@ -2,12 +2,8 @@ import uuid
 
 from django.db import models
 
+from task_management.exceptions.enums import Role
 
-class RoleType(models.TextChoices):
-    OWNER = "owner", "Owner"
-    ADMIN = "admin", "Admin"
-    MEMBER = "member", "Member"
-    GUEST = "guest", "Guest"
 
 class Workspace(models.Model):
     workspace_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
@@ -48,8 +44,7 @@ class WorkspaceMember(models.Model):
         on_delete=models.DO_NOTHING,
         related_name='workspace_memberships'
     )
-    role = models.CharField(max_length=15, choices=RoleType.choices,
-                            default=RoleType.MEMBER)
+    role = models.CharField(max_length=15, choices=Role.get_list_of_tuples())
     is_active = models.BooleanField(default=True)
     added_by = models.ForeignKey(
         "User",

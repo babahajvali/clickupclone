@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Dict
 
-from task_management.exceptions.enums import ViewTypeEnum, FieldTypeEnum, \
-    GenderEnum, Role, PermissionsEnum
+from task_management.exceptions.enums import ViewType, FieldTypes, \
+    Gender, Role, Permissions
 
 
 @dataclass
@@ -12,7 +12,7 @@ class UserDTO:
     full_name: str
     username: str
     password: str
-    gender: GenderEnum
+    gender: Gender
     email: str
     phone_number: str
     is_active: bool
@@ -24,7 +24,7 @@ class UpdateUserDTO:
     user_id: str
     full_name: Optional[str]
     username: Optional[str]
-    gender: Optional[GenderEnum]
+    gender: Optional[Gender]
     email: Optional[str]
     phone_number: Optional[str]
     image_url: Optional[str]
@@ -37,13 +37,13 @@ class CreateUserDTO:
     email: str
     password: str
     phone_number: str
-    gender: GenderEnum
+    gender: Gender
     image_url: str
 
 
 @dataclass
 class CreateFieldDTO:
-    field_type: FieldTypeEnum
+    field_type: FieldTypes
     field_name: str
     description: str
     template_id: str
@@ -64,7 +64,7 @@ class UpdateFieldDTO:
 @dataclass
 class FieldDTO:
     field_id: str
-    field_type: FieldTypeEnum
+    field_type: FieldTypes
     description: str
     template_id: str
     field_name: str
@@ -105,6 +105,7 @@ class CreateTaskDTO:
     description: str
     list_id: str
     created_by: str
+
 
 @dataclass
 class UpdateTaskDTO:
@@ -173,7 +174,7 @@ class ListDTO:
 class CreateViewDTO:
     name: str
     description: str
-    view_type: ViewTypeEnum
+    view_type: ViewType
     created_by: str
 
 
@@ -189,7 +190,7 @@ class ViewDTO:
     view_id: str
     name: str
     description: str
-    view_type: ViewTypeEnum
+    view_type: ViewType
     created_by: str
 
 
@@ -314,7 +315,7 @@ class WorkspaceMemberDTO:
 class CreateUserSpacePermissionDTO:
     space_id: str
     user_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     added_by: str
 
 
@@ -322,7 +323,7 @@ class CreateUserSpacePermissionDTO:
 class UserSpacePermissionDTO:
     id: int
     space_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     user_id: str
     is_active: bool
     added_by: str
@@ -332,7 +333,7 @@ class UserSpacePermissionDTO:
 class CreateUserFolderPermissionDTO:
     folder_id: str
     user_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     added_by: str
 
 
@@ -340,7 +341,7 @@ class CreateUserFolderPermissionDTO:
 class UserFolderPermissionDTO:
     id: int
     folder_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     user_id: str
     is_active: bool
     added_by: str
@@ -349,7 +350,7 @@ class UserFolderPermissionDTO:
 @dataclass
 class CreateUserListPermissionDTO:
     list_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     user_id: str
     added_by: str
 
@@ -358,7 +359,7 @@ class CreateUserListPermissionDTO:
 class UserListPermissionDTO:
     id: int
     list_id: str
-    permission_type: PermissionsEnum
+    permission_type: Permissions
     user_id: str
     is_active: bool
     added_by: str
@@ -379,12 +380,14 @@ class UpdateFieldValueDTO:
     field_id: str
     value: str
 
+
 @dataclass
 class CreateFieldValueDTO:
     task_id: str
     field_id: str
     value: str
     created_by: str
+
 
 @dataclass
 class TaskFieldValueDTO:
@@ -412,6 +415,7 @@ class CreateAccountDTO:
     description: str
     owner_id: str
 
+
 @dataclass
 class AccountDTO:
     account_id: str
@@ -419,6 +423,7 @@ class AccountDTO:
     description: str
     owner_id: str
     is_active: bool
+
 
 @dataclass
 class AccountMemberDTO:
@@ -429,12 +434,13 @@ class AccountMemberDTO:
     added_by: str
     is_active: bool
 
+
 @dataclass
 class CreateAccountMemberDTO:
     account_id: str
     user_id: str
     role: Role
-    added_by: str |None
+    added_by: str | None
 
 
 @dataclass

@@ -1,4 +1,4 @@
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO, \
     CreateUserListPermissionDTO
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
@@ -21,7 +21,7 @@ class ListPermissionStorage(ListPermissionStorageInterface):
         )
 
     def update_user_permission_for_list(self, list_id: str, user_id: str,
-                                        permission_type: PermissionsEnum) -> UserListPermissionDTO:
+                                        permission_type: Permissions) -> UserListPermissionDTO:
         permission = ListPermission.objects.get(
             list_id=list_id,
             user_id=user_id
@@ -52,7 +52,7 @@ class ListPermissionStorage(ListPermissionStorageInterface):
             return None
 
     def add_user_permission_for_list(self, list_id: str, user_id: str,
-                                     permission_type: PermissionsEnum) -> UserListPermissionDTO:
+                                     permission_type: Permissions) -> UserListPermissionDTO:
         pass
 
     def remove_user_permission_for_list(self, list_id: str,

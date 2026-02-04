@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.exceptions.enums import ViewTypeEnum
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import CreateViewDTO, UpdateViewDTO
 from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import (
@@ -18,8 +18,8 @@ class TestViewStorage:
         user = UserFactory(user_id=user_id)
         view_id = "12345678-1234-5678-1234-567812345678"
         view_id2 = "12345678-1234-5678-1234-567812345679"
-        ViewFactory(created_by=user,view_id=view_id)
-        ViewFactory(created_by=user,view_id=view_id2)
+        ViewFactory(created_by=user, view_id=view_id)
+        ViewFactory(created_by=user, view_id=view_id2)
         storage = ViewStorage()
 
         # Act
@@ -62,7 +62,7 @@ class TestViewStorage:
         dto = CreateViewDTO(
             name="Board View",
             description="Kanban board",
-            view_type=ViewTypeEnum.TABLE,
+            view_type=ViewType.TABLE,
             created_by=str(user_id)
         )
         storage = ViewStorage()

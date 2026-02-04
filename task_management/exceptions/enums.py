@@ -1,51 +1,92 @@
 from enum import Enum
 
 
-class FieldTypeEnum(Enum):
-    DROPDOWN = "dropdown"
-    USER = "user"
-    TEXT = "text"
-    NUMBER = "number"
-    DATE = "date"
-    CHECKBOX = "checkbox"
-    EMAIL = "email"
+class FieldTypes(Enum):
+    DROPDOWN = "DROPDOWN"
+    USER = "USER"
+    TEXT = "TEXT"
+    NUMBER = "NUMBER"
+    DATE = "DATE"
+    CHECKBOX = "CHECKBOX"
+    EMAIL = "EMAIL"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]
 
 
 class Role(Enum):
-    OWNER = "owner"
-    ADMIN = "admin"
-    MEMBER = "member"
-    GUEST = "guest"
+    OWNER = "OWNER"
+    ADMIN = "ADMIN"
+    MEMBER = "MEMBER"
+    GUEST = "GUEST"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]
 
 
-class PermissionsEnum(Enum):
-    FULL_EDIT = "full_edit"
-    COMMENT = "comment"
-    VIEW = "view"
+class Permissions(Enum):
+    FULL_EDIT = "FULL_EDIT"
+    COMMENT = "COMMENT"
+    VIEW = "VIEW"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]
 
 
-class ViewTypeEnum(Enum):
-    TABLE = "table"
-    CALENDER = "calendar"
-    BOARD = "board"
-    DASHBOARD = "dashboard"
-    LIST = "list"
-    GANTT = "gantt"
+class ViewType(Enum):
+    TABLE = "TABLE"
+    CALENDER = "CALENDER"
+    BOARD = "BOARD"
+    DASHBOARD = "DASHBOARD"
+    LIST = "LIST"
+    GANTT = "GANTT"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]
 
 
 class Visibility(Enum):
-    PUBLIC = "public"
-    PRIVATE = "private"
+    PUBLIC = "PUBLIC"
+    PRIVATE = "PRIVATE"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]
 
 
-class PermissionScopeTypeEnum(Enum):
-    WORKSPACE = "workspace"
-    SPACE = "space"
-    FOLDER = "folder"
-    LIST = "list"
-
-
-class GenderEnum(Enum):
+class Gender(Enum):
     MALE = "MALE"
     FEMALE = "FEMALE"
     OTHER = "OTHER"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value) for member in cls]
+
+    @classmethod
+    def get_values(cls):
+        return [member.value for member in cls]

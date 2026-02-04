@@ -1,22 +1,22 @@
 import uuid
 from django.db import models
 
+from task_management.exceptions.enums import Gender
 
 
 class User(models.Model):
-    class GenderType(models.TextChoices):
-        MALE = "MALE", "Male"
-        FEMALE = "FEMALE", "Female"
-        OTHERS = "OTHERS", "Others"
-
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                               editable=False)
     image_url = models.URLField(null=True, blank=True)
     full_name = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     email = models.EmailField(max_length=255, unique=True)
     phone_number = models.CharField(max_length=255, unique=True)
-    gender = models.CharField(max_length=15, choices=GenderType.choices)
+    gender = models.CharField(
+        max_length=15,
+        choices=Gender.get_list_of_tuples()
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -28,6 +28,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class PasswordResetToken(models.Model):
     user = models.ForeignKey(

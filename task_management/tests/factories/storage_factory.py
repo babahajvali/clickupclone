@@ -3,6 +3,7 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
+from task_management.exceptions.enums import Gender, ViewType, FieldTypes
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
     Task, Template, View, ListView, TaskAssignee, Field, FieldValue,
@@ -24,7 +25,7 @@ class UserFactory(DjangoModelFactory):
     password = "test123"
     email = factory.Faker("email")
     phone_number = factory.Faker("phone_number")
-    gender = User.GenderType.MALE
+    gender = Gender.MALE.value
     is_active = True
 
 
@@ -37,8 +38,6 @@ class AccountFactory(DjangoModelFactory):
     description = factory.Faker("paragraph")
     owner = factory.SubFactory(UserFactory)
     is_active = True
-
-
 
 
 class WorkspaceFactory(DjangoModelFactory):
@@ -59,7 +58,7 @@ class WorkspaceMemberFactory(DjangoModelFactory):
 
     workspace = factory.SubFactory(WorkspaceFactory)
     user = factory.SubFactory(UserFactory)
-    role = "member"
+    role = "MEMBER"
     is_active = True
     added_by = factory.SubFactory(UserFactory)
 
@@ -78,7 +77,6 @@ class SpaceFactory(DjangoModelFactory):
     created_by = factory.SubFactory(UserFactory)
 
 
-
 class FolderFactory(DjangoModelFactory):
     class Meta:
         model = Folder
@@ -91,7 +89,6 @@ class FolderFactory(DjangoModelFactory):
     is_active = True
     is_private = False
     created_by = factory.SubFactory(UserFactory)
-
 
 
 class ListFactory(DjangoModelFactory):
@@ -150,7 +147,7 @@ class ViewFactory(DjangoModelFactory):
     view_id = factory.LazyFunction(uuid.uuid4)
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    view_type = View.ViewType.LIST
+    view_type = ViewType.LIST.value
     created_by = factory.SubFactory(UserFactory)
 
 
@@ -171,7 +168,7 @@ class FieldFactory(DjangoModelFactory):
     field_id = factory.LazyFunction(uuid.uuid4)
     field_name = factory.Faker("word")
     description = factory.Faker("sentence")
-    field_type = Field.FieldType.TEXT
+    field_type = FieldTypes.TEXT.value
     template = factory.SubFactory(TemplateFactory)
     order = factory.Sequence(lambda n: n + 1)
     config = {}
@@ -196,7 +193,7 @@ class SpacePermissionFactory(DjangoModelFactory):
 
     space = factory.SubFactory(SpaceFactory)
     user = factory.SubFactory(UserFactory)
-    permission_type = "view"
+    permission_type = "VIEW"
     is_active = True
     added_by = factory.SubFactory(UserFactory)
 

@@ -2,11 +2,11 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    ExistedUsernameFoundException,
-    ExistedEmailFoundException,
-    ExistedPhoneNumberFoundException,
+    UsernameAlreadyExistsException,
+    EmailAlreadyExistsException,
+    PhoneNumberAlreadyExistsException,
 )
-from task_management.exceptions.enums import GenderEnum
+from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import UserDTO
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface,
@@ -32,7 +32,6 @@ class TestUpdateUser:
         user_storage.check_user_phone_number_exists.return_value = True
         user_storage.check_phone_number_exists.return_value = False
 
-
     def test_update_user_successfully(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
         self._mock_storage_defaults(user_storage)
@@ -44,7 +43,7 @@ class TestUpdateUser:
             email="updated@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=True,
             image_url="https://example.com/image.png",
         )
@@ -64,7 +63,6 @@ class TestUpdateUser:
             user_data=updated_user
         )
 
-
     def test_update_user_raises_username_exception(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
         self._mock_storage_defaults(user_storage)
@@ -81,19 +79,18 @@ class TestUpdateUser:
             email="email@test.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=True,
             image_url="url",
         )
 
-        with pytest.raises(ExistedUsernameFoundException) as exc:
+        with pytest.raises(UsernameAlreadyExistsException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(
             repr(exc.value.username),
             "test_update_user_raises_username_exception.txt",
         )
-
 
     def test_update_user_raises_email_exception(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
@@ -111,19 +108,18 @@ class TestUpdateUser:
             email="existing@email.com",
             phone_number="9999999999",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=True,
             image_url="url",
         )
 
-        with pytest.raises(ExistedEmailFoundException) as exc:
+        with pytest.raises(EmailAlreadyExistsException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(
             repr(exc.value),
             "test_update_user_raises_email_exception.txt",
         )
-
 
     def test_update_user_raises_phone_exception(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
@@ -141,12 +137,12 @@ class TestUpdateUser:
             email="email@test.com",
             phone_number="existing_phone",
             password="password",
-            gender=GenderEnum.MALE.value,
+            gender=Gender.MALE.value,
             is_active=True,
             image_url="url",
         )
 
-        with pytest.raises(ExistedPhoneNumberFoundException) as exc:
+        with pytest.raises(PhoneNumberAlreadyExistsException) as exc:
             interactor.update_user(user_data)
 
         snapshot.assert_match(

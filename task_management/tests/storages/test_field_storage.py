@@ -2,6 +2,7 @@ import pytest
 from factory.random import reseed_random
 from freezegun import freeze_time
 
+from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateFieldDTO, UpdateFieldDTO
 from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldFactory, \
@@ -30,7 +31,7 @@ class TestFieldStorage:
         create_field_data = CreateFieldDTO(
             field_name="Test Field",
             description="Test description",
-            field_type=Field.FieldType.TEXT,
+            field_type=FieldTypes.TEXT,
             template_id=str(template_id),
             config={},
             is_required=False,
@@ -63,7 +64,7 @@ class TestFieldStorage:
         create_field_data = CreateFieldDTO(
             field_name="New Field",
             description="New field description",
-            field_type=Field.FieldType.NUMBER,
+            field_type=FieldTypes.NUMBER,
             template_id=str(template_id),
             config={},
             is_required=True,

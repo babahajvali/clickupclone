@@ -3,7 +3,7 @@ from unittest.mock import create_autospec, patch
 import pytest
 from faker import Faker
 
-from task_management.exceptions.enums import PermissionsEnum
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
@@ -43,9 +43,7 @@ class TestCreateTemplateInteractor:
             list_storage=self.list_storage
         )
 
-
     def test_create_template_success(self, snapshot):
-
         create_template_dto = CreateTemplateDTOFactory()
 
         template_dto = TemplateDTOFactory(
@@ -61,7 +59,7 @@ class TestCreateTemplateInteractor:
         self.permission_storage.get_user_permission_for_list.return_value = UserListPermissionDTO(
             id=1,
             list_id="list_id",
-            permission_type=PermissionsEnum.FULL_EDIT.value,
+            permission_type=Permissions.FULL_EDIT.value,
             user_id="user_id",
             is_active=True,
             added_by="admin"
@@ -107,7 +105,7 @@ class TestCreateTemplateInteractor:
         )()
 
         self.permission_storage.get_user_permission_for_list.return_value = (
-            PermissionsEnum.VIEW.value
+            Permissions.VIEW.value
         )
 
         with pytest.raises(Exception):

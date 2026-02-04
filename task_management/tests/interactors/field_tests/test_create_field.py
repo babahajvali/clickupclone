@@ -9,7 +9,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypeEnum, PermissionsEnum
+from task_management.exceptions.enums import FieldTypes, Permissions
 from task_management.interactors.field_interactors.field_interactors import (
     FieldInteractor
 )
@@ -29,11 +29,13 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
 class InvalidFieldEnum(Enum):
     INVALID = "invalid"
 
+
 class DummyTemplate:
     def __init__(self, list_id: str):
         self.list_id = list_id
 
-def make_permission_dto(permission_type: PermissionsEnum):
+
+def make_permission_dto(permission_type: Permissions):
     return UserListPermissionDTO(
         id=1,
         list_id="list_1",
@@ -43,12 +45,13 @@ def make_permission_dto(permission_type: PermissionsEnum):
         added_by="admin_1"
     )
 
+
 class TestCreateFieldInteractor:
     @staticmethod
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldTypeEnum.TEXT,
+            field_type=FieldTypes.TEXT,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
@@ -63,7 +66,7 @@ class TestCreateFieldInteractor:
             self,
             *,
             template_exists=True,
-            permission: PermissionsEnum = PermissionsEnum.FULL_EDIT,
+            permission: Permissions = Permissions.FULL_EDIT,
             name_exists=False,
     ):
         field_storage = create_autospec(FieldStorageInterface)
@@ -101,7 +104,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor()
 
         dto = CreateFieldDTO(
-            field_type=FieldTypeEnum.TEXT,
+            field_type=FieldTypes.TEXT,
             field_name="Priority",
             description="Task priority",
             template_id="tpl_1",
@@ -121,7 +124,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor(template_exists=False)
 
         dto = CreateFieldDTO(
-            field_type=FieldTypeEnum.TEXT,
+            field_type=FieldTypes.TEXT,
             field_name="Priority",
             description="",
             template_id="invalid_tpl",
@@ -162,11 +165,11 @@ class TestCreateFieldInteractor:
 
     def test_create_field_permission_denied(self, snapshot):
         interactor = self._get_interactor(
-            permission=PermissionsEnum.VIEW
+            permission=Permissions.VIEW
         )
 
         dto = CreateFieldDTO(
-            field_type=FieldTypeEnum.TEXT,
+            field_type=FieldTypes.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",
@@ -183,12 +186,11 @@ class TestCreateFieldInteractor:
             "test_create_field_permission_denied.txt"
         )
 
-
     def test_create_field_duplicate_name(self, snapshot):
         interactor = self._get_interactor(name_exists=True)
 
         dto = CreateFieldDTO(
-            field_type=FieldTypeEnum.TEXT,
+            field_type=FieldTypes.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",

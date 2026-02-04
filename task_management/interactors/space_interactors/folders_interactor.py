@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import InvalidOrderException
-from task_management.exceptions.enums import PermissionsEnum, Visibility
+from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UpdateFolderDTO, UserFolderPermissionDTO, CreateUserFolderPermissionDTO
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -137,25 +137,25 @@ class FolderInteractor(ValidationMixin):
         folder_user_permissions = []
 
         for each in space_user_permissions:
-            if each.permission_type == PermissionsEnum.FULL_EDIT.value:
+            if each.permission_type == Permissions.FULL_EDIT.value:
                 user_permission = CreateUserFolderPermissionDTO(
                     folder_id=folder_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.FULL_EDIT,
+                    permission_type=Permissions.FULL_EDIT,
                     added_by=created_by,
                 )
-            elif each.permission_type == PermissionsEnum.COMMENT.value:
+            elif each.permission_type == Permissions.COMMENT.value:
                 user_permission = CreateUserFolderPermissionDTO(
                     folder_id=folder_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.COMMENT,
+                    permission_type=Permissions.COMMENT,
                     added_by=created_by,
                 )
             else:
                 user_permission = CreateUserFolderPermissionDTO(
                     folder_id=folder_id,
                     user_id=each.user_id,
-                    permission_type=PermissionsEnum.VIEW,
+                    permission_type=Permissions.VIEW,
                     added_by=created_by,
                 )
 

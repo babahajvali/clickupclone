@@ -15,8 +15,8 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveAccountException, UnexpectedRoleException, \
     UnsupportedVisibilityTypeException, FieldNotFoundException, \
     UserNotAccountOwnerException
-from task_management.exceptions.enums import PermissionsEnum, FieldTypeEnum, \
-    ViewTypeEnum, Role, Visibility
+from task_management.exceptions.enums import Permissions, FieldTypes, \
+    ViewType, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -76,7 +76,7 @@ class ValidationMixin:
     @staticmethod
     def validate_field_type(field_type: str):
 
-        field_types = [x.value for x in FieldTypeEnum]
+        field_types = FieldTypes.get_values()
 
         if field_type not in field_types:
             raise UnsupportedFieldTypeException(field_type=field_type)
@@ -91,9 +91,9 @@ class ValidationMixin:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
     @staticmethod
-    def validate_field_name_unique(field_id: str, field_name: str,
-                                   template_id: str,
-                                   field_storage: FieldStorageInterface):
+    def validate_field_name_except_current(field_id: str, field_name: str,
+                                           template_id: str,
+                                           field_storage: FieldStorageInterface):
 
         is_field_name_exist = field_storage.check_field_name_except_this_field(
             field_id=field_id, field_name=field_name, template_id=template_id)
@@ -106,11 +106,6 @@ class ValidationMixin:
 
         default_value = config.get("default")
 
-        if field_type not in FIELD_TYPE_RULES:
-            raise UnsupportedFieldTypeException(
-                field_type=field_type
-            )
-
         rules = FIELD_TYPE_RULES[field_type]
 
         allowed_keys = rules["config_keys"]
@@ -122,7 +117,7 @@ class ValidationMixin:
                 invalid_keys=list(invalid_keys)
             )
 
-        if field_type == FieldTypeEnum.DROPDOWN.value:
+        if field_type == FieldTypes.DROPDOWN.value:
             if "options" not in config or not config["options"]:
                 raise InvalidFieldConfigException(
                     field_type=field_type,
@@ -130,14 +125,14 @@ class ValidationMixin:
                 )
 
         if default_value is not None:
-            if field_type == FieldTypeEnum.DROPDOWN.value:
+            if field_type == FieldTypes.DROPDOWN.value:
                 if default_value not in config.get("options", []):
                     raise InvalidFieldDefaultValueException(
                         field_type=field_type,
                         message="Default value must be one of dropdown options"
                     )
 
-        if field_type == FieldTypeEnum.NUMBER.value and default_value is not None:
+        if field_type == FieldTypes.NUMBER.value and default_value is not None:
             min_val = config.get("min")
             max_val = config.get("max")
 
@@ -153,7 +148,7 @@ class ValidationMixin:
                     message=f"Default value {default_value} is greater than maximum {max_val}"
                 )
 
-        if field_type == FieldTypeEnum.TEXT.value and default_value is not None:
+        if field_type == FieldTypes.TEXT.value and default_value is not None:
             max_length = config.get("max_length")
 
             if max_length is not None and len(default_value) > max_length:
@@ -179,7 +174,7 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
-        if not user_permissions.permission_type == PermissionsEnum.FULL_EDIT.value:
+        if not user_permissions.permission_type == Permissions.FULL_EDIT.value:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
@@ -227,12 +222,12 @@ class ValidationMixin:
         user_permission = permission_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
 
-        if not user_permission.permission_type == PermissionsEnum.FULL_EDIT.value:
+        if not user_permission.permission_type == Permissions.FULL_EDIT.value:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def check_view_type(view_type: str):
-        view_types = [x.value for x in ViewTypeEnum]
+        view_types = ViewType.get_values()
 
         if view_type not in view_types:
             raise ViewTypeNotFoundException(view_type=view_type)
@@ -251,7 +246,7 @@ class ValidationMixin:
         user_permissions = permission_storage.get_user_permission_for_space(
             user_id=user_id, space_id=space_id)
 
-        if not user_permissions.permission_type == PermissionsEnum.FULL_EDIT.value:
+        if not user_permissions.permission_type == Permissions.FULL_EDIT.value:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
@@ -332,7 +327,6 @@ class ValidationMixin:
         if not account_data.is_active:
             raise InactiveAccountException(account_id=account_id)
 
-
     @staticmethod
     def validate_user_access_for_workspace(user_id: str, workspace_id: str,
                                            workspace_member_storage: WorkspaceMemberStorageInterface):
@@ -344,7 +338,7 @@ class ValidationMixin:
 
     @staticmethod
     def validate_role(role: str):
-        existed_roles = [x.value for x in Role]
+        existed_roles = Role.get_values()
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)
 
