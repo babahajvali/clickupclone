@@ -217,7 +217,7 @@ class DeleteWorkspaceResponse(graphene.Union):
             WorkspaceType,
             WorkspaceNotFoundType,
             InactiveWorkspaceType,
-            ModificationNotAllowedType
+            UserNotWorkspaceOwnerType
         )
 
 

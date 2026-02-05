@@ -3,7 +3,6 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     TemplateNotFoundException, UnsupportedFieldTypeException, \
     FieldNameAlreadyExistsException, ModificationNotAllowedException, \
     InvalidFieldConfigException, InvalidFieldDefaultValueException, \
-    TemplateNameAlreadyExistsException, \
     ListNotFoundException, TaskNotFoundException, \
     DeletedTaskException, InactiveListException, \
     SpaceNotFoundException, InactiveSpaceException, \

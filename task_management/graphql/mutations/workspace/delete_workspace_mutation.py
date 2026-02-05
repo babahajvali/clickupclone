@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
-    InactiveWorkspaceType
+    InactiveWorkspaceType, UserNotWorkspaceOwnerType
 from task_management.graphql.types.input_types import \
     DeleteWorkspaceInputParams
 from task_management.graphql.types.response_types import \
@@ -84,3 +84,6 @@ class DeleteWorkspaceMutation(graphene.Mutation):
 
         except custom_exceptions.InactiveWorkspaceException as e:
             return InactiveWorkspaceType(workspace_id=e.workspace_id)
+
+        except custom_exceptions.UserNotWorkspaceOwnerException as e:
+            return UserNotWorkspaceOwnerType(user_id=e.user_id)

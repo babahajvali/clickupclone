@@ -12,7 +12,7 @@ class FieldTypes(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):
@@ -27,7 +27,7 @@ class Role(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):
@@ -41,7 +41,7 @@ class Permissions(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):
@@ -58,7 +58,7 @@ class ViewType(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):
@@ -71,7 +71,7 @@ class Visibility(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):
@@ -85,7 +85,7 @@ class Gender(Enum):
 
     @classmethod
     def get_list_of_tuples(cls):
-        return [(member.value, member.value) for member in cls]
+        return [(member.value, member.value.capitalize()) for member in cls]
 
     @classmethod
     def get_values(cls):

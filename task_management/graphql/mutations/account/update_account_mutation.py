@@ -9,6 +9,7 @@ from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
+from task_management.interactors.dtos import UpdateAccountDTO
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
@@ -34,7 +35,7 @@ class UpdateAccountMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        user_id = info.context.user.id
+        user_id = info.context.user_id
 
         user_storage = UserStorage()
         account_storage = AccountStorage()
@@ -64,7 +65,7 @@ class UpdateAccountMutation(graphene.Mutation):
             field_storage=field_storage)
 
         try:
-            update_data = UpdateAccountInputParams(
+            update_data = UpdateAccountDTO(
                 account_id=params.account_id,
                 name=params.name,
                 description=params.description,

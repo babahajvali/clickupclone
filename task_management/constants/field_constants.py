@@ -7,7 +7,6 @@ FIELD_TYPE_RULES = {
     },
     FieldTypes.USER.value: {
         "config_keys": {"multiple", "allow_groups"},
-        "default_type": str,
     },
     FieldTypes.NUMBER.value: {
         "config_keys": {"min", "max", "default"},
@@ -15,19 +14,15 @@ FIELD_TYPE_RULES = {
     },
     FieldTypes.DROPDOWN.value: {
         "config_keys": {"options", "default"},
-        "default_type": str,
     },
     FieldTypes.DATE.value: {
         "config_keys": set("default"),
-        "default_type": str,
     },
     FieldTypes.CHECKBOX.value: {
         "config_keys": set("default"),
-        "default_type": bool,
     },
     FieldTypes.EMAIL.value: {
         "config_keys": set("default"),
-        "default_type": str,
     },
 }
 

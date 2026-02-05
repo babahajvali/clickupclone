@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from task_management.interactors.dtos import AccountDTO, CreateAccountDTO, \
     UpdateAccountDTO
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -10,7 +12,6 @@ class AccountStorage(AccountStorageInterface):
     def get_account_by_id(self, account_id: str) -> AccountDTO | None:
         try:
             account_data = Account.objects.get(account_id=account_id)
-
             return AccountDTO(
                 account_id=account_data.account_id,
                 name=account_data.name,
@@ -18,7 +19,7 @@ class AccountStorage(AccountStorageInterface):
                 owner_id=account_data.owner.user_id,
                 is_active=account_data.is_active,
             )
-        except Account.DoesNotExist:
+        except ObjectDoesNotExist:
             return None
 
     def validate_account_name_exists(self, name: str) -> bool:

@@ -7,7 +7,6 @@ from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
-
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -49,7 +48,7 @@ class WorkspaceInteractor(ValidationMixin):
                  list_storage: ListStorageInterface,
                  list_permission_storage: ListPermissionStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 field_storage: FieldStorageInterface,):
+                 field_storage: FieldStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
@@ -87,7 +86,8 @@ class WorkspaceInteractor(ValidationMixin):
         self.workspace_member_storage.add_member_to_workspace(
             create_workspace_member)
 
-        self._create_space(workspace_id=result.workspace_id,user_id=result.user_id)
+        self._create_space(workspace_id=result.workspace_id,
+                           user_id=result.user_id)
 
         return result
 
@@ -107,9 +107,9 @@ class WorkspaceInteractor(ValidationMixin):
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(self, workspace_id: str,
                          user_id: str) -> WorkspaceDTO:
-        self.validate_user_access_for_workspace(
+        self.validate_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id,
-            workspace_member_storage=self.workspace_member_storage)
+            workspace_storage=self.workspace_storage)
         self.validate_workspace_is_active(
             workspace_id, workspace_storage=self.workspace_storage)
         return self.workspace_storage.delete_workspace(
@@ -137,19 +137,15 @@ class WorkspaceInteractor(ValidationMixin):
             space_storage=self.space_storage,
             space_permission_storage=self.space_permission_storage,
         )
-        workspace_member_data = self.workspace_member_storage.get_workspace_member(
-            workspace_id=workspace_id, user_id=user_id)
-        workspace_member_interactor.remove_member_from_workspace(
-            workspace_member_id=workspace_member_data.id, removed_by=user_id)
+        workspace_member_interactor.change_member_role(
+            workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value,
+            changed_by=user_id)
 
-        workspace_member_input_data = AddMemberToWorkspaceDTO(
-            workspace_id=workspace_id,
-            user_id=new_user_id,
-            role=Role.OWNER,
-            added_by=new_user_id,
-        )
-        workspace_member_interactor.add_member_to_workspace(
-            workspace_member_data=workspace_member_input_data)
+        #  Change the role for new_user if already in workspace member
+        workspace_member_interactor.change_member_role(
+            workspace_id=workspace_id, user_id=new_user_id,
+            role=Role.OWNER.value,
+            changed_by=user_id)
         return result
 
     def get_workspace(self, workspace_id: str) -> WorkspaceDTO:
