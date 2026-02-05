@@ -188,9 +188,7 @@ class TestWorkspaceInteractor:
         new_user_id = "new-owner-123"
         expected = WorkspaceDTOFactory()
 
-        self.user_storage.get_user_data.side_effect = [
-            self._mock_active_user(),  # new owner
-        ]
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.transfer_workspace.return_value = expected

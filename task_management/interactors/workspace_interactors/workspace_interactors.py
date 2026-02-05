@@ -138,14 +138,15 @@ class WorkspaceInteractor(ValidationMixin):
             space_permission_storage=self.space_permission_storage,
         )
         workspace_member_interactor.change_member_role(
-            workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value,
-            changed_by=user_id)
-
-        #  Change the role for new_user if already in workspace member
-        workspace_member_interactor.change_member_role(
             workspace_id=workspace_id, user_id=new_user_id,
             role=Role.OWNER.value,
-            changed_by=user_id)
+            changed_by=new_user_id)
+
+        workspace_member_interactor.change_member_role(
+            workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value,
+            changed_by=new_user_id)
+
+
         return result
 
     def get_workspace(self, workspace_id: str) -> WorkspaceDTO:

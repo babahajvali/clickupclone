@@ -116,7 +116,7 @@ class WorkspaceMemberInteractor(ValidationMixin):
                                           workspace_storage=self.workspace_storage)
         self.validate_user_is_active(user_id=user_id,
                                      user_storage=self.user_storage)
-        self.validate_user_can_modify_workspace(user_id=changed_by,
+        self.validate_user_permission_for_change_workspace_role(user_id=changed_by,
                                                 workspace_id=workspace_id,
                                                 workspace_storage=self.workspace_storage,
                                                 workspace_member_storage=self.workspace_member_storage)

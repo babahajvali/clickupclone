@@ -306,6 +306,33 @@ class ValidationMixin:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
+    def validate_user_permission_for_change_workspace_role(
+            workspace_id: str, user_id: str,
+            workspace_storage: WorkspaceStorageInterface,
+            workspace_member_storage: WorkspaceMemberStorageInterface):
+
+        workspace_data = workspace_storage.get_workspace(
+            workspace_id=workspace_id
+        )
+
+        if not workspace_data:
+            raise WorkspaceNotFoundException(workspace_id=workspace_id)
+
+        if not workspace_data.is_active:
+            raise InactiveWorkspaceException(workspace_id=workspace_id)
+        if str(workspace_data.user_id) == str(user_id):
+            return
+
+        member_permission = workspace_member_storage.get_workspace_member(
+            workspace_id=workspace_id,
+            user_id=user_id
+        )
+        user_role = member_permission.role
+        if not member_permission or (
+                user_role == Role.MEMBER or user_role == Role.GUEST):
+            raise ModificationNotAllowedException(user_id=user_id)
+
+    @staticmethod
     def validate_workspace_member_is_active(workspace_member_id: int,
                                             workspace_member_storage: WorkspaceMemberStorageInterface):
         workspace_member_data = workspace_member_storage.get_workspace_member_by_id(
