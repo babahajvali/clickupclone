@@ -1,0 +1,1 @@
+SpaceDTO(space_id='da5014ca-b635-4b98-961e-12acdecc305e', name='New Space', description='New description', workspace_id='12345678-1234-5678-1234-567812345678', order=3, is_active=True, is_private=False, created_by='12345678-1234-5678-1234-567812345679')

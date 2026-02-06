@@ -1,0 +1,1 @@
+AccountMemberDTO(id=1, user_id=UUID('12345678-1234-5678-1234-567812345687'), account_id=UUID('12345678-1234-5678-1234-567812345688'), role='member', added_by=UUID('12345678-1234-5678-1234-567812345689'), is_active=False)

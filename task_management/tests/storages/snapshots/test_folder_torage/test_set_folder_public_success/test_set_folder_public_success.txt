@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='simply', description='Society save million challenge use family collection.', space_id=UUID('d4398204-3c0f-4cfb-a551-8223b4ae624f'), order=20, is_active=True, created_by=UUID('d099fc21-bc61-47ee-9b20-c76b9ae77077'), is_private=False)

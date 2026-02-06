@@ -1,0 +1,1 @@
+<task_management.tests.interactors.list_tests.test_create_list.List object at 0x71a300a8f040>

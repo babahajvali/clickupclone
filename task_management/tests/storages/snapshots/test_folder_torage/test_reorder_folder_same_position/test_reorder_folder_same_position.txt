@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='student', description='Task wife structure such look accept character.', space_id=UUID('2ad22101-bb7e-44d9-9556-8e6d32c2d2e4'), order=2, is_active=True, created_by=UUID('4f053a16-1fc2-42dd-acb0-050cad552a03'), is_private=False)

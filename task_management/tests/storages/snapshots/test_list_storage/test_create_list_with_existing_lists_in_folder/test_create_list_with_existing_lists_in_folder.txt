@@ -1,0 +1,1 @@
+ListDTO(list_id=UUID('b46f3255-017a-4c7f-92dc-882e9b1d376d'), name='New List', description='New description', space_id=UUID('12345678-1234-5678-1234-567812345678'), is_active=True, order=3, is_private=False, created_by=UUID('12345678-1234-5678-1234-567812345680'), folder_id=UUID('12345678-1234-5678-1234-567812345679'))

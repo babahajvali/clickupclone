@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id=UUID('12345678-1234-5678-1234-567812345678'), name='Updated Workspace', description='Updated description', user_id=UUID('12345678-1234-5678-1234-567812345679'), account_id=UUID('12345678-1234-5678-1234-567812345690'), is_active=True)

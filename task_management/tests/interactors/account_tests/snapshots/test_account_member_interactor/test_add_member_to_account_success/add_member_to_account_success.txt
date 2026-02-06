@@ -1,0 +1,1 @@
+AccountMemberDTO(id=1, user_id='981266d6-4857-43bb-a3e8-4537a1f45134', account_id='3a1b4966-a242-449a-b773-2f70f015087c', role=<Role.MEMBER: 'member'>, added_by='c4f29025-86d2-41fb-b310-08acd651ee2f', is_active=True)

@@ -1,0 +1,1 @@
+AccountDTO(account_id=UUID('12345678-1234-5678-1234-567812345678'), name='Test Account', description='Test account description', owner_id=UUID('12345678-1234-5678-1234-567812345690'), is_active=True)

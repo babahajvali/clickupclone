@@ -1,0 +1,1 @@
+TaskDTO(task_id=UUID('12345678-1234-5678-1234-567812345678'), title='Break list rest short.', description='Range key book feeling morning collection concern stock. Discussion company maintain activity computer ground form.', list_id=UUID('12345678-1234-5678-1234-567812345679'), order=2, created_by=UUID('12345678-1234-5678-1234-567812345678'), is_deleted=False)

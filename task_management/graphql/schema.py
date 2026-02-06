@@ -12,12 +12,15 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     RemoveTaskAssignee, UpdateView, UpdateField, CreateField, DeleteField, \
     ReorderField, ApplyListView, RemoveListView, UpdateFieldValue, \
     ForgotPassword, ResetPassword, ValidateResetToken, UpdateAccount
+from task_management.graphql.mutations.subscription_mutations import \
+    SubscriptionMutations
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
     GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks, \
     GetListTaskAssignees, GetAccounts, GetUserWithEmail
+from task_management.graphql.subscription_queries import SubscriptionQueries
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
@@ -43,11 +46,11 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     ValidateResetToken, UpdateAccount]
 
 
-class Query(*QUERY_CLASSES, graphene.ObjectType):
+class Query(*QUERY_CLASSES,SubscriptionQueries, graphene.ObjectType):
     pass
 
 
-class Mutation(*MUTATION_CLASSES, graphene.ObjectType):
+class Mutation(*MUTATION_CLASSES,SubscriptionMutations, graphene.ObjectType):
     pass
 
 

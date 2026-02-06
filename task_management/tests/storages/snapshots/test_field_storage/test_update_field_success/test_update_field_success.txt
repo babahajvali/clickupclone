@@ -1,0 +1,1 @@
+FieldDTO(field_id=UUID('12345678-1234-5678-1234-567812345678'), field_type=<FieldTypes.TEXT: 'TEXT'>, description='New description', template_id=UUID('12345678-1234-5678-1234-567812345681'), field_name='New Name', is_active=True, order=5, config={'key': 'value'}, is_required=True, created_by=UUID('12345678-1234-5678-1234-567812345679'))

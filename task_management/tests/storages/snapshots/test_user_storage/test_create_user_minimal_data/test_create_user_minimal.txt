@@ -1,0 +1,1 @@
+UserDTO(user_id=UUID('4cca2715-4eb3-4559-9199-edfe2500772a'), full_name='Minimal User', username='minimaluser', password='pass123', gender=User.GenderType.MALE, email='minimal@example.com', phone_number='+1234567892', is_active=True, image_url=None)

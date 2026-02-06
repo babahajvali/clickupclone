@@ -18,6 +18,8 @@ from task_management.graphql.types.error_types import \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, \
     ResetTokenExpired, InvalidAccountIds, InvalidFieldValue
+from task_management.graphql.types.subscription_types import \
+    CheckoutSessionType, PlanNotFoundType, StripeCheckoutErrorType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -746,3 +748,9 @@ class ValidateResetTokenResponse(graphene.Union):
             InvalidResetToken,
             ResetTokenExpired
         )
+
+
+class CreateCheckoutSessionOutput(graphene.Union):
+    class Meta:
+        types = (CheckoutSessionType, PlanNotFoundType,
+                 StripeCheckoutErrorType)

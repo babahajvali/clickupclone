@@ -1,0 +1,1 @@
+ViewDTO(view_id=UUID('12345678-1234-5678-1234-567812345678'), name='Updated View', description='Updated description', view_type=<ViewType.LIST: 'LIST'>, created_by=UUID('12345678-1234-5678-1234-567812345679'))

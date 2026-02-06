@@ -1,0 +1,1121 @@
+type Query {
+  getAvailablePlans: [PlanType]
+  getMySubscription: SubscriptionType
+  getMyPayments: [PaymentType]
+  getUserWithEmail(params: GetUserWithEmailInputParams!): GetUserWithEmailResponse
+  getUserAccounts: GetAccountsResponse
+  getListTaskAssignees(params: GetListTaskAssigneesInputParams!): GetListTaskAssigneesResponse
+  getUserTasks(params: GetUserTasksInputParams!): GetUserTasksResponse
+  getWorkspaceMembers(params: GetWorkspaceMemberInputParams!): GetWorkspaceUsersResponse
+  getTaskValues(params: GetTaskFieldValuesInputParams!): GetTaskFieldValuesResponse
+  getUserWorkspaces(params: GetUserWorkspacesInputParams!): GetUserWorkspacesResponse
+  getListViews(params: GetListViewsInputParams!): GetListViewsResponse
+  getFields(params: GetFieldInputParams!): GetFieldResponse
+  getTemplateFields(params: GetFieldsForTemplateInputParams!): GetFieldsForTemplateResponse
+  getViews: GetViewsResponse
+  getTaskAssignees(params: GetTaskAssigneesInputParams!): GetTaskAssigneesResponse
+  getListTasks(params: GetListTasksInputParams!): GetListTasksResponse
+  getTask(params: GetTaskInputParams!): GetTaskResponse
+  getTaskFilters(params: TaskFilterInputParams!): TaskFilterResponse
+  getSpaceLists(params: GetSpaceListsInputParams!): GetSpaceListsResponse
+  getFolderLists(params: GetFolderListsInputParams!): GetFolderListsResponse
+  getList(params: GetListInputParams!): GetListResponse
+  getFolder(params: GetFolderInputParams!): GetFolderResponse
+  getSpaceFolders(params: GetSpaceFoldersInputParams!): GetSpaceFoldersResponse
+  getSpace(params: GetSpaceInputParams!): GetSpaceResponse
+  getWorkspaceSpaces(params: GetWorkspaceSpacesInputParams!): GetWorkspaceSpacesResponse
+  getWorkspace(params: GetWorkspaceInputParams!): GetWorkspaceResponse
+  getUserProfile(params: GetUserProfileInputParams!): GetUserProfileResponse
+}
+
+type PlanType {
+  planId: UUID!
+  planName: TaskManagementPlanPlanNameChoices!
+  stripePriceId: String!
+  price: Decimal!
+  currency: String!
+  billingPeriod: TaskManagementPlanBillingPeriodChoices!
+  features: JSONString!
+  isActive: Boolean!
+}
+
+"""
+Leverages the internal Python implementation of UUID (uuid.UUID) to provide native UUID objects
+in fields, resolvers and input.
+"""
+scalar UUID
+
+"""An enumeration."""
+enum TaskManagementPlanPlanNameChoices {
+  """Free"""
+  FREE
+
+  """Pro"""
+  PRO
+
+  """Enterprise"""
+  ENTERPRISE
+}
+
+"""The `Decimal` scalar type represents a python Decimal."""
+scalar Decimal
+
+"""An enumeration."""
+enum TaskManagementPlanBillingPeriodChoices {
+  """Monthly"""
+  MONTH
+
+  """Yearly"""
+  YEAR
+}
+
+"""
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+
+type SubscriptionType {
+  subscriptionId: UUID!
+  plan: PlanType
+  stripeSubscriptionId: String!
+  status: TaskManagementSubscriptionStatusChoices!
+  currentPeriodStart: DateTime!
+  currentPeriodEnd: DateTime!
+  cancelAtPeriodEnd: Boolean!
+  canceledAt: DateTime
+  createdAt: DateTime!
+  planId: String
+}
+
+"""An enumeration."""
+enum TaskManagementSubscriptionStatusChoices {
+  """Active"""
+  ACTIVE
+
+  """Canceled"""
+  CANCELED
+
+  """Past Due"""
+  PAST_DUE
+
+  """Unpaid"""
+  UNPAID
+
+  """Trialing"""
+  TRIALING
+
+  """Incomplete"""
+  INCOMPLETE
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+type PaymentType {
+  paymentId: UUID!
+  subscription: SubscriptionType
+  stripePaymentIntentId: String!
+  amount: Decimal!
+  currency: String!
+  status: TaskManagementPaymentStatusChoices!
+  paymentMethod: String
+  createdAt: DateTime!
+}
+
+"""An enumeration."""
+enum TaskManagementPaymentStatusChoices {
+  """Succeeded"""
+  SUCCEEDED
+
+  """Failed"""
+  FAILED
+
+  """Pending"""
+  PENDING
+
+  """Canceled"""
+  CANCELED
+}
+
+union GetUserWithEmailResponse = UserType
+
+type UserType {
+  userId: String!
+  username: String!
+  email: String!
+  fullName: String!
+  isActive: Boolean!
+  phoneNumber: String!
+  gender: String!
+  imageUrl: String
+  accessToken: String
+}
+
+input GetUserWithEmailInputParams {
+  email: String!
+}
+
+union GetAccountsResponse = AccountsType
+
+type AccountsType {
+  accounts: [AccountType]
+}
+
+type AccountType {
+  accountId: String!
+  name: String!
+  description: String!
+  ownerId: String!
+  isActive: Boolean!
+}
+
+union GetListTaskAssigneesResponse = TaskAssigneesType | InactiveListType | ListNotFoundType
+
+type TaskAssigneesType {
+  assignees: [TaskAssigneeType]
+}
+
+type TaskAssigneeType {
+  assignId: String!
+  userId: String!
+  taskId: String!
+  assignedBy: String!
+  isActive: Boolean!
+}
+
+type InactiveListType {
+  listId: String!
+}
+
+type ListNotFoundType {
+  listId: String!
+}
+
+input GetListTaskAssigneesInputParams {
+  listId: String!
+}
+
+union GetUserTasksResponse = GetUserTaskType | InactiveUserType | UserNotFoundType
+
+type GetUserTaskType {
+  userId: String!
+  tasks: [TaskType]
+}
+
+type TaskType {
+  taskId: String!
+  title: String!
+  description: String!
+  listId: String!
+  order: Int!
+  createdBy: String!
+  isDelete: Boolean!
+}
+
+type InactiveUserType {
+  userId: String!
+}
+
+type UserNotFoundType {
+  userId: String!
+}
+
+input GetUserTasksInputParams {
+  userId: String!
+}
+
+union GetWorkspaceUsersResponse = WorkspaceUsersType
+
+type WorkspaceUsersType {
+  workspaceUsers: [WorkspaceUserType]
+}
+
+type WorkspaceUserType {
+  id: Int!
+  workspaceId: String!
+  isActive: Boolean!
+  role: String!
+  gender: String!
+  addedBy: String!
+  userId: String!
+  fullName: String!
+  email: String!
+  imageUrl: String
+}
+
+input GetWorkspaceMemberInputParams {
+  workspaceId: String!
+}
+
+union GetTaskFieldValuesResponse = TasksValuesType
+
+type TasksValuesType {
+  taskValues: [TaskFieldValuesType]
+}
+
+type TaskFieldValuesType {
+  taskId: String!
+  values: [FieldValuesType]!
+}
+
+type FieldValuesType {
+  fieldId: String!
+  value: String!
+}
+
+input GetTaskFieldValuesInputParams {
+  taskIds: [String]!
+}
+
+union GetUserWorkspacesResponse = WorkspaceMembersType | UserNotFoundType
+
+type WorkspaceMembersType {
+  members: [WorkspaceMemberType]
+}
+
+type WorkspaceMemberType {
+  id: Int!
+  workspaceId: String!
+  userId: String!
+  role: String!
+  isActive: Boolean!
+  addedBy: String!
+}
+
+input GetUserWorkspacesInputParams {
+  userId: String!
+}
+
+union GetListViewsResponse = ListViewsType | ListNotFoundType | InactiveListType
+
+type ListViewsType {
+  listViews: [ListViewType]
+}
+
+type ListViewType {
+  id: Int!
+  listId: String!
+  viewId: String!
+  appliedBy: String!
+  isActive: Boolean!
+}
+
+input GetListViewsInputParams {
+  listId: String!
+}
+
+union GetFieldResponse = FieldType | FieldNotFoundType
+
+type FieldType {
+  fieldId: String!
+  fieldType: String!
+  description: String!
+  templateId: String!
+  fieldName: String!
+  isActive: String!
+  order: Int!
+  config: JSONString!
+  isRequired: Boolean!
+  createdBy: String!
+}
+
+type FieldNotFoundType {
+  fieldId: String!
+}
+
+input GetFieldInputParams {
+  fieldId: String!
+}
+
+union GetFieldsForTemplateResponse = FieldsType | TemplateNotFoundType
+
+type FieldsType {
+  fields: [FieldType]
+}
+
+type TemplateNotFoundType {
+  templateId: String!
+}
+
+input GetFieldsForTemplateInputParams {
+  listId: String!
+}
+
+union GetViewsResponse = ViewsType | ViewNotFoundType
+
+type ViewsType {
+  views: [ViewType]
+}
+
+type ViewType {
+  viewId: String!
+  name: String!
+  description: String!
+  viewType: String!
+  createdBy: String!
+}
+
+type ViewNotFoundType {
+  viewId: String!
+}
+
+union GetTaskAssigneesResponse = TaskAssigneesType | DeletedTaskType | TaskNotFoundType
+
+type DeletedTaskType {
+  taskId: String!
+}
+
+type TaskNotFoundType {
+  taskId: String!
+}
+
+input GetTaskAssigneesInputParams {
+  taskId: String!
+}
+
+union GetListTasksResponse = TasksType | ListNotFoundType | InactiveListType
+
+type TasksType {
+  tasks: [TaskType]
+}
+
+input GetListTasksInputParams {
+  listId: String!
+}
+
+union GetTaskResponse = TaskType | TaskNotFoundType | DeletedTaskType
+
+input GetTaskInputParams {
+  taskId: String!
+}
+
+union TaskFilterResponse = TasksType | ListNotFoundType | InactiveListType | InvalidOffset | InvalidLimitType
+
+type InvalidOffset {
+  offset: Int!
+}
+
+type InvalidLimitType {
+  limit: Int!
+}
+
+input TaskFilterInputParams {
+  listId: String!
+  fieldFilters: JSONString
+  assignees: [String]
+  offset: Int = 1
+  limit: Int = 10
+}
+
+union GetSpaceListsResponse = ListsType | SpaceNotFoundType | InactiveSpaceType
+
+type ListsType {
+  lists: [ListType]
+}
+
+type ListType {
+  listId: String!
+  name: String!
+  description: String!
+  spaceId: String!
+  isActive: Boolean!
+  order: Int!
+  isPrivate: Boolean!
+  createdBy: String!
+  folderId: String
+}
+
+type SpaceNotFoundType {
+  spaceId: String!
+}
+
+type InactiveSpaceType {
+  spaceId: String!
+}
+
+input GetSpaceListsInputParams {
+  spaceId: String!
+}
+
+union GetFolderListsResponse = ListsType | FolderNotFoundType | InactiveFolderType
+
+type FolderNotFoundType {
+  folderId: String
+}
+
+type InactiveFolderType {
+  folderId: String
+}
+
+input GetFolderListsInputParams {
+  folderId: String!
+}
+
+union GetListResponse = ListType | ListNotFoundType | InactiveListType
+
+input GetListInputParams {
+  listId: String!
+}
+
+union GetFolderResponse = FolderType | FolderNotFoundType
+
+type FolderType {
+  folderId: String
+  name: String!
+  description: String!
+  spaceId: String!
+  order: Int!
+  isActive: Boolean!
+  createdBy: String!
+  isPrivate: Boolean!
+}
+
+input GetFolderInputParams {
+  folderId: String!
+}
+
+union GetSpaceFoldersResponse = SpaceFoldersType | SpaceNotFoundType | InactiveSpaceType
+
+type SpaceFoldersType {
+  folders: [FolderType]
+}
+
+input GetSpaceFoldersInputParams {
+  spaceId: String!
+}
+
+union GetSpaceResponse = SpaceType | SpaceNotFoundType
+
+type SpaceType {
+  spaceId: String!
+  name: String!
+  description: String!
+  workspaceId: String!
+  order: Int!
+  isActive: Boolean!
+  isPrivate: Boolean!
+  createdBy: String!
+}
+
+input GetSpaceInputParams {
+  spaceId: String!
+}
+
+union GetWorkspaceSpacesResponse = WorkspaceSpacesType | WorkspaceNotFoundType | InactiveWorkspaceType
+
+type WorkspaceSpacesType {
+  spaces: [SpaceType]
+}
+
+type WorkspaceNotFoundType {
+  workspaceId: String!
+}
+
+type InactiveWorkspaceType {
+  workspaceId: String!
+}
+
+input GetWorkspaceSpacesInputParams {
+  workspaceId: String!
+}
+
+union GetWorkspaceResponse = WorkspaceType | WorkspaceNotFoundType
+
+type WorkspaceType {
+  workspaceId: String!
+  name: String!
+  description: String!
+  userId: String!
+  accountId: String!
+  isActive: Boolean!
+}
+
+input GetWorkspaceInputParams {
+  workspaceId: String!
+}
+
+union GetUserProfileResponse = UserType | UserNotFoundType | InactiveUserType
+
+input GetUserProfileInputParams {
+  userId: String!
+}
+
+type Mutation {
+  createCheckoutSession(params: CreateCheckoutSessionInput!): CreateCheckoutSessionOutput
+  cancelSubscription(params: CancelSubscriptionInput!): CancelSubscriptionOutput
+  updateAccount(params: UpdateAccountInputParams!): UpdateAccountResponse!
+  validateResetToken(token: String!): ValidateResetTokenResponse
+  forgetPassword(params: ForgotPasswordReqParams!): ForgotPasswordResponse!
+  updateFieldValue(params: SetFieldValuesInputParams!): SetTaskFieldValueResponse!
+  resetPassword(params: ResetPasswordReqParams!): ResetPasswordResponse!
+  removeListView(params: RemoveListViewInputParams!): RemoveListViewResponse!
+  applyListView(params: ApplyListViewInputParams!): ApplyListViewResponse!
+  reorderField(params: ReorderFieldInputParams!): ReorderFieldResponse!
+  deleteField(params: DeleteFieldInputParams!): DeleteFieldResponse!
+  createField(params: CreateFieldInputParams!): CreateFieldResponse!
+  updateField(params: UpdateFieldInputParams!): UpdateFieldResponse!
+  updateView(params: UpdateViewInputParams!): UpdateViewResponse!
+  removeTaskAssignee(params: RemoveTaskAssigneeInputParams!): RemoveTaskAssigneeResponse!
+  removeMemberFromWorkspace(params: RemoveWorkspaceMemberInputParams!): AddMemberToWorkspaceResponse!
+  changeWorkspaceMemberRole(params: ChangeWorkspaceMemberRoleInputParams!): AddMemberToWorkspaceResponse!
+  taskAssignee(params: CreateTaskAssigneeInputParams!): CreateTaskAssigneeResponse!
+  addMemberToWorkspace(params: AddMemberToWorkspaceInputParams!): AddMemberToWorkspaceResponse!
+  createView(params: CreateViewInputParams!): CreateViewResponse!
+  deleteTask(params: DeleteTaskInputParams!): DeleteTaskResponse!
+  reorderTask(params: ReorderTaskInputParams!): ReorderTaskResponse!
+  updateTask(params: UpdateTaskInputParams!): UpdateTaskResponse!
+  createTask(params: CreateTaskInputParams!): CreateTaskResponse!
+  reorderListInspace(params: ReorderListInSpaceInputParams!): ReorderListInSpaceResponse!
+  setListVisibility(params: SetListVisibilityInputParams!): SetListVisibilityResponse!
+  reorderListInFolder(params: ReorderListInFolderInputParams!): ReorderListInFolderResponse!
+  deleteList(params: DeleteListInputParams!): DeleteListResponse!
+  updateList(params: UpdateListInputParams!): UpdateListResponse!
+  createList(params: CreateListInputParams!): CreateListResponse!
+  setFolderVisibility(params: SetFolderVisibilityInputParams!): SetFolderVisibilityResponse!
+  reorderFolder(params: ReorderFolderInputParams!): ReorderFolderResponse!
+  deleteFolder(params: DeleteFolderInputParams!): DeleteFolderResponse!
+  updateFolder(params: UpdateFolderInputParams!): UpdateFolderResponse!
+  createFolder(params: CreateFolderInputParams!): CreateFolderResponse!
+  deleteSpace(params: DeleteSpaceInputParams!): DeleteSpaceResponse!
+  reorderSpace(params: ReorderSpaceInputParams!): ReorderSpaceResponse!
+  setSpaceVisibility(params: SetSpaceVisibilityInputParams!): SetSpaceVisibilityResponse!
+  updateSpace(params: UpdateSpaceInputParams!): UpdateSpaceResponse!
+  createSpace(params: CreateSpaceInputParams!): CreateSpaceResponse!
+  updateWorkspace(params: UpdateWorkspaceInputParams!): UpdateWorkspaceResponse!
+  deleteWorkspace(params: DeleteWorkspaceInputParams!): DeleteWorkspaceResponse!
+  transferWorkspace(params: TransferWorkspaceInputParams!): TransferWorkspaceResponse!
+  createWorkspace(params: CreateWorkspaceInputParams!): CreateWorkspaceResponse!
+  deleteAccount(params: DeleteAccountInputParams!): DeleteAccountResponse!
+  transferAccount(params: TransferAccountInputParams!): TransferAccountResponse!
+  userLogin(params: UserLoginInputParams!): UserLoginResponse!
+  blockUser(params: BlockUserInputParams!): BlockUserResponse!
+  updateUser(params: UpdateUserInputParams!): UpdateUserResponse!
+  createUser(params: CreateUserInputParams!): CreateUserResponse!
+  createAccount(params: CreateAccountInputParams!): CreateAccountResponse!
+}
+
+union CreateCheckoutSessionOutput = CheckoutSessionType | PlanNotFoundType | StripeCheckoutErrorType
+
+type CheckoutSessionType {
+  sessionId: String!
+  checkoutUrl: String!
+}
+
+type PlanNotFoundType {
+  planId: String!
+}
+
+type StripeCheckoutErrorType {
+  message: String!
+}
+
+input CreateCheckoutSessionInput {
+  planId: String!
+  successUrl: String
+  cancelUrl: String
+}
+
+union CancelSubscriptionOutput = SubscriptionType | SubscriptionNotFoundType | InvalidSubscriptionOwnerType
+
+type SubscriptionNotFoundType {
+  subscriptionId: String!
+}
+
+type InvalidSubscriptionOwnerType {
+  userId: String!
+  subscriptionId: String!
+}
+
+input CancelSubscriptionInput {
+  subscriptionId: String!
+}
+
+union UpdateAccountResponse = AccountType | AccountNotFoundType | InactiveAccountType | UserNotAccountOwnerType | AccountNameAlreadyExistsType
+
+type AccountNotFoundType {
+  accountId: String!
+}
+
+type InactiveAccountType {
+  accountId: String!
+}
+
+type UserNotAccountOwnerType {
+  userId: String!
+}
+
+type AccountNameAlreadyExistsType {
+  name: String!
+}
+
+input UpdateAccountInputParams {
+  accountId: String!
+  name: String
+  description: String
+}
+
+union ValidateResetTokenResponse = ValidateResetTokenType | InvalidResetToken | ResetTokenExpired
+
+type ValidateResetTokenType {
+  isValid: Boolean
+}
+
+type InvalidResetToken {
+  token: String!
+}
+
+type ResetTokenExpired {
+  token: String!
+}
+
+union ForgotPasswordResponse = PasswordResetResponseType | EmailNotFound
+
+type PasswordResetResponseType {
+  success: Boolean!
+  message: String!
+}
+
+type EmailNotFound {
+  email: String!
+}
+
+input ForgotPasswordReqParams {
+  email: String!
+}
+
+union SetTaskFieldValueResponse = FieldValueType | ModificationNotAllowedType | InvalidFieldValue
+
+type FieldValueType {
+  id: Int!
+  taskId: String!
+  fieldId: String!
+  value: String!
+}
+
+type ModificationNotAllowedType {
+  userId: String!
+}
+
+type InvalidFieldValue {
+  message: String!
+}
+
+input SetFieldValuesInputParams {
+  taskId: String!
+  fieldId: String!
+  value: String!
+}
+
+union ResetPasswordResponse = UserType | InvalidResetToken | ResetTokenExpired
+
+input ResetPasswordReqParams {
+  token: String!
+  newPassword: String!
+}
+
+union RemoveListViewResponse = ListViewType | ListNotFoundType | ModificationNotAllowedType | ListViewNotFound | InactiveListType
+
+type ListViewNotFound {
+  listId: String!
+  viewId: String!
+}
+
+input RemoveListViewInputParams {
+  listId: String!
+  viewId: String!
+}
+
+union ApplyListViewResponse = ListViewType | ListNotFoundType | ViewNotFoundType | InactiveListType | ModificationNotAllowedType
+
+input ApplyListViewInputParams {
+  viewId: String!
+  listId: String!
+}
+
+union ReorderFieldResponse = FieldType | FieldNotFoundType | TemplateNotFoundType | ModificationNotAllowedType | InvalidOrderType
+
+type InvalidOrderType {
+  order: Int!
+}
+
+input ReorderFieldInputParams {
+  fieldId: String!
+  templateId: String!
+  newOrder: Int!
+}
+
+union DeleteFieldResponse = FieldType | FieldNotFoundType | TemplateNotFoundType | ModificationNotAllowedType
+
+input DeleteFieldInputParams {
+  fieldId: String!
+}
+
+union CreateFieldResponse = FieldType | TemplateNotFoundType | UnsupportedFieldTypeType | FieldNameAlreadyExistsType | InvalidFieldConfigType | InvalidFieldDefaultValueType
+
+type UnsupportedFieldTypeType {
+  fieldType: String!
+}
+
+type FieldNameAlreadyExistsType {
+  fieldName: String!
+}
+
+type InvalidFieldConfigType {
+  fieldType: String!
+  invalidKeys: [String]
+  message: String
+}
+
+type InvalidFieldDefaultValueType {
+  fieldType: String!
+  defaultValue: String
+  message: String
+}
+
+input CreateFieldInputParams {
+  fieldType: String!
+  fieldName: String!
+  description: String!
+  templateId: String!
+  config: JSONString
+  isRequired: Boolean!
+}
+
+union UpdateFieldResponse = FieldType | FieldNotFoundType | ModificationNotAllowedType | InvalidFieldConfigType | InvalidFieldDefaultValueType
+
+input UpdateFieldInputParams {
+  fieldId: String!
+  description: String
+  fieldName: String
+  config: JSONString
+  isRequired: Boolean
+}
+
+union UpdateViewResponse = ViewType | ViewNotFoundType
+
+input UpdateViewInputParams {
+  viewId: String!
+  name: String
+  description: String
+}
+
+union RemoveTaskAssigneeResponse = TaskAssigneeType | TaskAssigneeNotFoundType | ListNotFoundType | InactiveListType | ModificationNotAllowedType
+
+type TaskAssigneeNotFoundType {
+  assignId: String!
+}
+
+input RemoveTaskAssigneeInputParams {
+  assignId: String!
+}
+
+union AddMemberToWorkspaceResponse = WorkspaceMemberType | WorkspaceNotFoundType | InactiveWorkspaceType | UserNotFoundType | InactiveUserType | UnexpectedRoleType | ModificationNotAllowedType
+
+type UnexpectedRoleType {
+  role: String!
+}
+
+input RemoveWorkspaceMemberInputParams {
+  workspaceMemberId: Int!
+}
+
+input ChangeWorkspaceMemberRoleInputParams {
+  workspaceId: String!
+  userId: String!
+  role: String!
+}
+
+union CreateTaskAssigneeResponse = TaskAssigneeType | UserNotFoundType | TaskNotFoundType | InactiveUserType | DeletedTaskType | ModificationNotAllowedType
+
+input CreateTaskAssigneeInputParams {
+  taskId: String!
+  userId: String!
+}
+
+input AddMemberToWorkspaceInputParams {
+  workspaceId: String!
+  userId: String!
+  role: String!
+}
+
+union CreateViewResponse = ViewType | ViewTypeNotFoundType
+
+type ViewTypeNotFoundType {
+  viewType: String!
+}
+
+input CreateViewInputParams {
+  name: String!
+  description: String!
+  viewType: String!
+}
+
+union DeleteTaskResponse = TaskType | TaskNotFoundType | DeletedTaskType | ModificationNotAllowedType
+
+input DeleteTaskInputParams {
+  taskId: String!
+}
+
+union ReorderTaskResponse = TaskType | TaskNotFoundType | DeletedTaskType | ModificationNotAllowedType | InvalidOrderType
+
+input ReorderTaskInputParams {
+  taskId: String!
+  order: Int!
+}
+
+union UpdateTaskResponse = TaskType | TaskNotFoundType | DeletedTaskType | InactiveListType | ListNotFoundType | ModificationNotAllowedType
+
+input UpdateTaskInputParams {
+  taskId: String!
+  title: String
+  description: String
+}
+
+union CreateTaskResponse = TaskType | ListNotFoundType | InactiveListType | ModificationNotAllowedType
+
+input CreateTaskInputParams {
+  title: String!
+  description: String!
+  listId: String!
+}
+
+union ReorderListInSpaceResponse = ListType | ListNotFoundType | InactiveListType | ModificationNotAllowedType | InvalidOrderType
+
+input ReorderListInSpaceInputParams {
+  spaceId: String!
+  listId: String!
+  order: Int!
+}
+
+union SetListVisibilityResponse = ListType | ListNotFoundType | InactiveListType | ModificationNotAllowedType | UnsupportedVisibilityType
+
+type UnsupportedVisibilityType {
+  visibility: String!
+}
+
+input SetListVisibilityInputParams {
+  listId: String!
+  visibility: String!
+}
+
+union ReorderListInFolderResponse = ListType | ListNotFoundType | InactiveListType | ModificationNotAllowedType | InvalidOrderType
+
+input ReorderListInFolderInputParams {
+  folderId: String!
+  listId: String!
+  order: Int!
+}
+
+union DeleteListResponse = ListType | ListNotFoundType | InactiveListType | ModificationNotAllowedType
+
+input DeleteListInputParams {
+  listId: String!
+}
+
+union UpdateListResponse = ListType | ListNotFoundType | InactiveListType
+
+input UpdateListInputParams {
+  listId: String!
+  name: String
+  description: String
+}
+
+union CreateListResponse = ListType | SpaceNotFoundType | InactiveSpaceType | FolderNotFoundType | InactiveFolderType | ModificationNotAllowedType
+
+input CreateListInputParams {
+  name: String!
+  description: String!
+  spaceId: String!
+  isPrivate: Boolean!
+  folderId: String
+}
+
+union SetFolderVisibilityResponse = FolderType | FolderNotFoundType | InactiveFolderType | ModificationNotAllowedType | UnsupportedVisibilityType
+
+input SetFolderVisibilityInputParams {
+  folderId: String!
+  visibility: String!
+}
+
+union ReorderFolderResponse = FolderType | FolderNotFoundType | InactiveFolderType | ModificationNotAllowedType | InvalidOrderType
+
+input ReorderFolderInputParams {
+  spaceId: String!
+  folderId: String!
+  order: Int!
+}
+
+union DeleteFolderResponse = FolderType | FolderNotFoundType | InactiveFolderType | ModificationNotAllowedType
+
+input DeleteFolderInputParams {
+  folderId: String!
+}
+
+union UpdateFolderResponse = FolderType | FolderNotFoundType | InactiveFolderType
+
+input UpdateFolderInputParams {
+  folderId: String!
+  name: String
+  description: String
+}
+
+union CreateFolderResponse = FolderType | SpaceNotFoundType | InactiveSpaceType
+
+input CreateFolderInputParams {
+  name: String!
+  description: String!
+  spaceId: String!
+  isPrivate: Boolean!
+}
+
+union DeleteSpaceResponse = SpaceType | SpaceNotFoundType | InactiveSpaceType | ModificationNotAllowedType
+
+input DeleteSpaceInputParams {
+  spaceId: String!
+}
+
+union ReorderSpaceResponse = SpaceType | WorkspaceNotFoundType | InactiveWorkspaceType | ModificationNotAllowedType | InvalidOrderType
+
+input ReorderSpaceInputParams {
+  workspaceId: String!
+  spaceId: String!
+  order: Int!
+  userId: String!
+}
+
+union SetSpaceVisibilityResponse = SpaceType | SpaceNotFoundType | InactiveSpaceType | ModificationNotAllowedType | UnsupportedVisibilityType
+
+input SetSpaceVisibilityInputParams {
+  spaceId: String!
+  visibility: String!
+}
+
+union UpdateSpaceResponse = SpaceType | SpaceNotFoundType | InactiveSpaceType
+
+input UpdateSpaceInputParams {
+  spaceId: String!
+  name: String
+  description: String
+}
+
+union CreateSpaceResponse = SpaceType | WorkspaceNotFoundType | InactiveWorkspaceType
+
+input CreateSpaceInputParams {
+  name: String!
+  description: String!
+  workspaceId: String!
+  isPrivate: Boolean!
+}
+
+union UpdateWorkspaceResponse = WorkspaceType | WorkspaceNotFoundType | InactiveWorkspaceType | UserNotWorkspaceOwnerType | ModificationNotAllowedType
+
+type UserNotWorkspaceOwnerType {
+  userId: String!
+}
+
+input UpdateWorkspaceInputParams {
+  workspaceId: String!
+  name: String
+  description: String
+}
+
+union DeleteWorkspaceResponse = WorkspaceType | WorkspaceNotFoundType | InactiveWorkspaceType | UserNotWorkspaceOwnerType
+
+input DeleteWorkspaceInputParams {
+  workspaceId: String!
+}
+
+union TransferWorkspaceResponse = WorkspaceType | WorkspaceNotFoundType | UserNotWorkspaceOwnerType | UserNotFoundType | InactiveUserType
+
+input TransferWorkspaceInputParams {
+  workspaceId: String!
+  newUserId: String!
+}
+
+union CreateWorkspaceResponse = WorkspaceType | AccountNotFoundType | InactiveAccountType | UserNotFoundType | InactiveUserType | ModificationNotAllowedType
+
+input CreateWorkspaceInputParams {
+  name: String!
+  description: String!
+  accountId: String!
+}
+
+union DeleteAccountResponse = AccountType | AccountNotFoundType | InactiveAccountType | ModificationNotAllowedType
+
+input DeleteAccountInputParams {
+  accountId: String!
+}
+
+union TransferAccountResponse = AccountType | AccountNotFoundType | InactiveAccountType | UserNotAccountOwnerType | UserNotFoundType | InactiveUserType
+
+input TransferAccountInputParams {
+  accountId: String!
+  newOwnerId: String!
+}
+
+union UserLoginResponse = UserType | EmailNotFound | IncorrectPassword | InactiveUserType
+
+type IncorrectPassword {
+  password: String!
+}
+
+input UserLoginInputParams {
+  email: String!
+  password: String!
+}
+
+union BlockUserResponse = UserType | UserNotFoundType | InactiveUserType
+
+input BlockUserInputParams {
+  userId: String!
+}
+
+union UpdateUserResponse = UserType | UserNotFoundType | InactiveUserType | UsernameAlreadyExists | EmailAlreadyExists | PhoneNumberAlreadyExists
+
+type UsernameAlreadyExists {
+  username: String!
+}
+
+type EmailAlreadyExists {
+  email: String!
+}
+
+type PhoneNumberAlreadyExists {
+  phoneNumber: String!
+}
+
+input UpdateUserInputParams {
+  fullName: String
+  username: String
+  gender: String
+  email: String
+  phoneNumber: String
+  imageUrl: String
+}
+
+union CreateUserResponse = UserType | UsernameAlreadyExists | EmailAlreadyExists | PhoneNumberAlreadyExists
+
+input CreateUserInputParams {
+  email: String!
+  password: String!
+  fullName: String!
+  gender: String!
+  username: String!
+  phoneNumber: String!
+  imageUrl: String!
+}
+
+union CreateAccountResponse = AccountType | AccountNameAlreadyExistsType
+
+input CreateAccountInputParams {
+  name: String!
+  description: String!
+  ownerId: String!
+}

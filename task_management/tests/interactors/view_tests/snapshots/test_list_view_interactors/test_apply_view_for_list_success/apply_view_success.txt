@@ -1,0 +1,1 @@
+ListViewDTO(id=1, list_id='0850214f-21b8-44ee-84c7-92b351c8dfdb', view_id='dc195c5f-d21d-40f1-a508-44e9ad02e51f', applied_by='360aef23-853a-4711-8918-c81deff8299f', is_active=True)

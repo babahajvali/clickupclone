@@ -1,0 +1,1 @@
+UserDTO(user_id=UUID('12345678-1234-5678-1234-567812345678'), full_name='Tyrone Price', username='newusername', password='test123', gender=User.GenderType.FEMALE, email='new@example.com', phone_number='+2222222222', is_active=True, image_url='https://example.com/new.jpg')

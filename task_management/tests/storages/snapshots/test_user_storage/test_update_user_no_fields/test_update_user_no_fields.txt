@@ -1,0 +1,1 @@
+UserDTO(user_id=UUID('12345678-1234-5678-1234-567812345678'), full_name='Clifford Tyler', username='testuser', password='test123', gender='MALE', email='test@example.com', phone_number='834.391.6900x1525', is_active=True, image_url='https://placekitten.com/893/116')

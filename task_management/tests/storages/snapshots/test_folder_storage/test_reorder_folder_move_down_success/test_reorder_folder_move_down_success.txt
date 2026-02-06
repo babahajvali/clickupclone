@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='interest', description='Pattern TV responsibility side mean partner air best.', space_id=UUID('12345678-1234-5678-1234-567812345688'), order=3, is_active=True, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_private=False)

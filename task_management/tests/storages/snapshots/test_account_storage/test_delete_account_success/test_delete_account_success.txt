@@ -1,0 +1,1 @@
+AccountDTO(account_id=UUID('12345678-1234-5678-1234-567812345678'), name='Delete Account', description='Delete account description', owner_id=UUID('12345678-1234-5678-1234-567812345692'), is_active=False)

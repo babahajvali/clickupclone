@@ -1,0 +1,1 @@
+UserFolderPermissionDTO(id=1, folder_id=UUID('12345678-1234-5678-1234-567812345679'), permission_type='FULL_EDIT', user_id=UUID('12345678-1234-5678-1234-567812345678'), is_active=True, added_by=UUID('12345678-1234-5678-1234-567812345680'))

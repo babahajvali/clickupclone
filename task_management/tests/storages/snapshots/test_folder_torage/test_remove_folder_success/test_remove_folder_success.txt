@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='blood', description='Environmental difficult among point food including account.', space_id=UUID('12345678-1234-5678-1234-567812345679'), order=1, is_active=False, created_by=UUID('f320e9f1-d389-4f48-826b-9abb773083a7'), is_private=False)

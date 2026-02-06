@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='community', description='Look man man ask.', space_id=UUID('a5ec2c09-b01b-4c06-9d5d-bec2760a0884'), order=19, is_active=True, created_by=UUID('db239bb0-a5b4-4dcd-9b0a-9a13651de550'), is_private=True)

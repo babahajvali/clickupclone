@@ -195,3 +195,333 @@ class PasswordResetTokenAdmin(admin.ModelAdmin):
         return f"{obj.token[:20]}..."
 
     token_preview.short_description = 'Token'
+
+
+# task_management/admin.py (or task_management/admin/subscription_admin.py)
+
+from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import reverse
+from task_management.models.payment_models import Plan, Customer, Subscription, \
+    Payment
+
+
+@admin.register(Plan)
+class PlanAdmin(admin.ModelAdmin):
+    list_display = (
+        'plan_name',
+        'billing_period',
+        'price_display',
+        'stripe_price_id',
+        'is_active',
+        'subscription_count',
+        'created_at',
+    )
+    list_filter = ('plan_name', 'billing_period', 'is_active', 'created_at')
+    search_fields = ('plan_name', 'stripe_price_id')
+    readonly_fields = ('plan_id', 'created_at', 'updated_at')
+    ordering = ('plan_name', 'billing_period')
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('plan_id', 'plan_name', 'billing_period', 'is_active')
+        }),
+        ('Pricing', {
+            'fields': ('price', 'currency', 'stripe_price_id')
+        }),
+        ('Features', {
+            'fields': ('features',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def price_display(self, obj):
+        return f"{obj.currency} {obj.price}"
+
+    price_display.short_description = 'Price'
+
+    def subscription_count(self, obj):
+        count = obj.subscriptions.count()
+        url = reverse(
+            'admin:task_management_subscription_changelist') + f'?plan__plan_id__exact={obj.plan_id}'
+        return format_html('<a href="{}">{} subscriptions</a>', url, count)
+
+    subscription_count.short_description = 'Active Subscriptions'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('subscriptions')
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = (
+        'customer_id',
+        'user_link',
+        'stripe_customer_id',
+        'has_payment_method',
+        'subscription_count',
+        'created_at',
+    )
+    list_filter = ('created_at',)
+    search_fields = (
+        'user__username',
+        'user__email',
+        'stripe_customer_id',
+        'customer_id',
+    )
+    readonly_fields = ('customer_id', 'created_at', 'updated_at')
+    raw_id_fields = ('user',)
+
+    fieldsets = (
+        ('Customer Information', {
+            'fields': ('customer_id', 'user', 'stripe_customer_id')
+        }),
+        ('Payment Details', {
+            'fields': ('default_payment_method',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def user_link(self, obj):
+        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        return format_html('<a href="{}">{}</a>', url, obj.user.username)
+
+    user_link.short_description = 'User'
+
+    def has_payment_method(self, obj):
+        if obj.default_payment_method:
+            return format_html('<span style="color: green;">✓</span>')
+        return format_html('<span style="color: red;">✗</span>')
+
+    has_payment_method.short_description = 'Payment Method'
+
+    def subscription_count(self, obj):
+        count = obj.user.subscriptions.count()
+        url = reverse(
+            'admin:task_management_subscription_changelist') + f'?user__id__exact={obj.user.id}'
+        return format_html('<a href="{}">{}</a>', url, count)
+
+    subscription_count.short_description = 'Subscriptions'
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = (
+        'subscription_id_short',
+        'user_link',
+        'plan_link',
+        'status_display',
+        'current_period_start',
+        'current_period_end',
+        'cancel_at_period_end',
+        'payment_count',
+    )
+    list_filter = (
+        'status',
+        'cancel_at_period_end',
+        'plan__plan_name',
+        'plan__billing_period',
+        'created_at',
+    )
+    search_fields = (
+        'user__username',
+        'user__email',
+        'stripe_subscription_id',
+        'subscription_id',
+    )
+    readonly_fields = (
+        'subscription_id',
+        'created_at',
+        'updated_at',
+        'stripe_subscription_id',
+    )
+    raw_id_fields = ('user', 'plan')
+    date_hierarchy = 'created_at'
+
+    fieldsets = (
+        ('Subscription Information', {
+            'fields': (
+                'subscription_id',
+                'user',
+                'plan',
+                'stripe_subscription_id',
+                'status',
+            )
+        }),
+        ('Billing Period', {
+            'fields': (
+                'current_period_start',
+                'current_period_end',
+            )
+        }),
+        ('Cancellation', {
+            'fields': (
+                'cancel_at_period_end',
+                'canceled_at',
+            )
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def subscription_id_short(self, obj):
+        return str(obj.subscription_id)[:8] + '...'
+
+    subscription_id_short.short_description = 'ID'
+
+    def user_link(self, obj):
+        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        return format_html('<a href="{}">{}</a>', url, obj.user.username)
+
+    user_link.short_description = 'User'
+
+    def plan_link(self, obj):
+        if obj.plan:
+            url = reverse('admin:task_management_plan_change',
+                          args=[obj.plan.plan_id])
+            return format_html('<a href="{}">{}</a>', url, obj.plan.plan_name)
+        return '-'
+
+    plan_link.short_description = 'Plan'
+
+    def status_display(self, obj):
+        colors = {
+            'active': 'green',
+            'trialing': 'blue',
+            'canceled': 'gray',
+            'past_due': 'orange',
+            'unpaid': 'red',
+            'incomplete': 'orange',
+        }
+        color = colors.get(obj.status, 'black')
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            color,
+            obj.get_status_display()
+        )
+
+    status_display.short_description = 'Status'
+
+    def payment_count(self, obj):
+        count = obj.payments.count()
+        url = reverse(
+            'admin:task_management_payment_changelist') + f'?subscription__subscription_id__exact={obj.subscription_id}'
+        return format_html('<a href="{}">{} payments</a>', url, count)
+
+    payment_count.short_description = 'Payments'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('user', 'plan').prefetch_related('payments')
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = (
+        'payment_id_short',
+        'user_link',
+        'subscription_link',
+        'amount_display',
+        'status_display',
+        'payment_method',
+        'created_at',
+    )
+    list_filter = (
+        'status',
+        'currency',
+        'created_at',
+    )
+    search_fields = (
+        'user__username',
+        'user__email',
+        'stripe_payment_intent_id',
+        'payment_id',
+    )
+    readonly_fields = (
+        'payment_id',
+        'stripe_payment_intent_id',
+        'created_at',
+        'updated_at',
+    )
+    raw_id_fields = ('user', 'subscription')
+    date_hierarchy = 'created_at'
+
+    fieldsets = (
+        ('Payment Information', {
+            'fields': (
+                'payment_id',
+                'user',
+                'subscription',
+                'stripe_payment_intent_id',
+                'status',
+            )
+        }),
+        ('Amount', {
+            'fields': (
+                'amount',
+                'currency',
+            )
+        }),
+        ('Payment Method', {
+            'fields': ('payment_method',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def payment_id_short(self, obj):
+        return str(obj.payment_id)[:8] + '...'
+
+    payment_id_short.short_description = 'ID'
+
+    def user_link(self, obj):
+        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        return format_html('<a href="{}">{}</a>', url, obj.user.username)
+
+    user_link.short_description = 'User'
+
+    def subscription_link(self, obj):
+        if obj.subscription:
+            url = reverse('admin:task_management_subscription_change',
+                          args=[obj.subscription.subscription_id])
+            return format_html('<a href="{}">View Subscription</a>', url)
+        return '-'
+
+    subscription_link.short_description = 'Subscription'
+
+    def amount_display(self, obj):
+        return f"{obj.currency} {obj.amount}"
+
+    amount_display.short_description = 'Amount'
+
+    def status_display(self, obj):
+        colors = {
+            'succeeded': 'green',
+            'pending': 'orange',
+            'failed': 'red',
+            'canceled': 'gray',
+        }
+        color = colors.get(obj.status, 'black')
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            color,
+            obj.get_status_display()
+        )
+
+    status_display.short_description = 'Status'
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('user', 'subscription')

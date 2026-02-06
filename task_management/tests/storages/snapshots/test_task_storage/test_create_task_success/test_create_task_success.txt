@@ -1,0 +1,1 @@
+TaskDTO(task_id=UUID('395de4fd-f9af-468b-9345-2391ab8f6493'), title='Test Task', description='Test description', list_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_deleted=False)

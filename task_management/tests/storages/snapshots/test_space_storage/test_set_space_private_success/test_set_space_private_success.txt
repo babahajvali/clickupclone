@@ -1,0 +1,1 @@
+SpaceDTO(space_id='12345678-1234-5678-1234-567812345678', name='yes', description='Writer source play keep cover.', workspace_id='12345678-1234-5678-1234-567812345679', order=136, is_active=True, is_private=True, created_by='12345678-1234-5678-1234-567812345679')

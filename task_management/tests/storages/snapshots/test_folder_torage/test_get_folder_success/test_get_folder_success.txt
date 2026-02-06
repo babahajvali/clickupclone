@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='it', description='Audience rather bed marriage suddenly.', space_id=UUID('582e1be4-8bda-4aff-ac86-99c3e4e2774e'), order=1, is_active=True, created_by=UUID('621e4c48-6f05-4b87-8dd5-9b01e77ac317'), is_private=False)

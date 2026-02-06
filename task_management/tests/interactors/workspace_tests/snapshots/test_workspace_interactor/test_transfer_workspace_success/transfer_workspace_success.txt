@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='e78d401b-ab6b-4235-8952-bd4ec2ae100c', name='Hughes, Mcgee and Harris', description='Lose wait economic significant marriage.', user_id='1427fc86-039d-4ef3-8db7-bbf606e777f0', account_id='e427c0fb-866d-4999-9c36-944ad680b823', is_active=True)

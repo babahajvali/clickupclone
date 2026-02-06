@@ -379,3 +379,14 @@ class UpdateAccountInputParams(graphene.InputObjectType):
     account_id = graphene.String(required=True)
     name = graphene.String()
     description = graphene.String()
+
+
+
+class CreateCheckoutSessionInput(graphene.InputObjectType):
+    plan_id = graphene.String(required=True)
+    success_url = graphene.String()
+    cancel_url = graphene.String()
+
+
+class CancelSubscriptionInput(graphene.InputObjectType):
+    subscription_id = graphene.String(required=True)

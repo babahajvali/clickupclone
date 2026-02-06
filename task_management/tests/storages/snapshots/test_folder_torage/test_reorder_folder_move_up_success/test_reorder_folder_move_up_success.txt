@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='stage', description='Suddenly various key above season too meet.', space_id=UUID('12345678-1234-5678-1234-567812345679'), order=1, is_active=True, created_by=UUID('d1dec5b1-59bd-4061-bef0-31a725e49070'), is_private=False)

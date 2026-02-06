@@ -1,0 +1,1 @@
+AccountDTO(account_id=UUID('12345678-1234-5678-1234-567812345678'), name='Transfer Account', description='Transfer account description', owner_id=UUID('12345678-1234-5678-1234-567812345680'), is_active=True)

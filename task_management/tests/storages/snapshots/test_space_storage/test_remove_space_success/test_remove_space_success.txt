@@ -1,0 +1,1 @@
+SpaceDTO(space_id='12345678-1234-5678-1234-567812345678', name='executive', description='Tough maintain politics deal view dog matter.', workspace_id='12345678-1234-5678-1234-567812345679', order=1, is_active=False, is_private=False, created_by='12345678-1234-5678-1234-567812345679')

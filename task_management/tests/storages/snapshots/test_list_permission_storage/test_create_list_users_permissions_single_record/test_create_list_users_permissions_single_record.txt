@@ -1,0 +1,1 @@
+[UserListPermissionDTO(id=1, list_id=UUID('12345678-1234-5678-1234-567812345678'), permission_type='VIEW', user_id=UUID('12345678-1234-5678-1234-567812345680'), is_active=True, added_by=UUID('12345678-1234-5678-1234-567812345682'))]

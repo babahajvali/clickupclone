@@ -1,0 +1,1 @@
+WorkspaceMemberDTO(id=3, workspace_id='0e16e029-4a67-46b4-b2e5-1de5a35aa953', user_id='02817755-7b6d-422e-92d9-b5439840ee2d', role=<RoleEnum.MEMBER: 'member'>, is_active=False, added_by='f40b445f-8d32-4458-b33d-1afb2f62e392')

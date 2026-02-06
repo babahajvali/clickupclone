@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='learn', description='Camera act leader church less let.', space_id=UUID('12345678-1234-5678-1234-567812345679'), order=3, is_active=True, created_by=UUID('bc568cad-ab88-473e-8dd0-5a4b89286e87'), is_private=False)

@@ -1,0 +1,1 @@
+ViewDTO(view_id=UUID('1d0b1b52-3529-4248-9538-93799bdb438e'), name='Board View', description='Kanban board', view_type='board', created_by=UUID('12345678-1234-5678-1234-567812345679'))

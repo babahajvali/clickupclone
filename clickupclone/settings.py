@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -194,3 +194,5 @@ CORS_ALLOW_HEADERS = [
 JWT_SECRET_KEY = SECRET_KEY  # Or use separate secret
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24
+
+# settings.py

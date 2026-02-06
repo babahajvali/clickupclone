@@ -1,0 +1,1 @@
+FieldDTO(field_id=UUID('12345678-1234-5678-1234-567812345679'), field_type=<FieldTypes.TEXT: 'TEXT'>, description='Thousand rule live wonder read building.', template_id=UUID('12345678-1234-5678-1234-567812345678'), field_name='exactly', is_active=True, order=2, config={}, is_required=False, created_by=UUID('12345678-1234-5678-1234-567812345680'))

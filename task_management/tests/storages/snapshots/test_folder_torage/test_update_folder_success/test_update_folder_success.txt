@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='New Name', description='New description', space_id=UUID('be300b86-2b0d-4744-8640-23adf0178619'), order=4, is_active=True, created_by=UUID('f0678872-3431-4ac6-af34-14ddedc2b421'), is_private=False)

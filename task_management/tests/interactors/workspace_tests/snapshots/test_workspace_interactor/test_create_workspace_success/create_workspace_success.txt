@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='852d2092-05f0-4ed2-9c6d-be2b71f1bf1e', name='Patel-Snyder', description='Expect source kitchen foreign.', user_id='9dcd3057-035b-45cb-bbe5-7b21bdfa6d78', account_id='94dd2d87-1565-492b-bff9-5db11504bf8e', is_active=True)

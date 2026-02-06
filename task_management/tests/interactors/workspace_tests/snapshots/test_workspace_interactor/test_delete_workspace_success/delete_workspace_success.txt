@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='283adb1d-384a-49ae-a36b-61fbee572556', name='Savage LLC', description='Talk concern growth beautiful side.', user_id='2ce8c674-12da-4582-83b6-f3e1f6c05462', account_id='9178c20e-4d6e-449c-ace6-356e886f025d', is_active=True)

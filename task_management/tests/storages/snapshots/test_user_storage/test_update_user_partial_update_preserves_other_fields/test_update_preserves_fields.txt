@@ -1,0 +1,1 @@
+UserDTO(user_id=UUID('12345678-1234-5678-1234-567812345678'), full_name='Melissa Smith', username='updateduser', password='test123', gender='MALE', email='original@example.com', phone_number='+1234567890', is_active=True, image_url='https://picsum.photos/997/63')
