@@ -17,7 +17,7 @@ from task_management.graphql.types.error_types import \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, \
-    ResetTokenExpired, InvalidAccountIds
+    ResetTokenExpired, InvalidAccountIds, InvalidFieldValue
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -686,7 +686,8 @@ class GetTaskFieldValuesResponse(graphene.Union):
 class SetTaskFieldValueResponse(graphene.Union):
     class Meta:
         types = (FieldValueType,
-                 ModificationNotAllowedType)
+                 ModificationNotAllowedType,
+                 InvalidFieldValue)
 
 
 class GetWorkspaceUsersResponse(graphene.Union):

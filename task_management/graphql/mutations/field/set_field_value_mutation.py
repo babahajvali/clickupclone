@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType
+    ModificationNotAllowedType, InvalidFieldValue
 from task_management.graphql.types.input_types import SetFieldValuesInputParams
 from task_management.graphql.types.response_types import \
     SetTaskFieldValueResponse
@@ -56,3 +56,6 @@ class SetFieldValueMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowedException as exc:
             return ModificationNotAllowedType(user_id=exc.user_id)
+
+        except custom_exceptions.InvalidFieldValueException as e:
+            return InvalidFieldValue(message=e.message)

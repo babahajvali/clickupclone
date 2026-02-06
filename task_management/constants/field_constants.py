@@ -3,14 +3,9 @@ from task_management.exceptions.enums import FieldTypes
 FIELD_TYPE_RULES = {
     FieldTypes.TEXT.value: {
         "config_keys": {"max_length", "default"},
-        "default_type": str,
-    },
-    FieldTypes.USER.value: {
-        "config_keys": {"multiple", "allow_groups"},
     },
     FieldTypes.NUMBER.value: {
         "config_keys": {"min", "max", "default"},
-        "default_type": (int, float),
     },
     FieldTypes.DROPDOWN.value: {
         "config_keys": {"options", "default"},

@@ -25,6 +25,10 @@ class ModificationNotAllowedType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
+class InvalidFieldValue(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
 class UnsupportedVisibilityType(graphene.ObjectType):
     visibility = graphene.String(required=True)
 

@@ -3,7 +3,6 @@ from enum import Enum
 
 class FieldTypes(Enum):
     DROPDOWN = "DROPDOWN"
-    USER = "USER"
     TEXT = "TEXT"
     NUMBER = "NUMBER"
     DATE = "DATE"

@@ -273,3 +273,7 @@ class ResetTokenExpiredException(Exception):
 class MissingFieldConfigException(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
+
+class InvalidFieldValueException(Exception):
+    def __init__(self, message: str):
+        self.message = message

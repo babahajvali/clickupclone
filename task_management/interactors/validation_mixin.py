@@ -359,7 +359,7 @@ class ValidationMixin:
         workspace_user_data = workspace_member_storage.get_workspace_member(
             user_id=user_id, workspace_id=workspace_id)
 
-        if workspace_user_data.role == Role.GUEST.value:
+        if workspace_user_data.role == Role.GUEST.value or workspace_user_data.role == Role.MEMBER.value:
             raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
