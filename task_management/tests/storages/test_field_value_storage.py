@@ -111,7 +111,8 @@ class TestFieldValueStorage:
         storage = FieldValueStorage()
 
         # Act
-        storage.create_bulk_field_values(bulk_field_values=bulk_field_values)
+        storage.create_bulk_field_values(
+            create_bulk_field_values=bulk_field_values)
 
         # Assert
         from task_management.models import FieldValue
@@ -140,7 +141,8 @@ class TestFieldValueStorage:
         storage = FieldValueStorage()
 
         # Act
-        storage.create_bulk_field_values(bulk_field_values=bulk_field_values)
+        storage.create_bulk_field_values(
+            create_bulk_field_values=bulk_field_values)
 
         # Assert
         from task_management.models import FieldValue

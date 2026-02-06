@@ -53,10 +53,10 @@ class FieldValueStorage(FieldValueStorageInterface):
         return result
 
     def create_bulk_field_values(self,
-                                 bulk_field_values: list[CreateFieldValueDTO]):
-        task_ids = [fv.task_id for fv in bulk_field_values]
-        field_ids = [fv.field_id for fv in bulk_field_values]
-        user_ids = [fv.created_by for fv in bulk_field_values]
+                                 create_bulk_field_values: list[CreateFieldValueDTO]):
+        task_ids = [fv.task_id for fv in create_bulk_field_values]
+        field_ids = [fv.field_id for fv in create_bulk_field_values]
+        user_ids = [fv.created_by for fv in create_bulk_field_values]
 
         tasks = {str(t.task_id): t for t in
                  Task.objects.filter(task_id__in=task_ids)}
@@ -66,7 +66,7 @@ class FieldValueStorage(FieldValueStorageInterface):
                  User.objects.filter(user_id__in=user_ids)}
 
         field_values_to_create = []
-        for fv_data in bulk_field_values:
+        for fv_data in create_bulk_field_values:
             task = tasks[str(fv_data.task_id)]
             field = fields[str(fv_data.field_id)]
             created_by = users[str(fv_data.created_by)]
@@ -80,4 +80,7 @@ class FieldValueStorage(FieldValueStorageInterface):
             )
 
         FieldValue.objects.bulk_create(field_values_to_create)
+
+    def check_task_field_value(self,task_id: str, field_id: str) -> bool:
+        return FieldValue.objects.filter(task_id=task_id, field_id=field_id).exists()
 

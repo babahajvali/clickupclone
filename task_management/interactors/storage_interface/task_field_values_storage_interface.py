@@ -19,6 +19,13 @@ class FieldValueStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_bulk_field_values(self, bulk_field_values: list[
+    def create_bulk_field_values(self, create_bulk_field_values: list[
         CreateFieldValueDTO]):
         pass
+
+    @abstractmethod
+    def check_task_field_value(self,task_id: str, field_id: str) -> bool:
+        pass
+
+
+

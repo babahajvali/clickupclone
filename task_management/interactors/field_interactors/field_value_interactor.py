@@ -2,7 +2,7 @@ from task_management.exceptions.custom_exceptions import \
     InvalidFieldValueException
 from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import TaskFieldValueDTO, \
-    UpdateFieldValueDTO
+    UpdateFieldValueDTO, CreateFieldValueDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interface.list_permission_storage_interface import \
@@ -35,6 +35,18 @@ class FieldValueInteractor(ValidationMixin):
                                                task_storage=self.task_storage)
         self.validate_user_has_access_to_list(user_id=user_id, list_id=list_id,
                                               permission_storage=self.permission_storage)
+        task_field_value_data = self.field_value_storage.check_task_field_value(
+            task_id=set_value_data.task_id, field_id=set_value_data.field_id)
+
+        if not task_field_value_data:
+            create_field_value = CreateFieldValueDTO(
+                task_id=set_value_data.task_id,
+                field_id=set_value_data.field_id,
+                value=set_value_data.value,
+                created_by=user_id
+            )
+            return self.field_value_storage.create_bulk_field_values(
+                create_bulk_field_values=[create_field_value])[0]
 
         return self.field_value_storage.set_task_field_value(
             field_value_data=set_value_data)
@@ -57,16 +69,16 @@ class FieldValueInteractor(ValidationMixin):
 
         max_length = config.get("max_length")
         if max_length and len(value) > max_length:
-            raise InvalidFieldValueException(message=
-                                             f"Text exceeds maximum length of {max_length} characters")
+            raise InvalidFieldValueException(
+                message=f"Text exceeds maximum length of {max_length} characters")
 
     @staticmethod
     def _validate_number_field(value, config: dict):
         try:
             numeric_value = float(value)
         except (ValueError, TypeError):
-            raise InvalidFieldValueException(message=
-                                             "Number field value must be a valid number")
+            raise InvalidFieldValueException(
+                message="Number field value must be a valid number")
 
         min_value = config.get("min")
         if min_value is not None and numeric_value < min_value:
@@ -83,5 +95,5 @@ class FieldValueInteractor(ValidationMixin):
         options = config.get("options", [])
 
         if value not in options:
-            raise InvalidFieldValueException(message=
-                                             f"Invalid option. Option must be one of: {', '.join(options)}")
+            raise InvalidFieldValueException(
+                message=f"Invalid option. Option must be one of: {', '.join(options)}")
