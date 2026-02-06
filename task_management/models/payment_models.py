@@ -1,10 +1,7 @@
 # task_management/models/subscription.py
 
 from django.db import models
-from django.contrib.auth import get_user_model
 import uuid
-
-User = get_user_model()
 
 
 class Plan(models.Model):
@@ -41,7 +38,7 @@ class Plan(models.Model):
 class Customer(models.Model):
     customer_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                    editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
+    user = models.OneToOneField("User", on_delete=models.CASCADE,
                                 related_name='stripe_customer')
     stripe_customer_id = models.CharField(max_length=255, unique=True)
     default_payment_method = models.CharField(max_length=255, blank=True,
@@ -68,7 +65,7 @@ class Subscription(models.Model):
 
     subscription_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                        editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey("User", on_delete=models.CASCADE,
                              related_name='subscriptions')
     plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True,
                              related_name='subscriptions')
@@ -98,7 +95,7 @@ class Payment(models.Model):
 
     payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                   editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey("User", on_delete=models.CASCADE,
                              related_name='payments')
     subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL,
                                      null=True, blank=True,

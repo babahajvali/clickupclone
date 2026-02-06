@@ -2,18 +2,27 @@
 
 from task_management.interactors.storage_interface.customer_storage_interface import \
     CustomerStorageInterface
-from task_management.models import Customer
-from task_management.exceptions.custom_exceptions import CustomerNotFoundException
+from task_management.models import Customer, User
 from typing import Optional
 
 
 class CustomerStorage(CustomerStorageInterface):
 
     def create_customer(self, user_id: str, stripe_customer_id: str) -> dict:
-        customer = Customer.objects.create(
-            user_id=user_id,
-            stripe_customer_id=stripe_customer_id
+        print(f"Looking for user_id: {user_id}")
+        user = User.objects.get(user_id=user_id)
+
+        customer, created = Customer.objects.get_or_create(
+            user=user,
+            defaults={'stripe_customer_id': stripe_customer_id}
         )
+
+        if not created:
+            print("Customer already exists, updating stripe_customer_id")
+            customer.stripe_customer_id = stripe_customer_id
+            customer.save()
+
+        print(f"Customer {'created' if created else 'updated'} successfully")
         return self._convert_to_dict(customer)
 
     def get_customer_by_user_id(self, user_id: str) -> Optional[dict]:
