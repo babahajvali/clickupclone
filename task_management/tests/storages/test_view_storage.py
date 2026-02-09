@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.exceptions.enums import ViewType
+from task_management.exceptions.enums import ViewTypes
 from task_management.interactors.dtos import CreateViewDTO, UpdateViewDTO
 from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import (
@@ -62,7 +62,7 @@ class TestViewStorage:
         dto = CreateViewDTO(
             name="Board View",
             description="Kanban board",
-            view_type=ViewType.TABLE,
+            view_type=ViewTypes.TABLE,
             created_by=str(user_id)
         )
         storage = ViewStorage()

@@ -121,7 +121,6 @@ CACHES = {
 }
 
 
-# 1. Email Configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -155,10 +154,6 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# GRAPHENE = {
-#     "SCHEMA": "clickupclone.schema.schema",
-# }
-
 GRAPHENE = {
     'SCHEMA': 'clickupclone.schema.schema',
     'MIDDLEWARE': [
@@ -169,7 +164,6 @@ GRAPHENE = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://y8hh59.csb.app",
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
@@ -191,6 +185,6 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with"
 ]
 
-JWT_SECRET_KEY = SECRET_KEY  # Or use separate secret
+JWT_SECRET_KEY = SECRET_KEY
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24

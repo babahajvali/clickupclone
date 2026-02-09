@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions, ViewType
+from task_management.exceptions.enums import Permissions, ViewTypes
 from task_management.interactors.view_interactors.view_interactors import \
     ViewInteractor
 from task_management.interactors.storage_interface.view_storage_interface import \
@@ -38,7 +38,7 @@ class TestViewInteractor:
     def test_create_view_success(self, snapshot):
         # Arrange
         create_data = CreateViewDTOFactory()
-        create_data.view_type = ViewType.TABLE
+        create_data.view_type = ViewTypes.TABLE
         expected_result = ViewDTOFactory()
 
         self.view_storage.create_view.return_value = expected_result

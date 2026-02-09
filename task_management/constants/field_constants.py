@@ -32,7 +32,7 @@ FIXED_FIELDS = [
         "field_name": "Priority",
         "description": "Priority for complete task",
         "config": {
-            "options": ["Low", "Medium", "High"],
+            "options": ["Low", "Medium", "High","Urgent"],
             "default": "Medium"
         }
     },
@@ -41,7 +41,7 @@ FIXED_FIELDS = [
         "field_name": "Status",
         "description": "Status for complete task",
         "config": {
-            "options": ["Todo", "In Progress", "Done"],
+            "options": ["Todo", "In Progress", "Complete"],
             "default": "Todo"
         }
     }

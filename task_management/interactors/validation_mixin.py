@@ -15,7 +15,7 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     UnsupportedVisibilityTypeException, FieldNotFoundException, \
     UserNotAccountOwnerException
 from task_management.exceptions.enums import Permissions, FieldTypes, \
-    ViewType, Role, Visibility
+    ViewTypes, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -226,7 +226,7 @@ class ValidationMixin:
 
     @staticmethod
     def check_view_type(view_type: str):
-        view_types = ViewType.get_values()
+        view_types = ViewTypes.get_values()
 
         if view_type not in view_types:
             raise ViewTypeNotFoundException(view_type=view_type)
@@ -381,5 +381,5 @@ class ValidationMixin:
         account_data = account_storage.get_account_by_id(
             account_id=account_id)
 
-        if str(account_data.owner_id) != user_id:
+        if str(account_data.owner_id) != str(user_id):
             raise UserNotAccountOwnerException(user_id=user_id)

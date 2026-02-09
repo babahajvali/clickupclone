@@ -47,9 +47,9 @@ class Permissions(Enum):
         return [member.value for member in cls]
 
 
-class ViewType(Enum):
+class ViewTypes(Enum):
     TABLE = "TABLE"
-    CALENDER = "CALENDER"
+    CALENDAR = "CALENDAR"
     BOARD = "BOARD"
     DASHBOARD = "DASHBOARD"
     LIST = "LIST"

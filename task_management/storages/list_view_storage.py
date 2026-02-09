@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 
 from task_management.interactors.dtos import ListViewDTO, RemoveListViewDTO
 from task_management.interactors.storage_interface.list_views_storage_interface import \
@@ -53,3 +54,17 @@ class ListViewStorage(ListViewsStorageInterface):
 
     def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
         return ListView.objects.filter(list_id=list_id,view_id=view_id).exists()
+
+    def get_list_view(self,list_id: str, view_id: str) -> ListViewDTO | None:
+        try:
+            list_view_data = ListView.objects.get(list_id=list_id,view_id=view_id)
+
+            return ListViewDTO(
+                id=list_view_data.pk,
+                list_id=list_view_data.list.list_id,
+                view_id=list_view_data.view.view_id,
+                applied_by=list_view_data.applied_by.user_id,
+                is_active=list_view_data.is_active,
+            )
+        except ObjectDoesNotExist:
+            return None

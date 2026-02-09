@@ -25,6 +25,9 @@ class ListViewInteractor(ValidationMixin):
 
     def apply_view_for_list(self, view_id: str, list_id: str,
                             user_id: str) -> ListViewDTO:
+        list_view_data = self.list_view_storage.get_list_view(list_id=list_id,view_id=view_id)
+        if list_view_data:
+            return list_view_data
         self.validate_user_has_access_to_list(user_id=user_id,
                                               list_id=list_id,
                                               permission_storage=self.permission_storage)
@@ -60,5 +63,5 @@ class ListViewInteractor(ValidationMixin):
         is_exist = self.list_view_storage.is_list_view_exist(list_id=list_id,
                                                              view_id=view_id)
 
-        if not is_exist:
+        if is_exist:
             raise ListViewNotFoundException(view_id=view_id, list_id=list_id)

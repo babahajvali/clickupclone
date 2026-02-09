@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Dict
 
-from task_management.exceptions.enums import ViewType, FieldTypes, \
+from task_management.exceptions.enums import ViewTypes, FieldTypes, \
     Gender, Role, Permissions
 
 
@@ -174,7 +174,7 @@ class ListDTO:
 class CreateViewDTO:
     name: str
     description: str
-    view_type: ViewType
+    view_type: ViewTypes
     created_by: str
 
 
@@ -190,7 +190,7 @@ class ViewDTO:
     view_id: str
     name: str
     description: str
-    view_type: ViewType
+    view_type: ViewTypes
     created_by: str
 
 

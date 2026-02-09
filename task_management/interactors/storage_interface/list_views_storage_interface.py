@@ -24,3 +24,7 @@ class ListViewsStorageInterface(ABC):
     def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
         pass
 
+    @abstractmethod
+    def get_list_view(self,list_id: str, view_id: str) -> ListViewDTO:
+        pass
+
