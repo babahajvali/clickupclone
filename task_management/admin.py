@@ -291,7 +291,7 @@ class CustomerAdmin(admin.ModelAdmin):
     )
 
     def user_link(self, obj):
-        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        url = reverse('admin:auth_user_change', args=[obj.user_id])
         return format_html('<a href="{}">{}</a>', url, obj.user.username)
 
     user_link.short_description = 'User'
@@ -306,7 +306,7 @@ class CustomerAdmin(admin.ModelAdmin):
     def subscription_count(self, obj):
         count = obj.user.subscriptions.count()
         url = reverse(
-            'admin:task_management_subscription_changelist') + f'?user__id__exact={obj.user.id}'
+            'admin:task_management_subscription_changelist') + f'?user__id__exact={obj.user_id}'
         return format_html('<a href="{}">{}</a>', url, count)
 
     subscription_count.short_description = 'Subscriptions'
@@ -380,7 +380,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     subscription_id_short.short_description = 'ID'
 
     def user_link(self, obj):
-        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        url = reverse('admin:auth_user_change', args=[obj.user_id])
         return format_html('<a href="{}">{}</a>', url, obj.user.username)
 
     user_link.short_description = 'User'
@@ -487,7 +487,7 @@ class PaymentAdmin(admin.ModelAdmin):
     payment_id_short.short_description = 'ID'
 
     def user_link(self, obj):
-        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        url = reverse('admin:auth_user_change', args=[obj.user_id])
         return format_html('<a href="{}">{}</a>', url, obj.user.username)
 
     user_link.short_description = 'User'

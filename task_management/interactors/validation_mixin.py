@@ -381,5 +381,5 @@ class ValidationMixin:
         account_data = account_storage.get_account_by_id(
             account_id=account_id)
 
-        if str(account_data.owner_id) != user_id:
+        if str(account_data.owner_id) != str(user_id):
             raise UserNotAccountOwnerException(user_id=user_id)

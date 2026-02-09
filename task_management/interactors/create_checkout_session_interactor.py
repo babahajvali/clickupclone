@@ -1,5 +1,3 @@
-# task_management/interactors/create_checkout_session_interactor.py
-
 import stripe
 from django.conf import settings
 from task_management.interactors.dtos import CreateCheckoutSessionDTO, \
@@ -35,26 +33,21 @@ class CreateCheckoutSessionInteractor:
             user_id=checkout_data.user_id)
 
         if customer:
-            print("Customer already exists")
             stripe_customer_id = customer['stripe_customer_id']
         else:
             # Create new Stripe customer
-            print("Customer does not exist")
-            user = User.objects.get(pk=checkout_data.user_id)
-            print("User does not exist")
+            user = User.objects.get(user_id=checkout_data.user_id)
             stripe_customer = stripe.Customer.create(
                 email=user.email,
                 metadata={'user_id': str(user.user_id)}
             )
             stripe_customer_id = stripe_customer.id
-            print("Customer created")
 
             # Save to database
             self.customer_storage.create_customer(
                 user_id=checkout_data.user_id,
                 stripe_customer_id=stripe_customer_id
             )
-            print("Customer created in db")
 
         # Set default URLs if not provided
         success_url = checkout_data.success_url or settings.STRIPE_SUCCESS_URL

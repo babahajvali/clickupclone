@@ -55,7 +55,7 @@ class SubscriptionQueries(graphene.ObjectType):
     @staticmethod
     def resolve_get_my_payments(root, info):
         """Get current user's payment history"""
-        user_id = info.context.user.pk
+        user_id = info.context.user_id
 
         interactor = GetPaymentHistoryInteractor(
             payment_storage=PaymentStorage()

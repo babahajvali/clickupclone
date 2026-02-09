@@ -22,6 +22,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        db_table = 'task_management_user'
         indexes = [
             models.Index(fields=["is_active", "created_at"]),
         ]

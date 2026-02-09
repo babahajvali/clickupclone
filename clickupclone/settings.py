@@ -196,3 +196,11 @@ JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24
 
 # settings.py
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY =  os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+
+# URLs for redirect after payment
+STRIPE_SUCCESS_URL = os.environ.get('STRIPE_SUCCESS_URL', 'http://localhost:3000/payment/success')
+STRIPE_CANCEL_URL = os.environ.get('STRIPE_CANCEL_URL', 'http://localhost:3000/payment/cancel')
