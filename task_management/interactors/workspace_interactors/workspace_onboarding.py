@@ -56,6 +56,9 @@ class WorkspaceOnboardingHandler:
 
 
     def create_space(self, user_id: str, workspace_id: str):
+        print(
+            f"create_space called with workspace_id: {workspace_id}, user_id: {user_id}")
+
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,
             space_permission_storage=self.space_permission_storage,
@@ -64,8 +67,8 @@ class WorkspaceOnboardingHandler:
         )
 
         space_input_data = CreateSpaceDTO(
-            name="Space",
-            description="Default space",
+            name=f"Space",
+            description=f"Default space",
             created_by=user_id,
             workspace_id=workspace_id,
             is_private=False
@@ -88,8 +91,8 @@ class WorkspaceOnboardingHandler:
         )
 
         list_input_data = CreateListDTO(
-            name="List 1",
-            description="Default list",
+            name=f"List 1",
+            description=f"Default list",
             created_by=user_id,
             space_id=space_id,
             is_private=False,

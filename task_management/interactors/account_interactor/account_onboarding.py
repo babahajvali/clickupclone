@@ -26,6 +26,8 @@ from task_management.interactors.storage_interface.workspace_storage_interface i
     WorkspaceStorageInterface
 from task_management.interactors.workspace_interactors.workspace_interactors import \
     WorkspaceInteractor
+from task_management.interactors.workspace_interactors.workspace_onboarding import \
+    WorkspaceOnboardingHandler
 
 
 class AccountOnboardingHandler:
@@ -56,19 +58,25 @@ class AccountOnboardingHandler:
 
     def create_default_workspace(self, owner_id: str, account_id: str,
                                  name: str):
+        workspace_onboarding = WorkspaceOnboardingHandler(
+            workspace_storage=self.workspace_storage,
+            user_storage=self.user_storage,
+            workspace_member_storage=self.workspace_member_storage,
+            space_storage=self.space_storage,
+            space_permission_storage=self.space_permission_storage,
+            list_storage=self.list_storage,
+            list_permission_storage=self.list_permission_storage,
+            folder_storage=self.folder_storage,
+            folder_permission_storage=self.folder_permission_storage,
+            template_storage=self.template_storage,
+            field_storage=self.field_storage,
+        )
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
             workspace_member_storage=self.workspace_member_storage,
-            space_storage=self.space_storage,
-            space_permission_storage=self.space_permission_storage,
-            folder_storage=self.folder_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            list_storage=self.list_storage,
-            list_permission_storage=self.list_permission_storage,
-            template_storage=self.template_storage,
-            field_storage=self.field_storage
+            workspace_onboarding=workspace_onboarding,
         )
 
         workspace_input_data = CreateWorkspaceDTO(
