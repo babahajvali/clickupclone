@@ -10,10 +10,10 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypes, Permissions
+from task_management.exceptions.enums import FieldTypes, Permissions, Role
 from task_management.interactors.dtos import (
     FieldDTO,
-    UserListPermissionDTO,
+    WorkspaceMemberDTO,
 )
 from task_management.interactors.field_interactors.field_interactors import (
     FieldInteractor
@@ -21,12 +21,15 @@ from task_management.interactors.field_interactors.field_interactors import (
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
 )
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 
 
 @dataclass
@@ -38,11 +41,11 @@ class UpdateFieldDTO:
     is_required: Optional[bool]
 
 
-def make_permission_dto(permission_type: Permissions):
-    return UserListPermissionDTO(
+def make_permission_dto(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        list_id="list_1",
-        permission_type=permission_type.value,
+        workspace_id="workspace_id",
+        role=role,
         user_id="user_1",
         is_active=True,
         added_by="admin_1",
@@ -79,13 +82,14 @@ class TestUpdateFieldInteractor:
             self,
             *,
             template_exists: bool = True,
-            permission: Permissions = Permissions.FULL_EDIT,
+            role: Role = Role.MEMBER,
             name_exists: bool = False,
     ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(ListPermissionStorageInterface)
-        list_storage = create_autospec(ListPermissionStorageInterface)
+        workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        list_storage = create_autospec(ListStorageInterface)
+        space_storage = create_autospec(SpaceStorageInterface)
 
         field_storage.is_field_exists.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
@@ -99,15 +103,16 @@ class TestUpdateFieldInteractor:
         else:
             template_storage.get_template_by_id.return_value = None
 
-        permission_storage.get_user_permission_for_list.return_value = (
-            make_permission_dto(permission)
+        workspace_member_storage.get_workspace_member.return_value = (
+            make_permission_dto(role)
         )
 
         return FieldInteractor(
             field_storage=field_storage,
-            permission_storage=permission_storage,
+            workspace_member_storage=workspace_member_storage,
             template_storage=template_storage,
             list_storage=list_storage,
+            space_storage=space_storage,
         )
 
     @staticmethod
@@ -134,7 +139,7 @@ class TestUpdateFieldInteractor:
 
     def test_update_field_permission_denied(self, snapshot):
         interactor = self._get_interactor(
-            permission=Permissions.VIEW
+            role=Role.GUEST
         )
         dto = self._get_update_dto()
 

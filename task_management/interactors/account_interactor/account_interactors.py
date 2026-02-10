@@ -26,9 +26,10 @@ class AccountInteractor(ValidationMixin):
             account_name=create_account_data.name)
 
         result = self.account_storage.create_account(create_account_data)
-        self.account_onboarding.create_default_workspace(
-            account_id=result.account_id,
-            owner_id=result.owner_id, name=result.name)
+        if self.account_onboarding:
+            self.account_onboarding.create_default_workspace(
+                account_id=result.account_id,
+                owner_id=result.owner_id, name=result.name)
 
         return result
 

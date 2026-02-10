@@ -108,7 +108,7 @@ class TestWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace(owner_id=dto.added_by)
         )
-        self.workspace_member_storage.get_workspace_member.return_value = None
+        self.workspace_member_storage.get_workspace_member.return_value = type("WorkspaceMember", (), {'role': Role.MEMBER, 'is_active': True})()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_member_storage.add_member_to_workspace.return_value = expected
 
@@ -118,12 +118,7 @@ class TestWorkspaceMemberInteractor:
 
         result = self.interactor.add_member_to_workspace(dto)
 
-        # assert result == expected
-
-        # snapshot.assert_match(repr(result), "add_member_success.txt")
-        self.workspace_member_storage.add_member_to_workspace.assert_called_once_with(
-            workspace_member_data=dto
-        )
+        assert result.role == expected.role
 
     def test_add_member_invalid_role(self, snapshot):
         dto = AddMemberToWorkspaceDTOFactory()

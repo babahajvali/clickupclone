@@ -81,6 +81,7 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(result), "apply_view_success.txt")
 
     def test_apply_view_without_permission_raises_exception(self, snapshot):
+        self.list_view_storage.get_list_view.return_value = None
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.VIEW)
         )
@@ -93,6 +94,7 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(exc.value), "apply_permission_denied.txt")
 
     def test_apply_view_for_nonexistent_view_raises_exception(self, snapshot):
+        self.list_view_storage.get_list_view.return_value = None
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT)
         )
@@ -107,6 +109,7 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(exc.value), "apply_view_not_found.txt")
 
     def test_apply_view_for_nonexistent_list_raises_exception(self, snapshot):
+        self.list_view_storage.get_list_view.return_value = None
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT)
         )
@@ -125,6 +128,7 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(exc.value), "apply_list_not_found.txt")
 
     def test_apply_view_for_inactive_list_raises_exception(self, snapshot):
+        self.list_view_storage.get_list_view.return_value = None
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT)
         )

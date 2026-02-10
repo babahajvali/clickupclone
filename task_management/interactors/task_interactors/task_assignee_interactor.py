@@ -3,16 +3,18 @@ from task_management.decorators.caching_decorators import interactor_cache, \
 from task_management.exceptions.custom_exceptions import \
     TaskAssigneeNotFoundException
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import \
     UserStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
@@ -20,13 +22,15 @@ class TaskAssigneeInteractor(ValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  task_assignee_storage: TaskAssigneeStorageInterface,
                  user_storage: UserStorageInterface,
-                 permission_storage: ListPermissionStorageInterface,
-                 list_storage: ListStorageInterface):
+                 workspace_member_storage: WorkspaceMemberStorageInterface,
+                 list_storage: ListStorageInterface,
+                 space_storage: SpaceStorageInterface,):
         self.task_storage = task_storage
         self.task_assignee_storage = task_assignee_storage
         self.user_storage = user_storage
-        self.permission_storage = permission_storage
+        self.workspace_member_storage = workspace_member_storage
         self.list_storage = list_storage
+        self.space_storage = space_storage
 
     @invalidate_interactor_cache(cache_name="list_task_assignees")
     def assign_task_assignee(self, task_id: str, user_id: str,
@@ -41,9 +45,13 @@ class TaskAssigneeInteractor(ValidationMixin):
                                      user_storage=self.user_storage)
         list_id = self.get_active_task_list_id(task_id=task_id,
                                                task_storage=self.task_storage)
-        self.validate_user_has_access_to_list(user_id=assigned_by,
-                                              list_id=list_id,
-                                              permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(
+            list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=assigned_by,
+            workspace_member_storage=self.workspace_member_storage)
 
         return self.task_assignee_storage.assign_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
@@ -55,8 +63,13 @@ class TaskAssigneeInteractor(ValidationMixin):
             assign_id=assign_id)
         list_id = self.get_active_task_list_id(task_id=assignee_data.task_id,
                                                task_storage=self.task_storage)
-        self.validate_user_has_access_to_list(user_id=user_id, list_id=list_id,
-                                              permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(
+            list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id,
+            workspace_member_storage=self.workspace_member_storage)
 
         return self.task_assignee_storage.remove_task_assignee(
             assign_id=assign_id)

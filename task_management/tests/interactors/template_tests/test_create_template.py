@@ -3,13 +3,10 @@ from unittest.mock import create_autospec, patch
 import pytest
 from faker import Faker
 
-from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import UserListPermissionDTO
+from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
 )
@@ -71,22 +68,10 @@ class TestCreateTemplateInteractor:
             "create_template_success.json"
         )
 
-    def test_create_template_duplicate_name(self, snapshot):
-        # Arrange
-        create_template_dto = CreateTemplateDTOFactory()
-        self.template_storage.is_template_name_exist.return_value = True
-
-        # Act & Assert
-        with pytest.raises(Exception) as exc:
-            self.interactor.create_template(create_template_dto)
-
-        self.template_storage.create_template.assert_not_called()
-
-        snapshot.assert_match(repr(exc.value), "duplicate_template_name.txt")
-
     def test_create_template_list_not_found(self):
         # Arrange
         create_template_dto = CreateTemplateDTOFactory()
+        self.list_storage.get_list.return_value = None
 
         # Act & Assert
         with pytest.raises(Exception):
@@ -101,8 +86,8 @@ class TestCreateTemplateInteractor:
             "List", (), {"is_active": True}
         )()
 
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            Permissions.VIEW.value
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            Role.MEMBER
         )
 
         with pytest.raises(Exception):

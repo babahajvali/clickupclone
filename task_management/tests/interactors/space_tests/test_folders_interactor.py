@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions, Visibility
+from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO, \
-    UserFolderPermissionDTO
+    UserFolderPermissionDTO, WorkspaceMemberDTO
 from task_management.interactors.space_interactors.folders_interactor import \
     FolderInteractor
 from task_management.interactors.storage_interface.folder_storage_interface import \
@@ -31,26 +31,16 @@ from task_management.tests.factories.interactor_factory import (
 )
 
 
-def make_permission(permission_type: Permissions):
-    return UserSpacePermissionDTO(
+def make_permission(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        space_id="space_id",
-        permission_type=permission_type,
+        workspace_id="workspace_id1",
+        role=role,
         user_id="user_id",
         is_active=True,
         added_by="admin"
     )
 
-
-def make_folder_permission(permission_type: Permissions):
-    return UserFolderPermissionDTO(
-        id=1,
-        folder_id="folder_id",
-        permission_type=permission_type,
-        user_id="user_id",
-        is_active=True,
-        added_by="admin"
-    )
 
 
 class TestFolderInteractor:
@@ -67,6 +57,7 @@ class TestFolderInteractor:
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             folder_permission_storage=self.folder_permission_storage,
+            workspace_member_storage=self.workspace_member_storage
         )
 
     def test_create_folder_success(self, snapshot):
@@ -74,7 +65,7 @@ class TestFolderInteractor:
         expected = FolderDTOFactory()
 
         self.workspace_member_storage.get_workspace_member.return_value = make_permission(
-            Permissions.FULL_EDIT.value
+            Role.MEMBER
         )
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
@@ -91,8 +82,8 @@ class TestFolderInteractor:
     def test_create_folder_permission_denied(self, snapshot):
         dto = CreateFolderDTOFactory()
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            Permissions.VIEW.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.GUEST
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -106,8 +97,8 @@ class TestFolderInteractor:
     def test_create_folder_inactive_space(self, snapshot):
         dto = CreateFolderDTOFactory()
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": False}
@@ -125,8 +116,8 @@ class TestFolderInteractor:
         dto = UpdateFolderDTOFactory()
         expected = FolderDTOFactory()
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True,
@@ -147,8 +138,8 @@ class TestFolderInteractor:
     def test_update_folder_permission_denied(self, snapshot):
         dto = UpdateFolderDTOFactory()
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.VIEW.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.GUEST
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -162,8 +153,8 @@ class TestFolderInteractor:
     def test_update_folder_not_found(self, snapshot):
         dto = UpdateFolderDTOFactory()
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = None
 
@@ -180,8 +171,8 @@ class TestFolderInteractor:
         user_id = "user_1"
         expected = FolderDTOFactory(is_active=False)
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True}
@@ -199,8 +190,8 @@ class TestFolderInteractor:
         folder_id = "folder_1"
         user_id = "user_1"
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = None
 
@@ -216,8 +207,8 @@ class TestFolderInteractor:
         folder_id = "folder_1"
         user_id = "user_1"
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": False}
@@ -236,8 +227,8 @@ class TestFolderInteractor:
         user_id = "user_1"
         expected = FolderDTOFactory(is_private=True)
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True}
@@ -256,8 +247,8 @@ class TestFolderInteractor:
         folder_id = "folder_1"
         user_id = "user_1"
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = make_folder_permission(
-            Permissions.FULL_EDIT.value
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+            Role.MEMBER
         )
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": False}

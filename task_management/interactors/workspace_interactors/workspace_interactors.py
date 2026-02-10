@@ -50,9 +50,10 @@ class WorkspaceInteractor(ValidationMixin):
         self.workspace_member_storage.add_member_to_workspace(
             create_workspace_member)
 
-        self.workspace_onboarding.create_space(
-            workspace_id=result.workspace_id,
-            user_id=result.user_id)
+        if self.workspace_onboarding:
+            self.workspace_onboarding.create_space(
+                workspace_id=result.workspace_id,
+                user_id=result.user_id)
 
         return result
 
@@ -91,9 +92,10 @@ class WorkspaceInteractor(ValidationMixin):
         result = self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
 
-        self.workspace_onboarding.change_permissions_for_user_in_transfer(
-            workspace_id=workspace_id, user_id=user_id,
-            new_user_id=new_user_id)
+        if self.workspace_onboarding:
+            self.workspace_onboarding.change_permissions_for_user_in_transfer(
+                workspace_id=workspace_id, user_id=user_id,
+                new_user_id=new_user_id)
 
         return result
 

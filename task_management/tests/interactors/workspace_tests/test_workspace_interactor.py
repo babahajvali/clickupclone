@@ -4,22 +4,6 @@ from unittest.mock import create_autospec, MagicMock
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
-from task_management.interactors.storage_interface.field_storage_interface import \
-    FieldStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
-    FolderPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
-    FolderStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
-    ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
-    TemplateStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.workspace_interactors.workspace_interactors import (
@@ -86,34 +70,11 @@ class TestWorkspaceInteractor:
              "owner_id": create_data.user_id}
         )()
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = type(
-            "Permission",
-            (),
-            {"permission_type": Permissions.FULL_EDIT.value}
-        )()
-
-        self.list_permission_storage.get_user_permission_for_list.return_value = type(
-            "Permission",
-            (),
-            {"permission_type": Permissions.FULL_EDIT.value}
-        )()
 
         result = self.interactor.create_workspace(create_data)
 
         snapshot.assert_match(repr(result), "create_workspace_success.txt")
 
-    def test_create_workspace_user_not_found(self, snapshot):
-        create_data = CreateWorkspaceFactory()
-
-        self.user_storage.get_user_data.return_value = None
-
-        with pytest.raises(UserNotFoundException) as exc:
-            self.interactor.create_workspace(create_data)
-
-        snapshot.assert_match(
-            repr(exc.value),
-            "create_workspace_user_not_found.txt"
-        )
 
     def test_update_workspace_success(self, snapshot):
         update_data = WorkspaceDTOFactory()

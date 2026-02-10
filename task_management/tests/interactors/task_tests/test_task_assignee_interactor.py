@@ -1,10 +1,15 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import UserListPermissionDTO
+from task_management.exceptions.enums import Permissions, Role
+from task_management.interactors.dtos import UserListPermissionDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.task_interactors.task_assignee_interactor import (
     TaskAssigneeInteractor
 )
@@ -17,9 +22,6 @@ from task_management.interactors.storage_interface.task_assignee_storage_interfa
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface
 )
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
     TaskNotFoundException,
@@ -30,16 +32,15 @@ from task_management.tests.factories.interactor_factory import (
 )
 
 
-def make_permission(permission_type: Permissions):
-    return UserListPermissionDTO(
+def make_permission(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        list_id="list_id",
-        permission_type=permission_type,
+        workspace_id="workspace_id1",
+        role=role,
         user_id="user_id",
         is_active=True,
         added_by="admin"
     )
-
 
 class TestTaskAssigneeInteractor:
 
@@ -48,16 +49,17 @@ class TestTaskAssigneeInteractor:
         self.task_assignee_storage = create_autospec(
             TaskAssigneeStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.permission_storage = create_autospec(
-            ListPermissionStorageInterface)
+        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.interactor = TaskAssigneeInteractor(
             task_storage=self.task_storage,
             task_assignee_storage=self.task_assignee_storage,
             user_storage=self.user_storage,
-            permission_storage=self.permission_storage,
-            list_storage=self.list_storage
+            workspace_member_storage=self.workspace_member_storage,
+            list_storage=self.list_storage,
+            space_storage=self.space_storage
         )
 
         self.interactor.user_storage = self.user_storage
@@ -84,8 +86,8 @@ class TestTaskAssigneeInteractor:
     def test_assign_task_assignee_success(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.task_assignee_storage.get_user_task_assignee.return_value = None
         task_id = "task123"
@@ -103,8 +105,8 @@ class TestTaskAssigneeInteractor:
     def test_assign_task_assignee_permission_denied(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.VIEW.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.GUEST)
         )
         self.task_assignee_storage.get_user_task_assignee.return_value = None
 
@@ -160,8 +162,9 @@ class TestTaskAssigneeInteractor:
         expected = TaskAssigneeDTOFactory()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_assignee_storage.remove_task_assignee.return_value = expected
-        self.permission_storage.get_user_permission_for_list.return_value = make_permission(
-            Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
+        )
 
         result = self.interactor.remove_task_assignee(
             assign_id="assign123",

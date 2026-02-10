@@ -1,1 +1,1 @@
-ViewDTO(view_id='100df223-ba69-430f-a4c3-234e2c442776', name='accept', description='Be technology beat change check south size.', view_type='list', created_by='1de96668-b07e-46a2-bb42-50a4aaf7b5da')
+ViewDTO(view_id='810cc19b-cdb3-4875-9fa5-95b2241803b1', name='wife', description='Such these customer summer create expert half.', view_type='list', created_by='ba69f30f-a4c3-434e-ac44-27764a65119a')

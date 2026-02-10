@@ -9,21 +9,27 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypes, Permissions
+from task_management.exceptions.enums import FieldTypes, Permissions, Role
 from task_management.interactors.field_interactors.field_interactors import (
     FieldInteractor
 )
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    UserListPermissionDTO
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interface.field_storage_interface import (
     FieldStorageInterface
 )
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
 )
 from task_management.interactors.storage_interface.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 
 
 class InvalidFieldEnum(Enum):
@@ -35,11 +41,11 @@ class DummyTemplate:
         self.list_id = list_id
 
 
-def make_permission_dto(permission_type: Permissions):
-    return UserListPermissionDTO(
+def make_permission_dto(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        list_id="list_1",
-        permission_type=permission_type.value,
+        workspace_id="workspace_id1",
+        role=role,
         user_id="user_1",
         is_active=True,
         added_by="admin_1"
@@ -66,13 +72,14 @@ class TestCreateFieldInteractor:
             self,
             *,
             template_exists=True,
-            permission: Permissions = Permissions.FULL_EDIT,
+            role: Role = Role.MEMBER,
             name_exists=False,
     ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        permission_storage = create_autospec(ListPermissionStorageInterface)
-        list_storage = create_autospec(ListPermissionStorageInterface)
+        workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        list_storage = create_autospec(ListStorageInterface)
+        space_storage = create_autospec(SpaceStorageInterface)
 
         # template mock
         if template_exists:
@@ -85,9 +92,10 @@ class TestCreateFieldInteractor:
             )
         else:
             template_storage.get_template_by_id.return_value = None
+        list_storage.get_list_space_id.return_value = "Space1"
 
-        permission_storage.get_user_permission_for_list.return_value = (
-            make_permission_dto(permission)
+        workspace_member_storage.get_workspace_member.return_value = (
+            make_permission_dto(role)
         )
 
         field_storage.is_field_name_exists.return_value = name_exists
@@ -96,8 +104,9 @@ class TestCreateFieldInteractor:
         return FieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            permission_storage=permission_storage,
-            list_storage=list_storage
+            workspace_member_storage=workspace_member_storage,
+            list_storage=list_storage,
+            space_storage=space_storage
         )
 
     def test_create_field_success(self, snapshot):
@@ -165,7 +174,7 @@ class TestCreateFieldInteractor:
 
     def test_create_field_permission_denied(self, snapshot):
         interactor = self._get_interactor(
-            permission=Permissions.VIEW
+            role=Role.GUEST
         )
 
         dto = CreateFieldDTO(

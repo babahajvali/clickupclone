@@ -1,1 +1,1 @@
-ViewDTO(view_id='42ea2378-2d8e-44e2-80c7-b00af6fc9914', name='chance', description='Remain western war quickly.', view_type='board', created_by='804f6ef7-14e8-4956-8177-ee556968b42c')
+ViewDTO(view_id='2372ba88-e448-45aa-ba88-abf972750e07', name='girl', description='Step us choice develop ground media.', view_type='board', created_by='4ed1d582-026b-4c71-932d-3d4e0c704597')

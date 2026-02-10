@@ -10,12 +10,12 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import TaskAssigneeType
 from task_management.interactors.task_interactors.task_assignee_interactor import \
     TaskAssigneeInteractor
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
 from task_management.storages.list_storage import ListStorage
+from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_assignee_storage import TaskAssigneeStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.user_storage import UserStorage
+from task_management.storages.workspace_member import WorkspaceMemberStorage
 
 
 class RemoveTaskAssigneeMutation(graphene.Mutation):
@@ -28,16 +28,18 @@ class RemoveTaskAssigneeMutation(graphene.Mutation):
     def mutate(root, info, params):
         user_storage = UserStorage()
         task_storage = TaskStorage()
-        list_permission_storage = ListPermissionStorage()
+        workspace_member_storage = WorkspaceMemberStorage()
         task_assignee_storage = TaskAssigneeStorage()
         list_storage = ListStorage()
+        space_storage = SpaceStorage()
 
         interactor = TaskAssigneeInteractor(
             user_storage=user_storage,
             task_storage=task_storage,
-            permission_storage=list_permission_storage,
+            workspace_member_storage=workspace_member_storage,
             task_assignee_storage=task_assignee_storage,
             list_storage=list_storage,
+            space_storage=space_storage,
         )
 
         try:

@@ -1,8 +1,9 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions, Visibility
-from task_management.interactors.dtos import UserListPermissionDTO
+from task_management.exceptions.enums import Permissions, Visibility, Role
+from task_management.interactors.dtos import UserListPermissionDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
 from task_management.interactors.storage_interface.field_storage_interface import \
@@ -30,11 +31,11 @@ from task_management.interactors.storage_interface.workspace_member_storage_inte
     WorkspaceMemberStorageInterface
 
 
-def make_permission(permission_type: Permissions):
-    return UserListPermissionDTO(
+def make_permission(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        list_id="list_id",
-        permission_type=permission_type,
+        workspace_id="workspace_id1",
+        role=role,
         user_id="user_id",
         is_active=True,
         added_by="admin"
@@ -66,8 +67,8 @@ class TestSetListPrivate:
         )
 
     def test_set_list_private_success(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
@@ -81,8 +82,8 @@ class TestSetListPrivate:
             "list_1")
 
     def test_permission_denied(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.VIEW.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.GUEST)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -92,8 +93,8 @@ class TestSetListPrivate:
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     def test_list_not_found(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.interactor.list_storage.get_list.return_value = None
 
@@ -104,8 +105,8 @@ class TestSetListPrivate:
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
     def test_list_inactive(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.interactor.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}

@@ -1,17 +1,18 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import UserListPermissionDTO
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import WorkspaceMemberDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.task_field_values_storage_interface import \
     FieldValueStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.task_interactors.task_interactor import \
     TaskInteractor
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
 )
@@ -31,15 +32,16 @@ from task_management.tests.factories.interactor_factory import (
 )
 
 
-def make_permission(permission_type: Permissions):
-    return UserListPermissionDTO(
+def make_permission(role: Role):
+    return WorkspaceMemberDTO(
         id=1,
-        list_id="list_id",
-        permission_type=permission_type,
+        workspace_id="workspace_id1",
+        role=role,
         user_id="user_id",
         is_active=True,
         added_by="admin"
     )
+
 
 
 class TestCreateTaskInteractor:
@@ -47,17 +49,18 @@ class TestCreateTaskInteractor:
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
-        self.permission_storage = create_autospec(
-            ListPermissionStorageInterface)
+        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
         self.field_value_storage = create_autospec(FieldValueStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.interactor = TaskInteractor(
             task_storage=self.task_storage,
             list_storage=self.list_storage,
-            permission_storage=self.permission_storage,
+            workspace_member_storage=self.workspace_member_storage,
             field_storage=self.field_storage,
-            field_value_storage=self.field_value_storage
+            field_value_storage=self.field_value_storage,
+            space_storage=self.space_storage
         )
 
     def test_create_task_success(self, snapshot):
@@ -66,8 +69,8 @@ class TestCreateTaskInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.task_storage.create_task.return_value = TaskDTOFactory()
 
@@ -84,8 +87,8 @@ class TestCreateTaskInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.VIEW)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.GUEST)
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -131,8 +134,8 @@ class TestCreateTaskInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.FULL_EDIT.value)
+        self.workspace_member_storage.get_workspace_member.return_value = (
+            make_permission(Role.MEMBER)
         )
         self.task_storage.update_task.return_value = TaskDTOFactory()
 
