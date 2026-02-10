@@ -13,7 +13,7 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     InactiveWorkspaceMemberException, AccountNotFoundException, \
     InactiveAccountException, UnexpectedRoleException, \
     UnsupportedVisibilityTypeException, FieldNotFoundException, \
-    UserNotAccountOwnerException
+    UserNotAccountOwnerException, UnexpectedPermissionException
 from task_management.exceptions.enums import Permissions, FieldTypes, \
     ViewTypes, Role, Visibility
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -278,24 +278,9 @@ class ValidationMixin:
             raise UserNotWorkspaceOwnerException(user_id=user_id)
 
     @staticmethod
-    def validate_user_can_modify_workspace(
-            user_id: str,
-            workspace_id: str,
-            workspace_storage: WorkspaceStorageInterface,
-            workspace_member_storage: WorkspaceMemberStorageInterface
-    ):
-        workspace_data = workspace_storage.get_workspace(
-            workspace_id=workspace_id
-        )
-
-        if not workspace_data:
-            raise WorkspaceNotFoundException(workspace_id=workspace_id)
-
-        if not workspace_data.is_active:
-            raise InactiveWorkspaceException(workspace_id=workspace_id)
-
-        if str(workspace_data.user_id) == str(user_id):
-            return
+    def validate_user_has_access_to_workspace(
+            user_id: str, workspace_id: str,
+            workspace_member_storage: WorkspaceMemberStorageInterface):
 
         member_permission = workspace_member_storage.get_workspace_member(
             workspace_id=workspace_id,
@@ -367,6 +352,12 @@ class ValidationMixin:
         existed_roles = Role.get_values()
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)
+
+    @staticmethod
+    def validate_permission(permission: str):
+        existed_permissions = Permissions.get_values()
+        if permission not in existed_permissions:
+            raise UnexpectedPermissionException(permission=permission)
 
     @staticmethod
     def validate_field(field_id: str, field_storage: FieldStorageInterface):

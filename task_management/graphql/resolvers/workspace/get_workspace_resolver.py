@@ -27,29 +27,14 @@ def get_workspace_resolver(root, info, params):
     user_storage = UserStorage()
     account_storage = AccountStorage()
     workspace_member_storage = WorkspaceMemberStorage()
-    space_storage = SpaceStorage()
-    space_permission_storage = SpacePermissionStorage()
-    folder_storage = FolderStorage()
-    folder_permission_storage = FolderPermissionStorage()
-    list_storage = ListStorage()
-    list_permission_storage = ListPermissionStorage()
-    template_storage = TemplateStorage()
-    field_storage = FieldStorage()
 
     interactor = WorkspaceInteractor(
         workspace_storage=workspace_storage,
         user_storage=user_storage,
         account_storage=account_storage,
         workspace_member_storage=workspace_member_storage,
-        space_storage=space_storage,
-        space_permission_storage=space_permission_storage,
-        list_storage=list_storage,
-        list_permission_storage=list_permission_storage,
-        folder_storage=folder_storage,
-        folder_permission_storage=folder_permission_storage,
-        template_storage=template_storage,
-        field_storage=field_storage,
     )
+
 
     try:
         workspace_data = interactor.get_workspace(workspace_id=workspace_id)

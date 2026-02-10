@@ -13,9 +13,13 @@ from task_management.interactors.storage_interface.list_permission_storage_inter
 from task_management.interactors.storage_interface.list_storage_interface import (
     ListStorageInterface
 )
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import (
     TemplateStorageInterface
 )
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.template_interactors.create_template_interactor import (
     CreateTemplateInteractor
 )
@@ -31,16 +35,18 @@ class TestCreateTemplateInteractor:
 
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.permission_storage = create_autospec(
-            ListPermissionStorageInterface)
+        self.workspace_member_storage = create_autospec(
+            WorkspaceMemberStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.interactor = CreateTemplateInteractor(
             field_storage=self.field_storage,
-            permission_storage=self.permission_storage,
+            workspace_member_storage=self.workspace_member_storage,
             template_storage=self.template_storage,
-            list_storage=self.list_storage
+            list_storage=self.list_storage,
+            space_storage=self.space_storage,
         )
 
     def test_create_template_success(self, snapshot):
@@ -55,15 +61,6 @@ class TestCreateTemplateInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
-
-        self.permission_storage.get_user_permission_for_list.return_value = UserListPermissionDTO(
-            id=1,
-            list_id="list_id",
-            permission_type=Permissions.FULL_EDIT.value,
-            user_id="user_id",
-            is_active=True,
-            added_by="admin"
-        )
 
         self.template_storage.create_template.return_value = template_dto
 

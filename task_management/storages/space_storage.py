@@ -130,3 +130,6 @@ class SpaceStorage(SpaceStorageInterface):
         space.save()
 
         return self._to_dto(space)
+
+    def get_space_workspace_id(self,space_id: str) -> str:
+        return Space.objects.filter(space_id=space_id).values_list('workspace_id', flat=True)[0]

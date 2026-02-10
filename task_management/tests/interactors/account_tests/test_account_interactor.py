@@ -7,22 +7,6 @@ from task_management.interactors.account_interactor.account_interactors import (
 from task_management.interactors.storage_interface.account_storage_interface import (
     AccountStorageInterface
 )
-from task_management.interactors.storage_interface.field_storage_interface import \
-    FieldStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
-    FolderPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
-    FolderStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
-    ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
-    TemplateStorageInterface
 from task_management.interactors.storage_interface.user_storage_interface import (
     UserStorageInterface
 )
@@ -30,10 +14,7 @@ from task_management.interactors.storage_interface.user_storage_interface import
 from task_management.exceptions.custom_exceptions import (
     AccountNameAlreadyExistsException, UserNotAccountOwnerException
 )
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
-from task_management.interactors.storage_interface.workspace_storage_interface import \
-    WorkspaceStorageInterface
+
 from task_management.tests.factories.interactor_factory import (
     CreateAccountFactory,
     AccountDTOFactory
@@ -45,30 +26,10 @@ class TestAccountInteractor:
     def setup_method(self):
         self.account_storage = create_autospec(AccountStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
-        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
-        self.space_permission_storage = create_autospec(SpacePermissionStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.folder_permission_storage = create_autospec(FolderPermissionStorageInterface)
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.list_permission_storage = create_autospec(ListPermissionStorageInterface)
-        self.template_storage = create_autospec(TemplateStorageInterface)
-        self.field_storage = create_autospec(FieldStorageInterface)
 
         self.interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
-            workspace_storage=self.workspace_storage,
-            workspace_member_storage=self.workspace_member_storage,
-            space_storage=self.space_storage,
-            space_permission_storage=self.space_permission_storage,
-            folder_storage=self.folder_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            list_storage=self.list_storage,
-            list_permission_storage=self.list_permission_storage,
-            template_storage=self.template_storage,
-            field_storage=self.field_storage,
         )
 
     def _mock_active_user(self):
@@ -89,7 +50,6 @@ class TestAccountInteractor:
 
         self.account_storage.validate_account_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
-        # self.account_member_storage.validate_account_name_exists.return_value = True
         self.interactor._create_workspace = Mock()
 
         result = self.interactor.create_account(create_data)

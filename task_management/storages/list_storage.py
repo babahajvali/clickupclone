@@ -188,3 +188,7 @@ class ListStorage(ListStorageInterface):
     def get_space_lists_count(self, space_id: str) -> int:
         return List.objects.filter(
             space_id=space_id, folder__isnull=True, is_active=True).count()
+
+    def get_list_space_id(self, list_id: str) -> str:
+        return List.objects.filter(list_id=list_id).values_list('space_id',
+                                                                flat=True)[0]

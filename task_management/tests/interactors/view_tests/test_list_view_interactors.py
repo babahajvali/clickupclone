@@ -69,6 +69,7 @@ class TestListViewInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
+        self.list_view_storage.get_list_view.return_value = None
 
         expected = ListViewDTOFactory()
         self.list_view_storage.apply_view_for_list.return_value = expected

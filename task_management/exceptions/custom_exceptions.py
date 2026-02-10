@@ -162,6 +162,10 @@ class UnexpectedRoleException(Exception):
         self.role = role
 
 
+class UnexpectedPermissionException(Exception):
+    def __init__(self, permission: str):
+        self.permission = permission
+
 class EmailNotFoundException(Exception):
     def __init__(self, email: str):
         self.email = email

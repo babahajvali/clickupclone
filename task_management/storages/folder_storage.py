@@ -119,3 +119,6 @@ class FolderStorage(FolderStorageInterface):
 
     def get_space_folder_count(self, space_id: str) -> int:
         return Folder.objects.filter(space_id=space_id, is_active=True).count()
+
+    def get_folder_space_id(self,folder_id: str) -> str:
+        return Folder.objects.filter(folder_id=folder_id).values_list('space_id', flat=True)[0]

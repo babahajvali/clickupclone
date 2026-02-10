@@ -63,3 +63,8 @@ class ListStorageInterface(ABC):
     @abstractmethod
     def get_space_lists_count(self, space_id: str) -> int:
         pass
+
+
+    @abstractmethod
+    def get_list_space_id(self, list_id: str) -> str:
+        pass

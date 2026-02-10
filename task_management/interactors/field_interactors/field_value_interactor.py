@@ -5,12 +5,16 @@ from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
+from task_management.interactors.storage_interface.list_storage_interface import \
+    ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.task_field_values_storage_interface import \
     FieldValueStorageInterface
 from task_management.interactors.storage_interface.task_storage_interface import \
     TaskStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
@@ -19,11 +23,15 @@ class FieldValueInteractor(ValidationMixin):
     def __init__(self, field_value_storage: FieldValueStorageInterface,
                  field_storage: FieldStorageInterface,
                  task_storage: TaskStorageInterface,
-                 permission_storage: ListPermissionStorageInterface):
+                 workspace_member_storage: WorkspaceMemberStorageInterface,
+                 space_storage: SpaceStorageInterface,
+                 list_storage: ListStorageInterface,):
         self.field_value_storage = field_value_storage
         self.field_storage = field_storage
         self.task_storage = task_storage
-        self.permission_storage = permission_storage
+        self.workspace_member_storage = workspace_member_storage
+        self.space_storage = space_storage
+        self.list_storage = list_storage
 
     def set_task_field_value(self, set_value_data: UpdateFieldValueDTO,
                              user_id: str) -> TaskFieldValueDTO:
@@ -33,8 +41,12 @@ class FieldValueInteractor(ValidationMixin):
                                    value=set_value_data.value)
         list_id = self.get_active_task_list_id(task_id=set_value_data.task_id,
                                                task_storage=self.task_storage)
-        self.validate_user_has_access_to_list(user_id=user_id, list_id=list_id,
-                                              permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id,
+            workspace_member_storage=self.workspace_member_storage)
         task_field_value_data = self.field_value_storage.check_task_field_value(
             task_id=set_value_data.task_id, field_id=set_value_data.field_id)
 

@@ -31,6 +31,8 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.tests.factories.interactor_factory import \
     CreateListDTOFactory
 
@@ -72,16 +74,16 @@ class TestCreateList:
             SpacePermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
+        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             list_permission_storage=self.list_permission_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            space_permission_storage=self.space_permission_storage,
             template_storage=self.template_storage,
-            field_storage=self.field_storage
+            field_storage=self.field_storage,
+            workspace_member_storage=self.workspace_member_storage,
         )
 
     @patch(

@@ -22,6 +22,7 @@ from task_management.storages.folder_permission_storage import \
     FolderPermissionStorage
 from task_management.storages.space_permission_storage import \
     SpacePermissionStorage
+from task_management.storages.workspace_member import WorkspaceMemberStorage
 
 
 class SetListVisibilityMutation(graphene.Mutation):
@@ -38,8 +39,7 @@ class SetListVisibilityMutation(graphene.Mutation):
         folder_storage = FolderStorage()
         space_storage = SpaceStorage()
         list_permission_storage = ListPermissionStorage()
-        folder_permission_storage = FolderPermissionStorage()
-        space_permission_storage = SpacePermissionStorage()
+        workspace_member_storage = WorkspaceMemberStorage()
 
         interactor = ListInteractor(
             list_storage=list_storage,
@@ -48,8 +48,7 @@ class SetListVisibilityMutation(graphene.Mutation):
             folder_storage=folder_storage,
             space_storage=space_storage,
             list_permission_storage=list_permission_storage,
-            folder_permission_storage=folder_permission_storage,
-            space_permission_storage=space_permission_storage
+            workspace_member_storage=workspace_member_storage
         )
 
         try:

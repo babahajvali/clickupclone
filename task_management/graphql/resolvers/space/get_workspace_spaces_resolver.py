@@ -6,7 +6,6 @@ from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
 
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_permission_storage import SpacePermissionStorage
 from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
@@ -16,15 +15,13 @@ def get_workspace_spaces_resolver(root, info, params):
     workspace_id = params.workspace_id
 
     space_storage = SpaceStorage()
-    list_storage = ListStorage()
     permission_storage = SpacePermissionStorage()
     workspace_storage = WorkspaceStorage()
     workspace_member_storage = WorkspaceMemberStorage()
 
     interactor = SpaceInteractor(
         space_storage=space_storage,
-        list_storage=list_storage,
-        permission_storage=permission_storage,
+        space_permission_storage=permission_storage,
         workspace_storage=workspace_storage,
         workspace_member_storage=workspace_member_storage
     )

@@ -15,6 +15,7 @@ from task_management.storages.folder_permission_storage import \
 from task_management.storages.space_permission_storage import \
     SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
+from task_management.storages.workspace_member import WorkspaceMemberStorage
 
 
 class DeleteFolderMutation(graphene.Mutation):
@@ -27,13 +28,13 @@ class DeleteFolderMutation(graphene.Mutation):
     def mutate(root, info, params):
         folder_storage = FolderStorage()
         folder_permission_storage = FolderPermissionStorage()
-        space_permission_storage = SpacePermissionStorage()
         space_storage = SpaceStorage()
+        workspace_member_storage = WorkspaceMemberStorage()
 
         interactor = FolderInteractor(
             folder_storage=folder_storage,
             folder_permission_storage=folder_permission_storage,
-            space_permission_storage=space_permission_storage,
+            workspace_member_storage=workspace_member_storage,
             space_storage=space_storage
         )
 

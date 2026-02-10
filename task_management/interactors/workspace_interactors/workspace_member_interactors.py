@@ -66,10 +66,9 @@ class WorkspaceMemberInteractor(ValidationMixin):
             user_storage=self.user_storage)
         self.validate_role(role=workspace_member_data.role.value)
 
-        self.validate_user_can_modify_workspace(
+        self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id,
-            workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
 
         workspace_member = self.workspace_member_storage.add_member_to_workspace(
@@ -92,10 +91,9 @@ class WorkspaceMemberInteractor(ValidationMixin):
             workspace_member_storage=self.workspace_member_storage)
         workspace_member_data = self.workspace_member_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
-        self.validate_user_can_modify_workspace(
+        self.validate_user_has_access_to_workspace(
             user_id=removed_by,
             workspace_id=workspace_member_data.workspace_id,
-            workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage)
 
         workspace_member = self.workspace_member_storage.remove_member_from_workspace(

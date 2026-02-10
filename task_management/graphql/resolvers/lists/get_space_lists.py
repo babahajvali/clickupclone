@@ -12,6 +12,7 @@ from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.list_permission_storage import ListPermissionStorage
 from task_management.storages.folder_permission_storage import FolderPermissionStorage
 from task_management.storages.space_permission_storage import SpacePermissionStorage
+from task_management.storages.workspace_member import WorkspaceMemberStorage
 
 
 def get_space_lists_resolver(root, info, params):
@@ -23,8 +24,7 @@ def get_space_lists_resolver(root, info, params):
     folder_storage = FolderStorage()
     space_storage = SpaceStorage()
     list_permission_storage = ListPermissionStorage()
-    folder_permission_storage = FolderPermissionStorage()
-    space_permission_storage = SpacePermissionStorage()
+    workspace_member_storage = WorkspaceMemberStorage()
 
     interactor = ListInteractor(
         list_storage=list_storage,
@@ -33,8 +33,7 @@ def get_space_lists_resolver(root, info, params):
         folder_storage=folder_storage,
         space_storage=space_storage,
         list_permission_storage=list_permission_storage,
-        folder_permission_storage=folder_permission_storage,
-        space_permission_storage=space_permission_storage
+        workspace_member_storage=workspace_member_storage
     )
 
     try:

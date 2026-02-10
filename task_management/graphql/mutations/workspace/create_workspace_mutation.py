@@ -13,6 +13,8 @@ from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.workspace_interactors.workspace_interactors import \
     WorkspaceInteractor
+from task_management.interactors.workspace_interactors.workspace_onboarding import \
+    WorkspaceOnboardingHandler
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
     FolderPermissionStorage
@@ -52,10 +54,9 @@ class CreateWorkspaceMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 
-        interactor = WorkspaceInteractor(
+        workspace_onboarding = WorkspaceOnboardingHandler(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
-            account_storage=account_storage,
             workspace_member_storage=workspace_member_storage,
             space_storage=space_storage,
             space_permission_storage=space_permission_storage,
@@ -65,6 +66,14 @@ class CreateWorkspaceMutation(graphene.Mutation):
             folder_permission_storage=folder_permission_storage,
             template_storage=template_storage,
             field_storage=field_storage,
+        )
+
+        interactor = WorkspaceInteractor(
+            workspace_storage=workspace_storage,
+            user_storage=user_storage,
+            account_storage=account_storage,
+            workspace_member_storage=workspace_member_storage,
+            workspace_onboarding=workspace_onboarding,
         )
 
         try:

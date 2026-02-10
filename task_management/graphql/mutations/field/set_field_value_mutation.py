@@ -12,9 +12,10 @@ from task_management.interactors.field_interactors.field_value_interactor import
     FieldValueInteractor
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.field_value_storage import FieldValueStorage
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
+from task_management.storages.list_storage import ListStorage
+from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_storage import TaskStorage
+from task_management.storages.workspace_member import WorkspaceMemberStorage
 
 
 class SetFieldValueMutation(graphene.Mutation):
@@ -27,14 +28,18 @@ class SetFieldValueMutation(graphene.Mutation):
     def mutate(root, info, params):
         field_storage = FieldStorage()
         field_value_storage = FieldValueStorage()
-        permission_storage = ListPermissionStorage()
         task_storage = TaskStorage()
+        workspace_member_storage = WorkspaceMemberStorage()
+        space_storage = SpaceStorage()
+        list_storage = ListStorage()
 
         interactor = FieldValueInteractor(
             field_storage=field_storage,
-            permission_storage=permission_storage,
             field_value_storage=field_value_storage,
             task_storage=task_storage,
+            workspace_member_storage=workspace_member_storage,
+            space_storage=space_storage,
+            list_storage=list_storage,
         )
 
         update_data = UpdateFieldValueDTO(

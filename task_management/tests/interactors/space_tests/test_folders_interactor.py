@@ -22,6 +22,8 @@ from task_management.exceptions.custom_exceptions import (
     FolderNotFoundException,
     InactiveFolderException,
 )
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.tests.factories.interactor_factory import (
     CreateFolderDTOFactory,
     UpdateFolderDTOFactory,
@@ -56,15 +58,14 @@ class TestFolderInteractor:
     def setup_method(self):
         self.folder_storage = create_autospec(FolderStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
-        self.space_permission_storage = create_autospec(
-            SpacePermissionStorageInterface)
+        self.workspace_member_storage = create_autospec(
+            WorkspaceMemberStorageInterface)
         self.folder_permission_storage = create_autospec(
             FolderPermissionStorageInterface)
 
         self.interactor = FolderInteractor(
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
-            space_permission_storage=self.space_permission_storage,
             folder_permission_storage=self.folder_permission_storage,
         )
 
@@ -72,7 +73,7 @@ class TestFolderInteractor:
         dto = CreateFolderDTOFactory()
         expected = FolderDTOFactory()
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = make_permission(
+        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
             Permissions.FULL_EDIT.value
         )
         self.space_storage.get_space.return_value = type(

@@ -7,10 +7,6 @@ from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
 from task_management.interactors.storage_interface.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
-    FolderStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
-    ListStorageInterface
 from task_management.interactors.storage_interface.space_permission_storage_interface import \
     SpacePermissionStorageInterface
 from task_management.interactors.storage_interface.workspace_storage_interface import \
@@ -44,7 +40,6 @@ class TestSpaceInteractor:
 
     def setup_method(self):
         self.space_storage = create_autospec(SpaceStorageInterface)
-        self.list_storage = create_autospec(ListStorageInterface)
         self.permission_storage = create_autospec(
             SpacePermissionStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
@@ -53,8 +48,7 @@ class TestSpaceInteractor:
 
         self.interactor = SpaceInteractor(
             space_storage=self.space_storage,
-            list_storage=self.list_storage,
-            permission_storage=self.permission_storage,
+            space_permission_storage=self.permission_storage,
             workspace_storage=self.workspace_storage,
             workspace_member_storage=self.workspace_member_storage
         )

@@ -6,6 +6,8 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import CreateAccountInputParams
 from task_management.graphql.types.response_types import CreateAccountResponse
 from task_management.graphql.types.types import AccountType
+from task_management.interactors.account_interactor.account_onboarding import \
+    AccountOnboardingHandler
 from task_management.interactors.account_interactor.account_interactors import \
     AccountInteractor
 from task_management.interactors.dtos import CreateAccountDTO
@@ -52,19 +54,25 @@ class CreateAccountMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 
-        interactor = AccountInteractor(
+        account_onboarding = AccountOnboardingHandler(
+            workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
-            workspace_storage=workspace_storage,
             workspace_member_storage=workspace_member_storage,
             space_storage=space_storage,
             space_permission_storage=space_permission_storage,
-            folder_permission_storage=folder_permission_storage,
-            folder_storage=folder_storage,
             list_storage=list_storage,
             list_permission_storage=list_permission_storage,
             template_storage=template_storage,
-            field_storage=field_storage)
+            field_storage=field_storage,
+            folder_storage=folder_storage,
+            folder_permission_storage=folder_permission_storage
+        )
+
+        interactor = AccountInteractor(
+            user_storage=user_storage,
+            account_storage=account_storage,
+            account_onboarding=account_onboarding)
 
         try:
             create_account_dto = CreateAccountDTO(name=name,

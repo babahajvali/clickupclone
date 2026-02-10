@@ -45,3 +45,7 @@ class SpaceStorageInterface(ABC):
         # get the space order and provided order to reorder spaces
         pass
 
+    @abstractmethod
+    def get_space_workspace_id(self,space_id: str) -> str:
+        pass
+

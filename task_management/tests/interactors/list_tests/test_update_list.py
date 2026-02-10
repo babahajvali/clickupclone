@@ -25,6 +25,8 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.tests.factories.interactor_factory import \
     UpdateListDTOFactory
 
@@ -45,26 +47,23 @@ class TestUpdateList:
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.list_permission_storage = create_autospec(
             ListPermissionStorageInterface)
-        self.folder_permission_storage = create_autospec(
-            FolderPermissionStorageInterface)
-        self.space_permission_storage = create_autospec(
-            SpacePermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
+        self.workspace_member_storage = create_autospec(
+            WorkspaceMemberStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             list_permission_storage=self.list_permission_storage,
-            folder_permission_storage=self.folder_permission_storage,
-            space_permission_storage=self.space_permission_storage,
             template_storage=self.template_storage,
-            field_storage=self.field_storage
+            field_storage=self.field_storage,
+            workspace_member_storage=self.workspace_member_storage,
         )
 
     def test_update_list_success(self, snapshot):

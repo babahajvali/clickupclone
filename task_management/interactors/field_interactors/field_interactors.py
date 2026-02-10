@@ -5,12 +5,14 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 from task_management.interactors.storage_interface.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
-    ListPermissionStorageInterface
 from task_management.interactors.storage_interface.list_storage_interface import \
     ListStorageInterface
+from task_management.interactors.storage_interface.space_storage_interface import \
+    SpaceStorageInterface
 from task_management.interactors.storage_interface.template_storage_interface import \
     TemplateStorageInterface
+from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+    WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
@@ -20,21 +22,26 @@ class FieldInteractor(ValidationMixin):
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 permission_storage: ListPermissionStorageInterface,
-                 list_storage: ListStorageInterface):
+                 workspace_member_storage: WorkspaceMemberStorageInterface,
+                 list_storage: ListStorageInterface,
+                 space_storage: SpaceStorageInterface):
         self.field_storage = field_storage
         self.template_storage = template_storage
-        self.permission_storage = permission_storage
+        self.workspace_member_storage = workspace_member_storage
         self.list_storage = list_storage
+        self.space_storage = space_storage
 
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
         list_id = self.get_template_list_id(
             template_id=create_field_data.template_id,
             template_storage=self.template_storage)
-        self.validate_user_has_access_to_list(
-            user_id=create_field_data.created_by, list_id=list_id,
-            permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=create_field_data.created_by,
+            workspace_member_storage=self.workspace_member_storage)
         self.validate_field_type(field_type=create_field_data.field_type.value)
         self.validate_field_name_not_exists(
             field_name=create_field_data.field_name,
@@ -62,9 +69,12 @@ class FieldInteractor(ValidationMixin):
         list_id = self.get_template_list_id(
             template_id=field_data.template_id,
             template_storage=self.template_storage)
-        self.validate_user_has_access_to_list(
-            user_id=user_id, list_id=list_id,
-            permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id,
+            workspace_member_storage=self.workspace_member_storage)
         self.validate_field_name_except_current(
             field_id=update_field_data.field_id,
             field_name=update_field_data.field_name,
@@ -82,9 +92,12 @@ class FieldInteractor(ValidationMixin):
         self._validate_field_order(template_id=template_id, order=new_order)
         list_id = self.get_template_list_id(template_id=template_id,
                                             template_storage=self.template_storage)
-        self.validate_user_has_access_to_list(
-            list_id=list_id, user_id=user_id,
-            permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id,
+            workspace_member_storage=self.workspace_member_storage)
         self.validate_field(field_id=field_id,
                             field_storage=self.field_storage)
 
@@ -100,9 +113,12 @@ class FieldInteractor(ValidationMixin):
         list_id = self.get_template_list_id(
             template_id=field_data.template_id,
             template_storage=self.template_storage)
-        self.validate_user_has_access_to_list(
-            user_id=user_id, list_id=list_id,
-            permission_storage=self.permission_storage)
+        space_id = self.list_storage.get_list_space_id(list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id,
+            workspace_member_storage=self.workspace_member_storage)
 
         return self.field_storage.delete_field(field_id=field_id)
 
