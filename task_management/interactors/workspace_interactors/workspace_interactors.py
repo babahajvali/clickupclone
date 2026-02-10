@@ -50,15 +50,10 @@ class WorkspaceInteractor(ValidationMixin):
         self.workspace_member_storage.add_member_to_workspace(
             create_workspace_member)
 
-        print(
-            f"workspace_onboarding exists: {self.workspace_onboarding is not None}")
-
         if self.workspace_onboarding is not None:
-            print(f"Creating space for workspace: {result.workspace_id}")
             self.workspace_onboarding.create_space(
                 workspace_id=result.workspace_id,
                 user_id=result.user_id)
-            print("Space created successfully")
 
         return result
 

@@ -56,8 +56,6 @@ class WorkspaceOnboardingHandler:
 
 
     def create_space(self, user_id: str, workspace_id: str):
-        print(
-            f"create_space called with workspace_id: {workspace_id}, user_id: {user_id}")
 
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,

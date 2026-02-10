@@ -40,9 +40,19 @@ class FolderInteractor(ValidationMixin):
             workspace_member_storage=self.workspace_member_storage)
 
         result = self.folder_storage.create_folder(create_folder_data)
-        self._add_users_in_folder_permission(folder_id=result.folder_id,
-                                             workspace_id=workspace_id,
-                                             created_by=result.created_by)
+        if create_folder_data.is_private:
+            self._add_users_in_folder_permission(folder_id=result.folder_id,
+                                                 workspace_id=workspace_id,
+                                                 created_by=result.created_by)
+        else:
+            user_permission = CreateUserFolderPermissionDTO(
+                folder_id=result.folder_id,
+                user_id=result.created_by,
+                permission_type=Permissions.FULL_EDIT,
+                added_by=result.created_by,
+            )
+            self.folder_permission_storage.create_folder_users_permissions(
+                users_permission_data=[user_permission])
         return result
 
     @invalidate_interactor_cache(cache_name="folders")
@@ -72,7 +82,8 @@ class FolderInteractor(ValidationMixin):
                        order: int) -> FolderDTO:
         self.validate_folder_is_active(folder_id=folder_id,
                                        folder_storage=self.folder_storage)
-        workspace_id = self.space_storage.get_space_workspace_id(space_id=space_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
         self.validate_user_has_access_to_workspace(
             user_id=user_id,
             workspace_id=workspace_id,
@@ -147,13 +158,13 @@ class FolderInteractor(ValidationMixin):
                                        permission_data: CreateUserFolderPermissionDTO):
         self.validate_folder_is_active(folder_id=permission_data.folder_id,
                                        folder_storage=self.folder_storage)
-        folder_data = self.folder_storage.get_folder(
+        space_id = self.folder_storage.get_folder_space_id(
             folder_id=permission_data.folder_id)
-        space_data = self.space_storage.get_space(
-            space_id=folder_data.space_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
         self.validate_user_has_access_to_workspace(
             user_id=permission_data.added_by,
-            workspace_id=space_data.workspace_id,
+            workspace_id=workspace_id,
             workspace_member_storage=self.workspace_member_storage)
 
         return self.folder_permission_storage.create_folder_users_permissions(

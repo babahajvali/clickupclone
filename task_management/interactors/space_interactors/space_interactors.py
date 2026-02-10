@@ -28,20 +28,30 @@ class SpaceInteractor(ValidationMixin):
 
     @invalidate_interactor_cache(cache_name="spaces")
     def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
+        self.validate_workspace_is_active(
+            workspace_id=create_space_data.workspace_id,
+            workspace_storage=self.workspace_storage)
         self.validate_user_has_access_to_workspace(
             user_id=create_space_data.created_by,
             workspace_id=create_space_data.workspace_id,
             workspace_member_storage=self.workspace_member_storage)
 
-        self.validate_workspace_is_active(
-            workspace_id=create_space_data.workspace_id,
-            workspace_storage=self.workspace_storage)
-
         result = self.space_storage.create_space(
             create_space_data=create_space_data)
-        self._add_users_in_space_permission(space_id=result.space_id,
-                                            workspace_id=result.workspace_id,
-                                            created_by=result.created_by)
+        if create_space_data.is_private:
+            self._add_users_in_space_permission(space_id=result.space_id,
+                                                workspace_id=result.workspace_id,
+                                                created_by=result.created_by)
+        else:
+            user_permission_data = CreateUserSpacePermissionDTO(
+                space_id=result.space_id,
+                user_id=result.created_by,
+                permission_type=Permissions.FULL_EDIT,
+                added_by=result.created_by
+            )
+
+            self.space_permission_storage.create_user_space_permissions(
+                permission_data=[user_permission_data])
         return result
 
     @invalidate_interactor_cache(cache_name="spaces")
@@ -79,7 +89,8 @@ class SpaceInteractor(ValidationMixin):
     def delete_space(self, space_id: str, user_id: str) -> SpaceDTO:
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
-        workspace_id = self.space_storage.get_space_workspace_id(space_id=space_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
         self.validate_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id,
             workspace_member_storage=self.workspace_member_storage)
@@ -91,7 +102,8 @@ class SpaceInteractor(ValidationMixin):
                              visibility: Visibility):
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
-        workspace_id = self.space_storage.get_space_workspace_id(space_id=space_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
         self.validate_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id,
             workspace_member_storage=self.workspace_member_storage)
@@ -126,13 +138,15 @@ class SpaceInteractor(ValidationMixin):
             space_storage=self.space_storage
         )
 
-        return self.space_permission_storage.get_space_permissions(space_id=space_id)
+        return self.space_permission_storage.get_space_permissions(
+            space_id=space_id)
 
     def add_user_for_space_permission(self,
                                       user_data: CreateUserSpacePermissionDTO):
         self.validate_space_is_active(space_id=user_data.space_id,
                                       space_storage=self.space_storage)
-        workspace_id = self.space_storage.get_space_workspace_id(space_id=user_data.space_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=user_data.space_id)
         self.validate_user_has_access_to_workspace(
             user_id=user_data.user_id, workspace_id=workspace_id,
             workspace_member_storage=self.workspace_member_storage)

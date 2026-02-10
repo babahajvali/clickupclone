@@ -57,10 +57,20 @@ class ListInteractor(ValidationMixin):
 
         result = self.list_storage.create_list(
             create_list_data=create_list_data)
+        if create_list_data.is_private:
+            self._add_users_in_list_permission(
+                list_id=result.list_id, workspace_id=workspace_id,
+                created_by=result.created_by)
+        else:
+            user_permission = CreateUserListPermissionDTO(
+                list_id=result.list_id,
+                user_id=result.created_by,
+                permission_type=Permissions.FULL_EDIT,
+                added_by=result.created_by,
+            )
+            self.list_permission_storage.create_list_users_permissions(
+                user_permissions=[user_permission])
 
-        self._add_users_in_list_permission(
-            list_id=result.list_id, workspace_id=workspace_id,
-            created_by=result.created_by)
         template_interactor = CreateTemplateInteractor(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
@@ -201,6 +211,21 @@ class ListInteractor(ValidationMixin):
         self.validate_space_is_active(space_id=space_id,
                                       space_storage=self.space_storage)
         return self.list_storage.get_space_lists(space_ids=[space_id])
+
+    def add_user_in_space_permission(self,
+                                     user_permission_data: CreateUserListPermissionDTO):
+        self.validate_list_is_active(list_id=user_permission_data.list_id,
+                                     list_storage=self.list_storage)
+        space_id = self.list_storage.get_list_space_id(
+            list_id=user_permission_data.list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_permission_data.user_id,
+            workspace_member_storage=self.workspace_member_storage)
+
+        return self.list_permission_storage.create_list_users_permissions(
+            user_permissions=[user_permission_data])
 
     # Helping functions
 
