@@ -8,7 +8,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     DeleteWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceType
-from task_management.interactors.workspace_interactors.workspace import \
+from task_management.interactors.workspace.workspace import \
     Workspace
 
 from task_management.storages.account_storage import AccountStorage

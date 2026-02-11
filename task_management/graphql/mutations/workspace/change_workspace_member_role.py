@@ -9,7 +9,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     AddMemberToWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceMemberType
-from task_management.interactors.workspace_interactors.workspace_member_interactors import \
+from task_management.interactors.workspace.workspace_member_interactors import \
     WorkspaceMemberInteractor
 from task_management.storages.folder_permission_storage import \
     FolderPermissionStorage

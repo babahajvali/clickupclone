@@ -45,7 +45,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
             AccountNameAlreadyExistsException: If the account name is already taken.
         """
 
-        self.validate_user_exists(user_id=created_by)
         self.validate_user_is_active(user_id=created_by)
         self._validate_account_name_not_empty(account_name=name)
         self._validate_account_name_already_exists(account_name=name)
@@ -68,18 +67,19 @@ class Account(AccountValidationMixin, UserValidationMixin):
             3.description: account description optional
         """
 
-        self.validate_account_exists(account_id=account_id)
         self.validate_account_is_active(account_id=account_id)
-
         self.validate_user_is_account_owner(
             user_id=user_id, account_id=account_id)
 
+        is_name_provided = name is not None
+        is_description_provided = description is not None
+
         fields_to_update = {}
-        if name:
+        if is_name_provided:
             self._validate_account_name_except_current(
                 account_id=account_id, name=name)
             fields_to_update['name'] = name
-        if description:
+        if is_description_provided:
             fields_to_update['description'] = description
 
         if not fields_to_update:
@@ -107,7 +107,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
             3.InactiveAccountException: If the account is not active.
             """
 
-        self.validate_account_exists(account_id=account_id)
         self.validate_account_is_active(account_id=account_id)
 
         self.validate_user_is_account_owner(
@@ -132,7 +131,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
                 3.InactiveAccountException: If the account is not active.
         """
 
-        self.validate_account_exists(account_id=account_id)
         self.validate_account_is_active(account_id=account_id)
         self.validate_user_is_account_owner(account_id=account_id,
                                             user_id=deactivated_by)

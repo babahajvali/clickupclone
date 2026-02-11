@@ -8,9 +8,9 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     TransferWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceType
-from task_management.interactors.workspace_interactors.workspace import \
+from task_management.interactors.workspace.workspace import \
     Workspace
-from task_management.interactors.workspace_interactors.workspace_onboarding import \
+from task_management.interactors.workspace.workspace_onboarding import \
     WorkspaceOnboardingHandler
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.field_storage import FieldStorage

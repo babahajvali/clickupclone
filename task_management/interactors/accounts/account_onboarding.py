@@ -12,7 +12,7 @@ from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, FolderStorageInterface, \
     FolderPermissionStorageInterface
 
-from task_management.interactors.workspace_interactors.workspace import \
+from task_management.interactors.workspace.workspace import \
     Workspace
 
 
@@ -67,7 +67,7 @@ class AccountOnboardingHandler:
         create the workspace interactor
         then create the workspace"""
 
-        from task_management.interactors.workspace_interactors.workspace_onboarding import \
+        from task_management.interactors.workspace.workspace_onboarding import \
             WorkspaceOnboardingHandler
         workspace_onboarding = WorkspaceOnboardingHandler(
             workspace_storage=self.workspace_storage,

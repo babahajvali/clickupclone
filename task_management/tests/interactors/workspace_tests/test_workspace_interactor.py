@@ -6,7 +6,7 @@ from task_management.interactors.storage_interfaces.account_storage_interface im
     AccountStorageInterface
 from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
-from task_management.interactors.workspace_interactors.workspace import (
+from task_management.interactors.workspace.workspace import (
     Workspace
 )
 from task_management.interactors.storage_interfaces.workspace_storage_interface import (

@@ -11,9 +11,9 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import WorkspaceType
 
 from task_management.interactors.dtos import CreateWorkspaceDTO
-from task_management.interactors.workspace_interactors.workspace import \
+from task_management.interactors.workspace.workspace import \
     Workspace
-from task_management.interactors.workspace_interactors.workspace_onboarding import \
+from task_management.interactors.workspace.workspace_onboarding import \
     WorkspaceOnboardingHandler
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_permission_storage import \
@@ -85,7 +85,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
             )
 
             result = interactor.create_workspace(
-                create_workspace_data=create_workspace_data
+                workspace_data=create_workspace_data
             )
 
             return WorkspaceType(

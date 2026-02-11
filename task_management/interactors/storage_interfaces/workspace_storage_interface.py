@@ -39,6 +39,3 @@ class WorkspaceStorageInterface(ABC):
     def get_workspaces_by_account(self, account_id: str) -> list[WorkspaceDTO]:
         pass
 
-    @abstractmethod
-    def check_workspace_exists(self, workspace_id: str) -> bool:
-        pass

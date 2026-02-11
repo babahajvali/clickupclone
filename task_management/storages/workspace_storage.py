@@ -81,5 +81,3 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
 
-    def check_workspace_exists(self, workspace_id: str) -> bool:
-        return Workspace.objects.filter(workspace_id=workspace_id).exists()
