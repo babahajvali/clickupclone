@@ -1,7 +1,5 @@
 import pytest
-from unittest.mock import create_autospec, MagicMock
-
-from task_management.exceptions.enums import Permissions
+from unittest.mock import create_autospec, patch
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 from task_management.interactors.storage_interface.workspace_member_storage_interface import \
@@ -124,11 +122,14 @@ class TestWorkspaceInteractor:
             "delete_workspace_success.txt"
         )
 
-    def test_transfer_workspace_success(self, snapshot):
-        workspace_id = "workspace-123"
+    @patch(
+        "task_management.interactors.workspace_interactors.workspace_transfer_service.WorkspaceMemberInteractor"
+    )
+    def test_transfer_workspace_success(self, mock_workspace_member_interactor,snapshot):
+        workspace_id = "550e8400-e29b-41d4-a716-446655440000"
         user_id = "owner-123"
         new_user_id = "new-owner-123"
-        expected = WorkspaceDTOFactory()
+        expected = WorkspaceDTOFactory(workspace_id=workspace_id)
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace.return_value = \

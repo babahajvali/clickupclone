@@ -12,21 +12,19 @@ from task_management.interactors.storage_interface.workspace_member_storage_inte
 from task_management.interactors.storage_interface.workspace_storage_interface import \
     WorkspaceStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
-from task_management.interactors.workspace_interactors.workspace_onboarding import \
-    WorkspaceOnboardingHandler
+from task_management.interactors.workspace_interactors.workspace_transfer_service import \
+    WorkspaceTransferService
 
 
 class WorkspaceInteractor(ValidationMixin):
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  user_storage: UserStorageInterface,
                  account_storage: AccountStorageInterface,
-                 workspace_member_storage: WorkspaceMemberStorageInterface,
-                 workspace_onboarding: WorkspaceOnboardingHandler = None):
+                 workspace_member_storage: WorkspaceMemberStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
         self.workspace_member_storage = workspace_member_storage
-        self.workspace_onboarding = workspace_onboarding
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def create_workspace(self, create_workspace_data: CreateWorkspaceDTO) \
@@ -49,11 +47,6 @@ class WorkspaceInteractor(ValidationMixin):
         )
         self.workspace_member_storage.add_member_to_workspace(
             create_workspace_member)
-
-        if self.workspace_onboarding is not None:
-            self.workspace_onboarding.create_space(
-                workspace_id=result.workspace_id,
-                user_id=result.user_id)
 
         return result
 
@@ -92,8 +85,7 @@ class WorkspaceInteractor(ValidationMixin):
         result = self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
 
-        if self.workspace_onboarding:
-            self.workspace_onboarding.change_permissions_for_user_in_transfer(
+        WorkspaceTransferService.change_permissions_for_user_in_transfer(
                 workspace_id=workspace_id, user_id=user_id,
                 new_user_id=new_user_id)
 

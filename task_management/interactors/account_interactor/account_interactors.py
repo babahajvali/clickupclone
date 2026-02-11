@@ -1,8 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     AccountNameAlreadyExistsException, InvalidAccountIdsException, \
     InactiveAccountIdsException
-from task_management.interactors.account_interactor.account_onboarding import \
-    AccountOnboardingHandler
 from task_management.interactors.dtos import CreateAccountDTO, AccountDTO, \
     UpdateAccountDTO
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -14,24 +12,16 @@ from task_management.interactors.validation_mixin import ValidationMixin
 
 class AccountInteractor(ValidationMixin):
     def __init__(self, account_storage: AccountStorageInterface,
-                 user_storage: UserStorageInterface,
-                 account_onboarding: AccountOnboardingHandler = None):
+                 user_storage: UserStorageInterface):
         self.account_storage = account_storage
         self.user_storage = user_storage
-        self.account_onboarding = account_onboarding
 
     def create_account(self,
                        create_account_data: CreateAccountDTO) -> AccountDTO:
         self._validate_account_name_exists(
             account_name=create_account_data.name)
 
-        result = self.account_storage.create_account(create_account_data)
-        if self.account_onboarding:
-            self.account_onboarding.create_default_workspace(
-                account_id=result.account_id,
-                owner_id=result.owner_id, name=result.name)
-
-        return result
+        return self.account_storage.create_account(create_account_data)
 
     def update_account(self, update_data: UpdateAccountDTO,
                        user_id: str) -> AccountDTO:
