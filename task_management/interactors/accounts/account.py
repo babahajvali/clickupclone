@@ -5,8 +5,7 @@ from task_management.Mixins.account_validation_mixin import \
 from task_management.Mixins.user_validation_mixin import UserValidationMixin
 from task_management.exceptions.custom_exceptions import \
     AccountNameAlreadyExistsException, InvalidAccountIdsException, \
-    InactiveAccountIdsException, EmptyAccountNameException, \
-    NothingToUpdateException
+    EmptyAccountNameException, NothingToUpdateException
 
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -16,13 +15,13 @@ from task_management.interactors.storage_interface.user_storage_interface import
 
 
 class Account(AccountValidationMixin, UserValidationMixin):
-    '''
+    """
     Account management class
     create account, update account, delete account, deactivate account, get accounts
     storages:
     account_storage for modifying the account data
     user_storage for validating the user related data
-    Validating the Input data  '''
+    Validating the Input data """
 
     def __init__(self, account_storage: AccountStorageInterface,
                  user_storage: UserStorageInterface):
@@ -186,7 +185,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
             if account_id not in existed_account_ids:
                 invalid_accounts_ids.append(account_id)
 
-
         if invalid_accounts_ids:
             raise InvalidAccountIdsException(
                 account_ids=invalid_accounts_ids)
@@ -195,5 +193,5 @@ class Account(AccountValidationMixin, UserValidationMixin):
 
     @staticmethod
     def _validate_account_name_not_empty(account_name: str):
-        if not account_name:
+        if not account_name or not account_name.strip():
             raise EmptyAccountNameException(name=account_name)
