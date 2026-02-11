@@ -6,28 +6,28 @@ from task_management.interactors.dtos import UserListPermissionDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
     ListNotFoundException,
     InactiveListException,
 )
-from task_management.interactors.storage_interface.template_storage_interface import \
+from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 
 

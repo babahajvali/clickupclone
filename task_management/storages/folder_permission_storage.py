@@ -1,7 +1,7 @@
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     CreateUserFolderPermissionDTO
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
 from task_management.models import FolderPermission, Folder, User
 

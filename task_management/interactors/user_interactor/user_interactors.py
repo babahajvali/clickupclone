@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import \
     InactiveUserException
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 

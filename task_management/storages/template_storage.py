@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO, \
     UpdateTemplateDTO
-from task_management.interactors.storage_interface.template_storage_interface import \
+from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
 from task_management.models import Template, List
 

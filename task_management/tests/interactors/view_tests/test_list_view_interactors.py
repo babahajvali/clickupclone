@@ -6,16 +6,16 @@ from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.view_interactors.list_view_interactors import (
     ListViewInteractor
 )
-from task_management.interactors.storage_interface.list_views_storage_interface import (
+from task_management.interactors.storage_interfaces.list_views_storage_interface import (
     ListViewsStorageInterface
 )
-from task_management.interactors.storage_interface.list_storage_interface import (
+from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
 )
-from task_management.interactors.storage_interface.view_storage_interface import (
+from task_management.interactors.storage_interfaces.view_storage_interface import (
     ViewStorageInterface
 )
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (

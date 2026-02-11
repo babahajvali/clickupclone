@@ -16,33 +16,33 @@ from task_management.exceptions.custom_exceptions import UserNotFoundException, 
     UserNotAccountOwnerException, UnexpectedPermissionException
 from task_management.exceptions.enums import Permissions, FieldTypes, \
     ViewTypes, Role, Visibility
-from task_management.interactors.storage_interface.account_storage_interface import \
+from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
+from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
+from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from task_management.interactors.storage_interface.view_storage_interface import \
+from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
-from task_management.interactors.storage_interface.workspace_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
 
 

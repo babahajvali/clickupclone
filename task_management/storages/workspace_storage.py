@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO, \
     UpdateWorkspaceDTO
-from task_management.interactors.storage_interface.workspace_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
 from task_management.models import Workspace, User, Account
 
@@ -80,3 +80,6 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
+
+    def check_workspace_exists(self, workspace_id: str) -> bool:
+        return Workspace.objects.filter(workspace_id=workspace_id).exists()

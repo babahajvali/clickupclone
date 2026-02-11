@@ -4,11 +4,11 @@ from unittest.mock import create_autospec
 from task_management.exceptions.enums import Permissions, ViewTypes
 from task_management.interactors.view_interactors.view_interactors import \
     ViewInteractor
-from task_management.interactors.storage_interface.view_storage_interface import \
+from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
 from task_management.exceptions.custom_exceptions import (
     ViewNotFoundException,

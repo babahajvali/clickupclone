@@ -5,7 +5,7 @@ from django.db.models import F
 from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
 from task_management.models import Template, User, Field
 

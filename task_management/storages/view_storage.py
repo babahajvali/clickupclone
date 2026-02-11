@@ -1,7 +1,7 @@
 from task_management.exceptions.enums import ViewTypes
 from task_management.interactors.dtos import ViewDTO, CreateViewDTO, \
     UpdateViewDTO
-from task_management.interactors.storage_interface.view_storage_interface import \
+from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
 from task_management.models import View, User
 

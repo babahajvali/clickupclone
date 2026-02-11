@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import UserNotFoundException, \
     InactiveUserException
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
 

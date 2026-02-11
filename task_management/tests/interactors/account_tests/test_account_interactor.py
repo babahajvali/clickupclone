@@ -4,10 +4,10 @@ from unittest.mock import create_autospec, Mock
 from task_management.interactors.accounts.account import (
     Account
 )
-from task_management.interactors.storage_interface.account_storage_interface import (
+from task_management.interactors.storage_interfaces.account_storage_interface import (
     AccountStorageInterface
 )
-from task_management.interactors.storage_interface.user_storage_interface import (
+from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface
 )
 

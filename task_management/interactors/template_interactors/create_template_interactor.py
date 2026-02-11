@@ -2,15 +2,15 @@ from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     CreateFieldDTO
 from task_management.constants.field_constants import FIXED_FIELDS
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
+from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 

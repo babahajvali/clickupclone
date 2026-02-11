@@ -8,8 +8,8 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     DeleteWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceType
-from task_management.interactors.workspace_interactors.workspace_interactors import \
-    WorkspaceInteractor
+from task_management.interactors.workspace_interactors.workspace import \
+    Workspace
 
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.user_storage import UserStorage
@@ -30,7 +30,7 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         account_storage = AccountStorage()
         workspace_member_storage = WorkspaceMemberStorage()
 
-        interactor = WorkspaceInteractor(
+        interactor = Workspace(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,

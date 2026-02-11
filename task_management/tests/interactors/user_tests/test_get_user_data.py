@@ -7,7 +7,7 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import UserDTO
-from task_management.interactors.storage_interface.user_storage_interface import (
+from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
 from task_management.interactors.user_interactor.user_interactors import (

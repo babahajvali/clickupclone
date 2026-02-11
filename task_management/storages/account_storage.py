@@ -3,7 +3,7 @@ from typing import Optional
 from django.core.exceptions import ObjectDoesNotExist
 
 from task_management.interactors.dtos import AccountDTO, UpdateAccountDTO
-from task_management.interactors.storage_interface.account_storage_interface import \
+from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
 from task_management.models import Account, User
 

@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
     UpdateUserDTO
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 from task_management.models import User
 

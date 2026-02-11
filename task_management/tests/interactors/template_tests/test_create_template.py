@@ -4,18 +4,18 @@ import pytest
 from faker import Faker
 
 from task_management.exceptions.enums import Permissions, Role
-from task_management.interactors.storage_interface.field_storage_interface import (
+from task_management.interactors.storage_interfaces.field_storage_interface import (
     FieldStorageInterface
 )
-from task_management.interactors.storage_interface.list_storage_interface import (
+from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
 )
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import (
+from task_management.interactors.storage_interfaces.template_storage_interface import (
     TemplateStorageInterface
 )
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.template_interactors.create_template_interactor import (
     CreateTemplateInteractor

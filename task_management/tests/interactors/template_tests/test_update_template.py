@@ -8,16 +8,16 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
 from task_management.interactors.template_interactors.update_template_interactor import (
     UpdateTemplateInteractor
 )
-from task_management.interactors.storage_interface.list_storage_interface import (
+from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
 )
-from task_management.interactors.storage_interface.template_storage_interface import (
+from task_management.interactors.storage_interfaces.template_storage_interface import (
     TemplateStorageInterface
 )
 from task_management.tests.factories.interactor_factory import (

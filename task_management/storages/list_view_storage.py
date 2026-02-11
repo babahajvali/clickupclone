@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from task_management.interactors.dtos import ListViewDTO, RemoveListViewDTO
-from task_management.interactors.storage_interface.list_views_storage_interface import \
+from task_management.interactors.storage_interfaces.list_views_storage_interface import \
     ListViewsStorageInterface
 from task_management.models import List, View, User, ListView
 

@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import UpdateFieldValueDTO, \
     TaskFieldValueDTO, TaskFieldValuesDTO, FieldValueDTO, CreateFieldValueDTO
-from task_management.interactors.storage_interface.task_field_values_storage_interface import \
+from task_management.interactors.storage_interfaces.task_field_values_storage_interface import \
     FieldValueStorageInterface
 from task_management.models import FieldValue, Task, Field, User
 

@@ -1,7 +1,7 @@
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.models import Workspace, User, WorkspaceMember
 

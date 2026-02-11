@@ -1,7 +1,7 @@
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserSpacePermissionDTO, \
     CreateUserSpacePermissionDTO
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
 from task_management.models import SpacePermission, User, Space
 

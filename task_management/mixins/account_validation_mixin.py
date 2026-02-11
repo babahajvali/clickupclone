@@ -1,7 +1,7 @@
 from task_management.exceptions.custom_exceptions import \
     AccountNotFoundException, InactiveAccountException, \
     UserNotAccountOwnerException
-from task_management.interactors.storage_interface.account_storage_interface import \
+from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
 
 

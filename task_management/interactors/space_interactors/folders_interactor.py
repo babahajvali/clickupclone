@@ -2,13 +2,13 @@ from task_management.exceptions.custom_exceptions import InvalidOrderException
 from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UpdateFolderDTO, UserFolderPermissionDTO, CreateUserFolderPermissionDTO
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 from task_management.decorators.caching_decorators import interactor_cache, \

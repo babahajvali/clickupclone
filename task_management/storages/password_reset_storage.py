@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from task_management.interactors.dtos import PasswordResetTokenDTO, UserDTO
-from task_management.interactors.storage_interface.password_reset_storage_interface import \
+from task_management.interactors.storage_interfaces.password_reset_storage_interface import \
     PasswordResetStorageInterface
 from task_management.models.user_models import PasswordResetToken, User
 

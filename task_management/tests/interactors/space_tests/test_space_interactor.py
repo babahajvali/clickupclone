@@ -5,13 +5,13 @@ from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.workspace_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,

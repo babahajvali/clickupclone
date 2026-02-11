@@ -1,14 +1,10 @@
 from typing import Optional
 
-from task_management.Mixins.account_validation_mixin import \
-    AccountValidationMixin
-from task_management.Mixins.user_validation_mixin import UserValidationMixin
-
 from task_management.interactors.dtos import AccountDTO
-from task_management.interactors.storage_interface.account_storage_interface import \
-    AccountStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
-    UserStorageInterface
+from task_management.interactors.storage_interfaces import \
+    AccountStorageInterface, UserStorageInterface
+
+from task_management.mixins import AccountValidationMixin, UserValidationMixin
 
 
 class Account(AccountValidationMixin, UserValidationMixin):
@@ -57,7 +53,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)
 
-    def update_account(self, account_id: str, user_id: str, name: Optional[str],
+    def update_account(self, account_id: str, user_id: str,
+                       name: Optional[str],
                        description: Optional[str]) -> AccountDTO:
         """ Update account data after validations
         validate input data
@@ -120,20 +117,20 @@ class Account(AccountValidationMixin, UserValidationMixin):
 
     def deactivate_account(self, account_id: str, deactivated_by: str):
         """ Deactivate account after validation
-                Validations:
-                    1. validate account
-                    2. validate account is active
-                    3. validate user is owner of account
+            Validations:
+                1. validate account
+                2. validate account is active
+                3. validate user is owner of account
 
-                Args:
-                    1.account_id: account id
-                    2.deactivated_by: account deleted by
+            Args:
+                1.account_id: account id
+                2.deactivated_by: account deleted by
 
-                Exceptions:
-                    1.AccountDoesNotExistException: If the account does not exist.
-                    2.UserNotOwnerOfAccountException: If the user is not owner of account.
-                    3.InactiveAccountException: If the account is not active.
-                    """
+            Exceptions:
+                1.AccountDoesNotExistException: If the account does not exist.
+                2.UserNotOwnerOfAccountException: If the user is not owner of account.
+                3.InactiveAccountException: If the account is not active.
+        """
 
         self.validate_account_exists(account_id=account_id)
         self.validate_account_is_active(account_id=account_id)
@@ -152,9 +149,9 @@ class Account(AccountValidationMixin, UserValidationMixin):
         Exceptions:
             InvalidAccountIdsFoundException: If the account does not exist.
             """
-        accounts_data = self._check_accounts_active(account_ids=account_ids)
+        self._check_account_ids(account_ids=account_ids)
 
-        return accounts_data
+        return self.account_storage.get_accounts(account_ids=account_ids)
 
     # Helping functions
 
@@ -177,24 +174,19 @@ class Account(AccountValidationMixin, UserValidationMixin):
                 AccountNameAlreadyExistsException
             raise AccountNameAlreadyExistsException(name=name)
 
-    def _check_accounts_active(self, account_ids: list[str]):
+    def _check_account_ids(self, account_ids: list[str]):
         accounts_data = self.account_storage.get_accounts(
             account_ids=account_ids)
 
         existed_account_ids = [str(obj.account_id) for obj in accounts_data]
-        invalid_accounts_ids = []
+        invalid_account_ids = [account_id for account_id in account_ids if
+                               account_id not in existed_account_ids]
 
-        for account_id in account_ids:
-            if account_id not in existed_account_ids:
-                invalid_accounts_ids.append(account_id)
-
-        if invalid_accounts_ids:
+        if invalid_account_ids:
             from task_management.exceptions.custom_exceptions import \
                 InvalidAccountIdsException
             raise InvalidAccountIdsException(
-                account_ids=invalid_accounts_ids)
-
-        return accounts_data
+                account_ids=invalid_account_ids)
 
     @staticmethod
     def _validate_account_name_not_empty(account_name: str):

@@ -2,7 +2,7 @@ from django.db.models import F
 
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     UpdateTaskDTO, FilterDTO
-from task_management.interactors.storage_interface.task_storage_interface import \
+from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from task_management.models import User, List, Task
 

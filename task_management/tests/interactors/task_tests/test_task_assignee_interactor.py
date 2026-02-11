@@ -4,22 +4,22 @@ from unittest.mock import create_autospec
 from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import UserListPermissionDTO, \
     WorkspaceMemberDTO
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.task_interactors.task_assignee_interactor import (
     TaskAssigneeInteractor
 )
-from task_management.interactors.storage_interface.task_storage_interface import (
+from task_management.interactors.storage_interfaces.task_storage_interface import (
     TaskStorageInterface
 )
-from task_management.interactors.storage_interface.task_assignee_storage_interface import (
+from task_management.interactors.storage_interfaces.task_assignee_storage_interface import (
     TaskAssigneeStorageInterface
 )
-from task_management.interactors.storage_interface.user_storage_interface import (
+from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (

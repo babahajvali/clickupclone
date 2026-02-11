@@ -6,14 +6,14 @@ from task_management.interactors.dtos import UserSpacePermissionDTO, \
     UserFolderPermissionDTO, WorkspaceMemberDTO
 from task_management.interactors.space_interactors.folders_interactor import \
     FolderInteractor
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import (
     SpacePermissionStorageInterface
 )
-from task_management.interactors.storage_interface.folder_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import (
     FolderPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
@@ -22,7 +22,7 @@ from task_management.exceptions.custom_exceptions import (
     FolderNotFoundException,
     InactiveFolderException,
 )
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.tests.factories.interactor_factory import (
     CreateFolderDTOFactory,

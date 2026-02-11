@@ -10,31 +10,31 @@ from task_management.interactors.workspace_interactors.workspace_member_interact
     WorkspaceMemberInteractor
 )
 
-from task_management.interactors.storage_interface.workspace_storage_interface import (
+from task_management.interactors.storage_interfaces.workspace_storage_interface import (
     WorkspaceStorageInterface
 )
-from task_management.interactors.storage_interface.workspace_member_storage_interface import (
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import (
     WorkspaceMemberStorageInterface
 )
-from task_management.interactors.storage_interface.user_storage_interface import (
+from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface
 )
-from task_management.interactors.storage_interface.space_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import (
     SpacePermissionStorageInterface
 )
-from task_management.interactors.storage_interface.folder_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import (
     FolderPermissionStorageInterface
 )
-from task_management.interactors.storage_interface.list_permission_storage_interface import (
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
-from task_management.interactors.storage_interface.space_storage_interface import (
+from task_management.interactors.storage_interfaces.space_storage_interface import (
     SpaceStorageInterface
 )
-from task_management.interactors.storage_interface.folder_storage_interface import (
+from task_management.interactors.storage_interfaces.folder_storage_interface import (
     FolderStorageInterface
 )
-from task_management.interactors.storage_interface.list_storage_interface import (
+from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
 )
 

@@ -2,7 +2,7 @@ from datetime import date
 
 from task_management.interactors.dtos import TaskAssigneeDTO, \
     TaskAssigneeDTO, UserTasksDTO, TaskDTO
-from task_management.interactors.storage_interface.task_assignee_storage_interface import \
+from task_management.interactors.storage_interfaces.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
 from task_management.models import User, Task, TaskAssignee
 

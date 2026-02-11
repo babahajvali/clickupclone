@@ -2,7 +2,7 @@ from django.db.models import F
 
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UpdateFolderDTO
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
 from task_management.models import Folder, Space, User
 

@@ -3,17 +3,17 @@ from task_management.decorators.caching_decorators import interactor_cache, \
 from task_management.exceptions.custom_exceptions import \
     TaskAssigneeNotFoundException
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_assignee_storage_interface import \
+from task_management.interactors.storage_interfaces.task_assignee_storage_interface import \
     TaskAssigneeStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
+from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 

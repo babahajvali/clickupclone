@@ -4,27 +4,27 @@ from task_management.interactors.list_interactors.list_interactors import \
     ListInteractor
 from task_management.interactors.space_interactors.space_interactors import \
     SpaceInteractor
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.folder_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
     FolderPermissionStorageInterface
-from task_management.interactors.storage_interface.folder_storage_interface import \
+from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
     SpacePermissionStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.template_storage_interface import \
+from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
-from task_management.interactors.storage_interface.workspace_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
 from task_management.interactors.workspace_interactors.workspace_member_interactors import \
     WorkspaceMemberInteractor
@@ -55,7 +55,13 @@ class WorkspaceOnboardingHandler:
         self.field_storage = field_storage
 
 
-    def create_space(self, user_id: str, workspace_id: str):
+    def handle(self, user_id: str, workspace_id: str):
+        space_data = self._create_space(workspace_id=workspace_id,user_id=user_id)
+
+        return self._create_list(space_id=space_data.space_id,user_id=user_id)
+
+
+    def _create_space(self, user_id: str, workspace_id: str):
 
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,
@@ -71,11 +77,7 @@ class WorkspaceOnboardingHandler:
             workspace_id=workspace_id,
             is_private=False
         )
-
-        space_data = space_interactor.create_space(space_input_data)
-
-        return self._create_list(space_id=space_data.space_id,
-                                 user_id=user_id, )
+        return space_interactor.create_space(space_input_data)
 
     def _create_list(self, space_id: str, user_id: str):
         list_interactor = ListInteractor(

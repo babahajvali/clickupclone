@@ -3,7 +3,7 @@ from django.db.models import F
 
 from task_management.interactors.dtos import UpdateSpaceDTO, SpaceDTO, \
     CreateSpaceDTO
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
 from task_management.models import Space, Workspace, User
 

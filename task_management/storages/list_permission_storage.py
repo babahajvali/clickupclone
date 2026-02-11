@@ -1,7 +1,7 @@
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO, \
     CreateUserListPermissionDTO
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
     ListPermissionStorageInterface
 from task_management.models import ListPermission, List, User
 

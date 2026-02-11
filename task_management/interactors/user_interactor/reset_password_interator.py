@@ -4,9 +4,9 @@ from django.utils import timezone
 
 from task_management.interactors.email_service_interface.email_service_interface import \
     EmailServiceInterface
-from task_management.interactors.storage_interface.password_reset_storage_interface import \
+from task_management.interactors.storage_interfaces.password_reset_storage_interface import \
     PasswordResetStorageInterface
-from task_management.interactors.storage_interface.user_storage_interface import \
+from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
 from task_management.interactors.validation_mixin import ValidationMixin

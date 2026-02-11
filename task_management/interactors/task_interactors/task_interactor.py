@@ -3,19 +3,19 @@ from task_management.exceptions.custom_exceptions import \
     InvalidLimitException, InvalidOrderException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     UpdateTaskDTO, FilterDTO, CreateFieldValueDTO
-from task_management.interactors.storage_interface.field_storage_interface import \
+from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interface.list_permission_storage_interface import \
+from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
     ListPermissionStorageInterface
-from task_management.interactors.storage_interface.list_storage_interface import \
+from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interface.space_storage_interface import \
+from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interface.task_field_values_storage_interface import \
+from task_management.interactors.storage_interfaces.task_field_values_storage_interface import \
     FieldValueStorageInterface
-from task_management.interactors.storage_interface.task_storage_interface import \
+from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from task_management.interactors.storage_interface.workspace_member_storage_interface import \
+from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
 from task_management.interactors.validation_mixin import ValidationMixin
 from task_management.decorators.caching_decorators import interactor_cache, \
