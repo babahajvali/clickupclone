@@ -3,9 +3,6 @@ from typing import Optional
 from task_management.Mixins.account_validation_mixin import \
     AccountValidationMixin
 from task_management.Mixins.user_validation_mixin import UserValidationMixin
-from task_management.exceptions.custom_exceptions import \
-    AccountNameAlreadyExistsException, InvalidAccountIdsException, \
-    EmptyAccountNameException, NothingToUpdateException
 
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interface.account_storage_interface import \
@@ -89,6 +86,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
             fields_to_update['description'] = description
 
         if not fields_to_update:
+            from task_management.exceptions.custom_exceptions import \
+                NothingToUpdateException
             raise NothingToUpdateException(account_id=account_id)
 
         return self.account_storage.update_account(account_id=account_id,
@@ -164,6 +163,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
             name=account_name)
 
         if is_name_exist:
+            from task_management.exceptions.custom_exceptions import \
+                AccountNameAlreadyExistsException
             raise AccountNameAlreadyExistsException(name=account_name)
 
     def _validate_account_name_except_current(self, name: str,
@@ -172,6 +173,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
             name=name, account_id=account_id)
 
         if is_name_exist:
+            from task_management.exceptions.custom_exceptions import \
+                AccountNameAlreadyExistsException
             raise AccountNameAlreadyExistsException(name=name)
 
     def _check_accounts_active(self, account_ids: list[str]):
@@ -186,6 +189,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
                 invalid_accounts_ids.append(account_id)
 
         if invalid_accounts_ids:
+            from task_management.exceptions.custom_exceptions import \
+                InvalidAccountIdsException
             raise InvalidAccountIdsException(
                 account_ids=invalid_accounts_ids)
 
@@ -194,4 +199,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
     @staticmethod
     def _validate_account_name_not_empty(account_name: str):
         if not account_name or not account_name.strip():
+            from task_management.exceptions.custom_exceptions import \
+                EmptyAccountNameException
             raise EmptyAccountNameException(name=account_name)
