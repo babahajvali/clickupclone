@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.graphql.mutations import CreateAccount, CreateUser, \
-    UpdateUser, BlockUser, UserLogin, TransferAccount, DeleteAccount, \
+    UpdateUser, BlockUser, UserLogin, DeleteAccount, \
     CreateWorkspace, TransferWorkspace, DeleteWorkspace, UpdateWorkspace, \
     CreateSpace, UpdateSpace, DeleteSpace, ReorderSpace, SetSpaceVisibility, \
     CreateFolder, UpdateFolder, DeleteFolder, ReorderFolder, \
@@ -28,7 +28,7 @@ QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetAccounts, GetUserWithEmail]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
-                    UserLogin, TransferAccount, DeleteAccount, CreateWorkspace,
+                    UserLogin, DeleteAccount, CreateWorkspace,
                     TransferWorkspace, DeleteWorkspace, UpdateWorkspace,
                     CreateSpace, UpdateSpace, SetSpaceVisibility, ReorderSpace,
                     DeleteSpace, CreateFolder, UpdateFolder, DeleteFolder,

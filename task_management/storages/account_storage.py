@@ -85,15 +85,11 @@ class AccountStorage(AccountStorageInterface):
         return Account.objects.filter(name=name).exclude(
             account_id=account_id).exists()
 
-    def update_account(self, update_data: UpdateAccountDTO) -> AccountDTO:
-        account_data = Account.objects.get(account_id=update_data.account_id)
-        if update_data.name is not None:
-            account_data.name = update_data.name
+    def update_account(self, account_id: str, update_fields: dict) -> AccountDTO:
+        Account.objects.filter(account_id=account_id).update(**update_fields)
+        account_data = Account.objects.get(account_id=account_id)
 
-        if update_data.description is not None:
-            account_data.description = update_data.description
-
-        account_data.save()
+        account_data.save(update_fields=[])
 
         return AccountDTO(
             account_id=account_data.account_id,

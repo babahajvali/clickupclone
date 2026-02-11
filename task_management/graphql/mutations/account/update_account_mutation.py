@@ -3,7 +3,7 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
     AccountNameAlreadyExistsType, AccountNotFoundType, InactiveAccountType, \
-    UserNotAccountOwnerType
+    UserNotAccountOwnerType, NothingToUpdateAccountType
 from task_management.graphql.types.input_types import UpdateAccountInputParams
 from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
@@ -32,13 +32,10 @@ class UpdateAccountMutation(graphene.Mutation):
             account_storage=account_storage)
 
         try:
-            update_data = UpdateAccountDTO(
-                account_id=params.account_id,
-                name=params.name,
-                description=params.description,
-            )
 
-            result = interactor.update_account(update_data=update_data,user_id=user_id)
+            result = interactor.update_account(
+                account_id=params.account_id, name=params.name,
+                description=params.description, user_id=user_id)
 
             return AccountType(
                 account_id=result.account_id,
@@ -56,4 +53,5 @@ class UpdateAccountMutation(graphene.Mutation):
             return InactiveAccountType(account_id=e.account_id)
         except custom_exceptions.UserNotAccountOwnerException as e:
             return UserNotAccountOwnerType(user_id=e.user_id)
-
+        except custom_exceptions.NothingToUpdateException as e:
+            return NothingToUpdateAccountType(account_id=e.account_id)

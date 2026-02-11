@@ -5,8 +5,7 @@ from task_management.graphql.mutations.account.create_account_mutation import \
 from task_management.graphql.mutations.account.delete_account_mutation import \
     DeleteAccountMutation
 
-from task_management.graphql.mutations.account.transfer_account_mutation import \
-    TransferAccountMutation
+
 from task_management.graphql.mutations.account.update_account_mutation import \
     UpdateAccountMutation
 from task_management.graphql.mutations.field.create_field_mutation import \
@@ -117,10 +116,6 @@ class BlockUser(graphene.ObjectType):
 
 class UserLogin(graphene.ObjectType):
     user_login = UserLoginMutation.Field(required=True)
-
-
-class TransferAccount(graphene.ObjectType):
-    transfer_account = TransferAccountMutation.Field(required=True)
 
 
 class DeleteAccount(graphene.ObjectType):

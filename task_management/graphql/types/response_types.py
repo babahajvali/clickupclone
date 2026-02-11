@@ -18,7 +18,7 @@ from task_management.graphql.types.error_types import \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, \
     ResetTokenExpired, InvalidAccountIds, InvalidFieldValue, \
-    EmptyAccountNameExistsType
+    EmptyAccountNameExistsType, NothingToUpdateAccountType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -48,7 +48,8 @@ class UpdateAccountResponse(graphene.Union):
             AccountNotFoundType,
             InactiveAccountType,
             UserNotAccountOwnerType,
-            AccountNameAlreadyExistsType
+            AccountNameAlreadyExistsType,
+            NothingToUpdateAccountType
         )
 
 

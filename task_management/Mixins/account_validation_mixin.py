@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    AccountNotFoundException, InactiveAccountException
+    AccountNotFoundException, InactiveAccountException, \
+    UserNotAccountOwnerException
 from task_management.interactors.storage_interface.account_storage_interface import \
     AccountStorageInterface
 
@@ -19,7 +20,6 @@ class AccountValidationMixin:
     def validate_account_is_active(self, account_id: str):
 
         account_data = self.account_storage.get_account_by_id(account_id=account_id)
-
         if not account_data.is_active:
             raise InactiveAccountException(account_id=account_id)
 
@@ -27,7 +27,7 @@ class AccountValidationMixin:
 
         account_data = self.account_storage.get_account_by_id(account_id=account_id)
 
-        if account_data.owner_id != user_id:
-            raise InactiveAccountException(account_id=account_id)
+        if str(account_data.owner_id) != user_id:
+            raise UserNotAccountOwnerException(user_id=user_id)
 
 

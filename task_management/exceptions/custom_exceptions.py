@@ -226,6 +226,10 @@ class AccountNameAlreadyExistsException(Exception):
         self.name = name
 
 
+class NothingToUpdateException(Exception):
+    def __init__(self, account_id: str):
+        self.account_id = account_id
+
 class AccountNotFoundException(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
