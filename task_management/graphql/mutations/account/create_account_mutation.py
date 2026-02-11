@@ -2,31 +2,17 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    AccountNameAlreadyExistsType
+    AccountNameAlreadyExistsType, UserNotFoundType, InactiveUserType, \
+    EmptyAccountNameExistsType
 from task_management.graphql.types.input_types import CreateAccountInputParams
 from task_management.graphql.types.response_types import CreateAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.account_interactor.account_onboarding import \
-    AccountOnboardingHandler
-from task_management.interactors.account_interactor.account_interactors import \
-    AccountInteractor
-from task_management.interactors.dtos import CreateAccountDTO
+from task_management.interactors.accounts.account import \
+    Account
 
 from task_management.storages.account_storage import AccountStorage
-from task_management.storages.field_storage import FieldStorage
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.template_storage import TemplateStorage
+
 from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 class CreateAccountMutation(graphene.Mutation):
@@ -43,43 +29,14 @@ class CreateAccountMutation(graphene.Mutation):
 
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        workspace_storage = WorkspaceStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
-        space_storage = SpaceStorage()
-        space_permission_storage = SpacePermissionStorage()
-        folder_permission_storage = FolderPermissionStorage()
-        folder_storage = FolderStorage()
-        list_storage = ListStorage()
-        list_permission_storage = ListPermissionStorage()
-        template_storage = TemplateStorage()
-        field_storage = FieldStorage()
 
-        account_onboarding = AccountOnboardingHandler(
-            workspace_storage=workspace_storage,
-            user_storage=user_storage,
-            account_storage=account_storage,
-            workspace_member_storage=workspace_member_storage,
-            space_storage=space_storage,
-            space_permission_storage=space_permission_storage,
-            list_storage=list_storage,
-            list_permission_storage=list_permission_storage,
-            template_storage=template_storage,
-            field_storage=field_storage,
-            folder_storage=folder_storage,
-            folder_permission_storage=folder_permission_storage
-        )
 
-        interactor = AccountInteractor(
+        interactor = Account(
             user_storage=user_storage,
-            account_storage=account_storage,
-            account_onboarding=account_onboarding)
+            account_storage=account_storage)
 
         try:
-            create_account_dto = CreateAccountDTO(name=name,
-                                                  description=description,
-                                                  owner_id=owner_id)
-            result = interactor.create_account(
-                create_account_data=create_account_dto)
+            result = interactor.create_account(name=name, description=description,created_by=owner_id)
 
             return AccountType(
                 account_id=result.account_id,
@@ -90,3 +47,10 @@ class CreateAccountMutation(graphene.Mutation):
             )
         except custom_exceptions.AccountNameAlreadyExistsException as e:
             return AccountNameAlreadyExistsType(name=e.name)
+        except custom_exceptions.UserNotFoundException as e:
+            return UserNotFoundType(user_id=e.user_id)
+        except custom_exceptions.InactiveUserException as e:
+            return InactiveUserType(user_id=e.user_id)
+        except custom_exceptions.EmptyAccountNameException as e:
+            return EmptyAccountNameExistsType(name=e.name)
+

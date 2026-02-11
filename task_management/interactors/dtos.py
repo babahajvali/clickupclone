@@ -412,7 +412,7 @@ class TaskFieldValuesDTO:
 @dataclass
 class CreateAccountDTO:
     name: str
-    description: str
+    description: Optional[str]
     owner_id: str
 
 @dataclass

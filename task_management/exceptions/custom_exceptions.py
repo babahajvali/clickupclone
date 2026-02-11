@@ -3,6 +3,11 @@ class UserNotFoundException(Exception):
         self.user_id = user_id
 
 
+class EmptyAccountNameException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+
 class InactiveUserException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id

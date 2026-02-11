@@ -17,7 +17,8 @@ from task_management.graphql.types.error_types import \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, \
-    ResetTokenExpired, InvalidAccountIds, InvalidFieldValue
+    ResetTokenExpired, InvalidAccountIds, InvalidFieldValue, \
+    EmptyAccountNameExistsType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -33,7 +34,10 @@ class CreateAccountResponse(graphene.Union):
     class Meta:
         types = (
             AccountType,
-            AccountNameAlreadyExistsType
+            AccountNameAlreadyExistsType,
+            EmptyAccountNameExistsType,
+            UserNotFoundType,
+            InactiveUserType,
         )
 
 

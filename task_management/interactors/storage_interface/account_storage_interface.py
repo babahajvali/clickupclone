@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import AccountDTO, CreateAccountDTO, \
     UpdateAccountDTO
@@ -15,32 +16,31 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_account(self, account_dto: CreateAccountDTO) -> AccountDTO:
+    def create_account(self, name: str, description: Optional[str],
+                       created_by: str) -> AccountDTO:
         pass
 
     @abstractmethod
-    def transfer_account(self, account_id: str,
-                         new_owner_id: str) -> AccountDTO:
-        pass
-
-    @abstractmethod
-    def delete_account(self, account_id: str) -> AccountDTO:
+    def deactivate_account(self, account_id: str) -> AccountDTO:
         # soft delete change the is_active is False
         pass
 
     @abstractmethod
-    def get_accounts(self,account_ids: list[str]) -> list[AccountDTO]:
+    def delete_account(self, account_id: str):
         pass
 
+    @abstractmethod
+    def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
+        pass
 
     @abstractmethod
     def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
         pass
 
     @abstractmethod
-    def validate_account_name_except_current(self,name: str, account_id: str) -> bool:
+    def validate_account_name_except_current(self, name: str,
+                                             account_id: str) -> bool:
         pass
-
 
     @abstractmethod
     def update_account(self, update_data: UpdateAccountDTO) -> AccountDTO:

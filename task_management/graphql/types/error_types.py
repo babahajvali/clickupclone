@@ -157,6 +157,9 @@ class AccountNameAlreadyExistsType(graphene.ObjectType):
     name = graphene.String(required=True)
 
 
+class EmptyAccountNameExistsType(graphene.ObjectType):
+    name = graphene.String(required=True)
+
 class AccountNotFoundType(graphene.ObjectType):
     account_id = graphene.String(required=True)
 

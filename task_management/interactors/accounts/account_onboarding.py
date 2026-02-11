@@ -56,6 +56,9 @@ class AccountOnboardingHandler:
         self.folder_storage = folder_storage
         self.folder_permission_storage = folder_permission_storage
 
+    def handle(self, name: str, description: str, created_by: str):
+        pass
+
     def create_default_workspace(self, owner_id: str, account_id: str,
                                  name: str):
         workspace_onboarding = WorkspaceOnboardingHandler(

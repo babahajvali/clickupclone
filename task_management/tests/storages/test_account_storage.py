@@ -124,7 +124,7 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.delete_account(account_id=str(account_id))
+        result = storage.deactivate_account(account_id=str(account_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_delete_account_success.txt")

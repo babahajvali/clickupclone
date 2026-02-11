@@ -51,3 +51,7 @@ class UserStorageInterface(ABC):
     def check_phone_number_except_current_user(self, user_id: str,
                                                phone_number: str) -> bool:
         pass
+
+    @abstractmethod
+    def check_user_exists(self, user_id: str)-> bool:
+        pass

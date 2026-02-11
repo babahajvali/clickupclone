@@ -93,3 +93,6 @@ class UserStorage(UserStorageInterface):
                                                phone_number: str) -> bool:
         return User.objects.filter(phone_number=phone_number).exclude(
             user_id=user_id).exists()
+
+    def check_user_exists(self, user_id: str)-> bool:
+        return User.objects.filter(user_id=user_id).exists()

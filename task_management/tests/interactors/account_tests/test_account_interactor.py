@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import create_autospec, Mock
 
-from task_management.interactors.account_interactor.account_interactors import (
-    AccountInteractor
+from task_management.interactors.accounts.account import (
+    Account
 )
 from task_management.interactors.storage_interface.account_storage_interface import (
     AccountStorageInterface
@@ -27,7 +27,7 @@ class TestAccountInteractor:
         self.account_storage = create_autospec(AccountStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
 
-        self.interactor = AccountInteractor(
+        self.interactor = Account(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
         )
@@ -130,7 +130,7 @@ class TestAccountInteractor:
         )()
 
 
-        self.account_storage.delete_account.return_value = None
+        self.account_storage.deactivate_account.return_value = None
 
         result = self.interactor.delete_account(
             account_id=account_id,
