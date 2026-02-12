@@ -7,10 +7,9 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import RemoveListViewInputParams
 from task_management.graphql.types.response_types import RemoveListViewResponse
 from task_management.graphql.types.types import ListViewType
-from task_management.interactors.view_interactors.list_view_interactors import \
+from task_management.interactors.view.list_view_interactor import \
     ListViewInteractor
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
+
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.list_view_storage import ListViewStorage
 from task_management.storages.view_storage import ViewStorage
@@ -27,13 +26,12 @@ class RemoveListViewMutation(graphene.Mutation):
         list_view_storage = ListViewStorage()
         list_storage = ListStorage()
         view_storage = ViewStorage()
-        list_permission_storage = ListPermissionStorage()
+        
 
         interactor = ListViewInteractor(
             list_view_storage=list_view_storage,
             list_storage=list_storage,
             view_storage=view_storage,
-            permission_storage=list_permission_storage
         )
 
         try:

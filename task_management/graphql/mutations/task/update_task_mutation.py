@@ -8,14 +8,12 @@ from task_management.graphql.types.input_types import UpdateTaskInputParams
 from task_management.graphql.types.response_types import UpdateTaskResponse
 from task_management.graphql.types.types import TaskType
 from task_management.interactors.dtos import UpdateTaskDTO
-from task_management.interactors.task_interactors.task_interactor import \
+from task_management.interactors.task.task_interactor import \
     TaskInteractor
-from task_management.storages.field_storage import FieldStorage
-from task_management.storages.field_value_storage import FieldValueStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_storage import TaskStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 class UpdateTaskMutation(graphene.Mutation):
@@ -28,18 +26,14 @@ class UpdateTaskMutation(graphene.Mutation):
     def mutate(root, info, params):
         list_storage = ListStorage()
         task_storage = TaskStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
-        field_storage = FieldStorage()
-        field_value_storage = FieldValueStorage()
         space_storage = SpaceStorage()
+        workspace_storage = WorkspaceStorage()
 
         interactor = TaskInteractor(
             list_storage=list_storage,
             task_storage=task_storage,
-            workspace_member_storage=workspace_member_storage,
-            field_storage=field_storage,
-            field_value_storage=field_value_storage,
             space_storage=space_storage,
+            workspace_storage=workspace_storage,
         )
         try:
             update_input = UpdateTaskDTO(

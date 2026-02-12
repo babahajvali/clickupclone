@@ -4,19 +4,7 @@ from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspace.workspace import \
     Workspace
 from task_management.storages.account_storage import AccountStorage
-from task_management.storages.field_storage import FieldStorage
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.template_storage import TemplateStorage
 from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
@@ -26,13 +14,11 @@ def get_workspace_resolver(root, info, params):
     workspace_storage = WorkspaceStorage()
     user_storage = UserStorage()
     account_storage = AccountStorage()
-    workspace_member_storage = WorkspaceMemberStorage()
 
     interactor = Workspace(
         workspace_storage=workspace_storage,
         user_storage=user_storage,
         account_storage=account_storage,
-        workspace_member_storage=workspace_member_storage,
     )
 
 

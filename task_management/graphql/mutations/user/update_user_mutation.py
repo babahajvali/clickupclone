@@ -7,7 +7,7 @@ from task_management.graphql.types.input_types import UpdateUserInputParams
 from task_management.graphql.types.response_types import UpdateUserResponse
 from task_management.graphql.types.types import UserType
 from task_management.interactors.dtos import UpdateUserDTO
-from task_management.interactors.user_interactor.user_interactors import \
+from task_management.interactors.user.user_interactor import \
     UserInteractor
 from task_management.storages.user_storage import UserStorage
 

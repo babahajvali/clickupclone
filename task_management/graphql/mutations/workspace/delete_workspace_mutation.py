@@ -13,7 +13,6 @@ from task_management.interactors.workspace.workspace import \
 
 from task_management.storages.account_storage import AccountStorage
 from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
@@ -28,13 +27,11 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
 
         interactor = Workspace(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
-            workspace_member_storage=workspace_member_storage,
         )
 
         try:

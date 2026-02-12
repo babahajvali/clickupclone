@@ -13,7 +13,7 @@ from task_management.graphql.types.response_types import \
     ForgotPasswordResponse, ResetPasswordResponse
 from task_management.graphql.types.types import PasswordResetResponseType, \
     UserType
-from task_management.interactors.user_interactor.reset_password_interator import \
+from task_management.interactors.user.reset_password_interator import \
     PasswordResetInteractor
 from task_management.storages.password_reset_storage import \
     PasswordResetStorage

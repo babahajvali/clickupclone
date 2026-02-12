@@ -11,7 +11,7 @@ from task_management.interactors.dtos import CreateUserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.interactors.user_interactor.user_interactors import (
+from task_management.interactors.user.user_interactor import (
     UserInteractor,
 )
 

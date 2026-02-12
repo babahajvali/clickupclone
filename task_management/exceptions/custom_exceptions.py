@@ -3,7 +3,7 @@ class UserNotFoundException(Exception):
         self.user_id = user_id
 
 
-class EmptyAccountNameException(Exception):
+class EmptyNameException(Exception):
     def __init__(self, name: str):
         self.name = name
 
@@ -101,6 +101,10 @@ class TaskAssigneeNotFoundException(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
 
+
+class InActiveTaskAssigneeFoundException(Exception):
+    def __init__(self, assign_id: str):
+        self.assign_id = assign_id
 
 class DeletedTaskException(Exception):
     def __init__(self, task_id: str):
@@ -226,9 +230,39 @@ class AccountNameAlreadyExistsException(Exception):
         self.name = name
 
 
-class NothingToUpdateException(Exception):
+class NothingToUpdateAccountException(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
+
+
+class NothingToUpdateWorkspaceException(Exception):
+    def __init__(self, workspace_id: str):
+        self.workspace_id = workspace_id
+
+
+class NothingToUpdateFieldException(Exception):
+    def __init__(self, field_id: str):
+        self.field_id = field_id
+
+
+class NothingToUpdateTemplateException(Exception):
+    def __init__(self, template_id: str):
+        self.template_id = template_id
+
+
+class NothingToUpdateListException(Exception):
+    def __init__(self, list_id: str):
+        self.list_id = list_id
+
+
+class NothingToUpdateFolderException(Exception):
+    def __init__(self, folder_id: str):
+        self.folder_id = folder_id
+
+
+class NothingToUpdateSpaceException(Exception):
+    def __init__(self, space_id: str):
+        self.space_id = space_id
 
 class AccountNotFoundException(Exception):
     def __init__(self, account_id: str):

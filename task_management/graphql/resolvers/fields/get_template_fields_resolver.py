@@ -1,15 +1,13 @@
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TemplateNotFoundType
 from task_management.graphql.types.types import FieldType, FieldsType
-from task_management.interactors.field_interactors.field_interactors import \
+from task_management.interactors.field.field_interactor import \
     FieldInteractor
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 def get_fields_for_template_resolver(root, info, params):
@@ -18,15 +16,15 @@ def get_fields_for_template_resolver(root, info, params):
     field_storage = FieldStorage()
     template_storage = TemplateStorage()
     list_storage = ListStorage()
-    workspace_member_storage = WorkspaceMemberStorage()
+    workspace_storage = WorkspaceStorage()
     space_storage = SpaceStorage()
 
     interactor = FieldInteractor(
         field_storage=field_storage,
         template_storage=template_storage,
         list_storage=list_storage,
-        workspace_member_storage=workspace_member_storage,
         space_storage=space_storage,
+        workspace_storage=workspace_storage,
     )
 
     try:

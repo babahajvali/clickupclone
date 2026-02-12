@@ -21,3 +21,7 @@ class ViewStorageInterface(ABC):
     @abstractmethod
     def update_view(self,update_view_data: UpdateViewDTO) -> ViewDTO:
         pass
+
+    @abstractmethod
+    def check_view_exists(self,view_id: str) -> bool:
+        pass

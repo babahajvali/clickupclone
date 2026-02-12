@@ -2,8 +2,7 @@ import pytest
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateUserSpacePermissionDTO
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
+from task_management.storages.space_storage import SpaceStorage
 from task_management.tests.factories.storage_factory import \
     SpacePermissionFactory, SpaceFactory, UserFactory
 
@@ -21,7 +20,7 @@ class TestSpacePermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by,
                                permission_type="VIEW")
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.get_user_permission_for_space(user_id=str(user_id),
@@ -36,7 +35,7 @@ class TestSpacePermissionStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         space_id = "12345678-1234-5678-1234-567812345679"
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.get_user_permission_for_space(user_id=str(user_id),
@@ -57,7 +56,7 @@ class TestSpacePermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by,
                                permission_type="VIEW")
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.update_user_permission_for_space(
@@ -81,7 +80,7 @@ class TestSpacePermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         SpacePermissionFactory(user=user, space=space, added_by=added_by,
                                is_active=True)
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.remove_user_permission_for_space(user_id=str(user_id),
@@ -109,7 +108,7 @@ class TestSpacePermissionStorage:
                                permission_type="FULL_EDIT", is_active=True)
         SpacePermissionFactory(user=user1, space=space, added_by=added_by,
                                permission_type="ADMIN", is_active=False)
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.get_space_permissions(space_id=str(space_id))
@@ -123,7 +122,7 @@ class TestSpacePermissionStorage:
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345679"
         SpaceFactory(space_id=space_id)
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.get_space_permissions(space_id=str(space_id))
@@ -165,7 +164,7 @@ class TestSpacePermissionStorage:
                 added_by=str(added_by_id)
             )
         ]
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.create_user_space_permissions(
@@ -192,7 +191,7 @@ class TestSpacePermissionStorage:
                 added_by=str(added_by_id)
             )
         ]
-        storage = SpacePermissionStorage()
+        storage = SpaceStorage()
 
         # Act
         result = storage.create_user_space_permissions(

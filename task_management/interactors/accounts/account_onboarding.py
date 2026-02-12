@@ -6,11 +6,8 @@ from task_management.interactors.accounts.account import Account
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
-    WorkspaceMemberStorageInterface, SpaceStorageInterface, \
-    SpacePermissionStorageInterface, ListStorageInterface, \
-    ListPermissionStorageInterface, TemplateStorageInterface, \
-    FieldStorageInterface, FolderStorageInterface, \
-    FolderPermissionStorageInterface
+    SpaceStorageInterface,ListStorageInterface, \
+    TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface
 
 from task_management.interactors.workspace.workspace import \
     Workspace
@@ -20,27 +17,19 @@ class AccountOnboardingHandler:
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  user_storage: UserStorageInterface,
                  account_storage: AccountStorageInterface,
-                 workspace_member_storage: WorkspaceMemberStorageInterface,
                  space_storage: SpaceStorageInterface,
-                 space_permission_storage: SpacePermissionStorageInterface,
                  list_storage: ListStorageInterface,
-                 list_permission_storage: ListPermissionStorageInterface,
                  template_storage: TemplateStorageInterface,
                  field_storage: FieldStorageInterface,
-                 folder_storage: FolderStorageInterface,
-                 folder_permission_storage: FolderPermissionStorageInterface):
+                 folder_storage: FolderStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
-        self.workspace_member_storage = workspace_member_storage
         self.space_storage = space_storage
-        self.space_permission_storage = space_permission_storage
         self.list_storage = list_storage
-        self.list_permission_storage = list_permission_storage
         self.template_storage = template_storage
         self.field_storage = field_storage
         self.folder_storage = folder_storage
-        self.folder_permission_storage = folder_permission_storage
 
     @transaction.atomic
     def handle(self, name: str, created_by: str, description: Optional[str]):
@@ -72,20 +61,17 @@ class AccountOnboardingHandler:
         workspace_onboarding = WorkspaceOnboardingHandler(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
-            workspace_member_storage=self.workspace_member_storage,
             space_storage=self.space_storage,
-            space_permission_storage=self.space_permission_storage,
             list_storage=self.list_storage,
-            list_permission_storage=self.list_permission_storage,
             folder_storage=self.folder_storage,
-            folder_permission_storage=self.folder_permission_storage,
             template_storage=self.template_storage,
             field_storage=self.field_storage,
+            account_storage=self.account_storage,
         )
         workspace_interactor = Workspace(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
-            workspace_member_storage=self.workspace_member_storage,
+            user_storage=self.user_storage
         )
 
         workspace_input_data = CreateWorkspaceDTO(

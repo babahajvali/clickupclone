@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
 )
 from task_management.exceptions.enums import FieldTypes, Permissions, Role
-from task_management.interactors.field_interactors.field_interactors import (
+from task_management.interactors.field.field_interactor import (
     FieldInteractor
 )
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \

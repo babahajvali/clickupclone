@@ -9,15 +9,11 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetFolderVisibilityResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.space_interactors.folders_interactor import \
+from task_management.interactors.space.folder_interactor import \
     FolderInteractor
 from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 class SetFolderVisibilityMutation(graphene.Mutation):
@@ -29,14 +25,12 @@ class SetFolderVisibilityMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         folder_storage = FolderStorage()
-        folder_permission_storage = FolderPermissionStorage()
         space_storage = SpaceStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
+        workspace_storage = WorkspaceStorage()
 
         interactor = FolderInteractor(
             folder_storage=folder_storage,
-            folder_permission_storage=folder_permission_storage,
-            workspace_member_storage=workspace_member_storage,
+            workspace_storage=workspace_storage,
             space_storage=space_storage
         )
 

@@ -47,3 +47,6 @@ class ViewStorage(ViewStorageInterface):
         view_data.save()
 
         return self._view_dto(data=view_data)
+
+    def check_view_exists(self,view_data: ViewDTO) -> bool:
+        return View.objects.filter(view_id=view_data.view_id).exists()

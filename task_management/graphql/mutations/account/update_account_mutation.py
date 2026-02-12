@@ -53,5 +53,5 @@ class UpdateAccountMutation(graphene.Mutation):
             return InactiveAccountType(account_id=e.account_id)
         except custom_exceptions.UserNotAccountOwnerException as e:
             return UserNotAccountOwnerType(user_id=e.user_id)
-        except custom_exceptions.NothingToUpdateException as e:
+        except custom_exceptions.NothingToUpdateAccountException as e:
             return NothingToUpdateAccountType(account_id=e.account_id)

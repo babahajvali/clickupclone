@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import  Visibility, Role
 from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.list_interactors.list_interactors import \
+from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
@@ -55,7 +55,7 @@ class TestSetListPublic:
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
-            list_permission_storage=self.list_permission_storage,
+            
             template_storage=self.template_storage,
             field_storage=self.field_storage,
             workspace_member_storage=self.workspace_member_storage,

@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import InvalidResetToken, \
 from task_management.graphql.types.response_types import \
     ValidateResetTokenResponse
 from task_management.graphql.types.types import ValidateResetTokenType
-from task_management.interactors.user_interactor.reset_password_interator import \
+from task_management.interactors.user.reset_password_interator import \
     PasswordResetInteractor
 from task_management.storages.password_reset_storage import \
     PasswordResetStorage

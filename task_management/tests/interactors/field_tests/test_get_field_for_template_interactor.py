@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import \
     TemplateNotFoundException
-from task_management.interactors.field_interactors.field_interactors import \
+from task_management.interactors.field.field_interactor import \
     FieldInteractor
 from task_management.interactors.storage_interfaces.field_storage_interface import FieldStorageInterface
 from task_management.interactors.storage_interfaces.list_permission_storage_interface import \

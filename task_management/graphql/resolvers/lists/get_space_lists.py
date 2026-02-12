@@ -2,39 +2,30 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     InactiveSpaceType
 from task_management.graphql.types.types import ListType, ListsType
-from task_management.interactors.list_interactors.list_interactors import \
+from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
-from task_management.storages.folder_permission_storage import FolderPermissionStorage
-from task_management.storages.space_permission_storage import SpacePermissionStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 def get_space_lists_resolver(root, info, params):
     space_id = params.space_id
 
     list_storage = ListStorage()
-    template_storage = TemplateStorage()
-    field_storage = FieldStorage()
     folder_storage = FolderStorage()
     space_storage = SpaceStorage()
-    list_permission_storage = ListPermissionStorage()
-    workspace_member_storage = WorkspaceMemberStorage()
+    
+    workspace_storage = WorkspaceStorage()
 
     interactor = ListInteractor(
         list_storage=list_storage,
-        template_storage=template_storage,
-        field_storage=field_storage,
         folder_storage=folder_storage,
         space_storage=space_storage,
-        list_permission_storage=list_permission_storage,
-        workspace_member_storage=workspace_member_storage
-    )
+        
+        workspace_storage=workspace_storage)
 
     try:
         lists_data = interactor.get_space_lists(space_id=space_id)

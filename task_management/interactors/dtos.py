@@ -330,7 +330,7 @@ class UserSpacePermissionDTO:
 
 
 @dataclass
-class CreateUserFolderPermissionDTO:
+class CreateFolderPermissionDTO:
     folder_id: str
     user_id: str
     permission_type: Permissions

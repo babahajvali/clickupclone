@@ -1,10 +1,11 @@
 from django.db.models import F
 
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO
+    UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.models import List, Template, Space, Folder, User
+from task_management.models import ListPermission, List, Template, Space, Folder, User
 
 
 class ListStorage(ListStorageInterface):
@@ -63,15 +64,9 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def update_list(self, update_list_data: UpdateListDTO) -> ListDTO:
-        list_data = List.objects.get(list_id=update_list_data.list_id)
-        if update_list_data.description is not None:
-            list_data.description = update_list_data.description
-
-        if update_list_data.name is not None:
-            list_data.name = update_list_data.name
-
-        list_data.save()
+    def update_list(self, list_id: str, update_fields: dict) -> ListDTO:
+        List.objects.filter(list_id=list_id).update(**update_fields)
+        list_data = List.objects.get(list_id=list_id)
 
         return self._list_dto(list_data=list_data)
 
@@ -192,3 +187,105 @@ class ListStorage(ListStorageInterface):
     def get_list_space_id(self, list_id: str) -> str:
         return List.objects.filter(list_id=list_id).values_list('space_id',
                                                                 flat=True)[0]
+
+    @staticmethod
+    def _list_permission_dto(
+            permission_data: ListPermission) -> UserListPermissionDTO:
+        return UserListPermissionDTO(
+            id=permission_data.pk,
+            list_id=permission_data.list.list_id,
+            user_id=permission_data.user.user_id,
+            permission_type=permission_data.permission_type,
+            is_active=permission_data.is_active,
+            added_by=permission_data.added_by.user_id,
+        )
+
+    def update_user_permission_for_list(self, list_id: str, user_id: str,
+                                        permission_type: Permissions) -> UserListPermissionDTO:
+        permission = ListPermission.objects.get(
+            list_id=list_id,
+            user_id=user_id
+        )
+        permission.permission_type = permission_type.value
+        permission.save()
+
+        return self._list_permission_dto(permission_data=permission)
+
+    def get_list_permissions(self, list_id: str) -> list[
+        UserListPermissionDTO]:
+        permissions = ListPermission.objects.filter(
+            list_id=list_id
+        )
+
+        return [self._list_permission_dto(perm) for perm in permissions]
+
+    def get_user_permission_for_list(self, user_id: str,
+                                     list_id: str) -> UserListPermissionDTO | None:
+        try:
+            permission = ListPermission.objects.get(
+                list_id=list_id,
+                user_id=user_id
+            )
+
+            return self._list_permission_dto(permission_data=permission)
+        except ListPermission.DoesNotExist:
+            return None
+
+    def add_user_permission_for_list(self, list_id: str, user_id: str,
+                                     permission_type: Permissions) -> UserListPermissionDTO:
+        list_obj = List.objects.get(list_id=list_id)
+        user = User.objects.get(user_id=user_id)
+        added_by = User.objects.get(user_id=user_id)
+
+        permission = ListPermission.objects.create(
+            list=list_obj,
+            user=user,
+            permission_type=permission_type.value,
+            added_by=added_by,
+        )
+
+        return self._list_permission_dto(permission_data=permission)
+
+    def remove_user_permission_for_list(self, list_id: str,
+                                        user_id: str) -> UserListPermissionDTO:
+        permission = ListPermission.objects.get(
+            list_id=list_id,
+            user_id=user_id
+        )
+        permission.is_active = False
+        permission.save()
+
+        return self._list_permission_dto(permission_data=permission)
+
+    def create_list_users_permissions(self, user_permissions: list[
+        CreateUserListPermissionDTO]) -> list[UserListPermissionDTO]:
+        list_ids = list(set(perm.list_id for perm in user_permissions))
+        user_ids = list(set(perm.user_id for perm in user_permissions))
+        added_by_ids = list(set(perm.added_by for perm in user_permissions))
+
+        lists = {str(l.list_id): l for l in
+                 List.objects.filter(list_id__in=list_ids)}
+        users = {str(u.user_id): u for u in
+                 User.objects.filter(user_id__in=user_ids)}
+        added_by_users = {str(u.user_id): u for u in
+                          User.objects.filter(user_id__in=added_by_ids)}
+
+        permissions_to_create = []
+        for perm_data in user_permissions:
+            list_obj = lists.get(str(perm_data.list_id))
+            user = users.get(str(perm_data.user_id))
+            added_by_user = added_by_users.get(str(perm_data.added_by))
+            permissions_to_create.append(
+                ListPermission(
+                    list=list_obj,
+                    user=user,
+                    permission_type=perm_data.permission_type.value,
+                    added_by=added_by_user,
+                )
+            )
+
+        created_permissions = ListPermission.objects.bulk_create(
+            permissions_to_create)
+
+        return [self._list_permission_dto(perm) for perm in
+                created_permissions]

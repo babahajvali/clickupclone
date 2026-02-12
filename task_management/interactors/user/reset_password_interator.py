@@ -23,9 +23,7 @@ class PasswordResetInteractor(ValidationMixin):
         self.reset_token_expiry_hours = reset_token_expiry_hours
 
     def request_password_reset(self, email: str, base_url: str) -> bool:
-        """Request password reset for a user"""
 
-        # Check if user exists
         user_data = self.user_storage.get_user_details(email=email)
         if not user_data:
             from task_management.exceptions.custom_exceptions import \
@@ -54,7 +52,7 @@ class PasswordResetInteractor(ValidationMixin):
         return False
 
     def reset_password(self, token: str, new_password: str):
-        """Reset user password using token"""
+
 
         reset_token_data = self.password_reset_storage.get_reset_token(
             token=token)
@@ -80,7 +78,6 @@ class PasswordResetInteractor(ValidationMixin):
         return updated_user
 
     def validate_reset_token(self, token: str) -> bool:
-        """Validate if reset token is valid and not expired - call this when page loads"""
 
         reset_token_data = self.password_reset_storage.get_reset_token(
             token=token)

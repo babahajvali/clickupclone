@@ -19,6 +19,10 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_task_list_id(self, task_id: str) -> str:
+        pass
+
+    @abstractmethod
     def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
         pass
 

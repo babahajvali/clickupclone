@@ -2,8 +2,8 @@ import pytest
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateUserListPermissionDTO
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
+from task_management.storages.list_storage import \
+    ListStorage
 from task_management.tests.factories.storage_factory import \
     ListPermissionFactory, ListFactory, UserFactory
 
@@ -21,7 +21,7 @@ class TestListPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
                               permission_type="view")
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.update_user_permission_for_list(
@@ -49,7 +49,7 @@ class TestListPermissionStorage:
                               permission_type="view")
         ListPermissionFactory(list=list_obj, user=user2, added_by=added_by,
                               permission_type="edit")
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.get_list_permissions(list_id=str(list_id))
@@ -63,7 +63,7 @@ class TestListPermissionStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         ListFactory(list_id=list_id)
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.get_list_permissions(list_id=str(list_id))
@@ -83,7 +83,7 @@ class TestListPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
                               permission_type="view")
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.get_user_permission_for_list(user_id=str(user_id),
@@ -98,7 +98,7 @@ class TestListPermissionStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.get_user_permission_for_list(user_id=str(user_id),
@@ -119,7 +119,7 @@ class TestListPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
                               is_active=True)
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.remove_user_permission_for_list(list_id=str(list_id),
@@ -162,7 +162,7 @@ class TestListPermissionStorage:
                 added_by=str(added_by_id)
             )
         ]
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.create_list_users_permissions(
@@ -189,7 +189,7 @@ class TestListPermissionStorage:
                 added_by=str(added_by_id)
             )
         ]
-        storage = ListPermissionStorage()
+        storage = ListStorage()
 
         # Act
         result = storage.create_list_users_permissions(

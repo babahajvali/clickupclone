@@ -5,11 +5,11 @@ from task_management.graphql.types.error_types import ViewNotFoundType
 from task_management.graphql.types.input_types import UpdateViewInputParams
 from task_management.graphql.types.response_types import UpdateViewResponse
 from task_management.graphql.types.types import ViewType
-from task_management.interactors.view_interactors.view_interactors import \
+from task_management.interactors.view.view_interactor import \
     ViewInteractor
 from task_management.interactors.dtos import UpdateViewDTO
 from task_management.storages.view_storage import ViewStorage
-from task_management.storages.list_permission_storage import ListPermissionStorage
+
 from task_management.storages.list_storage import ListStorage
 
 

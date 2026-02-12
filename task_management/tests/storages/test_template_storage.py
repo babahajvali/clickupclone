@@ -85,7 +85,7 @@ class TestTemplateStorage:
         storage = TemplateStorage()
 
         # Act & Assert
-        assert storage.is_template_name_exist("Existing Template") is True
+        assert storage.validate_template_exists("Existing Template") is True
 
     @pytest.mark.django_db
     def test_is_template_name_exist_false(self):
@@ -93,7 +93,7 @@ class TestTemplateStorage:
         storage = TemplateStorage()
 
         # Act & Assert
-        assert storage.is_template_name_exist("Non Existing") is False
+        assert storage.validate_template_exists("Non Existing") is False
 
     @pytest.mark.django_db
     def test_check_template_name_exist_except_this_template_true(self):

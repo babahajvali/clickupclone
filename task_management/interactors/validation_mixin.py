@@ -20,16 +20,11 @@ from task_management.interactors.storage_interfaces.account_storage_interface im
     AccountStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
-from task_management.interactors.storage_interfaces.folder_permission_storage_interface import \
-    FolderPermissionStorageInterface
 from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
-    ListPermissionStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
+
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
 from task_management.interactors.storage_interfaces.task_storage_interface import \
@@ -40,8 +35,6 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
     UserStorageInterface
 from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
 
@@ -169,8 +162,8 @@ class ValidationMixin:
 
     @staticmethod
     def validate_user_has_access_to_list(user_id: str, list_id: str,
-                                         permission_storage: ListPermissionStorageInterface):
-        user_permissions = permission_storage.get_user_permission_for_list(
+                                         list_storage: ListStorageInterface):
+        user_permissions = list_storage.get_user_permission_for_list(
             user_id=user_id, list_id=list_id)
 
         if not user_permissions.permission_type == Permissions.FULL_EDIT.value:
@@ -216,9 +209,9 @@ class ValidationMixin:
     @staticmethod
     def validate_user_has_access_to_folder(user_id: str,
                                            folder_id: str,
-                                           permission_storage: FolderPermissionStorageInterface):
+                                           folder_storage: FolderStorageInterface):
 
-        user_permission = permission_storage.get_user_permission_for_folder(
+        user_permission = folder_storage.get_user_permission_for_folder(
             user_id=user_id, folder_id=folder_id)
 
         if not user_permission.permission_type == Permissions.FULL_EDIT.value:
@@ -238,15 +231,15 @@ class ValidationMixin:
         if not view_data:
             raise ViewNotFoundException(view_id=view_id)
 
-    @staticmethod
-    def validate_user_has_access_to_space(user_id: str, space_id: str,
-                                          permission_storage: SpacePermissionStorageInterface):
-
-        user_permissions = permission_storage.get_user_permission_for_space(
-            user_id=user_id, space_id=space_id)
-
-        if not user_permissions.permission_type == Permissions.FULL_EDIT.value:
-            raise ModificationNotAllowedException(user_id=user_id)
+    # @staticmethod
+    # def validate_user_has_access_to_space(user_id: str, space_id: str,
+    #                                       permission_storage: SpacePermissionStorageInterface):
+    #
+    #     user_permissions = permission_storage.get_user_permission_for_space(
+    #         user_id=user_id, space_id=space_id)
+    #
+    #     if not user_permissions.permission_type == Permissions.FULL_EDIT.value:
+    #         raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_workspace_is_active(workspace_id: str,
@@ -268,84 +261,83 @@ class ValidationMixin:
             raise UnsupportedVisibilityTypeException(
                 visibility_type=visibility)
 
-    @staticmethod
-    def validate_user_is_workspace_owner(user_id: str, workspace_id: str,
-                                         workspace_storage: WorkspaceStorageInterface):
-        is_owner = workspace_storage.validate_user_is_workspace_owner(
-            workspace_id=workspace_id, user_id=user_id)
-
-        if not is_owner:
-            raise UserNotWorkspaceOwnerException(user_id=user_id)
-
-    @staticmethod
-    def validate_user_has_access_to_workspace(
-            user_id: str, workspace_id: str,
-            workspace_member_storage: WorkspaceMemberStorageInterface):
-
-        member_permission = workspace_member_storage.get_workspace_member(
-            workspace_id=workspace_id,
-            user_id=user_id
-        )
-
-        if not member_permission or member_permission.role == Role.GUEST:
-            raise ModificationNotAllowedException(user_id=user_id)
-
-    @staticmethod
-    def validate_user_permission_for_change_workspace_role(
-            workspace_id: str, user_id: str,
-            workspace_storage: WorkspaceStorageInterface,
-            workspace_member_storage: WorkspaceMemberStorageInterface):
-
-        workspace_data = workspace_storage.get_workspace(
-            workspace_id=workspace_id
-        )
-
-        if not workspace_data:
-            raise WorkspaceNotFoundException(workspace_id=workspace_id)
-
-        if not workspace_data.is_active:
-            raise InactiveWorkspaceException(workspace_id=workspace_id)
-        if str(workspace_data.user_id) == str(user_id):
-            return
-
-        member_permission = workspace_member_storage.get_workspace_member(
-            workspace_id=workspace_id,
-            user_id=user_id
-        )
-        user_role = member_permission.role
-        if not member_permission or (
-                user_role == Role.MEMBER or user_role == Role.GUEST):
-            raise ModificationNotAllowedException(user_id=user_id)
-
-    @staticmethod
-    def validate_workspace_member_is_active(workspace_member_id: int,
-                                            workspace_member_storage: WorkspaceMemberStorageInterface):
-        workspace_member_data = workspace_member_storage.get_workspace_member_by_id(
-            workspace_member_id=workspace_member_id)
-
-        if not workspace_member_data.is_active:
-            raise InactiveWorkspaceMemberException(
-                workspace_member_id=workspace_member_id)
-
-    @staticmethod
-    def validate_account_is_active(account_id: str,
-                                   account_storage: AccountStorageInterface):
-        account_data = account_storage.get_account_by_id(account_id=account_id)
-
-        if not account_data:
-            raise AccountNotFoundException(account_id=account_id)
-
-        if not account_data.is_active:
-            raise InactiveAccountException(account_id=account_id)
-
-    @staticmethod
-    def validate_user_access_for_workspace(user_id: str, workspace_id: str,
-                                           workspace_member_storage: WorkspaceMemberStorageInterface):
-        workspace_user_data = workspace_member_storage.get_workspace_member(
-            user_id=user_id, workspace_id=workspace_id)
-
-        if workspace_user_data.role == Role.GUEST.value or workspace_user_data.role == Role.MEMBER.value:
-            raise ModificationNotAllowedException(user_id=user_id)
+    # @staticmethod
+    # def validate_user_is_workspace_owner(user_id: str, workspace_id: str,
+    #                                      workspace_storage: WorkspaceStorageInterface):
+    #     is_owner = workspace_storage.validate_user_is_workspace_owner(
+    #         workspace_id=workspace_id, user_id=user_id)
+    #
+    #     if not is_owner:
+    #         raise UserNotWorkspaceOwnerException(user_id=user_id)
+    #
+    # @staticmethod
+    # def validate_user_has_access_to_workspace(
+    #         user_id: str, workspace_id: str,
+    #         workspace_member_storage: WorkspaceMemberStorageInterface):
+    #
+    #     member_permission = workspace_member_storage.get_workspace_member(
+    #         workspace_id=workspace_id,
+    #         user_id=user_id
+    #     )
+    #
+    #     if not member_permission or member_permission.role == Role.GUEST:
+    #         raise ModificationNotAllowedException(user_id=user_id)
+    #
+    # @staticmethod
+    # def validate_user_permission_for_change_workspace_role(
+    #         workspace_id: str, user_id: str,
+    #         workspace_storage: WorkspaceStorageInterface):
+    #
+    #     workspace_data = workspace_storage.get_workspace(
+    #         workspace_id=workspace_id
+    #     )
+    #
+    #     if not workspace_data:
+    #         raise WorkspaceNotFoundException(workspace_id=workspace_id)
+    #
+    #     if not workspace_data.is_active:
+    #         raise InactiveWorkspaceException(workspace_id=workspace_id)
+    #     if str(workspace_data.user_id) == str(user_id):
+    #         return
+    #
+    #     member_permission = workspace_member_storage.get_workspace_member(
+    #         workspace_id=workspace_id,
+    #         user_id=user_id
+    #     )
+    #     user_role = member_permission.role
+    #     if not member_permission or (
+    #             user_role == Role.MEMBER or user_role == Role.GUEST):
+    #         raise ModificationNotAllowedException(user_id=user_id)
+    #
+    # @staticmethod
+    # def validate_workspace_member_is_active(workspace_member_id: int,
+    #                                         workspace_member_storage: WorkspaceMemberStorageInterface):
+    #     workspace_member_data = workspace_member_storage.get_workspace_member_by_id(
+    #         workspace_member_id=workspace_member_id)
+    #
+    #     if not workspace_member_data.is_active:
+    #         raise InactiveWorkspaceMemberException(
+    #             workspace_member_id=workspace_member_id)
+    #
+    # @staticmethod
+    # def validate_account_is_active(account_id: str,
+    #                                account_storage: AccountStorageInterface):
+    #     account_data = account_storage.get_account_by_id(account_id=account_id)
+    #
+    #     if not account_data:
+    #         raise AccountNotFoundException(account_id=account_id)
+    #
+    #     if not account_data.is_active:
+    #         raise InactiveAccountException(account_id=account_id)
+    #
+    # @staticmethod
+    # def validate_user_access_for_workspace(user_id: str, workspace_id: str,
+    #                                        workspace_member_storage: WorkspaceMemberStorageInterface):
+    #     workspace_user_data = workspace_member_storage.get_workspace_member(
+    #         user_id=user_id, workspace_id=workspace_id)
+    #
+    #     if workspace_user_data.role == Role.GUEST.value or workspace_user_data.role == Role.MEMBER.value:
+    #         raise ModificationNotAllowedException(user_id=user_id)
 
     @staticmethod
     def validate_role(role: str):

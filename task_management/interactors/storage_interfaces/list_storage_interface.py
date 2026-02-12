@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO, FieldDTO
+    UpdateListDTO, FieldDTO, UserListPermissionDTO, CreateUserListPermissionDTO
 
 
 class ListStorageInterface(ABC):
 
     @abstractmethod
-    def get_template_id_by_list_id(self,list_id: str) -> str:
+    def get_template_id_by_list_id(self, list_id: str) -> str:
         pass
 
     @abstractmethod
@@ -20,7 +22,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_list(self, update_list_data: UpdateListDTO) -> ListDTO:
+    def update_list(self, list_id: str, update_fields: dict) -> ListDTO:
         pass
 
     @abstractmethod
@@ -53,7 +55,7 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def reorder_list_in_space(self, space_id: str, list_id: str, order: int) -> \
-    ListDTO:
+            ListDTO:
         pass
 
     @abstractmethod
@@ -64,7 +66,36 @@ class ListStorageInterface(ABC):
     def get_space_lists_count(self, space_id: str) -> int:
         pass
 
-
     @abstractmethod
     def get_list_space_id(self, list_id: str) -> str:
+        pass
+
+    @abstractmethod
+    def update_user_permission_for_list(self, list_id: str, user_id: str,
+                                        permission_type: Permissions) -> UserListPermissionDTO:
+        pass
+
+    @abstractmethod
+    def get_list_permissions(self, list_id: str) -> list[
+        UserListPermissionDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_permission_for_list(self, user_id: str,
+                                     list_id: str) -> UserListPermissionDTO:
+        pass
+
+    @abstractmethod
+    def add_user_permission_for_list(self, list_id: str, user_id: str,
+                                     permission_type: Permissions) -> UserListPermissionDTO:
+        pass
+
+    @abstractmethod
+    def remove_user_permission_for_list(self, list_id: str,
+                                        user_id: str) -> UserListPermissionDTO:
+        pass
+
+    @abstractmethod
+    def create_list_users_permissions(self, user_permissions: list[
+        CreateUserListPermissionDTO]) -> list[UserListPermissionDTO]:
         pass

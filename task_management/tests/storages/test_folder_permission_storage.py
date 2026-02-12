@@ -2,9 +2,9 @@ import pytest
 from factory.random import reseed_random
 
 from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import CreateUserFolderPermissionDTO
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
+from task_management.interactors.dtos import CreateFolderPermissionDTO
+from task_management.storages.folder_storage import \
+    FolderStorage
 from task_management.tests.factories.storage_factory import \
     FolderPermissionFactory, FolderFactory, UserFactory
 
@@ -22,7 +22,7 @@ class TestFolderPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
                                 permission_type="view")
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.get_user_permission_for_folder(user_id=str(user_id),
@@ -38,7 +38,7 @@ class TestFolderPermissionStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.get_user_permission_for_folder(user_id=str(user_id),
@@ -60,7 +60,7 @@ class TestFolderPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
                                 permission_type="view")
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.update_user_permission_for_folder(
@@ -84,7 +84,7 @@ class TestFolderPermissionStorage:
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
                                 is_active=True)
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.remove_user_permission_for_folder(
@@ -107,7 +107,7 @@ class TestFolderPermissionStorage:
                                 permission_type="view")
         FolderPermissionFactory(user=user2, folder=folder, added_by=added_by,
                                 permission_type="edit")
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.get_folder_permissions(folder_id=str(folder_id))
@@ -121,7 +121,7 @@ class TestFolderPermissionStorage:
         # Arrange
         folder_id = "12345678-1234-5678-1234-567812345679"
         FolderFactory(folder_id=folder_id)
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.get_folder_permissions(folder_id=str(folder_id))
@@ -144,26 +144,26 @@ class TestFolderPermissionStorage:
         user2 = UserFactory(user_id=user_id_2)
         added_by = UserFactory(user_id=added_by_id)
         users_permission_data = [
-            CreateUserFolderPermissionDTO(
+            CreateFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_1),
                 permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             ),
-            CreateUserFolderPermissionDTO(
+            CreateFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_2),
                 permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
-            CreateUserFolderPermissionDTO(
+            CreateFolderPermissionDTO(
                 folder_id=str(folder_id_2),
                 user_id=str(user_id_1),
                 permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.create_folder_users_permissions(
@@ -183,14 +183,14 @@ class TestFolderPermissionStorage:
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
         users_permission_data = [
-            CreateUserFolderPermissionDTO(
+            CreateFolderPermissionDTO(
                 folder_id=str(folder_id),
                 user_id=str(user_id),
                 permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             )
         ]
-        storage = FolderPermissionStorage()
+        storage = FolderStorage()
 
         # Act
         result = storage.create_folder_users_permissions(

@@ -1,21 +1,16 @@
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO, \
     UpdateViewDTO
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import \
-    ListPermissionStorageInterface
-from task_management.interactors.storage_interfaces.list_storage_interface import \
-    ListStorageInterface
-from task_management.interactors.storage_interfaces.view_storage_interface import \
-    ViewStorageInterface
+from task_management.interactors.storage_interfaces import \
+    ViewStorageInterface, ListStorageInterface
+
 from task_management.interactors.validation_mixin import ValidationMixin
 
 
 class ViewInteractor(ValidationMixin):
 
     def __init__(self, view_storage: ViewStorageInterface,
-                 permission_storage: ListPermissionStorageInterface,
                  list_storage: ListStorageInterface):
         self.view_storage = view_storage
-        self.permission_storage = permission_storage
         self.list_storage = list_storage
 
     def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:

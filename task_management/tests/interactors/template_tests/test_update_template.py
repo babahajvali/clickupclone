@@ -11,7 +11,9 @@ from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
     ListPermissionStorageInterface
 )
-from task_management.interactors.template_interactors.update_template_interactor import (
+from task_management.interactors.template.template_interactor import \
+    TemplateInteractor
+from task_management.interactors.template.update_template_interactor import (
     UpdateTemplateInteractor
 )
 from task_management.interactors.storage_interfaces.list_storage_interface import (
@@ -47,7 +49,7 @@ class TestUpdateTemplateInteractor:
         self.permission_storage = create_autospec(
             ListPermissionStorageInterface)
 
-        self.interactor = UpdateTemplateInteractor(
+        self.interactor = TemplateInteractor(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
             permission_storage=self.permission_storage
@@ -75,7 +77,7 @@ class TestUpdateTemplateInteractor:
         self.permission_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT.value)
         )
-        self.template_storage.is_template_name_exist.return_value = False
+        self.template_storage.validate_template_exists.return_value = False
         self.template_storage.update_template.return_value = updated_template
 
         result = self.interactor.update_template(update_dto, user_id="user_id")

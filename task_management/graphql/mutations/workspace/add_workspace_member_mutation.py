@@ -13,17 +13,7 @@ from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO
 from task_management.interactors.workspace.workspace_member_interactors import \
     WorkspaceMemberInteractor
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
-from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
@@ -35,26 +25,12 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        workspace_member_storage = WorkspaceMemberStorage()
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
-        space_permission_storage = SpacePermissionStorage()
-        folder_permission_storage = FolderPermissionStorage()
-        list_permission_storage = ListPermissionStorage()
-        space_storage = SpaceStorage()
-        folder_storage = FolderStorage()
-        list_storage = ListStorage()
 
         interactor = WorkspaceMemberInteractor(
-            workspace_member_storage=workspace_member_storage,
             workspace_storage=workspace_storage,
             user_storage=user_storage,
-            space_permission_storage=space_permission_storage,
-            folder_permission_storage=folder_permission_storage,
-            list_permission_storage=list_permission_storage,
-            space_storage=space_storage,
-            folder_storage=folder_storage,
-            list_storage=list_storage
         )
 
         try:

@@ -1,13 +1,11 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions, ViewTypes
-from task_management.interactors.view_interactors.view_interactors import \
+from task_management.exceptions.enums import ViewTypes
+from task_management.interactors.view.view_interactor import \
     ViewInteractor
 from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
-from task_management.interactors.storage_interfaces.space_permission_storage_interface import \
-    SpacePermissionStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
 from task_management.exceptions.custom_exceptions import (
@@ -25,13 +23,11 @@ class TestViewInteractor:
 
     def setup_method(self):
         self.view_storage = create_autospec(ViewStorageInterface)
-        self.permission_storage = create_autospec(
-            SpacePermissionStorageInterface)
+
         self.list_storage = create_autospec(ListStorageInterface)
 
         self.interactor = ViewInteractor(
             view_storage=self.view_storage,
-            permission_storage=self.permission_storage,
             list_storage=self.list_storage
         )
 
@@ -68,9 +64,6 @@ class TestViewInteractor:
         update_data = UpdateViewDTOFactory()
         expected_result = ViewDTOFactory()
 
-        self.permission_storage.get_space_permissions.return_value = (
-            Permissions.FULL_EDIT.value
-        )
         self.view_storage.get_view.return_value = ViewDTOFactory()
         self.view_storage.update_view.return_value = expected_result
 

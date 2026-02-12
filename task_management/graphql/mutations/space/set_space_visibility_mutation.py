@@ -9,13 +9,11 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetSpaceVisibilityResponse
 from task_management.graphql.types.types import SpaceType
-from task_management.interactors.space_interactors.space_interactors import \
+from task_management.interactors.space.space_interactors import \
     SpaceInteractor
 
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
@@ -28,15 +26,11 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         space_storage = SpaceStorage()
-        permission_storage = SpacePermissionStorage()
         workspace_storage = WorkspaceStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
 
         interactor = SpaceInteractor(
             space_storage=space_storage,
-            space_permission_storage=permission_storage,
             workspace_storage=workspace_storage,
-            workspace_member_storage=workspace_member_storage
         )
 
         try:

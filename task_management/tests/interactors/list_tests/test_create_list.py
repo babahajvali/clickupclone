@@ -4,8 +4,10 @@ from unittest.mock import create_autospec, patch
 from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     UserSpacePermissionDTO, WorkspaceMemberDTO
-from task_management.interactors.list_interactors.list_interactors import \
+from task_management.interactors.list.list_interactor import \
     ListInteractor
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
@@ -15,14 +17,8 @@ from task_management.interactors.storage_interfaces.folder_storage_interface imp
     FolderStorageInterface
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interfaces.space_permission_storage_interface import (
-    SpacePermissionStorageInterface
-)
 from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
     ListPermissionStorageInterface
-)
-from task_management.interactors.storage_interfaces.folder_permission_storage_interface import (
-    FolderPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
@@ -31,8 +27,7 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
+
 from task_management.tests.factories.interactor_factory import \
     CreateListDTOFactory
 
@@ -59,26 +54,20 @@ class TestCreateList:
 
         self.list_permission_storage = create_autospec(
             ListPermissionStorageInterface)
-        self.folder_permission_storage = create_autospec(
-            FolderPermissionStorageInterface)
-        self.space_permission_storage = create_autospec(
-            SpacePermissionStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
-            list_permission_storage=self.list_permission_storage,
-            template_storage=self.template_storage,
-            field_storage=self.field_storage,
-            workspace_member_storage=self.workspace_member_storage,
+            
+            workspace_storage=self.workspace_storage
         )
 
     @patch(
-        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
     )
     def test_create_list_success(self, mock_create_template, snapshot):
         mock_create_template.return_value = None
@@ -116,7 +105,7 @@ class TestCreateList:
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     @patch(
-        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
     )
     def test_space_not_found(self, mock_create_template, snapshot):
         mock_create_template.return_value = None
@@ -124,7 +113,7 @@ class TestCreateList:
         dto = CreateListDTOFactory(folder_id=None)
         dto.space_id = "space_123"  # ✅ REQUIRED
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = (
+        self.space_storage.get_user_permission_for_space.return_value = (
             make_permission(Role.MEMBER)
         )
         self.space_storage.get_space.return_value = None
@@ -133,7 +122,7 @@ class TestCreateList:
             self.interactor.create_list(dto)
 
     @patch(
-        "task_management.interactors.list_interactors.list_interactors.CreateTemplateInteractor.create_template"
+        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
     )
     def test_space_inactive(self, mock_create_template, snapshot):
         mock_create_template.return_value = None
@@ -141,7 +130,7 @@ class TestCreateList:
         dto = CreateListDTOFactory(folder_id=None)
         dto.space_id = "space_123"
 
-        self.space_permission_storage.get_user_permission_for_space.return_value = (
+        self.space_storage.get_user_permission_for_space.return_value = (
             make_permission(Role.MEMBER)
         )
         self.space_storage.get_space.return_value = type(

@@ -50,6 +50,10 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
+    def get_task_list_id(self, task_id: str) -> str:
+        return \
+        Task.objects.filter(task_id=task_id).values_list('list_id', flat=True)[0]
+
     def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
         list_tasks = Task.objects.filter(list_id=list_id, is_deleted=False)
 
@@ -69,7 +73,7 @@ class TaskStorage(TaskStorageInterface):
 
     def task_filter_data(self, filter_data: FilterDTO):
         active_tasks = Task.objects.filter(
-            list_id=filter_data.list_id,is_deleted=False).prefetch_related(
+            list_id=filter_data.list_id, is_deleted=False).prefetch_related(
             "task_assignees", "task_field_values",
         )
 
@@ -89,7 +93,7 @@ class TaskStorage(TaskStorageInterface):
         active_tasks = active_tasks.distinct().order_by('order')
 
         return active_tasks[
-            filter_data.offset - 1: filter_data.offset-1 + filter_data.limit]
+            filter_data.offset - 1: filter_data.offset - 1 + filter_data.limit]
 
     def get_tasks_count(self, list_id: str):
         return Task.objects.filter(list_id=list_id, is_deleted=False).count()

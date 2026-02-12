@@ -3,15 +3,13 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interfaces.task_field_values_storage_interface import \
-    FieldValueStorageInterface
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
-from task_management.interactors.task_interactors.task_interactor import \
+from task_management.interactors.task.task_interactor import \
     TaskInteractor
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
@@ -49,17 +47,14 @@ class TestCreateTaskInteractor:
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
-        self.workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.field_value_storage = create_autospec(FieldValueStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
 
         self.interactor = TaskInteractor(
             task_storage=self.task_storage,
             list_storage=self.list_storage,
-            workspace_member_storage=self.workspace_member_storage,
-            field_storage=self.field_storage,
-            field_value_storage=self.field_value_storage,
+            workspace_storage=self.workspace_storage,
             space_storage=self.space_storage
         )
 

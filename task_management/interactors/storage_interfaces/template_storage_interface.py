@@ -15,7 +15,7 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_template_name_exist(self, template_name: str) -> bool:
+    def validate_template_exists(self, template_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -24,5 +24,9 @@ class TemplateStorageInterface(ABC):
 
 
     @abstractmethod
-    def update_template(self, update_template_data: UpdateTemplateDTO) -> TemplateDTO:
+    def update_template(self, template_id: str, update_fields: dict) -> TemplateDTO:
+        pass
+
+    @abstractmethod
+    def get_template_list_id(self, template_id: str) -> str:
         pass

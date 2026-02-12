@@ -30,8 +30,8 @@ class TemplateStorage(TemplateStorageInterface):
 
         return self._template_dto(data=template_data)
 
-    def is_template_name_exist(self, template_name: str) -> bool:
-        return Template.objects.filter(name=template_name).exists()
+    def validate_template_exists(self, template_id: str) -> bool:
+        return Template.objects.filter(template_id=template_id).exists()
 
     def check_template_name_exist_except_this_template(self,
                                                        template_name: str,
@@ -39,15 +39,15 @@ class TemplateStorage(TemplateStorageInterface):
         return Template.objects.filter(name=template_name).exclude(
             template_id=template_id).exists()
 
-    def update_template(self,
-                        update_template_data: UpdateTemplateDTO) -> TemplateDTO:
-        template_data = Template.objects.get(template_id=update_template_data.template_id)
-        if update_template_data.name:
-            template_data.name = update_template_data.name
-
-        if update_template_data.description:
-            template_data.description = update_template_data.description
-
-        template_data.save()
+    def update_template(self, template_id: str,
+                        update_fields: dict) -> TemplateDTO:
+        Template.objects.filter(template_id=template_id).update(**update_fields)
+        template_data = Template.objects.get(template_id=template_id)
 
         return self._template_dto(data=template_data)
+
+    def get_template_list_id(self, template_id: str) -> str:
+        return \
+            Template.objects.filter(list_id=template_id).values_list('list_id',
+                                                                     flat=True)[
+                0]

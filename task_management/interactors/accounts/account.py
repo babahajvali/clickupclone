@@ -84,8 +84,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
 
         if not fields_to_update:
             from task_management.exceptions.custom_exceptions import \
-                NothingToUpdateException
-            raise NothingToUpdateException(account_id=account_id)
+                NothingToUpdateAccountException
+            raise NothingToUpdateAccountException(account_id=account_id)
 
         return self.account_storage.update_account(account_id=account_id,
                                                    update_fields=fields_to_update)
@@ -190,5 +190,5 @@ class Account(AccountValidationMixin, UserValidationMixin):
     def _validate_account_name_not_empty(account_name: str):
         if not account_name or not account_name.strip():
             from task_management.exceptions.custom_exceptions import \
-                EmptyAccountNameException
-            raise EmptyAccountNameException(name=account_name)
+                EmptyNameException
+            raise EmptyNameException(name=account_name)

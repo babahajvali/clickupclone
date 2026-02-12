@@ -16,17 +16,11 @@ from task_management.interactors.workspace.workspace import \
 from task_management.interactors.workspace.workspace_onboarding import \
     WorkspaceOnboardingHandler
 from task_management.storages.field_storage import FieldStorage
-from task_management.storages.folder_permission_storage import \
-    FolderPermissionStorage
 from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.list_permission_storage import \
-    ListPermissionStorage
+
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_permission_storage import \
-    SpacePermissionStorage
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.workspace_member import WorkspaceMemberStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.account_storage import AccountStorage
@@ -44,36 +38,28 @@ class CreateWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
         account_storage = AccountStorage()
-        workspace_member_storage = WorkspaceMemberStorage()
         space_storage = SpaceStorage()
-        space_permission_storage = SpacePermissionStorage()
         folder_storage = FolderStorage()
-        folder_permission_storage = FolderPermissionStorage()
         list_storage = ListStorage()
-        list_permission_storage = ListPermissionStorage()
+        
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 
         workspace_onboarding = WorkspaceOnboardingHandler(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
-            workspace_member_storage=workspace_member_storage,
             space_storage=space_storage,
-            space_permission_storage=space_permission_storage,
             list_storage=list_storage,
-            list_permission_storage=list_permission_storage,
             folder_storage=folder_storage,
-            folder_permission_storage=folder_permission_storage,
             template_storage=template_storage,
             field_storage=field_storage,
+            account_storage=account_storage
         )
 
         interactor = Workspace(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,
-            workspace_member_storage=workspace_member_storage,
-            workspace_onboarding=workspace_onboarding,
         )
 
         try:

@@ -17,8 +17,8 @@ from task_management.interactors.storage_interfaces.template_storage_interface i
 )
 from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
     WorkspaceMemberStorageInterface
-from task_management.interactors.template_interactors.create_template_interactor import (
-    CreateTemplateInteractor
+from task_management.interactors.template.template_interactor import (
+    TemplateInteractor
 )
 from task_management.tests.factories.interactor_factory import (
     CreateTemplateDTOFactory,
@@ -38,7 +38,7 @@ class TestCreateTemplateInteractor:
         self.list_storage = create_autospec(ListStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
 
-        self.interactor = CreateTemplateInteractor(
+        self.interactor = TemplateInteractor(
             field_storage=self.field_storage,
             workspace_member_storage=self.workspace_member_storage,
             template_storage=self.template_storage,
