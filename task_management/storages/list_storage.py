@@ -2,7 +2,7 @@ from django.db.models import F
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO, UserListPermissionDTO, CreateUserListPermissionDTO
+    UpdateListDTO, UserListPermissionDTO, CreateListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
 from task_management.models import ListPermission, List, Template, Space, Folder, User
@@ -64,8 +64,8 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def update_list(self, list_id: str, update_fields: dict) -> ListDTO:
-        List.objects.filter(list_id=list_id).update(**update_fields)
+    def update_list(self, list_id: str, update_field_properties: dict) -> ListDTO:
+        List.objects.filter(list_id=list_id).update(**update_field_properties)
         list_data = List.objects.get(list_id=list_id)
 
         return self._list_dto(list_data=list_data)
@@ -82,7 +82,7 @@ class ListStorage(ListStorageInterface):
 
         return [self._list_dto(list_data=data) for data in space_lists]
 
-    def remove_list(self, list_id: str) -> ListDTO:
+    def delete_list(self, list_id: str) -> ListDTO:
         # update the is_active false
         list_data = List.objects.get(list_id=list_id)
         list_data.is_active = False
@@ -258,7 +258,7 @@ class ListStorage(ListStorageInterface):
         return self._list_permission_dto(permission_data=permission)
 
     def create_list_users_permissions(self, user_permissions: list[
-        CreateUserListPermissionDTO]) -> list[UserListPermissionDTO]:
+        CreateListPermissionDTO]) -> list[UserListPermissionDTO]:
         list_ids = list(set(perm.list_id for perm in user_permissions))
         user_ids = list(set(perm.user_id for perm in user_permissions))
         added_by_ids = list(set(perm.added_by for perm in user_permissions))

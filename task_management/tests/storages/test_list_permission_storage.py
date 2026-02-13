@@ -1,7 +1,7 @@
 import pytest
 
 from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import CreateUserListPermissionDTO
+from task_management.interactors.dtos import CreateListPermissionDTO
 from task_management.storages.list_storage import \
     ListStorage
 from task_management.tests.factories.storage_factory import \
@@ -143,19 +143,19 @@ class TestListPermissionStorage:
         user2 = UserFactory(user_id=user_id_2)
         added_by = UserFactory(user_id=added_by_id)
         user_permissions = [
-            CreateUserListPermissionDTO(
+            CreateListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_1),
                 permission_type=Permissions.VIEW,
                 added_by=str(added_by_id)
             ),
-            CreateUserListPermissionDTO(
+            CreateListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_2),
                 permission_type=Permissions.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
-            CreateUserListPermissionDTO(
+            CreateListPermissionDTO(
                 list_id=str(list_id_2),
                 user_id=str(user_id_1),
                 permission_type=Permissions.FULL_EDIT,
@@ -182,7 +182,7 @@ class TestListPermissionStorage:
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
         user_permissions = [
-            CreateUserListPermissionDTO(
+            CreateListPermissionDTO(
                 list_id=str(list_id),
                 user_id=str(user_id),
                 permission_type=Permissions.VIEW,

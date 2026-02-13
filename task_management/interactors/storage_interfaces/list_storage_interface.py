@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UserListPermissionDTO, CreateUserListPermissionDTO
+    UserListPermissionDTO, CreateListPermissionDTO
 
 
 class ListStorageInterface(ABC):
@@ -21,7 +21,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_list(self, list_id: str, update_fields: dict) -> ListDTO:
+    def update_list(self, list_id: str, update_field_properties: dict) -> ListDTO:
         pass
 
     @abstractmethod
@@ -33,7 +33,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_list(self, list_id: str) -> ListDTO:
+    def delete_list(self, list_id: str) -> ListDTO:
         # update the is_active false
         pass
 
@@ -96,5 +96,5 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def create_list_users_permissions(self, user_permissions: list[
-        CreateUserListPermissionDTO]) -> list[UserListPermissionDTO]:
+        CreateListPermissionDTO]) -> list[UserListPermissionDTO]:
         pass

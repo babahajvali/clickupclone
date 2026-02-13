@@ -2,7 +2,7 @@ from django.db import transaction
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
-    CreateUserListPermissionDTO, CreateTemplateDTO
+    CreateListPermissionDTO, CreateTemplateDTO
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.interactors.storage_interfaces import \
@@ -64,13 +64,13 @@ class ListOnboardingHandler:
     def _create_space_permission_for_create_user(self, list_id: str,
                                                  user_id: str):
         list_interactor = self._get_list_interactor()
-        permission_data = CreateUserListPermissionDTO(
+        permission_data = CreateListPermissionDTO(
             list_id=list_id,
             user_id=user_id,
             permission_type=Permissions.FULL_EDIT,
             added_by=user_id,
         )
-        return list_interactor.add_user_in_space_permission(
+        return list_interactor.add_user_in_list_permission(
             user_permission_data=permission_data)
 
     def _create_default_template(self, template_data: CreateTemplateDTO):

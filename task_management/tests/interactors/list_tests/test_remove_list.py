@@ -55,9 +55,9 @@ class TestRemoveList:
             "List", (), {"is_active": True}
         )()
 
-        result = self.interactor.remove_list("list_1", "user_1")
+        result = self.interactor.delete_list("list_1", "user_1")
 
-        self.interactor.list_storage.remove_list.assert_called_once_with(
+        self.interactor.list_storage.delete_list.assert_called_once_with(
             list_id="list_1"
         )
 
@@ -67,7 +67,7 @@ class TestRemoveList:
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
-            self.interactor.remove_list("list_1", "user_1")
+            self.interactor.delete_list("list_1", "user_1")
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
@@ -77,7 +77,7 @@ class TestRemoveList:
         self.interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFoundException) as exc:
-            self.interactor.remove_list("list_1", "user_1")
+            self.interactor.delete_list("list_1", "user_1")
 
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
@@ -90,6 +90,6 @@ class TestRemoveList:
         )()
 
         with pytest.raises(InactiveListException) as exc:
-            self.interactor.remove_list("list_1", "user_1")
+            self.interactor.delete_list("list_1", "user_1")
 
         snapshot.assert_match(repr(exc.value), "list_inactive.txt")

@@ -2,7 +2,7 @@ from task_management.constants.field_constants import FIELD_TYPE_RULES
 from task_management.exceptions.custom_exceptions import \
     UnsupportedFieldTypeException, FieldNameAlreadyExistsException, \
     InvalidFieldDefaultValueException, InvalidFieldConfigException, \
-    FieldNotFoundException
+    FieldNotFoundException, InactiveFieldException
 from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
@@ -15,7 +15,7 @@ class FieldValidationMixin:
         super().__init__(**kwargs)
 
     @staticmethod
-    def validate_field_type(field_type: str):
+    def check_field_type(field_type: str):
         field_types = FieldTypes.get_values()
 
         if field_type not in field_types:
@@ -29,24 +29,30 @@ class FieldValidationMixin:
         if is_exist:
             raise FieldNameAlreadyExistsException(field_name=field_name)
 
-    def validate_field(self, field_id: str):
-        is_exist = self.field_storage.is_field_exists(field_id=field_id)
+    def validate_field_is_active(self, field_id: str):
+        field_data = self.field_storage.get_field_by_id(field_id=field_id)
 
-        if not is_exist:
+        if not field_data:
             raise FieldNotFoundException(field_id=field_id)
 
-    def validate_field_name_except_current(
+        if not field_data.is_active:
+            raise InactiveFieldException(field_id=field_id)
+
+
+    def check_field_name_in_db_except_current_field(
             self, field_id: str, field_name: str, template_id: str):
 
-        is_field_name_exist = self.field_storage.check_field_name_except_this_field(
-            field_id=field_id, field_name=field_name, template_id=template_id)
+        try:
+            field_data = self.field_storage.get_field_by_name(
+                field_name=field_name, template_id=template_id)
 
-        if is_field_name_exist:
-            raise FieldNameAlreadyExistsException(field_name=field_name)
+            if field_data.field_id != field_id:
+                raise FieldNameAlreadyExistsException(field_name=field_name)
+        except FieldNotFoundException:
+            raise FieldNotFoundException(field_id=field_id)
 
     @staticmethod
     def validate_field_config(field_type: str, config: dict):
-
         default_value = config.get("default")
 
         rules = FIELD_TYPE_RULES[field_type]

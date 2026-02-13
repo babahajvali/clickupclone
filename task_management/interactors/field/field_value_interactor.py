@@ -7,19 +7,19 @@ from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TaskStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FieldValidationMixin, \
-    WorkspaceValidationMixin
+    WorkspaceValidationMixin, TaskValidationMixin
 
 
-class FieldValueInteractor(FieldValidationMixin,
-                           WorkspaceValidationMixin, ):
+class FieldValueInteractor(FieldValidationMixin,TaskValidationMixin,
+                           WorkspaceValidationMixin):
 
     def __init__(self,
                  field_storage: FieldStorageInterface,
                  task_storage: TaskStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
                  space_storage: SpaceStorageInterface,
-                 list_storage: ListStorageInterface, ):
-        super().__init__(field_storage=field_storage,
+                 list_storage: ListStorageInterface):
+        super().__init__(field_storage=field_storage,task_storage=task_storage,
                          workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.task_storage = task_storage
@@ -29,7 +29,9 @@ class FieldValueInteractor(FieldValidationMixin,
 
     def set_task_field_value(self, set_value_data: UpdateFieldValueDTO,
                              user_id: str) -> TaskFieldValueDTO:
-        self.validate_field(field_id=set_value_data.field_id)
+
+        self.validate_task_is_active(task_id=set_value_data.task_id)
+        self.validate_field_is_active(field_id=set_value_data.field_id)
         self._validate_field_value(field_id=set_value_data.field_id,
                                    value=set_value_data.value)
 
@@ -41,7 +43,7 @@ class FieldValueInteractor(FieldValidationMixin,
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-        task_field_value_data = self.field_storage.check_task_field_value(
+        task_field_value_data = self.field_storage.get_task_field_value(
             task_id=set_value_data.task_id, field_id=set_value_data.field_id)
 
         if not task_field_value_data:
@@ -58,6 +60,7 @@ class FieldValueInteractor(FieldValidationMixin,
             field_value_data=set_value_data)
 
     def _validate_field_value(self, field_id: str, value: str):
+
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
         config = field_data.config or {}
 

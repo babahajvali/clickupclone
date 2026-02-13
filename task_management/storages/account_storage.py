@@ -98,3 +98,14 @@ class AccountStorage(AccountStorageInterface):
             owner_id=account_data.owner.user_id,
             is_active=account_data.is_active,
         )
+
+    def get_account_by_name(self, account_name: str) -> AccountDTO:
+        account_data = Account.objects.get(name=account_name)
+
+        return AccountDTO(
+            account_id=account_data.account_id,
+            name=account_data.name,
+            description=account_data.description,
+            owner_id=account_data.owner.user_id,
+            is_active=account_data.is_active,
+        )

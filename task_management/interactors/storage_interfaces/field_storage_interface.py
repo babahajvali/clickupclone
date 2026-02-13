@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    UpdateFieldDTO, UpdateFieldValueDTO, TaskFieldValueDTO, TaskFieldValuesDTO, \
-    CreateFieldValueDTO
+    UpdateFieldValueDTO, TaskFieldValueDTO, TaskFieldValuesDTO, \
+    CreateFieldValueDTO, UpdateFieldDTO
 
 
 class FieldStorageInterface(ABC):
@@ -20,7 +20,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
+    def update_field(self, field_id: str, update_field_data: UpdateFieldDTO) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -29,6 +29,10 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def check_field_name_except_this_field(self,field_id: str , field_name: str, template_id: str) -> bool:
+        pass
+
+    @abstractmethod
+    def get_field_by_name(self,field_name: str, template_id: str) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -69,7 +73,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_task_field_value(self, task_id: str, field_id: str) -> bool:
+    def get_task_field_value(self, task_id: str, field_id: str) -> bool:
         pass
 
 

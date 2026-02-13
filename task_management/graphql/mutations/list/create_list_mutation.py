@@ -47,7 +47,7 @@ class CreateListMutation(graphene.Mutation):
                 folder_id=params.folder_id if params.folder_id else None
             )
 
-            result = interactor.create_list(create_list_data=create_list_data)
+            result = interactor.create_list(list_data=create_list_data)
 
             return ListType(
                 list_id=result.list_id,

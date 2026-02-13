@@ -63,20 +63,9 @@ class FieldStorage(FieldStorageInterface):
         except ObjectDoesNotExist:
             return None
 
-    def update_field(self, update_field_data: UpdateFieldDTO) -> FieldDTO:
-        field_data = Field.objects.get(field_id=update_field_data.field_id)
-        if update_field_data.description is not None:
-            field_data.description = update_field_data.description
-
-        if update_field_data.field_name is not None:
-            field_data.field_name = update_field_data.field_name
-
-        if update_field_data.is_required is not None:
-            field_data.is_required = update_field_data.is_required
-
-        if update_field_data.config is not None:
-            field_data.config = update_field_data.config
-        field_data.save()
+    def update_field(self, field_id: str, update_field_properties: dict) -> FieldDTO:
+        Field.objects.filter(field_id=field_id).update(**update_field_properties)
+        field_data = Field.objects.get(field_id=field_id)
 
         return self._field_dto(field_data=field_data)
 
@@ -89,6 +78,11 @@ class FieldStorage(FieldStorageInterface):
         return Field.objects.filter(
             field_name=field_name, template_id=template_id).exclude(
             field_id=field_id).exists()
+
+    def get_field_by_name(self,field_name: str, template_id: str) -> FieldDTO:
+        field_data = Field.objects.get(field_name=field_name, template_id=template_id)
+
+        return self._field_dto(field_data=field_data)
 
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         fields_data = Field.objects.filter(template_id=template_id,
@@ -242,5 +236,5 @@ class FieldStorage(FieldStorageInterface):
 
         FieldValue.objects.bulk_create(field_values_to_create)
 
-    def check_task_field_value(self,task_id: str, field_id: str) -> bool:
+    def get_task_field_value(self, task_id: str, field_id: str) -> bool:
         return FieldValue.objects.filter(task_id=task_id, field_id=field_id).exists()

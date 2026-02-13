@@ -46,8 +46,8 @@ class Account(AccountValidationMixin, UserValidationMixin):
         """
 
         self.validate_user_is_active(user_id=created_by)
-        self._validate_account_name_not_empty(account_name=name)
-        self._validate_account_name_already_exists(account_name=name)
+        self._check_account_name_is_not_empty(account_name=name)
+        self._check_account_name_in_db(account_name=name)
 
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)
@@ -76,7 +76,7 @@ class Account(AccountValidationMixin, UserValidationMixin):
 
         fields_to_update = {}
         if is_name_provided:
-            self._validate_account_name_except_current(
+            self._check_account_name_in_db_except_current_account(
                 account_id=account_id, name=name)
             fields_to_update['name'] = name
         if is_description_provided:
@@ -153,24 +153,27 @@ class Account(AccountValidationMixin, UserValidationMixin):
 
     # Helping functions
 
-    def _validate_account_name_already_exists(self, account_name: str):
-        is_name_exist = self.account_storage.validate_account_name_exists(
-            name=account_name)
-
-        if is_name_exist:
+    def _check_account_name_in_db(self, account_name: str):
+        try:
+            self.account_storage.get_account_by_name(
+                account_name=account_name
+            )
             from task_management.exceptions.custom_exceptions import \
                 AccountNameAlreadyExistsException
             raise AccountNameAlreadyExistsException(name=account_name)
+        except Exception:
+            pass
 
-    def _validate_account_name_except_current(self, name: str,
-                                              account_id: str):
-        is_name_exist = self.account_storage.validate_account_name_except_current(
-            name=name, account_id=account_id)
-
-        if is_name_exist:
-            from task_management.exceptions.custom_exceptions import \
-                AccountNameAlreadyExistsException
-            raise AccountNameAlreadyExistsException(name=name)
+    def _check_account_name_in_db_except_current_account(self, name: str,
+                                                         account_id: str):
+        try:
+            account_data = self.account_storage.get_account_by_name(account_name=name)
+            if account_data.account_id != account_id:
+                from task_management.exceptions.custom_exceptions import \
+                    AccountNameAlreadyExistsException
+                raise AccountNameAlreadyExistsException(name=name)
+        except Exception:
+            pass
 
     def _check_account_ids(self, account_ids: list[str]):
         accounts_data = self.account_storage.get_accounts(
@@ -187,7 +190,7 @@ class Account(AccountValidationMixin, UserValidationMixin):
                 account_ids=invalid_account_ids)
 
     @staticmethod
-    def _validate_account_name_not_empty(account_name: str):
+    def _check_account_name_is_not_empty(account_name: str):
         if not account_name or not account_name.strip():
             from task_management.exceptions.custom_exceptions import \
                 EmptyNameException

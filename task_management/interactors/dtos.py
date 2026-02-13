@@ -348,7 +348,7 @@ class UserFolderPermissionDTO:
 
 
 @dataclass
-class CreateUserListPermissionDTO:
+class CreateListPermissionDTO:
     list_id: str
     permission_type: Permissions
     user_id: str

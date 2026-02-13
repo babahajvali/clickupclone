@@ -27,6 +27,10 @@ class FieldNameAlreadyExistsException(Exception):
     def __init__(self, field_name: str):
         self.field_name = field_name
 
+class InactiveFieldException(Exception):
+    def __init__(self, field_id: str):
+        self.field_id = field_id
+
 
 class ModificationNotAllowedException(Exception):
     def __init__(self, user_id: str):

@@ -5,7 +5,7 @@ from task_management.exceptions.custom_exceptions import InvalidOrderException, 
     UnsupportedVisibilityTypeException
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
-    CreateUserListPermissionDTO
+    CreateListPermissionDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
     WorkspaceStorageInterface
@@ -33,22 +33,19 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
-    def create_list(self, create_list_data: CreateListDTO) -> ListDTO:
+    def create_list(self, list_data: CreateListDTO) -> ListDTO:
 
-        self._validate_list_name_not_empty(list_name=create_list_data.name)
-        if create_list_data.folder_id:
+        self._check_list_name_not_empty(list_name=list_data.name)
+        if list_data.folder_id:
             self.validate_folder_is_active(
-                folder_id=create_list_data.folder_id)
-        self.validate_space_is_active(
-            space_id=create_list_data.space_id)
+                folder_id=list_data.folder_id)
+
+        self.validate_space_is_active(space_id=list_data.space_id)
         self._validate_user_access_for_space(
-            space_id=create_list_data.space_id,
-            user_id=create_list_data.created_by)
+            space_id=list_data.space_id,
+            user_id=list_data.created_by)
 
-        result = self.list_storage.create_list(
-            create_list_data=create_list_data)
-
-        return result
+        return self.list_storage.create_list(create_list_data=list_data)
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
@@ -65,7 +62,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
         fields_to_update = {}
 
         if is_name_provided:
-            self._validate_list_name_not_empty(list_name=name)
+            self._check_list_name_not_empty(list_name=name)
             fields_to_update['name'] = name
 
         if is_description_provided:
@@ -74,26 +71,26 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
         if not fields_to_update:
             raise NothingToUpdateListException(list_id=list_id)
 
-        return self.list_storage.update_list(list_id=list_id,
-                                             update_fields=fields_to_update)
+        return self.list_storage.update_list(
+            list_id=list_id, update_field_properties=fields_to_update)
 
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
                                user_id: str) -> ListDTO:
 
         self.validate_list_is_active(list_id=list_id)
+        self._validate_list_order_in_folder(folder_id=folder_id, order=order)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-        self._validate_list_order_in_folder(folder_id=folder_id, order=order)
 
         return self.list_storage.reorder_list_in_folder(folder_id=folder_id,
                                                         list_id=list_id,
                                                         order=order)
 
     @invalidate_interactor_cache(cache_name="space_lists")
-    def reorder_list_in_space(self, space_id: str, order: int, user_id: str,
-                              list_id: str) -> ListDTO:
+    def reorder_list_in_space(self, list_id: str, space_id: str, order: int,
+                              user_id: str) -> ListDTO:
 
         self.validate_list_is_active(list_id=list_id)
         self._validate_list_order_in_space(space_id=space_id, order=order)
@@ -106,16 +103,17 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
-    def remove_list(self, list_id: str, user_id: str):
+    def delete_list(self, list_id: str, user_id: str):
 
         self.validate_list_is_active(list_id=list_id)
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
 
-        return self.list_storage.remove_list(list_id=list_id)
+        return self.list_storage.delete_list(list_id=list_id)
 
     @invalidate_interactor_cache(cache_name="space_lists")
+    @invalidate_interactor_cache(cache_name="folder_lists")
     def set_list_visibility(self, list_id: str, visibility: Visibility,
                             user_id: str) -> ListDTO:
 
@@ -130,7 +128,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
         return self.list_storage.make_list_private(list_id=list_id)
 
-    def get_list(self, list_id: str):
+    def get_list(self, list_id: str) -> ListDTO:
         self.validate_list_is_active(list_id=list_id)
 
         return self.list_storage.get_list(list_id=list_id)
@@ -149,8 +147,8 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
         return self.list_storage.get_space_lists(space_ids=[space_id])
 
-    def add_user_in_space_permission(self,
-                                     user_permission_data: CreateUserListPermissionDTO):
+    def add_user_in_list_permission(
+            self, user_permission_data: CreateListPermissionDTO):
 
         self.validate_list_is_active(list_id=user_permission_data.list_id)
         space_id = self.list_storage.get_list_space_id(
@@ -190,7 +188,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
-    def _validate_list_name_not_empty(list_name: str):
+    def _check_list_name_not_empty(list_name: str):
         if not list_name or not list_name.strip():
             raise EmptyNameException(name=list_name)
 

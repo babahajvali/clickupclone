@@ -35,7 +35,7 @@ class DeleteListMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.remove_list(
+            result = interactor.delete_list(
                 list_id=params.list_id,
                 user_id=info.context.user_id
             )

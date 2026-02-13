@@ -250,7 +250,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.remove_list(list_id=str(list_id))
+        result = storage.delete_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_list_with_folder_success.txt")
@@ -269,7 +269,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.remove_list(list_id=str(list_id))
+        result = storage.delete_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_list_without_folder_success.txt")

@@ -34,7 +34,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     Dependencies:
         - FieldStorageInterface: Field data persistence
         - TemplateStorageInterface: Template validation and access
-        - WorkspaceMemberStorageInterface: User permission validation
+        - WorkspaceStorageInterface: User permission validation
         - ListStorageInterface: List access validation
         - SpaceStorageInterface: Space access validation
     
@@ -68,14 +68,13 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             template_id=create_field_data.template_id,
             user_id=create_field_data.created_by)
 
-        self.validate_field_type(field_type=create_field_data.field_type.value)
         self.validate_field_name_not_exists(
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id)
-
-        if create_field_data.field_type.value == FieldTypes.DROPDOWN.value and not create_field_data.config:
-            raise MissingFieldConfigException(
-                field_type=create_field_data.field_type.value)
+        self.check_field_type(field_type=create_field_data.field_type.value)
+        self._check_dropdown_config(
+            field_type=create_field_data.field_type.value,
+            config=create_field_data.config)
 
         if create_field_data.config:
             self.validate_field_config(
@@ -89,46 +88,45 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     def update_field(self, update_field_data: UpdateFieldDTO,
                      user_id: str) -> FieldDTO:
 
-        self.validate_field(field_id=update_field_data.field_id)
+        is_field_name_provided = update_field_data.field_name is not None
+        is_config_provided = update_field_data.config is not None
+
+        self.validate_field_is_active(field_id=update_field_data.field_id)
         field_data = self.field_storage.get_field_by_id(
             update_field_data.field_id)
-        self.validate_field_name_except_current(
-            field_id=update_field_data.field_id,
-            field_name=update_field_data.field_name,
-            template_id=field_data.template_id, )
-        self.validate_field_config(field_type=field_data.field_type.value,
-                                   config=update_field_data.config)
 
         self.check_template_exists(template_id=field_data.template_id)
         self._validate_user_access_for_template(
             template_id=field_data.template_id, user_id=user_id)
 
-        has_description_provided = update_field_data.description is not None
-        has_field_name_provided = update_field_data.field_name is not None
-        has_config_provided = update_field_data.config is not None
-        has_is_required_provided = update_field_data.is_required is not None
+        if is_field_name_provided:
+            self.check_field_name_in_db_except_current_field(
+                field_id=update_field_data.field_id,
+                field_name=update_field_data.field_name,
+                template_id=field_data.template_id)
 
-        fields_to_update = {}
+        if is_config_provided:
+            self.validate_field_config(field_type=field_data.field_type.value,
+                                       config=update_field_data.config)
 
-        if has_field_name_provided:
-            fields_to_update['field_name'] = update_field_data.field_name
-        if has_description_provided:
-            fields_to_update['description'] = update_field_data.description
-        if has_config_provided:
-            fields_to_update['config'] = update_field_data.config
-        if has_is_required_provided:
-            fields_to_update['is_required'] = update_field_data.is_required
+        is_field_property_provided = any(
+            [update_field_data.config is not None
+                , update_field_data.field_name is not None
+                , update_field_data.description is not None
+                , update_field_data.is_required is not None])
 
-        if not fields_to_update:
+        if not is_field_property_provided:
             raise NothingToUpdateFieldException
 
         return self.field_storage.update_field(
+            field_id=update_field_data.field_id,
             update_field_data=update_field_data)
 
     @invalidate_interactor_cache(cache_name="fields")
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> FieldDTO:
-        self.validate_field(field_id=field_id)
+
+        self.validate_field_is_active(field_id=field_id)
         self._validate_field_order(template_id=template_id, order=new_order)
 
         self._validate_user_access_for_template(template_id=template_id,
@@ -139,7 +137,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
 
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
-        self.validate_field(field_id=field_id)
+
+        self.validate_field_is_active(field_id=field_id)
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
 
         self._validate_user_access_for_template(
@@ -149,6 +148,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
 
     @interactor_cache(cache_name="fields", timeout=5 * 60)
     def get_fields_for_template(self, list_id: str) -> list[FieldDTO]:
+
         self.validate_list_is_active(list_id=list_id)
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
@@ -158,7 +158,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             template_id=template_id)
 
     def get_field(self, field_id: str) -> FieldDTO:
-        self.validate_field(field_id=field_id)
+
+        self.validate_field_is_active(field_id=field_id)
 
         return self.field_storage.get_field_by_id(field_id=field_id)
 
@@ -189,3 +190,10 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             workspace_id=workspace_id,
             user_id=user_id
         )
+
+    @staticmethod
+    def _check_dropdown_config(field_type: str, config: dict):
+        is_dropdown_type = (field_type == FieldTypes.DROPDOWN.value)
+
+        if is_dropdown_type and not config:
+            raise MissingFieldConfigException(field_type=field_type)
