@@ -76,4 +76,8 @@ class FieldStorageInterface(ABC):
     def get_task_field_value(self, task_id: str, field_id: str) -> bool:
         pass
 
+    @abstractmethod
+    def get_workspace_id_from_field_id(self, field_id: str) -> str:
+        pass
+
 

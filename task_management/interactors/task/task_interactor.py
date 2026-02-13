@@ -1,12 +1,11 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    InvalidOffsetException, \
-    InvalidLimitException, InvalidOrderException, EmptyNameException
+    InvalidOffsetException, InvalidLimitException, InvalidOrderException, \
+    EmptyNameException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, FilterDTO
 from task_management.interactors.storage_interfaces import \
-    TaskStorageInterface, ListStorageInterface, SpaceStorageInterface, \
-    WorkspaceStorageInterface
+    TaskStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.mixins import WorkspaceValidationMixin, \
@@ -17,13 +16,11 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
                      TaskValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  list_storage: ListStorageInterface,
-                 space_storage: SpaceStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
         super().__init__(list_storage=list_storage, task_storage=task_storage,
                          workspace_storage=workspace_storage)
         self.list_storage = list_storage
         self.task_storage = task_storage
-        self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 
     @invalidate_interactor_cache(cache_name="tasks")
@@ -92,14 +89,12 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
     @invalidate_interactor_cache(cache_name="tasks")
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
+
+        self.validate_task_is_active(task_id=task_id)
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        space_id = self.list_storage.get_list_space_id(
-            list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
-        self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id, user_id=user_id)
         self._validate_the_task_order(list_id=list_id, order=order)
+        self._validate_user_has_access_for_list(list_id=list_id,
+                                                user_id=user_id)
 
         return self.task_storage.reorder_tasks(task_id=task_id,
                                                new_order=order,
@@ -134,9 +129,8 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
     def _validate_user_has_access_for_list(self, list_id: str, user_id: str):
 
-        space_id = self.list_storage.get_list_space_id(
+        workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

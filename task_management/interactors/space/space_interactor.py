@@ -24,17 +24,17 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
         self.workspace_storage = workspace_storage
 
     @invalidate_interactor_cache(cache_name="spaces")
-    def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
+    def create_space(self, space_data: CreateSpaceDTO) -> SpaceDTO:
 
-        self._validate_user_name_not_empty(name=create_space_data.name)
+        self._check_space_name_not_empty(name=space_data.name)
         self.validate_workspace_is_active(
-            workspace_id=create_space_data.workspace_id)
+            workspace_id=space_data.workspace_id)
         self.validate_user_has_access_to_workspace(
-            user_id=create_space_data.created_by,
-            workspace_id=create_space_data.workspace_id)
+            user_id=space_data.created_by,
+            workspace_id=space_data.workspace_id)
 
         return self.space_storage.create_space(
-            create_space_data=create_space_data)
+            create_space_data=space_data)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def update_space(self, space_id: str, user_id: str, name: Optional[str],
@@ -52,7 +52,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
         fields_to_update = {}
 
         if is_name_provided:
-            self._validate_user_name_not_empty(name=name)
+            self._check_space_name_not_empty(name=name)
             fields_to_update['name'] = name
 
         if is_description_provided:
@@ -159,7 +159,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
             raise UnexpectedPermissionException(permission=permission)
 
     @staticmethod
-    def _validate_user_name_not_empty(name: str):
+    def _check_space_name_not_empty(name: str):
 
         if not name or not name.strip():
             raise EmptyNameException(name=name)

@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO
-from task_management.interactors.space.space_interactors import \
+from task_management.interactors.space.space_interactor import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface

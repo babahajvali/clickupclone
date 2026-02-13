@@ -63,8 +63,10 @@ class FieldStorage(FieldStorageInterface):
         except ObjectDoesNotExist:
             return None
 
-    def update_field(self, field_id: str, update_field_properties: dict) -> FieldDTO:
-        Field.objects.filter(field_id=field_id).update(**update_field_properties)
+    def update_field(self, field_id: str,
+                     update_field_properties: dict) -> FieldDTO:
+        Field.objects.filter(field_id=field_id).update(
+            **update_field_properties)
         field_data = Field.objects.get(field_id=field_id)
 
         return self._field_dto(field_data=field_data)
@@ -79,8 +81,9 @@ class FieldStorage(FieldStorageInterface):
             field_name=field_name, template_id=template_id).exclude(
             field_id=field_id).exists()
 
-    def get_field_by_name(self,field_name: str, template_id: str) -> FieldDTO:
-        field_data = Field.objects.get(field_name=field_name, template_id=template_id)
+    def get_field_by_name(self, field_name: str, template_id: str) -> FieldDTO:
+        field_data = Field.objects.get(field_name=field_name,
+                                       template_id=template_id)
 
         return self._field_dto(field_data=field_data)
 
@@ -208,7 +211,8 @@ class FieldStorage(FieldStorageInterface):
         return result
 
     def create_bulk_field_values(self,
-                                 create_bulk_field_values: list[CreateFieldValueDTO]):
+                                 create_bulk_field_values: list[
+                                     CreateFieldValueDTO]):
         task_ids = [fv.task_id for fv in create_bulk_field_values]
         field_ids = [fv.field_id for fv in create_bulk_field_values]
         user_ids = [fv.created_by for fv in create_bulk_field_values]
@@ -237,4 +241,11 @@ class FieldStorage(FieldStorageInterface):
         FieldValue.objects.bulk_create(field_values_to_create)
 
     def get_task_field_value(self, task_id: str, field_id: str) -> bool:
-        return FieldValue.objects.filter(task_id=task_id, field_id=field_id).exists()
+        return FieldValue.objects.filter(task_id=task_id,
+                                         field_id=field_id).exists()
+
+    def get_workspace_id_from_field_id(self, field_id: str) -> str:
+        field_data = Field.objects.select_related(
+            "template_list_space_workspace").get(field_id=field_id)
+
+        return field_data.template.list.space.workspace.workspace_id

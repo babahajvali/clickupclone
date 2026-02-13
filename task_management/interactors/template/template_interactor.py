@@ -4,8 +4,7 @@ from task_management.exceptions.custom_exceptions import EmptyNameException, \
     NothingToUpdateTemplateException
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, WorkspaceStorageInterface, \
-    TemplateStorageInterface, ListStorageInterface, SpaceStorageInterface
+    WorkspaceStorageInterface, TemplateStorageInterface, ListStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
     ListValidationMixin, WorkspaceValidationMixin
 
@@ -33,25 +32,19 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         - SpaceStorageInterface: Space access validation
     
     Attributes:
-        field_storage (FieldStorageInterface): Storage for field operations
         template_storage (TemplateStorageInterface): Storage for template operations
         list_storage (ListStorageInterface): Storage for list operations
-        space_storage (SpaceStorageInterface): Storage for space operations
     """
 
-    def __init__(self, field_storage: FieldStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
+    def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 list_storage: ListStorageInterface,
-                 space_storage: SpaceStorageInterface):
+                 list_storage: ListStorageInterface):
         super().__init__(template_storage=template_storage,
                          list_storage=list_storage,
                          workspace_storage=workspace_storage)
-        self.field_storage = field_storage
         self.workspace_storage = workspace_storage
         self.template_storage = template_storage
         self.list_storage = list_storage
-        self.space_storage = space_storage
 
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
 
@@ -95,10 +88,8 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
     def _validate_user_access_for_list(self, list_id: str, user_id: str):
 
-        space_id = self.list_storage.get_list_space_id(
+        workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 

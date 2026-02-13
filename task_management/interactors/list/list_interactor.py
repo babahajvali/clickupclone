@@ -37,13 +37,11 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
         self._check_list_name_not_empty(list_name=list_data.name)
         if list_data.folder_id:
-            self.validate_folder_is_active(
-                folder_id=list_data.folder_id)
+            self.validate_folder_is_active(folder_id=list_data.folder_id)
 
         self.validate_space_is_active(space_id=list_data.space_id)
         self._validate_user_access_for_space(
-            space_id=list_data.space_id,
-            user_id=list_data.created_by)
+            space_id=list_data.space_id, user_id=list_data.created_by)
 
         return self.list_storage.create_list(create_list_data=list_data)
 
@@ -194,7 +192,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
     @staticmethod
     def _validate_visibility_type(visibility: str):
-        existed_visibilities = [each.value for each in Visibility]
+        existed_visibilities = Visibility.get_values()
 
         if visibility not in existed_visibilities:
             raise UnsupportedVisibilityTypeException(

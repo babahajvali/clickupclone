@@ -2,8 +2,7 @@ from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     CreateFieldValueDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TaskStorageInterface, \
-    WorkspaceStorageInterface, FieldStorageInterface, \
-    SpaceStorageInterface
+    WorkspaceStorageInterface, FieldStorageInterface
 from task_management.interactors.task.task_interactor import TaskInteractor
 
 
@@ -12,13 +11,11 @@ class TaskOnboardingHandler:
     def __init__(self, list_storage: ListStorageInterface,
                  task_storage: TaskStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
-                 field_storage: FieldStorageInterface,
-                 space_storage: SpaceStorageInterface):
+                 field_storage: FieldStorageInterface):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
         self.field_storage = field_storage
-        self.space_storage = space_storage
 
     def handle_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         task = self._create_task(task_data=task_data)
@@ -31,7 +28,6 @@ class TaskOnboardingHandler:
         task_interactor = TaskInteractor(
             list_storage=self.list_storage,
             task_storage=self.task_storage,
-            space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
         return task_interactor.create_task(task_data=task_data)

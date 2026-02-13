@@ -4,28 +4,24 @@ from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, TaskStorageInterface, \
-    SpaceStorageInterface, ListStorageInterface, WorkspaceStorageInterface
+    FieldStorageInterface, TaskStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FieldValidationMixin, \
     WorkspaceValidationMixin, TaskValidationMixin
 
 
-class FieldValueInteractor(FieldValidationMixin,TaskValidationMixin,
+class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
                            WorkspaceValidationMixin):
 
     def __init__(self,
                  field_storage: FieldStorageInterface,
                  task_storage: TaskStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 space_storage: SpaceStorageInterface,
-                 list_storage: ListStorageInterface):
-        super().__init__(field_storage=field_storage,task_storage=task_storage,
+                 workspace_storage: WorkspaceStorageInterface):
+        super().__init__(field_storage=field_storage,
+                         task_storage=task_storage,
                          workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
-        self.space_storage = space_storage
-        self.list_storage = list_storage
 
     def set_task_field_value(self, set_value_data: UpdateFieldValueDTO,
                              user_id: str) -> TaskFieldValueDTO:
@@ -35,11 +31,8 @@ class FieldValueInteractor(FieldValidationMixin,TaskValidationMixin,
         self._validate_field_value(field_id=set_value_data.field_id,
                                    value=set_value_data.value)
 
-        list_id = self.task_storage.get_task_list_id(
-            task_id=set_value_data.task_id)
-        space_id = self.list_storage.get_list_space_id(list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+        workspace_id = self.field_storage.get_workspace_id_from_field_id(
+            field_id=set_value_data.field_id)
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 

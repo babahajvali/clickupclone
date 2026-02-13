@@ -5,7 +5,8 @@ from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UpdateListDTO, UserListPermissionDTO, CreateListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.models import ListPermission, List, Template, Space, Folder, User
+from task_management.models import ListPermission, List, Template, Space, \
+    Folder, User
 
 
 class ListStorage(ListStorageInterface):
@@ -64,7 +65,14 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def update_list(self, list_id: str, update_field_properties: dict) -> ListDTO:
+    def get_workspace_id_by_list_id(self, list_id: str) -> str:
+        list_data = List.objects.select_related("space_workspace").get(
+            list_id=list_id)
+
+        return list_data.space.workspace.workspace_id
+
+    def update_list(self, list_id: str,
+                    update_field_properties: dict) -> ListDTO:
         List.objects.filter(list_id=list_id).update(**update_field_properties)
         list_data = List.objects.get(list_id=list_id)
 

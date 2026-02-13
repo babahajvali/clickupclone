@@ -1,5 +1,4 @@
-from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO, \
-    UpdateTemplateDTO
+from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
 from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
 from task_management.models import Template, List
@@ -41,7 +40,8 @@ class TemplateStorage(TemplateStorageInterface):
 
     def update_template(self, template_id: str,
                         update_fields: dict) -> TemplateDTO:
-        Template.objects.filter(template_id=template_id).update(**update_fields)
+        Template.objects.filter(template_id=template_id).update(
+            **update_fields)
         template_data = Template.objects.get(template_id=template_id)
 
         return self._template_dto(data=template_data)
@@ -51,3 +51,10 @@ class TemplateStorage(TemplateStorageInterface):
             Template.objects.filter(list_id=template_id).values_list('list_id',
                                                                      flat=True)[
                 0]
+
+    def get_workspace_id_from_template_id(self, template_id: str) -> str:
+        template_data = Template.objects.select_related(
+            "list__space__workspace").get(
+            template_id=template_id)
+
+        return template_data.list.space.workspace.workspace_id

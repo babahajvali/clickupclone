@@ -9,7 +9,7 @@ from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, ListStorageInterface, \
-    SpaceStorageInterface, WorkspaceStorageInterface
+    WorkspaceStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
     FieldValidationMixin, ListValidationMixin, WorkspaceValidationMixin
 
@@ -42,14 +42,12 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         field_storage (FieldStorageInterface): Storage for field operations
         template_storage (TemplateStorageInterface): Storage for template operations
         list_storage (ListStorageInterface): Storage for list operations
-        space_storage (SpaceStorageInterface): Storage for space operations
     """
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
-                 list_storage: ListStorageInterface,
-                 space_storage: SpaceStorageInterface):
+                 list_storage: ListStorageInterface):
         super().__init__(template_storage=template_storage,
                          workspace_storage=workspace_storage,
                          field_storage=field_storage,
@@ -58,7 +56,6 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage
         self.list_storage = list_storage
-        self.space_storage = space_storage
 
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
@@ -180,11 +177,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         Returns:
             workspace_id for potential further use
         """
-        list_id = self.template_storage.get_template_list_id(
+        workspace_id = self.template_storage.get_workspace_id_from_template_id(
             template_id=template_id)
-        space_id = self.list_storage.get_list_space_id(list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
 
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id,

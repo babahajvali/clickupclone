@@ -9,7 +9,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetSpaceVisibilityResponse
 from task_management.graphql.types.types import SpaceType
-from task_management.interactors.space.space_interactors import \
+from task_management.interactors.space.space_interactor import \
     SpaceInteractor
 
 from task_management.storages.space_storage import SpaceStorage

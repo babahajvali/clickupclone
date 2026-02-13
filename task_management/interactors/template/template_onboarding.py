@@ -14,17 +14,15 @@ class TemplateOnboardingHandler:
 
     def __init__(self, template_storage: TemplateStorageInterface,
                  list_storage: ListStorageInterface,
-                 space_storage: SpaceStorageInterface,
                  field_storage: FieldStorageInterface,
                  workspace_storage: WorkspaceStorageInterface, ):
         self.template_storage = template_storage
         self.list_storage = list_storage
-        self.space_storage = space_storage
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
 
     @transaction.atomic
-    def handle(self, template_data: CreateTemplateDTO):
+    def handle_template(self, template_data: CreateTemplateDTO):
         template_obj = self._create_template(template_data=template_data)
 
         self._create_template_fixed_fields(
@@ -37,8 +35,6 @@ class TemplateOnboardingHandler:
         template_interactor = TemplateInteractor(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
-            space_storage=self.space_storage,
-            field_storage=self.field_storage,
             workspace_storage=self.workspace_storage
         )
 

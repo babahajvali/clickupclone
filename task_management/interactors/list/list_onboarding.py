@@ -52,8 +52,8 @@ class ListOnboardingHandler:
             list_storage=self.list_storage,
             space_storage=self.space_storage,
             folder_storage=self.folder_storage,
-            workspace_storage=self.workspace_storage,
-        )
+            workspace_storage=self.workspace_storage)
+
         return list_interactor
 
     def _create_list(self, list_data: CreateListDTO) -> ListDTO:
@@ -77,9 +77,8 @@ class ListOnboardingHandler:
         template_onboarding = TemplateOnboardingHandler(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
-            space_storage=self.space_storage,
             field_storage=self.field_storage,
             workspace_storage=self.workspace_storage,
         )
 
-        return template_onboarding.handle(template_data=template_data)
+        return template_onboarding.handle_template(template_data=template_data)

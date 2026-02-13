@@ -5,15 +5,14 @@ from task_management.exceptions.custom_exceptions import \
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, UserStorageInterface, \
-    WorkspaceStorageInterface, ListStorageInterface, \
-    SpaceStorageInterface
+    WorkspaceStorageInterface
 
 from task_management.mixins import TaskValidationMixin, UserValidationMixin, \
     WorkspaceValidationMixin, ListValidationMixin
 
 
 class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
-                             WorkspaceValidationMixin,ListValidationMixin):
+                             WorkspaceValidationMixin, ListValidationMixin):
     """Task Assignee Management Business Logic Interactor.
     
     Handles all task assignment operations including assigning users to tasks,
@@ -42,22 +41,16 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         task_storage (TaskStorageInterface): Storage for task operations
         task_storage (TaskAssigneeStorageInterface): Storage for assignment operations
         user_storage (UserStorageInterface): Storage for user operations
-        list_storage (ListStorageInterface): Storage for list operations
-        space_storage (SpaceStorageInterface): Storage for space operations
     """
+
     def __init__(self, task_storage: TaskStorageInterface,
                  user_storage: UserStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 list_storage: ListStorageInterface,
-                 space_storage: SpaceStorageInterface):
+                 workspace_storage: WorkspaceStorageInterface):
         super().__init__(task_storage=task_storage, user_storage=user_storage,
-                         workspace_storage=workspace_storage,
-                         list_storage=list_storage)
+                         workspace_storage=workspace_storage)
         self.task_storage = task_storage
         self.user_storage = user_storage
         self.workspace_storage = workspace_storage
-        self.list_storage = list_storage
-        self.space_storage = space_storage
 
     @invalidate_interactor_cache(cache_name="list_task_assignees")
     def assign_task_assignee(self, task_id: str, user_id: str,
@@ -72,8 +65,7 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         self.validate_task_is_active(task_id=task_id)
         self.validate_user_is_active(user_id=user_id)
 
-        list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        self._validate_user_access_for_list(list_id=list_id, user_id=user_id)
+        self._validate_user_access_for_list(task_id=task_id, user_id=user_id)
 
         return self.task_storage.assign_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
@@ -84,9 +76,8 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
 
         assignee_data = self._validate_task_assignee_exists(
             assign_id=assign_id)
-        list_id = self.task_storage.get_task_list_id(
-            task_id=assignee_data.task_id)
-        self._validate_user_access_for_list(list_id=list_id, user_id=user_id)
+        self._validate_user_access_for_list(task_id=assignee_data.task_id,
+                                            user_id=user_id)
 
         return self.task_storage.remove_task_assignee(
             assign_id=assign_id)
@@ -98,7 +89,8 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         return self.task_storage.get_task_assignees(task_id=task_id)
 
     @interactor_cache(timeout=30 * 60, cache_name="list_task_assignees")
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[TaskAssigneeDTO]:
+    def get_assignees_for_list_tasks(self, list_id: str) -> list[
+        TaskAssigneeDTO]:
 
         self.validate_list_is_active(list_id=list_id)
 
@@ -125,11 +117,10 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
 
         return assignee_data
 
-    def _validate_user_access_for_list(self, list_id: str, user_id: str):
+    def _validate_user_access_for_list(self, task_id: str, user_id: str):
 
-        space_id = self.list_storage.get_list_space_id(
-            list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+        workspace_id = self.list_storage.get_workspace_id_by_list_id(
+            list_id=task_id)
+
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

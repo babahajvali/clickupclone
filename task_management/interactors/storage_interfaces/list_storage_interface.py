@@ -21,6 +21,10 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_workspace_id_by_list_id(self, list_id: str) -> str:
+        pass
+
+    @abstractmethod
     def update_list(self, list_id: str, update_field_properties: dict) -> ListDTO:
         pass
 

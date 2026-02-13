@@ -4,7 +4,7 @@ from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO
 from task_management.interactors.list.list_onboarding import \
     ListOnboardingHandler
-from task_management.interactors.space.space_interactors import \
+from task_management.interactors.space.space_interactor import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \

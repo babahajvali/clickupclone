@@ -30,3 +30,7 @@ class TemplateStorageInterface(ABC):
     @abstractmethod
     def get_template_list_id(self, template_id: str) -> str:
         pass
+
+    @abstractmethod
+    def get_workspace_id_from_template_id(self, template_id: str) -> str:
+        pass
