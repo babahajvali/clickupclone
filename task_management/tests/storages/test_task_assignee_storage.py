@@ -1,8 +1,6 @@
 import pytest
-from datetime import date, timedelta
-from django.utils import timezone
 
-from task_management.storages.task_assignee_storage import TaskAssigneeStorage
+from task_management.storages.task_storage import TaskStorage
 from task_management.tests.factories.storage_factory import TaskAssigneeFactory, TaskFactory, UserFactory, ListFactory
 
 
@@ -19,7 +17,7 @@ class TestTaskAssigneeStorage:
         user = UserFactory(user_id=user_id)
         assigned_by = UserFactory(user_id=assigned_by_id)
         task = TaskFactory(task_id=task_id, list=list_obj, created_by=user)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.assign_task_assignee(task_id=str(task_id), user_id=str(user_id), assigned_by=str(assigned_by_id))
@@ -41,7 +39,7 @@ class TestTaskAssigneeStorage:
         assigned_by = UserFactory(user_id=assigned_by_id)
         task = TaskFactory(task_id= task_id,list=list_obj, created_by=user)
         TaskAssigneeFactory(assign_id=assign_id, task=task, user=user, assigned_by=assigned_by, is_active=True)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.remove_task_assignee(assign_id=str(assign_id))
@@ -62,7 +60,7 @@ class TestTaskAssigneeStorage:
         assigned_by = UserFactory(user_id=assigned_by_id)
         task = TaskFactory(task_id=task_id,list=list_obj, created_by=user)
         TaskAssigneeFactory(assign_id=assign_id, task=task, user=user, assigned_by=assigned_by)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_task_assignee(assign_id=str(assign_id))
@@ -87,7 +85,7 @@ class TestTaskAssigneeStorage:
         task = TaskFactory(task_id=task_id, list=list_obj, created_by=user1)
         TaskAssigneeFactory(assign_id=assign_id1,task=task, user=user1, assigned_by=assigned_by)
         TaskAssigneeFactory(assign_id=assign_id2,task=task, user=user2, assigned_by=assigned_by)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_task_assignees(task_id=str(task_id))
@@ -104,7 +102,7 @@ class TestTaskAssigneeStorage:
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
         TaskFactory(task_id=task_id, list=list_obj, created_by=user)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_task_assignees(task_id=str(task_id))
@@ -133,7 +131,7 @@ class TestTaskAssigneeStorage:
         TaskAssigneeFactory(assign_id=assign_id1,task=task1, user=user, assigned_by=assigned_by, is_active=True)
         TaskAssigneeFactory(assign_id=assign_id2,task=task2, user=user, assigned_by=assigned_by, is_active=True)
         TaskAssigneeFactory(assign_id=assign_id3,task=task3, user=user, assigned_by=assigned_by, is_active=True)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_user_assigned_tasks(user_id=str(user_id))
@@ -146,7 +144,7 @@ class TestTaskAssigneeStorage:
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345678"
         UserFactory(user_id=user_id)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_user_assigned_tasks(user_id=str(user_id))
@@ -167,7 +165,7 @@ class TestTaskAssigneeStorage:
         assign_id = "12345678-1234-5678-1234-567812345678"
         task = TaskFactory(task_id=task_id, list=list_obj, created_by=user)
         TaskAssigneeFactory(assign_id=assign_id,task=task, user=user, assigned_by=assigned_by)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_user_task_assignee(user_id=str(user_id), task_id=str(task_id), assigned_by=str(assigned_by_id))
@@ -181,7 +179,7 @@ class TestTaskAssigneeStorage:
         user_id = "12345678-1234-5678-1234-567812345678"
         task_id = "12345678-1234-5678-1234-567812345679"
         assigned_by_id = "12345678-1234-5678-1234-567812345680"
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.get_user_task_assignee(user_id=str(user_id), task_id=str(task_id), assigned_by=str(assigned_by_id))
@@ -202,7 +200,7 @@ class TestTaskAssigneeStorage:
         assigned_by = UserFactory(user_id=assigned_by_id)
         task = TaskFactory(task_id=task_id,list=list_obj, created_by=user)
         TaskAssigneeFactory(assign_id=assign_id, task=task, user=user, assigned_by=assigned_by, is_active=False)
-        storage = TaskAssigneeStorage()
+        storage = TaskStorage()
 
         # Act
         result = storage.reassign_task_assignee(assign_id=str(assign_id))

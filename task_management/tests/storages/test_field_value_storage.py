@@ -1,7 +1,7 @@
 import pytest
 
 from task_management.interactors.dtos import UpdateFieldValueDTO, CreateFieldValueDTO
-from task_management.storages.field_value_storage import FieldValueStorage
+from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldValueFactory, TaskFactory, FieldFactory, UserFactory, TemplateFactory, ListFactory
 
 
@@ -23,7 +23,7 @@ class TestFieldValueStorage:
             field_id=str(field_id),
             value={"text": "new value"}
         )
-        storage = FieldValueStorage()
+        storage = FieldStorage()
 
         # Act
         result = storage.set_task_field_value(field_value_data=field_value_data)
@@ -49,7 +49,7 @@ class TestFieldValueStorage:
         FieldValueFactory(task=task_1, field=field_2, value={"text": "value2"}, created_by=user)
         FieldValueFactory(task=task_2, field=field_1, value={"text": "value3"}, created_by=user)
         task_ids = [str(task_id_1), str(task_id_2)]
-        storage = FieldValueStorage()
+        storage = FieldStorage()
 
         # Act
         result = storage.get_field_values_by_task_ids(task_ids=task_ids)
@@ -65,7 +65,7 @@ class TestFieldValueStorage:
         user = UserFactory()
         TaskFactory(task_id=task_id, list=list_obj, created_by=user)
         task_ids = [str(task_id)]
-        storage = FieldValueStorage()
+        storage = FieldStorage()
 
         # Act
         result = storage.get_field_values_by_task_ids(task_ids=task_ids)
@@ -108,7 +108,7 @@ class TestFieldValueStorage:
                 created_by=str(user_id)
             )
         ]
-        storage = FieldValueStorage()
+        storage = FieldStorage()
 
         # Act
         storage.create_bulk_field_values(
@@ -138,7 +138,7 @@ class TestFieldValueStorage:
                 created_by=str(user_id)
             )
         ]
-        storage = FieldValueStorage()
+        storage = FieldStorage()
 
         # Act
         storage.create_bulk_field_values(

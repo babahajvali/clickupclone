@@ -22,20 +22,21 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
-        existed_member = self.workspace_storage.get_workspace_member(
+
+        is_existed_member = self.workspace_storage.get_workspace_member(
             workspace_id=workspace_member_data.workspace_id,
             user_id=workspace_member_data.user_id)
-        if existed_member:
-            if not existed_member.is_active:
-                existed_member = self.workspace_storage.re_add_member_to_workspace(
+        if is_existed_member:
+            if not is_existed_member.is_active:
+                is_existed_member = self.workspace_storage.re_add_member_to_workspace(
                     workspace_member_data=workspace_member_data)
-            return existed_member
+            return is_existed_member
+
         self.validate_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
         self.validate_user_is_active(
             user_id=workspace_member_data.user_id)
         self.validate_role(role=workspace_member_data.role.value)
-
         self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
@@ -48,10 +49,12 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def remove_member_from_workspace(self, workspace_member_id: int,
                                      removed_by: str) -> WorkspaceMemberDTO:
+
         self.validate_workspace_member_is_active(
             workspace_member_id=workspace_member_id)
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
+
         self.validate_user_has_access_to_workspace(
             user_id=removed_by,
             workspace_id=workspace_member_data.workspace_id)
@@ -64,11 +67,11 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def change_member_role(self, workspace_id: str, user_id: str, role: str,
                            changed_by: str) -> WorkspaceMemberDTO:
+
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_active(user_id=user_id)
         self.validate_user_permission_for_change_workspace_role(
-            user_id=changed_by,
-            workspace_id=workspace_id)
+            user_id=changed_by, workspace_id=workspace_id)
         self.validate_role(role=role)
 
         workspace_member = self.workspace_storage.update_the_member_role(
@@ -84,6 +87,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
     @staticmethod
     def _get_permission_type_by_role(role: str) -> Permissions:
+
         if role == Role.GUEST.value:
             return Permissions.VIEW
         else:
@@ -91,7 +95,9 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
     @staticmethod
     def validate_role(role: str):
+
         existed_roles = Role.get_values()
+
         if role not in existed_roles:
             from task_management.exceptions.custom_exceptions import \
                 UnexpectedRoleException

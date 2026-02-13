@@ -34,7 +34,6 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
     
     Attributes:
         field_storage (FieldStorageInterface): Storage for field operations
-        workspace_member_storage (WorkspaceMemberStorageInterface): Storage for member validation
         template_storage (TemplateStorageInterface): Storage for template operations
         list_storage (ListStorageInterface): Storage for list operations
         space_storage (SpaceStorageInterface): Storage for space operations
@@ -55,6 +54,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         self.space_storage = space_storage
 
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
+
         self.validate_list_is_active(list_id=template_data.list_id)
         self._validate_user_access_for_list(list_id=template_data.list_id,
                                             user_id=template_data.created_by)
@@ -94,6 +94,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
                                                      update_fields=fields_to_update)
 
     def _validate_user_access_for_list(self, list_id: str, user_id: str):
+
         space_id = self.list_storage.get_list_space_id(
             list_id=list_id)
         workspace_id = self.space_storage.get_space_workspace_id(

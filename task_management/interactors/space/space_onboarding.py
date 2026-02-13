@@ -17,6 +17,7 @@ class SpaceOnboardingHandler:
 
     @transaction.atomic
     def handle_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
+
         space_data = self._create_space(space_input=space_input)
 
         if space_data.is_private:
@@ -26,6 +27,7 @@ class SpaceOnboardingHandler:
         return space_data
 
     def _get_space_interactor(self):
+
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
@@ -33,6 +35,7 @@ class SpaceOnboardingHandler:
         return space_interactor
 
     def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
+
         space_interactor = self._get_space_interactor()
 
         return space_interactor.create_space(create_space_data=space_input)

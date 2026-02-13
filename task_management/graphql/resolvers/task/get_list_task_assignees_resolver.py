@@ -7,7 +7,6 @@ from task_management.interactors.task.task_assignee_interactor import \
     TaskAssigneeInteractor
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.task_assignee_storage import TaskAssigneeStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
@@ -18,7 +17,6 @@ def get_list_task_assignees_resolver(root,info, params):
 
     user_storage = UserStorage()
     task_storage = TaskStorage()
-    task_assignee_storage = TaskAssigneeStorage()
     list_storage = ListStorage()
     space_storage = SpaceStorage()
     workspace_storage = WorkspaceStorage()
@@ -26,14 +24,13 @@ def get_list_task_assignees_resolver(root,info, params):
     interactor = TaskAssigneeInteractor(
         user_storage=user_storage,
         task_storage=task_storage,
-        task_assignee_storage=task_assignee_storage,
         list_storage=list_storage,
         space_storage=space_storage,
         workspace_storage=workspace_storage
     )
 
     try:
-        assignees_data = interactor.get_list_task_assignees(list_id=list_id)
+        assignees_data = interactor.get_assignees_for_list_tasks(list_id=list_id)
 
         result = [TaskAssigneeType(
             assign_id=each.assign_id,

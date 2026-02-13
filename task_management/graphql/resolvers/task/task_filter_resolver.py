@@ -37,9 +37,7 @@ def task_filter_resolver(root, info, params):
         )
 
         tasks_data = interactor.task_filter(
-            task_filter_data=filter_data,
-            user_id=info.context.user_id
-        )
+            task_filter_data=filter_data)
 
         tasks_output = [
             TaskType(

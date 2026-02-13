@@ -6,17 +6,11 @@ from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.view.list_view_interactor import (
     ListViewInteractor
 )
-from task_management.interactors.storage_interfaces.list_views_storage_interface import (
-    ListViewsStorageInterface
-)
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface
 )
 from task_management.interactors.storage_interfaces.view_storage_interface import (
     ViewStorageInterface
-)
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
-    ListPermissionStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
@@ -44,17 +38,12 @@ def make_permission(permission_type: Permissions):
 class TestListViewInteractor:
 
     def setup_method(self):
-        self.list_view_storage = create_autospec(ListViewsStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
         self.view_storage = create_autospec(ViewStorageInterface)
-        self.permission_storage = create_autospec(
-            ListPermissionStorageInterface)
 
         self.interactor = ListViewInteractor(
-            list_view_storage=self.list_view_storage,
             list_storage=self.list_storage,
             view_storage=self.view_storage,
-            permission_storage=self.permission_storage
         )
 
     def test_apply_view_for_list_success(self, snapshot):

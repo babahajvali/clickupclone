@@ -6,7 +6,7 @@ from task_management.interactors.accounts.account import Account
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
-    SpaceStorageInterface,ListStorageInterface, \
+    SpaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface
 
 from task_management.interactors.workspace.workspace import \
@@ -14,6 +14,12 @@ from task_management.interactors.workspace.workspace import \
 
 
 class AccountOnboardingHandler:
+    """
+    This Handler handle the create the account along with
+        default workspace and space, list...
+
+    """
+
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  user_storage: UserStorageInterface,
                  account_storage: AccountStorageInterface,

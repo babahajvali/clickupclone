@@ -1,11 +1,9 @@
 import pytest
-from unittest.mock import create_autospec, MagicMock
+from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
+
 from task_management.interactors.workspace.workspace import (
     Workspace
 )
@@ -31,14 +29,11 @@ class TestWorkspaceInteractor:
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
-        self.workspace_member_storage = create_autospec(
-            WorkspaceMemberStorageInterface)
 
         self.interactor = Workspace(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
-            workspace_member_storage=self.workspace_member_storage,
         )
 
     def _mock_active_user(self):

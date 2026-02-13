@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO, FieldDTO, UserListPermissionDTO, CreateUserListPermissionDTO
+    UserListPermissionDTO, CreateUserListPermissionDTO
 
 
 class ListStorageInterface(ABC):

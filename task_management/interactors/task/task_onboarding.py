@@ -3,7 +3,7 @@ from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TaskStorageInterface, \
     WorkspaceStorageInterface, FieldStorageInterface, \
-    FieldValueStorageInterface, SpaceStorageInterface
+    SpaceStorageInterface
 from task_management.interactors.task.task_interactor import TaskInteractor
 
 
@@ -13,13 +13,11 @@ class TaskOnboardingHandler:
                  task_storage: TaskStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
                  field_storage: FieldStorageInterface,
-                 field_value_storage: FieldValueStorageInterface,
                  space_storage: SpaceStorageInterface):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
         self.field_storage = field_storage
-        self.field_value_storage = field_value_storage
         self.space_storage = space_storage
 
     def handle_task(self, task_data: CreateTaskDTO) -> TaskDTO:
@@ -34,7 +32,7 @@ class TaskOnboardingHandler:
             list_storage=self.list_storage,
             task_storage=self.task_storage,
             space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage, )
+            workspace_storage=self.workspace_storage)
 
         return task_interactor.create_task(task_data=task_data)
 
@@ -58,5 +56,5 @@ class TaskOnboardingHandler:
                 )
             )
 
-        return self.field_value_storage.create_bulk_field_values(
+        return self.field_storage.create_bulk_field_values(
             create_bulk_field_values=field_values)

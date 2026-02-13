@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.storages.list_view_storage import ListViewStorage
+from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import ListViewFactory, ListFactory, ViewFactory, UserFactory
 
 
@@ -15,7 +15,7 @@ class TestListViewStorage:
         list_obj = ListFactory(list_id=list_id)
         view = ViewFactory(view_id=view_id)
         user = UserFactory(user_id=user_id)
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.apply_view_for_list(list_id=str(list_id), view_id=str(view_id), user_id=str(user_id))
@@ -33,7 +33,7 @@ class TestListViewStorage:
         view = ViewFactory(view_id=view_id)
         user = UserFactory(user_id=user_id)
         ListViewFactory(list=list_obj, view=view, applied_by=user, is_active=True)
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.remove_view_for_list(view_id=str(view_id), list_id=str(list_id))
@@ -57,7 +57,7 @@ class TestListViewStorage:
         ListViewFactory(list=list_obj, view=view1, applied_by=user, is_active=True)
         ListViewFactory(list=list_obj, view=view2, applied_by=user, is_active=True)
         ListViewFactory(list=list_obj, view=view3, applied_by=user, is_active=False)
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.get_list_views(list_id=str(list_id))
@@ -70,7 +70,7 @@ class TestListViewStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         ListFactory(list_id=list_id)
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.get_list_views(list_id=str(list_id))
@@ -87,7 +87,7 @@ class TestListViewStorage:
         view = ViewFactory(view_id=view_id)
         user = UserFactory()
         ListViewFactory(list=list_obj, view=view, applied_by=user)
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.is_list_view_exist(list_id=str(list_id), view_id=str(view_id))
@@ -100,7 +100,7 @@ class TestListViewStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         view_id = "12345678-1234-5678-1234-567812345679"
-        storage = ListViewStorage()
+        storage = ViewStorage()
 
         # Act
         result = storage.is_list_view_exist(list_id=str(list_id), view_id=str(view_id))

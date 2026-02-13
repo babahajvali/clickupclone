@@ -41,7 +41,6 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
     Attributes:
         workspace_storage (WorkspaceStorageInterface): Storage for workspace operations
         account_storage (AccountStorageInterface): Storage for account operations
-        workspace_member_storage (WorkspaceMemberStorageInterface): Storage for member operations
         user_storage (UserStorageInterface): Storage for user operations
     """
 

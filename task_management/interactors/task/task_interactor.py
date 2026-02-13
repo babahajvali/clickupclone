@@ -1,8 +1,9 @@
+from typing import Optional
+
 from task_management.exceptions.custom_exceptions import \
     InvalidOffsetException, \
-    InvalidLimitException, InvalidOrderException
-from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
-    UpdateTaskDTO, FilterDTO
+    InvalidLimitException, InvalidOrderException, EmptyNameException
+from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, FilterDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, ListStorageInterface, SpaceStorageInterface, \
     WorkspaceStorageInterface
@@ -12,7 +13,8 @@ from task_management.mixins import WorkspaceValidationMixin, \
     ListValidationMixin, TaskValidationMixin
 
 
-class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin, TaskValidationMixin):
+class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
+                     TaskValidationMixin):
     def __init__(self, task_storage: TaskStorageInterface,
                  list_storage: ListStorageInterface,
                  space_storage: SpaceStorageInterface,
@@ -26,47 +28,51 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin, TaskValidati
 
     @invalidate_interactor_cache(cache_name="tasks")
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
+
+        self._validate_task_title_not_empty(title=task_data.title)
         self.validate_list_is_active(list_id=task_data.list_id)
-        space_id = self.list_storage.get_list_space_id(
-            list_id=task_data.list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
-        self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id, user_id=task_data.created_by)
+        self._validate_user_has_access_for_list(list_id=task_data.list_id,
+                                                user_id=task_data.created_by)
 
         result = self.task_storage.create_task(task_data=task_data)
 
         return result
 
     @invalidate_interactor_cache(cache_name="tasks")
-    def update_task(self, update_task_data: UpdateTaskDTO,
-                    user_id: str) -> TaskDTO:
-        list_id = self.task_storage.get_task_list_id(
-            task_id=update_task_data.task_id)
-        self.validate_list_is_active(list_id=list_id)
-        space_id = self.list_storage.get_list_space_id(
-            list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
-        self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id, user_id=user_id)
+    def update_task(self, task_id: str, user_id: str, title: Optional[str],
+                    description: Optional[str]) -> TaskDTO:
 
-        return self.task_storage.update_task(update_task_data=update_task_data)
+        list_id = self.task_storage.get_task_list_id(task_id=task_id)
+        self.validate_list_is_active(list_id=list_id)
+        self._validate_user_has_access_for_list(list_id=list_id,
+                                                user_id=user_id)
+
+        is_title_provided = title is not None
+        is_description_provided = description is not None
+        fields_to_update = {}
+
+        if is_title_provided:
+            self._validate_task_title_not_empty(title=title)
+            fields_to_update['title'] = title
+
+        if is_description_provided:
+            fields_to_update['description'] = description
+
+        return self.task_storage.update_task(task_id=task_id,
+                                             update_field=fields_to_update)
 
     @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
+
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        space_id = self.list_storage.get_list_space_id(
-            list_id=list_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
-        self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id, user_id=user_id)
+        self._validate_user_has_access_for_list(list_id=list_id,
+                                                user_id=user_id)
 
         return self.task_storage.remove_task(task_id=task_id)
 
     @interactor_cache(cache_name="tasks", timeout=5 * 60)
     def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
+
         self.validate_list_is_active(list_id=list_id)
 
         return self.task_storage.get_list_tasks(list_id=list_id)
@@ -77,7 +83,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin, TaskValidati
 
         return self.task_storage.get_task_by_id(task_id=task_id)
 
-    def task_filter(self, task_filter_data: FilterDTO, user_id: str):
+    def task_filter(self, task_filter_data: FilterDTO):
 
         self.validate_list_is_active(list_id=task_filter_data.list_id)
         self._validate_filter_parameters(filter_data=task_filter_data)
@@ -119,3 +125,18 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin, TaskValidati
 
         if order > tasks_count:
             raise InvalidOrderException(order=order)
+
+    @staticmethod
+    def _validate_task_title_not_empty(title: str):
+
+        if not title or not title.strip():
+            raise EmptyNameException(name=title)
+
+    def _validate_user_has_access_for_list(self, list_id: str, user_id: str):
+
+        space_id = self.list_storage.get_list_space_id(
+            list_id=list_id)
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id)
+        self.validate_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id)

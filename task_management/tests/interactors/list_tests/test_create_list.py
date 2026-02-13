@@ -1,32 +1,18 @@
 import pytest
 from unittest.mock import create_autospec, patch
 
-from task_management.exceptions.enums import Permissions, Role
-from task_management.interactors.dtos import UserFolderPermissionDTO, \
-    UserSpacePermissionDTO, WorkspaceMemberDTO
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import  WorkspaceMemberDTO
 from task_management.interactors.list.list_interactor import \
     ListInteractor
-from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.field_storage_interface import \
-    FieldStorageInterface
-from task_management.interactors.storage_interfaces.list_storage_interface import \
-    ListStorageInterface
-
-from task_management.interactors.storage_interfaces.folder_storage_interface import \
-    FolderStorageInterface
-from task_management.interactors.storage_interfaces.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowedException,
     SpaceNotFoundException,
     InactiveSpaceException,
 )
-from task_management.interactors.storage_interfaces.template_storage_interface import \
-    TemplateStorageInterface
+from task_management.interactors.storage_interfaces import \
+    ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
+    WorkspaceStorageInterface
 
 from task_management.tests.factories.interactor_factory import \
     CreateListDTOFactory
@@ -51,18 +37,12 @@ class TestCreateList:
         self.list_storage = create_autospec(ListStorageInterface)
         self.folder_storage = create_autospec(FolderStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
-
-        self.list_permission_storage = create_autospec(
-            ListPermissionStorageInterface)
-        self.template_storage = create_autospec(TemplateStorageInterface)
-        self.field_storage = create_autospec(FieldStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = ListInteractor(
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
-            
             workspace_storage=self.workspace_storage
         )
 
@@ -75,7 +55,7 @@ class TestCreateList:
         dto = CreateListDTOFactory(folder_id="folder_123",
                                    space_id="space_123")
 
-        self.folder_permission_storage.get_user_permission_for_folder.return_value = (
+        self.workspace_storage.get_user_permission_for_folder.return_value = (
             make_permission(Role.MEMBER)
         )
 
@@ -95,7 +75,7 @@ class TestCreateList:
     def test_permission_denied(self, snapshot):
         dto = CreateListDTOFactory(folder_id=None)
 
-        self.workspace_member_storage.get_workspace_member.return_value = make_permission(
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
             Role.GUEST
         )
 

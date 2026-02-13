@@ -41,7 +41,6 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     Attributes:
         field_storage (FieldStorageInterface): Storage for field operations
         template_storage (TemplateStorageInterface): Storage for template operations
-        workspace_member_storage (WorkspaceMemberStorageInterface): Storage for member validation
         list_storage (ListStorageInterface): Storage for list operations
         space_storage (SpaceStorageInterface): Storage for space operations
     """

@@ -3,7 +3,9 @@ from unittest.mock import create_autospec, patch
 import pytest
 from faker import Faker
 
-from task_management.exceptions.enums import Permissions, Role
+from task_management.exceptions.enums import Role
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import (
     FieldStorageInterface
 )
@@ -15,8 +17,6 @@ from task_management.interactors.storage_interfaces.space_storage_interface impo
 from task_management.interactors.storage_interfaces.template_storage_interface import (
     TemplateStorageInterface
 )
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
 from task_management.interactors.template.template_interactor import (
     TemplateInteractor
 )
@@ -32,18 +32,17 @@ class TestCreateTemplateInteractor:
 
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.workspace_member_storage = create_autospec(
-            WorkspaceMemberStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = TemplateInteractor(
             field_storage=self.field_storage,
-            workspace_member_storage=self.workspace_member_storage,
             template_storage=self.template_storage,
             list_storage=self.list_storage,
             space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
         )
 
     def test_create_template_success(self, snapshot):
@@ -86,7 +85,7 @@ class TestCreateTemplateInteractor:
             "List", (), {"is_active": True}
         )()
 
-        self.workspace_member_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             Role.MEMBER
         )
 

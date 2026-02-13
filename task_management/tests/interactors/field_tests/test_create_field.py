@@ -9,12 +9,14 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypes, Permissions, Role
+from task_management.exceptions.enums import FieldTypes, Role
 from task_management.interactors.field.field_interactor import (
     FieldInteractor
 )
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     WorkspaceMemberDTO
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import (
     FieldStorageInterface
 )
@@ -25,11 +27,7 @@ from task_management.interactors.storage_interfaces.space_storage_interface impo
 from task_management.interactors.storage_interfaces.template_storage_interface import (
     TemplateStorageInterface
 )
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
-from task_management.interactors.storage_interfaces.workspace_member_storage_interface import \
-    WorkspaceMemberStorageInterface
+
 
 
 class InvalidFieldEnum(Enum):
@@ -77,9 +75,9 @@ class TestCreateFieldInteractor:
     ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        workspace_member_storage = create_autospec(WorkspaceMemberStorageInterface)
         list_storage = create_autospec(ListStorageInterface)
         space_storage = create_autospec(SpaceStorageInterface)
+        workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         # template mock
         if template_exists:
@@ -94,7 +92,7 @@ class TestCreateFieldInteractor:
             template_storage.get_template_by_id.return_value = None
         list_storage.get_list_space_id.return_value = "Space1"
 
-        workspace_member_storage.get_workspace_member.return_value = (
+        workspace_storage.get_workspace_member.return_value = (
             make_permission_dto(role)
         )
 
@@ -104,7 +102,7 @@ class TestCreateFieldInteractor:
         return FieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            workspace_member_storage=workspace_member_storage,
+            workspace_storage=workspace_storage,
             list_storage=list_storage,
             space_storage=space_storage
         )

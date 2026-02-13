@@ -6,32 +6,32 @@ from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
 from task_management.interactors.space.folder_interactor import \
     FolderInteractor
 from task_management.interactors.storage_interfaces import \
-    FolderStorageInterface, SpaceStorageInterface, \
-    WorkspaceMemberStorageInterface
+    FolderStorageInterface, SpaceStorageInterface, WorkspaceStorageInterface
 
 
 class FolderOnboardingHandler:
 
     def __init__(self, folder_storage: FolderStorageInterface,
                  space_storage: SpaceStorageInterface,
-                 workspace_member_storage: WorkspaceMemberStorageInterface):
+                 workspace_storage: WorkspaceStorageInterface):
         self.folder_storage = folder_storage
         self.space_storage = space_storage
-        self.workspace_member_storage = workspace_member_storage
+        self.workspace_storage = workspace_storage
 
     @transaction.atomic
     def handle_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
         folder_obj = self._create_folder(folder_data=folder_data)
 
         self._create_folder_permission_for_user(
-            folder_id=folder_obj.folder_id,user_id=folder_data.created_by)
+            folder_id=folder_obj.folder_id, user_id=folder_data.created_by)
 
         return folder_obj
 
     def _get_folder_interactor(self):
         folder_interactor = FolderInteractor(
             folder_storage=self.folder_storage,
-            space_storage=self.space_storage)
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage)
 
         return folder_interactor
 

@@ -12,6 +12,7 @@ class AccountType(graphene.ObjectType):
 class AccountsType(graphene.ObjectType):
     accounts = graphene.List(AccountType)
 
+
 class UserType(graphene.ObjectType):
     user_id = graphene.String(required=True)
     username = graphene.String(required=True)
@@ -92,6 +93,19 @@ class ListsType(graphene.ObjectType):
     lists = graphene.List(ListType)
 
 
+class TaskAssigneeType(graphene.ObjectType):
+    assign_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+    task_id = graphene.String(required=True)
+    assigned_by = graphene.String(required=True)
+    is_active = graphene.Boolean(required=True)
+
+
+class FieldValuesType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+    value = graphene.String(required=True)
+
+
 class TaskType(graphene.ObjectType):
     task_id = graphene.String(required=True)
     title = graphene.String(required=True)
@@ -100,18 +114,12 @@ class TaskType(graphene.ObjectType):
     order = graphene.Int(required=True)
     created_by = graphene.String(required=True)
     is_delete = graphene.Boolean(required=True)
+    assignees = graphene.List(TaskAssigneeType)
+    field_values = graphene.List(FieldValuesType)
 
 
 class TasksType(graphene.ObjectType):
     tasks = graphene.List(TaskType)
-
-
-class TaskAssigneeType(graphene.ObjectType):
-    assign_id = graphene.String(required=True)
-    user_id = graphene.String(required=True)
-    task_id = graphene.String(required=True)
-    assigned_by = graphene.String(required=True)
-    is_active = graphene.Boolean(required=True)
 
 
 class TaskAssigneesType(graphene.ObjectType):
@@ -182,7 +190,6 @@ class UserListPermissionType(graphene.ObjectType):
     added_by = graphene.String(required=True)
 
 
-
 class ListViewType(graphene.ObjectType):
     id = graphene.Int(required=True)
     list_id = graphene.String(required=True)
@@ -198,11 +205,6 @@ class ListViewsType(graphene.ObjectType):
 class FieldValueType(graphene.ObjectType):
     id = graphene.Int(required=True)
     task_id = graphene.String(required=True)
-    field_id = graphene.String(required=True)
-    value = graphene.String(required=True)
-
-
-class FieldValuesType(graphene.ObjectType):
     field_id = graphene.String(required=True)
     value = graphene.String(required=True)
 

@@ -207,8 +207,8 @@ class FieldStorage(FieldStorageInterface):
         for task_id in task_ids:
             result.append(
                 TaskFieldValuesDTO(
-                    task_id=task_id,
-                    values=task_values_map.get(task_id, [])
+                    task_id=str(task_id),
+                    values=task_values_map.get(str(task_id), [])
                 )
             )
         return result

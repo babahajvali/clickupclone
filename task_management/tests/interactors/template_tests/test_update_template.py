@@ -2,26 +2,15 @@ from unittest.mock import create_autospec
 import pytest
 from faker import Faker
 
-from task_management.exceptions.custom_exceptions import (
-    TemplateNameAlreadyExistsException,
+from task_management.exceptions.custom_exceptions import \
     ModificationNotAllowedException
-)
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.storage_interfaces.list_permission_storage_interface import (
-    ListPermissionStorageInterface
-)
+from task_management.interactors.storage_interfaces import \
+    ListStorageInterface, TemplateStorageInterface, FieldStorageInterface, \
+    SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.template.template_interactor import \
     TemplateInteractor
-from task_management.interactors.template.update_template_interactor import (
-    UpdateTemplateInteractor
-)
-from task_management.interactors.storage_interfaces.list_storage_interface import (
-    ListStorageInterface
-)
-from task_management.interactors.storage_interfaces.template_storage_interface import (
-    TemplateStorageInterface
-)
 from task_management.tests.factories.interactor_factory import (
     UpdateTemplateDTOFactory,
     TemplateDTOFactory
@@ -44,15 +33,18 @@ def make_permission(permission_type: Permissions):
 class TestUpdateTemplateInteractor:
 
     def setup_method(self):
-        self.list_storage = create_autospec(ListStorageInterface)
+        self.field_storage = create_autospec(FieldStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.permission_storage = create_autospec(
-            ListPermissionStorageInterface)
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = TemplateInteractor(
-            list_storage=self.list_storage,
+            field_storage=self.field_storage,
             template_storage=self.template_storage,
-            permission_storage=self.permission_storage
+            list_storage=self.list_storage,
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
         )
 
     def _mock_active_list(self):
@@ -74,7 +66,7 @@ class TestUpdateTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
-        self.permission_storage.get_user_permission_for_list.return_value = (
+        self.workspace_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT.value)
         )
         self.template_storage.validate_template_exists.return_value = False
@@ -115,9 +107,6 @@ class TestUpdateTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_list.return_value = self._mock_active_list()
-        self.permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Permissions.VIEW.value)
-        )
         with pytest.raises(ModificationNotAllowedException):
             self.interactor.update_template(update_dto, user_id="user_id")
 

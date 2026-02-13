@@ -2,7 +2,7 @@ import pytest
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO
-from task_management.storages.workspace_member import WorkspaceMemberStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.tests.factories.storage_factory import \
     WorkspaceMemberFactory, WorkspaceFactory, UserFactory
 
@@ -24,7 +24,7 @@ class TestWorkspaceMemberStorage:
             added_by=str(added_by_id),
             role=Role.MEMBER
         )
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.add_member_to_workspace(
@@ -45,7 +45,7 @@ class TestWorkspaceMemberStorage:
         added_by = UserFactory(user_id=added_by_id)
         WorkspaceMemberFactory(workspace=workspace, user=user,
                                added_by=added_by)
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.get_workspace_member(workspace_id=str(workspace_id),
@@ -60,7 +60,7 @@ class TestWorkspaceMemberStorage:
         # Arrange
         workspace_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.get_workspace_member(workspace_id=str(workspace_id),
@@ -81,7 +81,7 @@ class TestWorkspaceMemberStorage:
         added_by = UserFactory(user_id=added_by_id)
         workspace_member = WorkspaceMemberFactory(workspace=workspace,
                                                   user=user, added_by=added_by)
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.get_workspace_member_by_id(
@@ -103,7 +103,7 @@ class TestWorkspaceMemberStorage:
         workspace_member = WorkspaceMemberFactory(workspace=workspace,
                                                   user=user, added_by=added_by,
                                                   is_active=True)
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.remove_member_from_workspace(
@@ -124,7 +124,7 @@ class TestWorkspaceMemberStorage:
         added_by = UserFactory(user_id=added_by_id)
         WorkspaceMemberFactory(workspace=workspace, user=user,
                                added_by=added_by, role="MEMBER")
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.update_the_member_role(workspace_id=str(workspace_id),
@@ -152,7 +152,7 @@ class TestWorkspaceMemberStorage:
                                added_by=added_by, is_active=True)
         WorkspaceMemberFactory(workspace=workspace, user=user1,
                                added_by=added_by, is_active=False)
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.get_workspace_members(workspace_id=str(workspace_id))
@@ -166,7 +166,7 @@ class TestWorkspaceMemberStorage:
         # Arrange
         workspace_id = "12345678-1234-5678-1234-567812345678"
         WorkspaceFactory(workspace_id=workspace_id)
-        storage = WorkspaceMemberStorage()
+        storage = WorkspaceStorage()
 
         # Act
         result = storage.get_workspace_members(workspace_id=str(workspace_id))

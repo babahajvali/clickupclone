@@ -8,8 +8,6 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import ValidateResetTokenType
 from task_management.interactors.user.reset_password_interator import \
     PasswordResetInteractor
-from task_management.storages.password_reset_storage import \
-    PasswordResetStorage
 from task_management.storages.user_storage import UserStorage
 
 
@@ -22,10 +20,8 @@ class ValidateResetTokenMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, token):
         user_storage = UserStorage()
-        password_reset_storage = PasswordResetStorage()
 
         interactor = PasswordResetInteractor(
-            password_reset_storage=password_reset_storage,
             user_storage=user_storage)
         try:
             interactor.validate_reset_token(token=token)

@@ -1,14 +1,11 @@
 from task_management.exceptions.custom_exceptions import \
-    EmailNotFoundException, \
-    IncorrectPasswordException, UsernameAlreadyExistsException, \
-    EmailAlreadyExistsException, \
-    PhoneNumberAlreadyExistsException, UsernameNotFoundException, \
-    InactiveUserException
+    EmailNotFoundException, IncorrectPasswordException, \
+    UsernameAlreadyExistsException, EmailAlreadyExistsException,\
+    PhoneNumberAlreadyExistsException, InactiveUserException
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from task_management.interactors.validation_mixin import ValidationMixin
 from task_management.mixins import UserValidationMixin
 
 

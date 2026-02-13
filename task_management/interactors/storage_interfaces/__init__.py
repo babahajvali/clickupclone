@@ -4,14 +4,9 @@ from task_management.interactors.storage_interfaces.folder_storage_interface imp
     FolderStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.interactors.storage_interfaces.list_views_storage_interface import \
-    ListViewsStorageInterface
-from task_management.interactors.storage_interfaces.password_reset_storage_interface import \
-    PasswordResetStorageInterface
+
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.storage_interfaces.task_assignee_storage_interface import \
-    TaskAssigneeStorageInterface
 from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from task_management.interactors.storage_interfaces.template_storage_interface import \
@@ -34,10 +29,7 @@ __all__ = [
     "FolderStorageInterface",
     "ListStorageInterface",
     "TaskStorageInterface",
-    "TaskAssigneeStorageInterface",
     "FieldStorageInterface",
     "TemplateStorageInterface",
     "ViewStorageInterface",
-    "ListViewsStorageInterface",
-    "PasswordResetStorageInterface"
 ]

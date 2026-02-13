@@ -11,7 +11,6 @@ from task_management.interactors.view.list_view_interactor import \
     ListViewInteractor
 
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.list_view_storage import ListViewStorage
 from task_management.storages.view_storage import ViewStorage
 
 
@@ -23,13 +22,11 @@ class RemoveListViewMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        list_view_storage = ListViewStorage()
         list_storage = ListStorage()
         view_storage = ViewStorage()
         
 
         interactor = ListViewInteractor(
-            list_view_storage=list_view_storage,
             list_storage=list_storage,
             view_storage=view_storage,
         )

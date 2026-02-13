@@ -4,20 +4,17 @@ from django.utils import timezone
 
 from task_management.interactors.email_service_interface.email_service_interface import \
     EmailServiceInterface
-from task_management.interactors.storage_interfaces.password_reset_storage_interface import \
-    PasswordResetStorageInterface
 from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
 
-from task_management.interactors.validation_mixin import ValidationMixin
+from task_management.mixins import UserValidationMixin
 
 
-class PasswordResetInteractor(ValidationMixin):
-    def __init__(self, password_reset_storage: PasswordResetStorageInterface,
-                 user_storage: UserStorageInterface,
+class PasswordResetInteractor(UserValidationMixin):
+    def __init__(self, user_storage: UserStorageInterface,
                  email_service: EmailServiceInterface = None,
                  reset_token_expiry_hours: int = 1):
-        self.password_reset_storage = password_reset_storage
+        super().__init__(user_storage=user_storage)
         self.user_storage = user_storage
         self.email_service = email_service
         self.reset_token_expiry_hours = reset_token_expiry_hours
@@ -35,7 +32,7 @@ class PasswordResetInteractor(ValidationMixin):
         expires_at = timezone.now() + timedelta(
             hours=self.reset_token_expiry_hours)
 
-        self.password_reset_storage.create_password_reset_token(
+        self.user_storage.create_password_reset_token(
             user_id=user_data.user_id,
             token=reset_token,
             expires_at=expires_at
@@ -54,7 +51,7 @@ class PasswordResetInteractor(ValidationMixin):
     def reset_password(self, token: str, new_password: str):
 
 
-        reset_token_data = self.password_reset_storage.get_reset_token(
+        reset_token_data = self.user_storage.get_reset_token(
             token=token)
 
         if not reset_token_data:
@@ -63,23 +60,23 @@ class PasswordResetInteractor(ValidationMixin):
             raise InvalidResetTokenException(token=token)
 
         if timezone.now() > reset_token_data.expires_at:
-            self.password_reset_storage.used_reset_token(token=token)
+            self.user_storage.used_reset_token(token=token)
             from task_management.exceptions.custom_exceptions import \
                 ResetTokenExpiredException
             raise ResetTokenExpiredException(token=token)
 
-        updated_user = self.password_reset_storage.update_user_password(
+        updated_user = self.user_storage.update_user_password(
             user_id=reset_token_data.user_id,
             new_password=new_password
         )
 
-        self.password_reset_storage.used_reset_token(token=token)
+        self.user_storage.used_reset_token(token=token)
 
         return updated_user
 
     def validate_reset_token(self, token: str) -> bool:
 
-        reset_token_data = self.password_reset_storage.get_reset_token(
+        reset_token_data = self.user_storage.get_reset_token(
             token=token)
 
         if not reset_token_data:

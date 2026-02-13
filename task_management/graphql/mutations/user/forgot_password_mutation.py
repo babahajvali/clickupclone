@@ -15,8 +15,6 @@ from task_management.graphql.types.types import PasswordResetResponseType, \
     UserType
 from task_management.interactors.user.reset_password_interator import \
     PasswordResetInteractor
-from task_management.storages.password_reset_storage import \
-    PasswordResetStorage
 from task_management.storages.user_storage import UserStorage
 
 
@@ -41,7 +39,6 @@ class ForgotPasswordMutation(graphene.Mutation):
             interactor = PasswordResetInteractor(
                 user_storage=user_storage,
                 email_service=email_service,
-                password_reset_storage=PasswordResetStorage()
             )
 
             base_url = settings.FRONTEND_URL
@@ -87,9 +84,7 @@ class ResetPasswordMutation(graphene.Mutation):
             new_password = params.new_password
 
             user_storage = UserStorage()
-            password_reset_storage = PasswordResetStorage()
-            interactor = PasswordResetInteractor(user_storage=user_storage,
-                                                 password_reset_storage=password_reset_storage)
+            interactor = PasswordResetInteractor(user_storage=user_storage)
 
             result = interactor.reset_password(
                 token=token,

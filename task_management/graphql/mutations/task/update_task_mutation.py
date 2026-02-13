@@ -7,9 +7,7 @@ from task_management.graphql.types.error_types import InactiveListType, \
 from task_management.graphql.types.input_types import UpdateTaskInputParams
 from task_management.graphql.types.response_types import UpdateTaskResponse
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.dtos import UpdateTaskDTO
-from task_management.interactors.task.task_interactor import \
-    TaskInteractor
+from task_management.interactors.task.task_interactor import TaskInteractor
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_storage import TaskStorage
@@ -36,13 +34,9 @@ class UpdateTaskMutation(graphene.Mutation):
             workspace_storage=workspace_storage,
         )
         try:
-            update_input = UpdateTaskDTO(
-                task_id=params.task_id,
-                title=params.title,
-                description=params.description,
-            )
-            result = interactor.update_task(update_task_data=update_input,
-                                            user_id=info.context.user_id)
+            result = interactor.update_task(
+                task_id=params.task_id, name=params.name,
+                user_id=info.context.user_id,description=params.description)
 
             return TaskType(
                 task_id=result.task_id,

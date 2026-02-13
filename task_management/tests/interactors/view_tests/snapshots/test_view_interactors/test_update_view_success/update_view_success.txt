@@ -1,1 +1,1 @@
-ViewDTO(view_id='2372ba88-e448-45aa-ba88-abf972750e07', name='girl', description='Step us choice develop ground media.', view_type='board', created_by='4ed1d582-026b-4c71-932d-3d4e0c704597')
+ViewDTO(view_id='9d6ff746-96b7-40c7-b0b3-649feae1f039', name='cultural', description='Around list agree suffer college eye economy.', view_type='board', created_by='6294940b-bd78-4725-b935-f0c938b24d2a')

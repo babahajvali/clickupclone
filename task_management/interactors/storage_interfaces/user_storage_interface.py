@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
-    UpdateUserDTO
+    UpdateUserDTO, PasswordResetTokenDTO
 
 
 class UserStorageInterface(ABC):
@@ -54,4 +55,21 @@ class UserStorageInterface(ABC):
 
     @abstractmethod
     def check_user_exists(self, user_id: str)-> bool:
+        pass
+
+    @abstractmethod
+    def create_password_reset_token(self, user_id: str, token: str,
+                                    expires_at: datetime) -> PasswordResetTokenDTO:
+        pass
+
+    @abstractmethod
+    def get_reset_token(self, token: str) -> PasswordResetTokenDTO | None:
+        pass
+
+    @abstractmethod
+    def used_reset_token(self, token: str) -> bool:
+        pass
+
+    @abstractmethod
+    def update_user_password(self, user_id: str, new_password: str) -> UserDTO:
         pass

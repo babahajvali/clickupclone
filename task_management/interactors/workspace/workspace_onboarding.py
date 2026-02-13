@@ -8,7 +8,7 @@ from task_management.interactors.space.space_interactors import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \
-    WorkspaceStorageInterface,ListStorageInterface, \
+    WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     AccountStorageInterface
 from task_management.interactors.workspace.workspace import \
@@ -37,12 +37,14 @@ class WorkspaceOnboardingHandler:
 
     @transaction.atomic
     def handle(self, user_id: str, workspace_id: str):
+
         space_data = self._create_space(workspace_id=workspace_id,
                                         user_id=user_id)
 
         return self._create_list(space_id=space_data.space_id, user_id=user_id)
 
     def _create_space(self, user_id: str, workspace_id: str):
+
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
@@ -58,6 +60,7 @@ class WorkspaceOnboardingHandler:
         return space_interactor.create_space(space_input_data)
 
     def _create_list(self, space_id: str, user_id: str):
+
         list_handler = ListOnboardingHandler(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
