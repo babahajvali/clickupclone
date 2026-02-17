@@ -11,9 +11,8 @@ from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.dtos import UpdateWorkspaceDTO
 from task_management.interactors.workspace.workspace import \
     Workspace
-from task_management.storages.account_storage import AccountStorage
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import WorkspaceStorage, UserStorage, \
+    AccountStorage
 
 
 class UpdateWorkspaceMutation(graphene.Mutation):

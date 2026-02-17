@@ -4,9 +4,7 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
     NothingToUpdateWorkspaceException, EmptyNameException
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO, \
-    AddMemberToWorkspaceDTO
+from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, AccountStorageInterface, \
     UserStorageInterface
@@ -92,8 +90,7 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
             workspace_id=workspace_id, update_fields=fields_to_update)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def delete_workspace(self, workspace_id: str,
-                         user_id: str) -> WorkspaceDTO:
+    def delete_workspace(self, workspace_id: str,user_id: str) -> WorkspaceDTO:
 
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_workspace_owner(

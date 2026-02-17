@@ -2,17 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType, ListNotFoundType, ViewNotFoundType, \
-    InactiveListType, ListViewNotFound
+    ModificationNotAllowedType, InactiveListType, ListViewNotFound
 from task_management.graphql.types.input_types import RemoveListViewInputParams
 from task_management.graphql.types.response_types import RemoveListViewResponse
 from task_management.graphql.types.types import ListViewType
 from task_management.interactors.view.list_view_interactor import \
     ListViewInteractor
-
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.view_storage import ViewStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 
 
 class RemoveListViewMutation(graphene.Mutation):

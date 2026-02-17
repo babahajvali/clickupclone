@@ -1,5 +1,5 @@
 from task_management.graphql.types.types import UserType
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage
 
 
 def get_user_with_email_resolver(root, info, params):

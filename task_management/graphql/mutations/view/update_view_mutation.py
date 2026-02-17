@@ -8,9 +8,7 @@ from task_management.graphql.types.types import ViewType
 from task_management.interactors.view.view_interactor import \
     ViewInteractor
 from task_management.interactors.dtos import UpdateViewDTO
-from task_management.storages.view_storage import ViewStorage
-
-from task_management.storages.list_storage import ListStorage
+from task_management.storages import ViewStorage, ListStorage
 
 
 class UpdateViewMutation(graphene.Mutation):
@@ -22,12 +20,10 @@ class UpdateViewMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         view_storage = ViewStorage()
-        permission_storage = ListPermissionStorage()
         list_storage = ListStorage()
 
         interactor = ViewInteractor(
             view_storage=view_storage,
-            permission_storage=permission_storage,
             list_storage=list_storage
         )
 

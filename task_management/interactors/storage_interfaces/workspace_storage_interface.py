@@ -16,7 +16,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_workspace(self, workspace_id: str, update_fields: dict) -> WorkspaceDTO:
+    def update_workspace(self, workspace_id: str,
+                         update_fields: dict) -> WorkspaceDTO:
         pass
 
     @abstractmethod
@@ -35,7 +36,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_active_account_workspaces(self, account_id: str) -> list[WorkspaceDTO]:
+    def get_active_account_workspaces(self, account_id: str) -> list[
+        WorkspaceDTO]:
         pass
 
     @abstractmethod
@@ -76,7 +78,11 @@ class WorkspaceStorageInterface(ABC):
 
     @abstractmethod
     def re_add_member_to_workspace(
-            self,workspace_member_data: AddMemberToWorkspaceDTO) ->\
+            self, workspace_member_data: AddMemberToWorkspaceDTO) -> \
             WorkspaceMemberDTO:
         pass
 
+    @abstractmethod
+    def deactivate_workspace_members(self, member_ids: list[int]) -> list[
+        WorkspaceMemberDTO]:
+        pass

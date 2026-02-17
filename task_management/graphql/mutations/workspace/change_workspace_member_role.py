@@ -11,8 +11,7 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.workspace.workspace_member_interactors import \
     WorkspaceMemberInteractor
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import WorkspaceStorage, UserStorage
 
 
 class ChangeMemberRoleMutation(graphene.Mutation):

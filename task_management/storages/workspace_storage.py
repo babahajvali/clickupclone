@@ -52,7 +52,8 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
     def update_workspace(self, workspace_id: str,
                          update_fields: dict) -> WorkspaceDTO:
-        Workspace.objects.filter(workspace_id=workspace_id).update(**update_fields)
+        Workspace.objects.filter(workspace_id=workspace_id).update(
+            **update_fields)
         workspace_obj = Workspace.objects.get(workspace_id=workspace_id)
 
         return self._workspace_dto(data=workspace_obj)
@@ -80,13 +81,13 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         return self._workspace_dto(data=workspace_data)
 
-    def get_active_account_workspaces(self, account_id: str) -> list[WorkspaceDTO]:
+    def get_active_account_workspaces(self, account_id: str) -> list[
+        WorkspaceDTO]:
         account_workspaces = Workspace.objects.filter(account_id=account_id,
                                                       is_active=True)
 
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
-
 
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
@@ -148,7 +149,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
         user_workspaces = WorkspaceMember.objects.filter(
-            user_id=user_id,is_active=True).distinct()
+            user_id=user_id, is_active=True).distinct()
 
         return [self._workspace_member_dto(data=each) for each in
                 user_workspaces]
@@ -167,3 +168,13 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_member.save()
 
         return self._workspace_member_dto(data=workspace_member)
+
+    def deactivate_workspace_members(self, member_ids: list[int]) -> list[
+        WorkspaceMemberDTO]:
+
+        WorkspaceMember.objects.filter(pk__in=member_ids).update(
+            is_active=False)
+        workspace_members = WorkspaceMember.objects.filter(pk__in=member_ids)
+
+        return [self._workspace_member_dto(data=each) for each in
+                workspace_members]

@@ -10,11 +10,8 @@ from task_management.graphql.types.types import FieldValueType
 from task_management.interactors.dtos import UpdateFieldValueDTO
 from task_management.interactors.field.field_value_interactor import \
     FieldValueInteractor
-from task_management.storages.field_storage import FieldStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.task_storage import TaskStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import FieldStorage, TaskStorage, \
+    WorkspaceStorage
 
 
 class SetFieldValueMutation(graphene.Mutation):

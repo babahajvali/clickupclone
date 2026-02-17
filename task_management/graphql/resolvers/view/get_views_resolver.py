@@ -1,8 +1,7 @@
 from task_management.graphql.types.types import ViewType, ViewsType
 from task_management.interactors.view.view_interactor import \
     ViewInteractor
-from task_management.storages.view_storage import ViewStorage
-from task_management.storages.list_storage import ListStorage
+from task_management.storages import ViewStorage, ListStorage
 
 
 def get_all_views_resolver(root, info):

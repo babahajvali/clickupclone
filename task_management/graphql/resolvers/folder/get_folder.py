@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType
 from task_management.graphql.types.types import FolderType
-from task_management.storages.folder_storage import FolderStorage
+from task_management.storages import FolderStorage
 
 
 def get_folder_resolver(root, info, params):

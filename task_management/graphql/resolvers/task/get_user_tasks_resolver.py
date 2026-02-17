@@ -4,9 +4,7 @@ from task_management.graphql.types.error_types import UserNotFoundType, \
 from task_management.graphql.types.types import GetUserTaskType, TaskType
 from task_management.interactors.task.task_assignee_interactor import \
     TaskAssigneeInteractor
-from task_management.storages.task_storage import TaskStorage
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
 
 
 def get_user_tasks_resolver(root, info,params):

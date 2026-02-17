@@ -11,7 +11,7 @@ from task_management.graphql.types.response_types import UserLoginResponse
 from task_management.graphql.types.types import UserType
 from task_management.interactors.user.user_interactor import \
     UserInteractor
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage
 
 
 class UserLoginMutation(graphene.Mutation):

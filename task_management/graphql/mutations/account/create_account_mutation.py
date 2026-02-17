@@ -9,10 +9,7 @@ from task_management.graphql.types.response_types import CreateAccountResponse
 from task_management.graphql.types.types import AccountType
 from task_management.interactors.account.account import \
     Account
-
-from task_management.storages.account_storage import AccountStorage
-
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage, AccountStorage
 
 
 class CreateAccountMutation(graphene.Mutation):

@@ -11,9 +11,8 @@ from task_management.graphql.types.types import FolderType
 from task_management.interactors.dtos import UpdateFolderDTO
 from task_management.interactors.space.folder_interactor import \
     FolderInteractor
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import FolderStorage, SpaceStorage, \
+    WorkspaceStorage
 
 
 class UpdateFolderMutation(graphene.Mutation):

@@ -8,7 +8,7 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import ValidateResetTokenType
 from task_management.interactors.user.reset_password_interator import \
     PasswordResetInteractor
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage
 
 
 class ValidateResetTokenMutation(graphene.Mutation):

@@ -10,10 +10,11 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspace.workspace import \
     Workspace
-
-from task_management.storages.account_storage import AccountStorage
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.interactors.workspace.workspace_handler import \
+    WorkspaceHandler
+from task_management.storages import WorkspaceStorage, UserStorage, \
+    AccountStorage, SpaceStorage, FolderStorage, ListStorage, ViewStorage, \
+    FieldStorage, TemplateStorage
 
 
 class DeleteWorkspaceMutation(graphene.Mutation):
@@ -27,15 +28,28 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
         account_storage = AccountStorage()
+        space_storage = SpaceStorage()
+        folder_storage = FolderStorage()
+        list_storage = ListStorage()
+        view_storage = ViewStorage()
 
-        interactor = Workspace(
+        template_storage = TemplateStorage()
+        field_storage = FieldStorage()
+
+        workspace_onboarding = WorkspaceHandler(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
+            space_storage=space_storage,
+            list_storage=list_storage,
+            folder_storage=folder_storage,
+            template_storage=template_storage,
+            field_storage=field_storage,
             account_storage=account_storage,
+            view_storage=view_storage
         )
 
         try:
-            result = interactor.delete_workspace(
+            result = workspace_onboarding.delete_workspace_handle(
                 workspace_id=params.workspace_id,
                 user_id=info.context.user_id
             )

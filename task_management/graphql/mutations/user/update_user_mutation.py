@@ -9,7 +9,7 @@ from task_management.graphql.types.types import UserType
 from task_management.interactors.dtos import UpdateUserDTO
 from task_management.interactors.user.user_interactor import \
     UserInteractor
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage
 
 
 class UpdateUserMutation(graphene.Mutation):

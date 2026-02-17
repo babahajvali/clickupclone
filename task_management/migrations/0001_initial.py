@@ -195,7 +195,7 @@ class Migration(migrations.Migration):
                     "template",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="fields",
+                        related_name="field",
                         to="task_management.template",
                     ),
                 ),

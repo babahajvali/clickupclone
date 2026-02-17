@@ -1,8 +1,8 @@
 from task_management.exceptions import custom_exceptions
 from task_management.interactors.user.user_interactor import UserInteractor
-from task_management.storages.user_storage import UserStorage
 from task_management.graphql.types.error_types import UserNotFoundType, InactiveUserType
 from task_management.graphql.types.types import UserType
+from task_management.storages import UserStorage
 
 
 def get_user_profile_resolver(root, info, params):

@@ -8,9 +8,7 @@ from task_management.graphql.types.response_types import DeleteTaskResponse
 from task_management.graphql.types.types import TaskType
 from task_management.interactors.task.task_interactor import \
     TaskInteractor
-from task_management.storages.task_storage import TaskStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
 
 
 class DeleteTaskMutation(graphene.Mutation):

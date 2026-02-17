@@ -1,6 +1,6 @@
 from task_management.graphql.types.types import TaskFieldValuesType, \
     FieldValuesType, TasksValuesType
-from task_management.storages.field_storage import FieldStorage
+from task_management.storages import FieldStorage
 
 
 def get_task_field_values_resolver(root, info,params):

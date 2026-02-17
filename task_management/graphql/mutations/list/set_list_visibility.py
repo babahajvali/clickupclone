@@ -11,10 +11,8 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import ListType
 from task_management.interactors.list.list_interactor import \
     ListInteractor
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
+    WorkspaceStorage
 
 
 class SetListVisibilityMutation(graphene.Mutation):

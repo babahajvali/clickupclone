@@ -2,11 +2,11 @@ import graphene
 
 from task_management.graphql.resolvers.account.get_accounts_resolver import \
     get_user_accounts_resolver
-from task_management.graphql.resolvers.fields.get_field_resolver import \
+from task_management.graphql.resolvers.field.get_field_resolver import \
     get_field_resolver
-from task_management.graphql.resolvers.fields.get_task_field_values_resolver import \
+from task_management.graphql.resolvers.field.get_task_field_values_resolver import \
     get_task_field_values_resolver
-from task_management.graphql.resolvers.fields.get_template_fields_resolver import \
+from task_management.graphql.resolvers.field.get_template_fields_resolver import \
     get_fields_for_template_resolver
 from task_management.graphql.resolvers.folder.get_folder import \
     get_folder_resolver
@@ -38,9 +38,9 @@ from task_management.graphql.resolvers.user.get_user_resolver import \
     get_user_profile_resolver
 from task_management.graphql.resolvers.user.get_user_with_email_resolver import \
     get_user_with_email_resolver
-from task_management.graphql.resolvers.views.get_list_views import \
+from task_management.graphql.resolvers.view.get_list_views import \
     get_list_views_resolver
-from task_management.graphql.resolvers.views.get_views_resolver import \
+from task_management.graphql.resolvers.view.get_views_resolver import \
     get_all_views_resolver
 from task_management.graphql.resolvers.workspace.get_user_workspaces import \
     get_user_workspace_resolver
@@ -58,7 +58,7 @@ from task_management.graphql.types.input_types import \
     GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams, \
     GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
     GetUserTasksInputParams, GetListTaskAssigneesInputParams, \
-    GetAccountsInputParams, GetUserWithEmailInputParams
+    GetUserWithEmailInputParams
 from task_management.graphql.types.response_types import \
     GetUserProfileResponse, GetWorkspaceResponse, GetWorkspaceSpacesResponse, \
     GetSpaceResponse, GetSpaceFoldersResponse, GetFolderResponse, \

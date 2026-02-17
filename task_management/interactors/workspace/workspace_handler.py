@@ -103,3 +103,21 @@ class WorkspaceHandler:
 
         return self.workspace_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)
+
+    def delete_workspace_handle(self, workspace_id: str, user_id: str):
+        workspace_interactor = Workspace(
+            workspace_storage=self.workspace_storage,
+            account_storage=self.account_storage,
+            user_storage=self.user_storage
+        )
+        workspace_data = workspace_interactor.delete_workspace(
+            workspace_id=workspace_id, user_id=user_id)
+        workspace_members = self.workspace_storage.get_workspace_members(
+            workspace_id=workspace_id)
+
+        workspace_member_ids = [obj.id for obj in workspace_members]
+
+        self.workspace_storage.deactivate_workspace_members(
+            member_ids=workspace_member_ids)
+
+        return workspace_data

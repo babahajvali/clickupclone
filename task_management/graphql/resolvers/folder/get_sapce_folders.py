@@ -4,9 +4,8 @@ from task_management.graphql.types.error_types import SpaceNotFoundType, \
 from task_management.graphql.types.types import FolderType, SpaceFoldersType
 from task_management.interactors.space.folder_interactor import \
     FolderInteractor
-from task_management.storages.folder_storage import FolderStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import FolderStorage, SpaceStorage, \
+    WorkspaceStorage
 
 
 def get_space_folders_resolver(root, info, params):

@@ -6,11 +6,8 @@ from task_management.graphql.types.types import TaskType, TasksType, \
 from task_management.interactors.task.task_interactor import TaskInteractor
 from task_management.interactors.task.task_assignee_interactor import \
     TaskAssigneeInteractor
-from task_management.storages.task_storage import TaskStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.field_storage import FieldStorage
+from task_management.storages import ListStorage, TaskStorage, \
+    WorkspaceStorage, UserStorage, FieldStorage
 
 
 def get_list_tasks_resolver(root, info, params):

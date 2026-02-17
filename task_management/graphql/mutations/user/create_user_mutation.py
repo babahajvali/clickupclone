@@ -10,7 +10,7 @@ from task_management.graphql.types.types import UserType
 from task_management.interactors.dtos import CreateUserDTO
 from task_management.interactors.user.user_interactor import \
     UserInteractor
-from task_management.storages.user_storage import UserStorage
+from task_management.storages import UserStorage
 
 
 class CreateUserMutation(graphene.Mutation):

@@ -3,9 +3,8 @@ from task_management.graphql.types.error_types import WorkspaceNotFoundType
 from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspace.workspace import \
     Workspace
-from task_management.storages.account_storage import AccountStorage
-from task_management.storages.user_storage import UserStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import WorkspaceStorage, UserStorage, \
+    AccountStorage
 
 
 def get_workspace_resolver(root, info, params):

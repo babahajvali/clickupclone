@@ -9,10 +9,7 @@ from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
 from task_management.interactors.view.list_view_interactor import \
     ListViewInteractor
-
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.view_storage import ViewStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 
 
 class ApplyListViewMutation(graphene.Mutation):

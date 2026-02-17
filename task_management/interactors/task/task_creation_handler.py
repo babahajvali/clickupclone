@@ -20,9 +20,11 @@ class TaskCreationHandler:
     def handle_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         task = self._create_task(task_data=task_data)
 
-        return self._create_default_field_values_at_task(
+        self._create_default_field_values_at_task(
             task_id=task.task_id, list_id=task.list_id,
             created_by=task.created_by)
+
+        return task
 
     def _create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
         task_interactor = TaskInteractor(

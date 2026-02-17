@@ -3,10 +3,8 @@ from task_management.graphql.types.error_types import TemplateNotFoundType
 from task_management.graphql.types.types import FieldType, FieldsType
 from task_management.interactors.field.field_interactor import \
     FieldInteractor
-from task_management.storages.field_storage import FieldStorage
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.template_storage import TemplateStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import FieldStorage, TemplateStorage, \
+    WorkspaceStorage, ListStorage
 
 
 def get_fields_for_template_resolver(root, info, params):

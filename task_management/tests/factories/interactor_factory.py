@@ -3,17 +3,14 @@ import uuid
 import factory
 
 from task_management.exceptions.enums import FieldTypes, Role
-from task_management.interactors.dtos import CreateFieldDTO, \
-    FieldDTO, CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
+from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
+    CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
-    TaskAssigneeDTO, \
     TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
-    FolderDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
-    CreateSpaceDTO, SpaceDTO, \
-    CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO, \
-    WorkspaceMemberDTO, CreateAccountDTO, AccountDTO, CreateAccountMemberDTO, \
-    AccountMemberDTO
+    CreateSpaceDTO, SpaceDTO, CreateWorkspaceDTO, WorkspaceDTO, \
+    AddMemberToWorkspaceDTO, WorkspaceMemberDTO, CreateAccountDTO, AccountDTO, \
+    CreateAccountMemberDTO, AccountMemberDTO, FolderDTO
 
 
 class CreateFieldFactory(factory.Factory):

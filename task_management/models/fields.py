@@ -16,7 +16,7 @@ class Field(models.Model):
     template = models.ForeignKey(
         'Template',
         on_delete=models.CASCADE,
-        related_name='fields'
+        related_name='field'
     )
     order = models.PositiveIntegerField()
     config = models.JSONField(default=dict, blank=True)

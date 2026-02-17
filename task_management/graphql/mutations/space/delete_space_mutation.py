@@ -8,9 +8,7 @@ from task_management.graphql.types.response_types import DeleteSpaceResponse
 from task_management.graphql.types.types import SpaceType
 from task_management.interactors.space.space_interactor import \
     SpaceInteractor
-
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
 class DeleteSpaceMutation(graphene.Mutation):

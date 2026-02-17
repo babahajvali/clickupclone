@@ -8,10 +8,7 @@ from task_management.graphql.types.input_types import UpdateTaskInputParams
 from task_management.graphql.types.response_types import UpdateTaskResponse
 from task_management.graphql.types.types import TaskType
 from task_management.interactors.task.task_interactor import TaskInteractor
-from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_storage import SpaceStorage
-from task_management.storages.task_storage import TaskStorage
-from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
 
 
 class UpdateTaskMutation(graphene.Mutation):
@@ -24,7 +21,6 @@ class UpdateTaskMutation(graphene.Mutation):
     def mutate(root, info, params):
         list_storage = ListStorage()
         task_storage = TaskStorage()
-        space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
         interactor = TaskInteractor(
