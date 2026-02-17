@@ -67,20 +67,17 @@ class FieldStorage(FieldStorageInterface):
                      update_field_data: UpdateFieldDTO) -> FieldDTO:
 
         fields_to_update = {}
-        if update_field_data.field_id is not None:
-            fields_to_update[update_field_data.field_id] = update_field_data
+        if update_field_data.field_name is not None:
+            fields_to_update['field_name'] = update_field_data.field_name
 
         if update_field_data.description is not None:
-            fields_to_update[
-                update_field_data.description] = update_field_data.description
+            fields_to_update["description"] = update_field_data.description
 
         if update_field_data.config is not None:
-            fields_to_update[
-                update_field_data.config] = update_field_data.config
+            fields_to_update["config"] = update_field_data.config
 
         if update_field_data.is_required is not None:
-            fields_to_update[
-                update_field_data.is_required] = update_field_data.is_required
+            fields_to_update["is_required"] = update_field_data.is_required
 
         Field.objects.filter(field_id=field_id).update(**fields_to_update)
 

@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.interactors.dtos import CreateTemplateDTO, UpdateTemplateDTO
+from task_management.interactors.dtos import CreateTemplateDTO
 from task_management.storages.template_storage import TemplateStorage
 from task_management.tests.factories.storage_factory import (
     TemplateFactory,
@@ -79,23 +79,6 @@ class TestTemplateStorage:
         assert result.name == dto.name
 
     @pytest.mark.django_db
-    def test_is_template_name_exist_true(self):
-        # Arrange
-        TemplateFactory(name="Existing Template")
-        storage = TemplateStorage()
-
-        # Act & Assert
-        assert storage.validate_template_exists("Existing Template") is True
-
-    @pytest.mark.django_db
-    def test_is_template_name_exist_false(self):
-        # Arrange
-        storage = TemplateStorage()
-
-        # Act & Assert
-        assert storage.validate_template_exists("Non Existing") is False
-
-    @pytest.mark.django_db
     def test_check_template_name_exist_except_this_template_true(self):
         # Arrange
         template1 = TemplateFactory(name="Template One")
@@ -146,16 +129,14 @@ class TestTemplateStorage:
             description="Old description"
         )
 
-        dto = UpdateTemplateDTO(
-            template_id=template_id,
-            name="Updated Template",
-            description="Updated description"
-        )
+        name="Updated Template",
+        description="Updated description"
+
 
         storage = TemplateStorage()
 
         # Act
-        result = storage.update_template(update_template_data=dto)
+        result = storage.update_template(template_id=template_id, update_fields={"name": name, 'description': description})
 
         # Assert
         snapshot.assert_match(

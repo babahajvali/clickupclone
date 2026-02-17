@@ -94,15 +94,14 @@ class TestFolderStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         FolderFactory(folder_id=folder_id, space=space, created_by=user, name="Old Name", description="Old description")
-        update_folder_data = UpdateFolderDTO(
-            folder_id=str(folder_id),
-            name="New Name",
-            description="New description"
-        )
+        folder_id=str(folder_id)
+        name="New Name"
+        description="New description"
+
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder(update_folder_data=update_folder_data)
+        result = storage.update_folder(folder_id=folder_id, update_fields={"name": name, "description": description})
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_folder_success.txt")

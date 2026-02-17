@@ -1,5 +1,4 @@
 import pytest
-
 from task_management.exceptions.enums import ViewTypes
 from task_management.interactors.dtos import CreateViewDTO, UpdateViewDTO
 from task_management.storages.view_storage import ViewStorage
@@ -90,15 +89,15 @@ class TestViewStorage:
             description="Old description"
         )
 
-        dto = UpdateViewDTO(
-            view_id=str(view_id),
-            name="Updated View",
-            description="Updated description"
-        )
+        name = "Updated View",
+        description = "Updated description"
+
         storage = ViewStorage()
 
         # Act
-        result = storage.update_view(update_view_data=dto)
+        result = storage.update_view(view_id=view_id,
+                                     update_fields={"name": name,
+                                                    'description': description})
 
         # Assert
         snapshot.assert_match(

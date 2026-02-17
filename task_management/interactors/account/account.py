@@ -1,5 +1,7 @@
 from typing import Optional
 
+from task_management.exceptions.custom_exceptions import \
+    AccountNameAlreadyExistsException
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface, UserStorageInterface
@@ -158,8 +160,6 @@ class Account(AccountValidationMixin, UserValidationMixin):
             self.account_storage.get_account_by_name(
                 account_name=account_name
             )
-            from task_management.exceptions.custom_exceptions import \
-                AccountNameAlreadyExistsException
             raise AccountNameAlreadyExistsException(name=account_name)
         except Exception:
             pass

@@ -1,8 +1,10 @@
 import pytest
 
-from task_management.interactors.dtos import CreateTaskDTO, UpdateTaskDTO, FilterDTO
+from task_management.interactors.dtos import CreateTaskDTO, FilterDTO
 from task_management.storages.task_storage import TaskStorage
-from task_management.tests.factories.storage_factory import TaskFactory, UserFactory, ListFactory, TaskAssigneeFactory, FieldValueFactory, FieldFactory, TemplateFactory
+from task_management.tests.factories.storage_factory import TaskFactory, \
+    UserFactory, ListFactory, FieldValueFactory, \
+    FieldFactory, TemplateFactory
 
 
 class TestTaskStorage:
@@ -29,7 +31,6 @@ class TestTaskStorage:
         # snapshot.assert_match(repr(result), "test_create_task_success.txt")
         assert result.title == task_data.title
 
-
     @pytest.mark.django_db
     def test_create_task_with_existing_tasks(self, snapshot):
         # Arrange
@@ -54,7 +55,6 @@ class TestTaskStorage:
         # snapshot.assert_match(repr(result), "test_create_task_with_existing_tasks.txt")
         assert result.title == task_data.title
 
-
     @pytest.mark.django_db
     def test_update_task_success(self, snapshot):
         # Arrange
@@ -63,16 +63,18 @@ class TestTaskStorage:
         user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
-        TaskFactory(task_id=task_id, list=list_obj, created_by=user, title="Old Title", description="Old description")
-        update_task_data = UpdateTaskDTO(
-            task_id=str(task_id),
-            title="New Title",
-            description="New description"
-        )
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user,
+                    title="Old Title", description="Old description")
+
+        title = "New Title"
+        description = "New description"
+
         storage = TaskStorage()
 
         # Act
-        result = storage.update_task(update_task_data=update_task_data)
+        result = storage.update_task(task_id=task_id,
+                                     update_field={"title": title,
+                                                   'description': description})
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_task_success.txt")
@@ -104,9 +106,12 @@ class TestTaskStorage:
         task_id3 = "12345678-1234-5678-1234-567812345683"
         list_obj = ListFactory(list_id=list_id)
         user = UserFactory(user_id=user_id)
-        TaskFactory(task_id=task_id1,list=list_obj, created_by=user, is_deleted=False)
-        TaskFactory(task_id=task_id2,list=list_obj, created_by=user, is_deleted=False)
-        TaskFactory(task_id=task_id3,list=list_obj, created_by=user, is_deleted=True)
+        TaskFactory(task_id=task_id1, list=list_obj, created_by=user,
+                    is_deleted=False)
+        TaskFactory(task_id=task_id2, list=list_obj, created_by=user,
+                    is_deleted=False)
+        TaskFactory(task_id=task_id3, list=list_obj, created_by=user,
+                    is_deleted=True)
         storage = TaskStorage()
 
         # Act
@@ -136,7 +141,8 @@ class TestTaskStorage:
         list_obj = ListFactory(list_id=list_id)
         user_id = "12345678-1234-5678-1234-567812345680"
         user = UserFactory(user_id=user_id)
-        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=1, is_deleted=False)
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=1,
+                    is_deleted=False)
         TaskFactory(list=list_obj, created_by=user, order=2, is_deleted=False)
         TaskFactory(list=list_obj, created_by=user, order=3, is_deleted=False)
         storage = TaskStorage()
@@ -169,8 +175,8 @@ class TestTaskStorage:
         result = storage.task_filter_data(filter_data=filter_data)
 
         # Assert
-        snapshot.assert_match(repr(list(result)), "test_task_filter_data_no_filters.txt")
-
+        snapshot.assert_match(repr(list(result)),
+                              "test_task_filter_data_no_filters.txt")
 
     @pytest.mark.django_db
     def test_task_filter_data_with_field_filters(self, snapshot):
@@ -181,11 +187,16 @@ class TestTaskStorage:
         template = TemplateFactory(list=list_obj)
         field = FieldFactory(field_id=field_id, template=template)
         user = UserFactory()
-        task1 = TaskFactory(list=list_obj, created_by=user, is_deleted=False, order=1)
-        task2 = TaskFactory(list=list_obj, created_by=user, is_deleted=False, order=2)
-        task3 = TaskFactory(list=list_obj, created_by=user, is_deleted=False, order=3)
-        FieldValueFactory(task=task1, field=field, value={"status": "in_progress"}, created_by=user)
-        FieldValueFactory(task=task2, field=field, value={"status": "completed"}, created_by=user)
+        task1 = TaskFactory(list=list_obj, created_by=user, is_deleted=False,
+                            order=1)
+        task2 = TaskFactory(list=list_obj, created_by=user, is_deleted=False,
+                            order=2)
+        task3 = TaskFactory(list=list_obj, created_by=user, is_deleted=False,
+                            order=3)
+        FieldValueFactory(task=task1, field=field,
+                          value={"status": "in_progress"}, created_by=user)
+        FieldValueFactory(task=task2, field=field,
+                          value={"status": "completed"}, created_by=user)
         filter_data = FilterDTO(
             list_id=str(list_id),
             assignees=None,
@@ -199,7 +210,8 @@ class TestTaskStorage:
         result = storage.task_filter_data(filter_data=filter_data)
 
         # Assert
-        snapshot.assert_match(repr(list(result)), "test_task_filter_data_with_field_filters.txt")
+        snapshot.assert_match(repr(list(result)),
+                              "test_task_filter_data_with_field_filters.txt")
 
     @pytest.mark.django_db
     def test_get_tasks_count_success(self, snapshot):
@@ -239,16 +251,19 @@ class TestTaskStorage:
         list_obj = ListFactory(list_id=list_id)
         user_id = "12345678-1234-5678-1234-567812345678"
         user = UserFactory(user_id=user_id)
-        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=1, is_deleted=False)
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=1,
+                    is_deleted=False)
         TaskFactory(list=list_obj, created_by=user, order=2, is_deleted=False)
         TaskFactory(list=list_obj, created_by=user, order=3, is_deleted=False)
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=3, task_id=str(task_id))
+        result = storage.reorder_tasks(list_id=str(list_id), new_order=3,
+                                       task_id=str(task_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_tasks_move_down_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_tasks_move_down_success.txt")
 
     @pytest.mark.django_db
     def test_reorder_tasks_move_up_success(self, snapshot):
@@ -260,14 +275,17 @@ class TestTaskStorage:
         user = UserFactory(user_id=user_id)
         TaskFactory(list=list_obj, created_by=user, order=1, is_deleted=False)
         TaskFactory(list=list_obj, created_by=user, order=2, is_deleted=False)
-        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=3, is_deleted=False)
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=3,
+                    is_deleted=False)
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=1, task_id=str(task_id))
+        result = storage.reorder_tasks(list_id=str(list_id), new_order=1,
+                                       task_id=str(task_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_tasks_move_up_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_tasks_move_up_success.txt")
 
     @pytest.mark.django_db
     def test_reorder_tasks_same_position(self, snapshot):
@@ -277,11 +295,14 @@ class TestTaskStorage:
         list_obj = ListFactory(list_id=list_id)
         user_id = "12345678-1234-5678-1234-567812345678"
         user = UserFactory(user_id=user_id)
-        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=2, is_deleted=False)
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user, order=2,
+                    is_deleted=False)
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=2, task_id=str(task_id))
+        result = storage.reorder_tasks(list_id=str(list_id), new_order=2,
+                                       task_id=str(task_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_tasks_same_position.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_tasks_same_position.txt")

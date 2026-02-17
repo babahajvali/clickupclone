@@ -13,7 +13,6 @@ from task_management.interactors.template.template_creation_handler import \
     TemplateCreationHandler
 from task_management.interactors.view.list_view_interactor import \
     ListViewInteractor
-from task_management.storages import list_storage, view_storage
 
 
 class ListCreationHandler:

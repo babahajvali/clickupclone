@@ -3,7 +3,6 @@ from factory.random import reseed_random
 
 from task_management.interactors.dtos import (
     CreateWorkspaceDTO,
-    UpdateWorkspaceDTO
 )
 from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.tests.factories.storage_factory import (
@@ -11,7 +10,9 @@ from task_management.tests.factories.storage_factory import (
     UserFactory,
     AccountFactory
 )
+
 reseed_random(12345)
+
 
 class TestWorkspaceStorage:
 
@@ -22,7 +23,7 @@ class TestWorkspaceStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345679"
-        account = AccountFactory(owner=user,account_id=account_id)
+        account = AccountFactory(owner=user, account_id=account_id)
         workspace = WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
@@ -89,22 +90,22 @@ class TestWorkspaceStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345690"
-        account = AccountFactory(owner=user,account_id=account_id)
+        account = AccountFactory(owner=user, account_id=account_id)
         workspace = WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
             account=account
         )
 
-        dto = UpdateWorkspaceDTO(
-            workspace_id=str(workspace_id),
-            name="Updated Workspace",
-            description="Updated description"
-        )
+        name="Updated Workspace"
+        description="Updated description"
+
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.update_workspace(workspace_data=dto)
+        result = storage.update_workspace(workspace_id=workspace_id,
+                                          update_fields={"name": name,
+                                                         'description': description})
 
         # Assert
         snapshot.assert_match(
@@ -119,7 +120,7 @@ class TestWorkspaceStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345690"
-        account = AccountFactory(owner=user,account_id=account_id)
+        account = AccountFactory(owner=user, account_id=account_id)
         workspace = WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
@@ -148,7 +149,7 @@ class TestWorkspaceStorage:
         old_owner = UserFactory(user_id=user_id)
         new_owner = UserFactory(user_id=new_user_id)
         account_id = "12345678-1234-5678-1234-567812345690"
-        account = AccountFactory(owner=old_owner,account_id=account_id)
+        account = AccountFactory(owner=old_owner, account_id=account_id)
 
         workspace = WorkspaceFactory(
             workspace_id=workspace_id,
@@ -180,9 +181,12 @@ class TestWorkspaceStorage:
         workspace_id2 = "12345678-1234-5678-1234-567812345680"
         workspace_id3 = "12345678-1234-5678-1234-567812345681"
 
-        WorkspaceFactory(workspace_id=workspace_id1,account=account, is_active=True,created_by=user)
-        WorkspaceFactory(workspace_id=workspace_id2,account=account, is_active=True,created_by=user)
-        WorkspaceFactory(workspace_id=workspace_id3,account=account, is_active=False,created_by=user)
+        WorkspaceFactory(workspace_id=workspace_id1, account=account,
+                         is_active=True, created_by=user)
+        WorkspaceFactory(workspace_id=workspace_id2, account=account,
+                         is_active=True, created_by=user)
+        WorkspaceFactory(workspace_id=workspace_id3, account=account,
+                         is_active=False, created_by=user)
 
         storage = WorkspaceStorage()
 
