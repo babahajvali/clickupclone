@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
-    UpdateTaskDTO, FilterDTO, TaskAssigneeDTO, UserTasksDTO
+    FilterDTO, TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
 from task_management.models import User, List, Task, TaskAssignee
@@ -58,15 +58,9 @@ class TaskStorage(TaskStorageInterface):
         return self._task_dto(task_data=task_data)
 
     def get_task_list_id(self, task_id: str) -> str:
-        """
-        Return the list_id for a given task_id.
 
-        Uses get() so that a missing task raises Task.DoesNotExist rather
-        than an IndexError from list indexing, giving clearer errors to
-        callers and tests.
-        """
-        task = Task.objects.get(task_id=task_id)
-        return task.list_id
+        task = Task.objects.select_related('list').get(task_id=task_id)
+        return task.list.list_id
 
     def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
         try:
