@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     InvalidOrderException, MissingFieldConfigException, \
-    NothingToUpdateFieldException
+    NothingToUpdateFieldException, EmptyNameException
 from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
@@ -8,14 +8,13 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, TemplateStorageInterface, ListStorageInterface, \
-    WorkspaceStorageInterface
+    FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
-    FieldValidationMixin, ListValidationMixin, WorkspaceValidationMixin
+    FieldValidationMixin, WorkspaceValidationMixin
 
 
 class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
-                      FieldValidationMixin, ListValidationMixin):
+                      FieldValidationMixin):
     """Field Management Business Logic Interactor.
     
     Handles all field-related operations including creation, updating, deletion,
@@ -35,27 +34,22 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         - FieldStorageInterface: Field data persistence
         - TemplateStorageInterface: Template validation and access
         - WorkspaceStorageInterface: User permission validation
-        - ListStorageInterface: List access validation
-        - SpaceStorageInterface: Space access validation
-    
+
     Attributes:
         field_storage (FieldStorageInterface): Storage for field operations
         template_storage (TemplateStorageInterface): Storage for template operations
-        list_storage (ListStorageInterface): Storage for list operations
+        workspace_storage (WorkspaceStorageInterface): validate the user permissions
     """
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 list_storage: ListStorageInterface):
+                 workspace_storage: WorkspaceStorageInterface):
         super().__init__(template_storage=template_storage,
                          workspace_storage=workspace_storage,
-                         field_storage=field_storage,
-                         list_storage=list_storage)
+                         field_storage=field_storage)
         self.field_storage = field_storage
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage
-        self.list_storage = list_storage
 
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
@@ -65,7 +59,9 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             template_id=create_field_data.template_id,
             user_id=create_field_data.created_by)
 
-        self.validate_field_name_not_exists(
+        self.check_field_name_not_empty(
+            field_name=create_field_data.field_name)
+        self.check_field_name_not_exist_in_db(
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id)
         self.check_field_type(field_type=create_field_data.field_type.value)
@@ -90,13 +86,15 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
 
         self.validate_field_is_active(field_id=update_field_data.field_id)
         field_data = self.field_storage.get_field_by_id(
-            update_field_data.field_id)
+            field_id=update_field_data.field_id)
 
         self.check_template_exists(template_id=field_data.template_id)
         self._validate_user_access_for_template(
             template_id=field_data.template_id, user_id=user_id)
 
         if is_field_name_provided:
+            self.check_field_name_not_empty(
+                field_name=update_field_data.field_name)
             self.check_field_name_in_db_except_current_field(
                 field_id=update_field_data.field_id,
                 field_name=update_field_data.field_name,
@@ -123,6 +121,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> FieldDTO:
 
+        self.check_template_exists(template_id=template_id)
         self.validate_field_is_active(field_id=field_id)
         self._validate_field_order(template_id=template_id, order=new_order)
 
@@ -144,14 +143,11 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         return self.field_storage.delete_field(field_id=field_id)
 
     @interactor_cache(cache_name="fields", timeout=5 * 60)
-    def get_fields_for_template(self, list_id: str) -> list[FieldDTO]:
+    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
 
-        self.validate_list_is_active(list_id=list_id)
-        template_id = self.list_storage.get_template_id_by_list_id(
-            list_id=list_id)
         self.check_template_exists(template_id=template_id)
 
-        return self.field_storage.get_fields_for_template(
+        return self.field_storage.get_active_fields_for_template(
             template_id=template_id)
 
     def get_field(self, field_id: str) -> FieldDTO:
@@ -191,3 +187,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
 
         if is_dropdown_type and not config:
             raise MissingFieldConfigException(field_type=field_type)
+
+    @staticmethod
+    def check_field_name_not_empty(field_name: str):
+        if not field_name or not field_name.strip():
+            raise EmptyNameException(name=field_name)

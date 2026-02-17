@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import AccountNotFoundType, \
 from task_management.graphql.types.input_types import DeleteAccountInputParams
 from task_management.graphql.types.response_types import DeleteAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.accounts.account import \
+from task_management.interactors.account.account import \
     Account
 
 from task_management.storages.account_storage import AccountStorage

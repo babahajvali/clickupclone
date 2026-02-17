@@ -17,8 +17,8 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     def __init__(self, task_storage: TaskStorageInterface,
                  list_storage: ListStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
-        super().__init__(list_storage=list_storage, task_storage=task_storage,
-                         workspace_storage=workspace_storage)
+        super().__init__(workspace_storage=workspace_storage,
+                         list_storage=list_storage, task_storage=task_storage)
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
@@ -26,7 +26,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     @invalidate_interactor_cache(cache_name="tasks")
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
 
-        self._validate_task_title_not_empty(title=task_data.title)
+        self._check_task_title_not_empty(title=task_data.title)
         self.validate_list_is_active(list_id=task_data.list_id)
         self._validate_user_has_access_for_list(list_id=task_data.list_id,
                                                 user_id=task_data.created_by)
@@ -49,7 +49,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
         fields_to_update = {}
 
         if is_title_provided:
-            self._validate_task_title_not_empty(title=title)
+            self._check_task_title_not_empty(title=title)
             fields_to_update['title'] = title
 
         if is_description_provided:
@@ -68,11 +68,11 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
         return self.task_storage.remove_task(task_id=task_id)
 
     @interactor_cache(cache_name="tasks", timeout=5 * 60)
-    def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
+    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
 
         self.validate_list_is_active(list_id=list_id)
 
-        return self.task_storage.get_list_tasks(list_id=list_id)
+        return self.task_storage.get_active_tasks_for_list(list_id=list_id)
 
     def get_task(self, task_id: str) -> TaskDTO:
 
@@ -96,9 +96,8 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
         self._validate_user_has_access_for_list(list_id=list_id,
                                                 user_id=user_id)
 
-        return self.task_storage.reorder_tasks(task_id=task_id,
-                                               new_order=order,
-                                               list_id=list_id)
+        return self.task_storage.reorder_tasks(
+            task_id=task_id, new_order=order, list_id=list_id)
 
     @staticmethod
     def _validate_filter_parameters(filter_data: FilterDTO):
@@ -122,7 +121,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
             raise InvalidOrderException(order=order)
 
     @staticmethod
-    def _validate_task_title_not_empty(title: str):
+    def _check_task_title_not_empty(title: str):
 
         if not title or not title.strip():
             raise EmptyNameException(name=title)

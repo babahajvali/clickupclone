@@ -148,9 +148,9 @@ class TestCreateTaskInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
-        self.task_storage.get_list_tasks.return_value = tasks
+        self.task_storage.get_active_tasks_for_list.return_value = tasks
 
-        result = self.interactor.get_list_tasks(list_id)
+        result = self.interactor.get_active_tasks_for_list(list_id)
 
         snapshot.assert_match(
             repr(result),

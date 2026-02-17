@@ -68,6 +68,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def reorder_space(self, workspace_id: str, space_id: str, order: int,
                       user_id: str):
 
+        self.validate_space_is_active(space_id=space_id)
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id)

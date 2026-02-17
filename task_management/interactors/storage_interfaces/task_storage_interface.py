@@ -23,7 +23,11 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
+    def get_workspace_id_from_task_id(self, task_id:str) -> str | None:
+        pass
+
+    @abstractmethod
+    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         pass
 
     @abstractmethod

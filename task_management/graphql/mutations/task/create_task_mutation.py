@@ -10,7 +10,6 @@ from task_management.interactors.dtos import CreateTaskDTO
 from task_management.interactors.task.task_interactor import \
     TaskInteractor
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
@@ -32,13 +31,11 @@ class CreateTaskMutation(graphene.Mutation):
 
         list_storage = ListStorage()
         task_storage = TaskStorage()
-        space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
         interactor = TaskInteractor(
             list_storage=list_storage,
             task_storage=task_storage,
-            space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
 

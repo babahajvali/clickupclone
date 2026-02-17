@@ -66,7 +66,7 @@ class ListStorage(ListStorageInterface):
         return self._list_dto(list_data=list_data)
 
     def get_workspace_id_by_list_id(self, list_id: str) -> str:
-        list_data = List.objects.select_related("space_workspace").get(
+        list_data = List.objects.select_related("space__workspace").get(
             list_id=list_id)
 
         return list_data.space.workspace.workspace_id

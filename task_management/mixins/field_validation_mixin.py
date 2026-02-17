@@ -21,13 +21,18 @@ class FieldValidationMixin:
         if field_type not in field_types:
             raise UnsupportedFieldTypeException(field_type=field_type)
 
-    def validate_field_name_not_exists(self, field_name: str,
-                                       template_id: str):
-        is_exist = self.field_storage.is_field_name_exists(
-            field_name=field_name, template_id=template_id)
+    def check_field_name_not_exist_in_db(self, field_name: str,
+                                         template_id: str):
 
-        if is_exist:
-            raise FieldNameAlreadyExistsException(field_name=field_name)
+        try:
+            field_data = self.field_storage.get_field_by_name(
+                field_name=field_name, template_id=template_id)
+
+            if field_data:
+                raise FieldNameAlreadyExistsException(field_name=field_name)
+
+        except Exception:
+            pass
 
     def validate_field_is_active(self, field_id: str):
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
@@ -37,7 +42,6 @@ class FieldValidationMixin:
 
         if not field_data.is_active:
             raise InactiveFieldException(field_id=field_id)
-
 
     def check_field_name_in_db_except_current_field(
             self, field_id: str, field_name: str, template_id: str):

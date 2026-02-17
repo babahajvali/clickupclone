@@ -5,7 +5,6 @@ from task_management.interactors.field.field_interactor import \
     FieldInteractor
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_storage import ListStorage
-from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.template_storage import TemplateStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
@@ -15,20 +14,19 @@ def get_fields_for_template_resolver(root, info, params):
 
     field_storage = FieldStorage()
     template_storage = TemplateStorage()
-    list_storage = ListStorage()
     workspace_storage = WorkspaceStorage()
-    space_storage = SpaceStorage()
+    list_storage = ListStorage()
 
     interactor = FieldInteractor(
         field_storage=field_storage,
         template_storage=template_storage,
-        list_storage=list_storage,
-        space_storage=space_storage,
         workspace_storage=workspace_storage,
     )
 
     try:
-        fields_data = interactor.get_fields_for_template(list_id=list_id)
+        template_id = list_storage.get_template_id_by_list_id(list_id=list_id)
+        fields_data = interactor.get_active_fields_for_template(
+            template_id=template_id)
 
         fields_output = [
             FieldType(

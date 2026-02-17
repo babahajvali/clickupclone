@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.db import transaction
 
-from task_management.interactors.accounts.account import Account
+from task_management.interactors.account.account import Account
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \

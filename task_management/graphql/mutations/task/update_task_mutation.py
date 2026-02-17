@@ -30,7 +30,6 @@ class UpdateTaskMutation(graphene.Mutation):
         interactor = TaskInteractor(
             list_storage=list_storage,
             task_storage=task_storage,
-            space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
         try:

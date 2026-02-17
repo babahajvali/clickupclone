@@ -6,7 +6,7 @@ from task_management.interactors.storage_interfaces import \
 from task_management.interactors.task.task_interactor import TaskInteractor
 
 
-class TaskOnboardingHandler:
+class TaskCreationHandler:
 
     def __init__(self, list_storage: ListStorageInterface,
                  task_storage: TaskStorageInterface,
@@ -36,7 +36,7 @@ class TaskOnboardingHandler:
                                              created_by: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
-        template_fields = self.field_storage.get_fields_for_template(
+        template_fields = self.field_storage.get_active_fields_for_template(
             template_id=template_id)
 
         field_values = []

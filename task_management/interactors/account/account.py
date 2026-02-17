@@ -138,7 +138,7 @@ class Account(AccountValidationMixin, UserValidationMixin):
         return self.account_storage.deactivate_account(account_id=account_id, )
 
     def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
-        """ Get accounts data after validations
+        """ Get account data after validations
         1. Validate the account_ids
         Args:
             account_ids

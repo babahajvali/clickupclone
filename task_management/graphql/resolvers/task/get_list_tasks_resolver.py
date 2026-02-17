@@ -6,7 +6,6 @@ from task_management.graphql.types.types import TaskType, TasksType, \
 from task_management.interactors.task.task_interactor import TaskInteractor
 from task_management.interactors.task.task_assignee_interactor import \
     TaskAssigneeInteractor
-from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.task_storage import TaskStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
@@ -19,7 +18,6 @@ def get_list_tasks_resolver(root, info, params):
 
     list_storage = ListStorage()
     task_storage = TaskStorage()
-    space_storage = SpaceStorage()
     workspace_storage = WorkspaceStorage()
     user_storage = UserStorage()
     field_storage = FieldStorage()
@@ -27,20 +25,17 @@ def get_list_tasks_resolver(root, info, params):
     task_interactor = TaskInteractor(
         list_storage=list_storage,
         task_storage=task_storage,
-        space_storage=space_storage,
         workspace_storage=workspace_storage,
     )
 
     assignee_interactor = TaskAssigneeInteractor(
         user_storage=user_storage,
         task_storage=task_storage,
-        list_storage=list_storage,
-        space_storage=space_storage,
         workspace_storage=workspace_storage
     )
 
     try:
-        tasks_data = task_interactor.get_list_tasks(list_id=list_id)
+        tasks_data = task_interactor.get_active_tasks_for_list(list_id=list_id)
         task_ids = [task.task_id for task in tasks_data]
 
         assignees_data = assignee_interactor.get_assignees_for_list_tasks(

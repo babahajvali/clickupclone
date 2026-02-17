@@ -28,15 +28,11 @@ class SetFieldValueMutation(graphene.Mutation):
         field_storage = FieldStorage()
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
-        space_storage = SpaceStorage()
-        list_storage = ListStorage()
 
         interactor = FieldValueInteractor(
             field_storage=field_storage,
             task_storage=task_storage,
-            workspace_storage=workspace_storage,
-            space_storage=space_storage,
-            list_storage=list_storage,
+            workspace_storage=workspace_storage
         )
 
         update_data = UpdateFieldValueDTO(

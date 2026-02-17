@@ -110,7 +110,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.get_list_tasks(list_id=str(list_id))
+        result = storage.get_active_tasks_for_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_list_tasks_success.txt")
@@ -123,7 +123,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.get_list_tasks(list_id=str(list_id))
+        result = storage.get_active_tasks_for_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_list_tasks_empty.txt")

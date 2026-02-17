@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
@@ -58,10 +59,19 @@ class TaskStorage(TaskStorageInterface):
 
     def get_task_list_id(self, task_id: str) -> str:
         return \
-            Task.objects.filter(task_id=task_id).values_list('list_id',
-                                                             flat=True)[0]
+            Task.objects.filter(task_id=task_id).values_list(
+                'list_id',flat=True)[0]
 
-    def get_list_tasks(self, list_id: str) -> list[TaskDTO]:
+    def get_workspace_id_from_task_id(self, task_id:str) -> str | None:
+        try:
+            task_data = Task.objects.get(task_id=task_id)
+
+            return task_data.list.space.workspace.workspace_id
+        except ObjectDoesNotExist:
+            return None
+
+
+    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         list_tasks = Task.objects.filter(list_id=list_id, is_deleted=False)
 
         return [self._task_dto(task_data=task_data) for task_data in

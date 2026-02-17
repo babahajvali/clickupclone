@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
 from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
@@ -47,14 +49,16 @@ class TemplateStorage(TemplateStorageInterface):
         return self._template_dto(data=template_data)
 
     def get_template_list_id(self, template_id: str) -> str:
-        return \
-            Template.objects.filter(list_id=template_id).values_list('list_id',
-                                                                     flat=True)[
-                0]
+        return Template.objects.filter(list_id=template_id).values_list(
+            'list_id', flat=True)[0]
 
-    def get_workspace_id_from_template_id(self, template_id: str) -> str:
-        template_data = Template.objects.select_related(
-            "list__space__workspace").get(
-            template_id=template_id)
+    def get_workspace_id_from_template_id(self,
+                                          template_id: str) -> str | None:
+        try:
+            template_data = Template.objects.select_related(
+                "list__space__workspace").get(
+                template_id=template_id)
 
-        return template_data.list.space.workspace.workspace_id
+            return template_data.list.space.workspace.workspace_id
+        except ObjectDoesNotExist:
+            return None

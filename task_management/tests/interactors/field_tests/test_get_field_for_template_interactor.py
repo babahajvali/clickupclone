@@ -46,9 +46,9 @@ class TestGetFieldForTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "list-123"})()
 
-        self.field_storage.get_fields_for_template.return_value = expected_fields
+        self.field_storage.get_active_fields_for_template.return_value = expected_fields
 
-        result = self.interactor.get_fields_for_template(template_id)
+        result = self.interactor.get_active_fields_for_template(template_id)
 
         snapshot.assert_match(
             repr(result),
@@ -66,7 +66,7 @@ class TestGetFieldForTemplateInteractor:
         self.template_storage.get_template_by_id.return_value = False
 
         with pytest.raises(TemplateNotFoundException) as exc:
-            self.interactor.get_fields_for_template(list_id=list_id)
+            self.interactor.get_active_fields_for_template(list_id=list_id)
 
         snapshot.assert_match(
             exc.value.template_id,

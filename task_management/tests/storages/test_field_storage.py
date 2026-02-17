@@ -297,7 +297,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_fields_for_template(template_id=str(template_id))
+        result = storage.get_active_fields_for_template(template_id=str(template_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -314,7 +314,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_fields_for_template(template_id=str(template_id))
+        result = storage.get_active_fields_for_template(template_id=str(template_id))
 
         # Assert
         snapshot.assert_match(repr(result),

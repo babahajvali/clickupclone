@@ -64,9 +64,26 @@ class FieldStorage(FieldStorageInterface):
             return None
 
     def update_field(self, field_id: str,
-                     update_field_properties: dict) -> FieldDTO:
-        Field.objects.filter(field_id=field_id).update(
-            **update_field_properties)
+                     update_field_data: UpdateFieldDTO) -> FieldDTO:
+
+        fields_to_update = {}
+        if update_field_data.field_id is not None:
+            fields_to_update[update_field_data.field_id] = update_field_data
+
+        if update_field_data.description is not None:
+            fields_to_update[
+                update_field_data.description] = update_field_data.description
+
+        if update_field_data.config is not None:
+            fields_to_update[
+                update_field_data.config] = update_field_data.config
+
+        if update_field_data.is_required is not None:
+            fields_to_update[
+                update_field_data.is_required] = update_field_data.is_required
+
+        Field.objects.filter(field_id=field_id).update(**fields_to_update)
+
         field_data = Field.objects.get(field_id=field_id)
 
         return self._field_dto(field_data=field_data)
@@ -87,7 +104,7 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         fields_data = Field.objects.filter(template_id=template_id,
                                            is_active=True)
 
@@ -246,6 +263,6 @@ class FieldStorage(FieldStorageInterface):
 
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
         field_data = Field.objects.select_related(
-            "template_list_space_workspace").get(field_id=field_id)
+            "template__list__space__workspace").get(field_id=field_id)
 
         return field_data.template.list.space.workspace.workspace_id

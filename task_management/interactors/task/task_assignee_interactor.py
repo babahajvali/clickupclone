@@ -8,11 +8,11 @@ from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 
 from task_management.mixins import TaskValidationMixin, UserValidationMixin, \
-    WorkspaceValidationMixin, ListValidationMixin
+    WorkspaceValidationMixin
 
 
 class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
-                             WorkspaceValidationMixin, ListValidationMixin):
+                             WorkspaceValidationMixin):
     """Task Assignee Management Business Logic Interactor.
     
     Handles all task assignment operations including assigning users to tasks,
@@ -92,8 +92,6 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
     def get_assignees_for_list_tasks(self, list_id: str) -> list[
         TaskAssigneeDTO]:
 
-        self.validate_list_is_active(list_id=list_id)
-
         return self.task_storage.get_assignees_for_list_tasks(
             list_id=list_id)
 
@@ -119,8 +117,8 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
 
     def _validate_user_access_for_list(self, task_id: str, user_id: str):
 
-        workspace_id = self.list_storage.get_workspace_id_by_list_id(
-            list_id=task_id)
+        workspace_id = self.task_storage.get_workspace_id_from_task_id(
+            task_id=task_id)
 
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

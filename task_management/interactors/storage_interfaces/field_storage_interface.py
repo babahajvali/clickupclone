@@ -36,7 +36,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         pass
 
     @abstractmethod
