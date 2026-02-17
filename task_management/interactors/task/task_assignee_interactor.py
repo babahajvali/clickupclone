@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
@@ -65,7 +66,8 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         self.validate_task_is_active(task_id=task_id)
         self.validate_user_is_active(user_id=user_id)
 
-        self._validate_user_access_for_list(task_id=task_id, user_id=user_id)
+        self._validate_user_access_for_list(task_id=task_id,
+                                            user_id=assigned_by)
 
         return self.task_storage.assign_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
@@ -104,10 +106,10 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
 
     def _validate_task_assignee_exists(self, assign_id: str):
 
-        assignee_data = self.task_storage.get_task_assignee(
-            assign_id=assign_id)
-
-        if not assignee_data:
+        try:
+            assignee_data = self.task_storage.get_task_assignee(
+                assign_id=assign_id)
+        except ObjectDoesNotExist:
             raise TaskAssigneeNotFoundException(assign_id=assign_id)
 
         if not assignee_data.is_active:

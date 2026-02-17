@@ -58,9 +58,15 @@ class TaskStorage(TaskStorageInterface):
         return self._task_dto(task_data=task_data)
 
     def get_task_list_id(self, task_id: str) -> str:
-        return \
-            Task.objects.filter(task_id=task_id).values_list(
-                'list_id', flat=True)[0]
+        """
+        Return the list_id for a given task_id.
+
+        Uses get() so that a missing task raises Task.DoesNotExist rather
+        than an IndexError from list indexing, giving clearer errors to
+        callers and tests.
+        """
+        task = Task.objects.get(task_id=task_id)
+        return task.list_id
 
     def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
         try:
