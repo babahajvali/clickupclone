@@ -223,3 +223,6 @@ class SpaceStorage(SpaceStorageInterface):
 
         return [self._to_permission_dto(perm) for perm in created_permissions]
 
+    def check_space_exists(self, space_id: str) -> bool:
+        return Space.objects.filter(space_id=space_id).exists()
+

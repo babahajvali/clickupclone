@@ -1,3 +1,5 @@
+from task_management.exceptions.custom_exceptions import \
+    UnexpectedRoleException
 from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
@@ -99,6 +101,4 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
         existed_roles = Role.get_values()
 
         if role not in existed_roles:
-            from task_management.exceptions.custom_exceptions import \
-                UnexpectedRoleException
             raise UnexpectedRoleException(role=role)

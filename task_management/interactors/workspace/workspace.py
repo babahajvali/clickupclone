@@ -43,7 +43,7 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
 
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  account_storage: AccountStorageInterface,
-                 user_storage: UserStorageInterface, ):
+                 user_storage: UserStorageInterface):
         super().__init__(
             account_storage=account_storage,
             workspace_storage=workspace_storage, user_storage=user_storage)
@@ -90,7 +90,7 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
             workspace_id=workspace_id, update_fields=fields_to_update)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def delete_workspace(self, workspace_id: str,user_id: str) -> WorkspaceDTO:
+    def delete_workspace(self, workspace_id: str, user_id: str) -> WorkspaceDTO:
 
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_workspace_owner(

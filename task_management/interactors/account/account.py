@@ -137,7 +137,7 @@ class Account(AccountValidationMixin, UserValidationMixin):
         self.validate_user_is_account_owner(account_id=account_id,
                                             user_id=deactivated_by)
 
-        return self.account_storage.deactivate_account(account_id=account_id, )
+        return self.account_storage.deactivate_account(account_id=account_id)
 
     def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
         """ Get account data after validations

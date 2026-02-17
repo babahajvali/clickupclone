@@ -16,11 +16,12 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_field_by_id(self,field_id: str)->FieldDTO:
+    def get_field_by_id(self, field_id: str) -> FieldDTO:
         pass
 
     @abstractmethod
-    def update_field(self, field_id: str, update_field_data: UpdateFieldDTO) -> FieldDTO:
+    def update_field(self, field_id: str,
+                     update_field_data: UpdateFieldDTO) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -28,23 +29,27 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_field_name_except_this_field(self,field_id: str , field_name: str, template_id: str) -> bool:
+    def check_field_name_except_this_field(self, field_id: str,
+                                           field_name: str,
+                                           template_id: str) -> bool:
         pass
 
     @abstractmethod
-    def get_field_by_name(self,field_name: str, template_id: str) -> FieldDTO:
+    def get_field_by_name(self, field_name: str, template_id: str) -> FieldDTO:
         pass
 
     @abstractmethod
-    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+    def get_active_fields_for_template(self, template_id: str) -> list[
+        FieldDTO]:
         pass
 
     @abstractmethod
-    def reorder_fields(self, field_id: str, template_id: str,new_order: int) -> FieldDTO:
+    def reorder_fields(self, field_id: str, template_id: str,
+                       new_order: int) -> FieldDTO:
         pass
 
     @abstractmethod
-    def template_fields_count(self,template_id: str) -> int:
+    def template_fields_count(self, template_id: str) -> int:
         pass
 
     @abstractmethod
@@ -52,7 +57,8 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[
+        FieldDTO]:
         pass
 
     @abstractmethod
@@ -79,5 +85,3 @@ class FieldStorageInterface(ABC):
     @abstractmethod
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
         pass
-
-

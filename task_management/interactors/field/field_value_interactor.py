@@ -36,10 +36,10 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-        task_field_value_data = self.field_storage.get_task_field_value(
+        is_task_field_value_exists = self.field_storage.get_task_field_value(
             task_id=set_value_data.task_id, field_id=set_value_data.field_id)
 
-        if not task_field_value_data:
+        if not is_task_field_value_exists:
             create_field_value = CreateFieldValueDTO(
                 task_id=set_value_data.task_id,
                 field_id=set_value_data.field_id,

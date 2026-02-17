@@ -23,7 +23,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_workspace_id_from_task_id(self, task_id:str) -> str | None:
+    def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
         pass
 
     @abstractmethod
@@ -39,11 +39,12 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_tasks_count(self, list_id: str):
+    def get_tasks_count(self, list_id: str) -> int:
         pass
 
     @abstractmethod
-    def reorder_tasks(self, list_id: str, new_order: int, task_id: str):
+    def reorder_tasks(self, list_id: str, new_order: int,
+                      task_id: str) -> TaskDTO:
         pass
 
     @abstractmethod
@@ -69,14 +70,15 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_task_assignee(self,user_id: str, task_id: str,assigned_by: str) -> TaskAssigneeDTO:
+    def get_user_task_assignee(self, user_id: str, task_id: str,
+                               assigned_by: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
-    def reassign_task_assignee(self, assign_id: str)-> TaskAssigneeDTO:
+    def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[TaskAssigneeDTO]:
+    def get_assignees_for_list_tasks(self, list_id: str) -> list[
+        TaskAssigneeDTO]:
         pass
-

@@ -40,7 +40,8 @@ class WorkspaceHandler:
         space_data = self._create_space(workspace_id=workspace_id,
                                         user_id=user_id)
 
-        return self._create_list(space_id=space_data.space_id, user_id=user_id)
+        self._create_list(space_id=space_data.space_id, user_id=user_id)
+        return space_data
 
     def _create_space(self, user_id: str, workspace_id: str):
         space_interactor = SpaceInteractor(

@@ -17,6 +17,8 @@ class ViewInteractor(ViewValidationMixin):
         self.list_storage = list_storage
 
     def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
+
+        self._validate_view_name_not_empty(name=create_view_data.name)
         self.check_view_type(view_type=create_view_data.view_type.value)
 
         return self.view_storage.create_view(create_view_data)
@@ -30,6 +32,7 @@ class ViewInteractor(ViewValidationMixin):
         fields_to_update = {}
 
         if is_name_provided:
+            self._validate_view_name_not_empty(name=name)
             fields_to_update['name'] = name
 
         if is_description_provided:

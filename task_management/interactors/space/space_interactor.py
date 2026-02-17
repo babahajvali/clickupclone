@@ -19,7 +19,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def __init__(self, space_storage: SpaceStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
         super().__init__(space_storage=space_storage,
-                         workspace_storage=workspace_storage, )
+                         workspace_storage=workspace_storage)
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 
@@ -115,7 +115,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
     def get_space(self, space_id: str) -> SpaceDTO:
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_exists(space_id=space_id)
 
         return self.space_storage.get_space(space_id=space_id)
 

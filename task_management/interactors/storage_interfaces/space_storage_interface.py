@@ -12,24 +12,24 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_space(self,create_space_data: CreateSpaceDTO)-> SpaceDTO:
+    def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
         pass
 
     @abstractmethod
-    def update_space(self,space_id: str, update_fields: dict)-> SpaceDTO:
+    def update_space(self, space_id: str, update_fields: dict) -> SpaceDTO:
         pass
 
     @abstractmethod
     def delete_space(self, space_id: str):
-        #set the space is_active is false
+        # set the space is_active is false
         pass
 
     @abstractmethod
-    def set_space_private(self,space_id: str)-> SpaceDTO:
+    def set_space_private(self, space_id: str) -> SpaceDTO:
         pass
 
     @abstractmethod
-    def set_space_public(self,space_id: str)-> SpaceDTO:
+    def set_space_public(self, space_id: str) -> SpaceDTO:
         pass
 
     @abstractmethod
@@ -37,17 +37,18 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_workspace_spaces_count(self,workspace_id: str) -> int:
+    def get_workspace_spaces_count(self, workspace_id: str) -> int:
         # get the active spaces count in workspace
         pass
 
     @abstractmethod
-    def reorder_space(self,workspace_id: str, space_id: str, new_order: int)-> SpaceDTO:
+    def reorder_space(self, workspace_id: str, space_id: str,
+                      new_order: int) -> SpaceDTO:
         # get the space order and provided order to reorder spaces
         pass
 
     @abstractmethod
-    def get_space_workspace_id(self,space_id: str) -> str:
+    def get_space_workspace_id(self, space_id: str) -> str:
         pass
 
     @abstractmethod
@@ -75,3 +76,6 @@ class SpaceStorageInterface(ABC):
         CreateUserSpacePermissionDTO]) -> list[UserSpacePermissionDTO]:
         pass
 
+    @abstractmethod
+    def check_space_exists(self, space_id: str) -> bool:
+        pass

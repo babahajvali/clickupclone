@@ -19,3 +19,9 @@ class SpaceValidationMixin:
 
         if not space_data.is_active:
             raise InactiveSpaceException(space_id=space_id)
+
+    def check_space_exists(self, space_id: str):
+        is_exist = self.space_storage.check_space_exists(space_id=space_id)
+
+        if not is_exist:
+            raise SpaceNotFoundException(space_id=space_id)

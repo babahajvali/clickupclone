@@ -121,7 +121,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-        self._validate_visibility_type(visibility=visibility.value)
+        self._check_visibility_type(visibility=visibility.value)
 
         if visibility == Visibility.PUBLIC:
             return self.list_storage.make_list_public(list_id=list_id)
@@ -194,7 +194,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
             raise EmptyNameException(name=list_name)
 
     @staticmethod
-    def _validate_visibility_type(visibility: str):
+    def _check_visibility_type(visibility: str):
         existed_visibilities = Visibility.get_values()
 
         if visibility not in existed_visibilities:

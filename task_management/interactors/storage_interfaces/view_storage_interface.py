@@ -11,11 +11,11 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_view(self,view_id: str) -> ViewDTO:
+    def get_view(self, view_id: str) -> ViewDTO:
         pass
 
     @abstractmethod
-    def create_view(self,create_view_data: CreateViewDTO) -> ViewDTO:
+    def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
         pass
 
     @abstractmethod
@@ -23,7 +23,7 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_view_exists(self,view_id: str) -> bool:
+    def check_view_exists(self, view_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -48,4 +48,3 @@ class ViewStorageInterface(ABC):
     @abstractmethod
     def get_list_view(self, list_id: str, view_id: str) -> ListViewDTO:
         pass
-

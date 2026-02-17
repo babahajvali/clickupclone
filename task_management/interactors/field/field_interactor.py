@@ -104,12 +104,12 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             self.validate_field_config(field_type=field_data.field_type.value,
                                        config=update_field_data.config)
 
-        is_field_property_provided = any(
-            [update_field_data.config is not None
-                , update_field_data.field_name is not None
-                , update_field_data.description is not None
-                , update_field_data.is_required is not None])
-
+        is_field_property_provided = any([
+            update_field_data.config is not None,
+            update_field_data.field_name is not None,
+            update_field_data.description is not None,
+            update_field_data.is_required is not None
+])
         if not is_field_property_provided:
             raise NothingToUpdateFieldException
 

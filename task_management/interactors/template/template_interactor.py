@@ -54,7 +54,6 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         self._validate_user_access_for_list(list_id=template_data.list_id,
                                             user_id=template_data.created_by)
 
-
         result = self.template_storage.create_template(template_data)
 
         return result

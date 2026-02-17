@@ -60,16 +60,15 @@ class TaskStorage(TaskStorageInterface):
     def get_task_list_id(self, task_id: str) -> str:
         return \
             Task.objects.filter(task_id=task_id).values_list(
-                'list_id',flat=True)[0]
+                'list_id', flat=True)[0]
 
-    def get_workspace_id_from_task_id(self, task_id:str) -> str | None:
+    def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
         try:
             task_data = Task.objects.get(task_id=task_id)
 
             return task_data.list.space.workspace.workspace_id
         except ObjectDoesNotExist:
             return None
-
 
     def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         list_tasks = Task.objects.filter(list_id=list_id, is_deleted=False)
@@ -112,10 +111,11 @@ class TaskStorage(TaskStorageInterface):
         return active_tasks[
             filter_data.offset - 1: filter_data.offset - 1 + filter_data.limit]
 
-    def get_tasks_count(self, list_id: str):
+    def get_tasks_count(self, list_id: str) -> int:
         return Task.objects.filter(list_id=list_id, is_deleted=False).count()
 
-    def reorder_tasks(self, list_id: str, new_order: int, task_id: str):
+    def reorder_tasks(self, list_id: str, new_order: int,
+                      task_id: str) -> TaskDTO:
         task_data = Task.objects.get(task_id=task_id)
         old_order = task_data.order
 
@@ -207,7 +207,8 @@ class TaskStorage(TaskStorageInterface):
 
         return self._assignee_dto(assignee_data=assignee_data)
 
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[TaskAssigneeDTO]:
+    def get_assignees_for_list_tasks(self, list_id: str) -> list[
+        TaskAssigneeDTO]:
         task_ids = (Task.objects.filter(list_id=list_id, is_deleted=False).
                     values_list('task_id', flat=True))
         task_assignees = TaskAssignee.objects.filter(task_id__in=task_ids,
