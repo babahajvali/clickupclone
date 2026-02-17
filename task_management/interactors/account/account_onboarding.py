@@ -7,7 +7,8 @@ from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, \
-    TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface
+    TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
+    ViewStorageInterface
 
 from task_management.interactors.workspace.workspace import \
     Workspace
@@ -27,7 +28,8 @@ class AccountOnboardingHandler:
                  list_storage: ListStorageInterface,
                  template_storage: TemplateStorageInterface,
                  field_storage: FieldStorageInterface,
-                 folder_storage: FolderStorageInterface):
+                 folder_storage: FolderStorageInterface,
+                 view_storage: ViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
@@ -36,6 +38,7 @@ class AccountOnboardingHandler:
         self.template_storage = template_storage
         self.field_storage = field_storage
         self.folder_storage = folder_storage
+        self.view_storage = view_storage
 
     @transaction.atomic
     def handle(self, name: str, created_by: str, description: Optional[str]):
@@ -62,9 +65,9 @@ class AccountOnboardingHandler:
         create the workspace interactor
         then create the workspace"""
 
-        from task_management.interactors.workspace.workspace_onboarding import \
-            WorkspaceOnboardingHandler
-        workspace_onboarding = WorkspaceOnboardingHandler(
+        from task_management.interactors.workspace.workspace_handler import \
+            WorkspaceHandler
+        workspace_onboarding = WorkspaceHandler(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             space_storage=self.space_storage,
@@ -73,6 +76,7 @@ class AccountOnboardingHandler:
             template_storage=self.template_storage,
             field_storage=self.field_storage,
             account_storage=self.account_storage,
+            view_storage=self.view_storage
         )
         workspace_interactor = Workspace(
             workspace_storage=self.workspace_storage,

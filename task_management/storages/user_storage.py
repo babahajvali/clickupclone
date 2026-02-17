@@ -55,13 +55,11 @@ class UserStorage(UserStorageInterface):
             user_obj.email = user_data.email
         if user_data.phone_number:
             user_obj.phone_number = user_data.phone_number
-        user_obj.image_url = user_data.image_url
         if user_data.gender:
             user_obj.gender = user_data.gender
-
         if user_data.full_name:
             user_obj.full_name = user_data.full_name
-
+        user_obj.image_url = user_data.image_url
 
         user_obj.save()
 
@@ -83,11 +81,11 @@ class UserStorage(UserStorageInterface):
     def check_phone_number_exists(self, phone_number: str) -> bool:
         return User.objects.filter(phone_number=phone_number).exists()
 
-    def check_user_username_exists(self, user_id: str, username: str) -> bool:
+    def check_username_except_current_user(self, user_id: str, username: str) -> bool:
         return User.objects.filter(username=username).exclude(
             user_id=user_id).exists()
 
-    def check_user_email_exists(self, user_id: str, email: str) -> bool:
+    def check_email_exists_except_current_user(self, user_id: str, email: str) -> bool:
         return User.objects.filter(email=email).exclude(
             user_id=user_id).exists()
 

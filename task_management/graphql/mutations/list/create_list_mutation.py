@@ -9,11 +9,14 @@ from task_management.graphql.types.response_types import CreateListResponse
 from task_management.graphql.types.types import ListType
 
 from task_management.interactors.dtos import CreateListDTO
-from task_management.interactors.list.list_interactor import \
-    ListInteractor
+from task_management.interactors.list.list_creation_handler import \
+    ListCreationHandler
+from task_management.storages.field_storage import FieldStorage
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.folder_storage import FolderStorage
 from task_management.storages.space_storage import SpaceStorage
+from task_management.storages.template_storage import TemplateStorage
+from task_management.storages.view_storage import ViewStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 
 
@@ -29,12 +32,18 @@ class CreateListMutation(graphene.Mutation):
         folder_storage = FolderStorage()
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
+        field_storage = FieldStorage()
+        template_storage = TemplateStorage()
+        view_storage = ViewStorage()
 
-        interactor = ListInteractor(
+        interactor = ListCreationHandler(
             list_storage=list_storage,
             folder_storage=folder_storage,
             space_storage=space_storage,
-            workspace_storage=workspace_storage
+            workspace_storage=workspace_storage,
+            field_storage=field_storage,
+            template_storage=template_storage,
+            view_storage=view_storage,
         )
 
         try:
@@ -47,7 +56,7 @@ class CreateListMutation(graphene.Mutation):
                 folder_id=params.folder_id if params.folder_id else None
             )
 
-            result = interactor.create_list(list_data=create_list_data)
+            result = interactor.handel_list(list_data=create_list_data)
 
             return ListType(
                 list_id=result.list_id,

@@ -12,6 +12,7 @@ from task_management.interactors.view.list_view_interactor import \
 
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.view_storage import ViewStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 class ApplyListViewMutation(graphene.Mutation):
@@ -24,11 +25,13 @@ class ApplyListViewMutation(graphene.Mutation):
     def mutate(root, info, params):
         list_storage = ListStorage()
         view_storage = ViewStorage()
+        workspace_storage = WorkspaceStorage()
         
 
         interactor = ListViewInteractor(
             list_storage=list_storage,
             view_storage=view_storage,
+            workspace_storage=workspace_storage
         )
 
         try:

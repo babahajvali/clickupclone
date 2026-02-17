@@ -12,6 +12,7 @@ from task_management.interactors.view.list_view_interactor import \
 
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.view_storage import ViewStorage
+from task_management.storages.workspace_storage import WorkspaceStorage
 
 
 class RemoveListViewMutation(graphene.Mutation):
@@ -24,11 +25,13 @@ class RemoveListViewMutation(graphene.Mutation):
     def mutate(root, info, params):
         list_storage = ListStorage()
         view_storage = ViewStorage()
+        workspace_storage = WorkspaceStorage()
         
 
         interactor = ListViewInteractor(
             list_storage=list_storage,
             view_storage=view_storage,
+            workspace_storage=workspace_storage
         )
 
         try:
@@ -46,10 +49,6 @@ class RemoveListViewMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowedException as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-        except custom_exceptions.ListNotFoundException as e:
-            return ListNotFoundType(list_id=e.list_id)
-        except custom_exceptions.ViewNotFoundException as e:
-            return ViewNotFoundType(view_id=e.view_id)
         except custom_exceptions.InactiveListException as e:
             return InactiveListType(list_id=e.list_id)
         except custom_exceptions.ListViewNotFoundException as e:

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
-    UpdateWorkspaceDTO, AddMemberToWorkspaceDTO, WorkspaceMemberDTO
+    AddMemberToWorkspaceDTO, WorkspaceMemberDTO
 
 
 class WorkspaceStorageInterface(ABC):
@@ -35,7 +35,7 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_workspaces_by_account(self, account_id: str) -> list[WorkspaceDTO]:
+    def get_active_account_workspaces(self, account_id: str) -> list[WorkspaceDTO]:
         pass
 
     @abstractmethod

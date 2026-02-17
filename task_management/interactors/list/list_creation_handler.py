@@ -8,25 +8,30 @@ from task_management.interactors.list.list_interactor import \
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, SpaceStorageInterface, FolderStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, \
-    WorkspaceStorageInterface
-from task_management.interactors.template.template_onboarding import \
-    TemplateOnboardingHandler
+    WorkspaceStorageInterface, ViewStorageInterface
+from task_management.interactors.template.template_creation_handler import \
+    TemplateCreationHandler
+from task_management.interactors.view.list_view_interactor import \
+    ListViewInteractor
+from task_management.storages import list_storage, view_storage
 
 
-class ListOnboardingHandler:
+class ListCreationHandler:
 
     def __init__(self, list_storage: ListStorageInterface,
                  space_storage: SpaceStorageInterface,
                  folder_storage: FolderStorageInterface,
                  template_storage: TemplateStorageInterface,
                  field_storage: FieldStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,):
+                 workspace_storage: WorkspaceStorageInterface,
+                 view_storage: ViewStorageInterface):
         self.list_storage = list_storage
         self.space_storage = space_storage
         self.folder_storage = folder_storage
         self.template_storage = template_storage
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
+        self.view_storage = view_storage
 
     @transaction.atomic
     def handel_list(self, list_data: CreateListDTO) -> ListDTO:
@@ -44,6 +49,10 @@ class ListOnboardingHandler:
         )
 
         self._create_default_template(template_data=create_template_dto)
+        view_id = "807ceaef-57f5-4362-af9d-9b21b79d643c"
+        self._create_default_list_view(
+            list_id=list_obj.list_id, view_id=view_id,
+            user_id=list_obj.created_by)
 
         return list_obj
 
@@ -74,7 +83,7 @@ class ListOnboardingHandler:
             user_permission_data=permission_data)
 
     def _create_default_template(self, template_data: CreateTemplateDTO):
-        template_onboarding = TemplateOnboardingHandler(
+        template_onboarding = TemplateCreationHandler(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
             field_storage=self.field_storage,
@@ -82,3 +91,14 @@ class ListOnboardingHandler:
         )
 
         return template_onboarding.handle_template(template_data=template_data)
+
+    def _create_default_list_view(self, view_id: str, list_id: str,
+                                  user_id: str):
+        list_view_interactor = ListViewInteractor(
+            list_storage=self.list_storage,
+            view_storage=self.view_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+        return list_view_interactor.apply_view_for_list(
+            list_id=list_id, view_id=view_id, user_id=user_id)

@@ -10,7 +10,7 @@ from task_management.interactors.template.template_interactor import \
     TemplateInteractor
 
 
-class TemplateOnboardingHandler:
+class TemplateCreationHandler:
 
     def __init__(self, template_storage: TemplateStorageInterface,
                  list_storage: ListStorageInterface,

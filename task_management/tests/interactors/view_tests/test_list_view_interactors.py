@@ -151,7 +151,7 @@ class TestListViewInteractor:
         )()
 
         expected = RemoveListViewDTOFactory()
-        self.list_view_storage.remove_view_for_list.return_value = expected
+        self.list_view_storage.remove_list_view.return_value = expected
 
         result = self.interactor.remove_view_for_list(
             "view_id", "list_id", "user_id"

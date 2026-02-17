@@ -80,7 +80,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         return self._workspace_dto(data=workspace_data)
 
-    def get_workspaces_by_account(self, account_id: str) -> list[WorkspaceDTO]:
+    def get_active_account_workspaces(self, account_id: str) -> list[WorkspaceDTO]:
         account_workspaces = Workspace.objects.filter(account_id=account_id,
                                                       is_active=True)
 

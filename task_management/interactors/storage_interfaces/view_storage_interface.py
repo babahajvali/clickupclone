@@ -32,7 +32,7 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_view_for_list(self, view_id: str, list_id: str, ):
+    def remove_list_view(self, view_id: str, list_id: str, ):
         # set the is_active is false
         pass
 
@@ -48,3 +48,4 @@ class ViewStorageInterface(ABC):
     @abstractmethod
     def get_list_view(self, list_id: str, view_id: str) -> ListViewDTO:
         pass
+

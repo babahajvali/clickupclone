@@ -20,7 +20,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_space(self,space_id: str):
+    def delete_space(self, space_id: str):
         #set the space is_active is false
         pass
 
@@ -33,7 +33,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_workspace_spaces(self,workspace_id: str) -> list[SpaceDTO]:
+    def get_active_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
         pass
 
     @abstractmethod

@@ -21,7 +21,7 @@ def get_workspace_spaces_resolver(root, info, params):
     )
 
     try:
-        spaces_data = interactor.get_workspace_spaces(workspace_id=workspace_id)
+        spaces_data = interactor.get_active_workspace_spaces(workspace_id=workspace_id)
 
         spaces_output = [
             SpaceType(

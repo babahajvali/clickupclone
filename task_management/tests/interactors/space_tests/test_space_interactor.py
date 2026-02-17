@@ -164,14 +164,14 @@ class TestSpaceInteractor:
             Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
-        self.space_storage.remove_space.return_value = expected_result
+        self.space_storage.delete_space.return_value = expected_result
 
         # Act
         result = self.interactor.delete_space(space_id, user_id)
 
         # Assert
         assert result == expected_result
-        self.space_storage.remove_space.assert_called_once_with(
+        self.space_storage.delete_space.assert_called_once_with(
             space_id=space_id)
 
     def test_set_space_private_success(self):
@@ -224,14 +224,14 @@ class TestSpaceInteractor:
         self.workspace_storage.get_workspace.return_value = type('Workspace',
                                                                  (), {
                                                                      'is_active': True})()
-        self.space_storage.get_workspace_spaces.return_value = expected_result
+        self.space_storage.get_active_workspace_spaces.return_value = expected_result
 
         # Act
-        result = self.interactor.get_workspace_spaces(workspace_id)
+        result = self.interactor.get_active_workspace_spaces(workspace_id)
 
         # Assert
         assert result == expected_result
-        self.space_storage.get_workspace_spaces.assert_called_once_with(
+        self.space_storage.get_active_workspace_spaces.assert_called_once_with(
             workspace_id=workspace_id)
 
     def test_get_workspace_spaces_workspace_not_found(self, snapshot):
@@ -241,7 +241,7 @@ class TestSpaceInteractor:
 
         # Act & Assert
         with pytest.raises(WorkspaceNotFoundException) as exc:
-            self.interactor.get_workspace_spaces(workspace_id)
+            self.interactor.get_active_workspace_spaces(workspace_id)
 
         snapshot.assert_match(repr(exc.value), "workspace_not_found.txt")
 
@@ -254,6 +254,6 @@ class TestSpaceInteractor:
 
         # Act & Assert
         with pytest.raises(InactiveWorkspaceException) as exc:
-            self.interactor.get_workspace_spaces(workspace_id)
+            self.interactor.get_active_workspace_spaces(workspace_id)
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")

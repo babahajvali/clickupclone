@@ -11,16 +11,15 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import WorkspaceType
 
 from task_management.interactors.dtos import CreateWorkspaceDTO
-from task_management.interactors.workspace.workspace import \
-    Workspace
-from task_management.interactors.workspace.workspace_onboarding import \
-    WorkspaceOnboardingHandler
+from task_management.interactors.workspace.workspace_handler import \
+    WorkspaceHandler
 from task_management.storages.field_storage import FieldStorage
 from task_management.storages.folder_storage import FolderStorage
 
 from task_management.storages.list_storage import ListStorage
 from task_management.storages.space_storage import SpaceStorage
 from task_management.storages.template_storage import TemplateStorage
+from task_management.storages.view_storage import ViewStorage
 from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.storages.user_storage import UserStorage
 from task_management.storages.account_storage import AccountStorage
@@ -41,11 +40,12 @@ class CreateWorkspaceMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         folder_storage = FolderStorage()
         list_storage = ListStorage()
+        view_storage = ViewStorage()
         
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 
-        workspace_onboarding = WorkspaceOnboardingHandler(
+        workspace_onboarding = WorkspaceHandler(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             space_storage=space_storage,
@@ -53,13 +53,8 @@ class CreateWorkspaceMutation(graphene.Mutation):
             folder_storage=folder_storage,
             template_storage=template_storage,
             field_storage=field_storage,
-            account_storage=account_storage
-        )
-
-        interactor = Workspace(
-            workspace_storage=workspace_storage,
-            user_storage=user_storage,
             account_storage=account_storage,
+            view_storage=view_storage
         )
 
         try:
@@ -70,7 +65,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 account_id=params.account_id
             )
 
-            result = interactor.create_workspace(
+            result = workspace_onboarding.handle(
                 workspace_data=create_workspace_data
             )
 

@@ -70,7 +70,7 @@ class SpaceStorage(SpaceStorageInterface):
 
         return self._to_dto(space)
 
-    def remove_space(self, space_id: str) -> SpaceDTO:
+    def delete_space(self, space_id: str) -> SpaceDTO:
         space = Space.objects.get(space_id=space_id)
         current_order = space.order
         workspace_id = space.workspace.workspace_id
@@ -96,7 +96,7 @@ class SpaceStorage(SpaceStorageInterface):
         space.save()
         return self._to_dto(space)
 
-    def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
+    def get_active_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
         spaces = Space.objects.filter(
             workspace_id=workspace_id,
             is_active=True

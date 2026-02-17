@@ -120,7 +120,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.remove_space(space_id=str(space_id))
+        result = storage.delete_space(space_id=str(space_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_space_success.txt")
@@ -175,7 +175,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.get_workspace_spaces(workspace_id=str(workspace_id))
+        result = storage.get_active_workspace_spaces(workspace_id=str(workspace_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_workspace_spaces_success.txt")
@@ -188,7 +188,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.get_workspace_spaces(workspace_id=str(workspace_id))
+        result = storage.get_active_workspace_spaces(workspace_id=str(workspace_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_workspace_spaces_empty.txt")

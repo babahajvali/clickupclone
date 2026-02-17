@@ -36,7 +36,7 @@ class TestListViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.remove_view_for_list(view_id=str(view_id), list_id=str(list_id))
+        result = storage.remove_list_view(view_id=str(view_id), list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_view_for_list_success.txt")

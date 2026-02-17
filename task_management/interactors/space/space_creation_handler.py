@@ -8,7 +8,7 @@ from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 
 
-class SpaceOnboardingHandler:
+class SpaceCreationHandler:
 
     def __init__(self, space_storage: SpaceStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):

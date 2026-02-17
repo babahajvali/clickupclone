@@ -2,22 +2,20 @@ from django.db import transaction
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO
-from task_management.interactors.list.list_onboarding import \
-    ListOnboardingHandler
+from task_management.interactors.list.list_creation_handler import \
+    ListCreationHandler
 from task_management.interactors.space.space_interactor import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \
     WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
-    AccountStorageInterface
+    AccountStorageInterface, ViewStorageInterface
 from task_management.interactors.workspace.workspace import \
     Workspace
-from task_management.interactors.workspace.workspace_member_interactors import \
-    WorkspaceMemberInteractor
 
 
-class WorkspaceOnboardingHandler:
+class WorkspaceHandler:
     def __init__(self, space_storage: SpaceStorageInterface,
                  user_storage: UserStorageInterface,
                  workspace_storage: WorkspaceStorageInterface,
@@ -25,7 +23,8 @@ class WorkspaceOnboardingHandler:
                  template_storage: TemplateStorageInterface,
                  field_storage: FieldStorageInterface,
                  folder_storage: FolderStorageInterface,
-                 account_storage: AccountStorageInterface):
+                 account_storage: AccountStorageInterface,
+                 view_storage: ViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.space_storage = space_storage
@@ -34,17 +33,16 @@ class WorkspaceOnboardingHandler:
         self.template_storage = template_storage
         self.field_storage = field_storage
         self.account_storage = account_storage
+        self.view_storage = view_storage
 
     @transaction.atomic
     def handle(self, user_id: str, workspace_id: str):
-
         space_data = self._create_space(workspace_id=workspace_id,
                                         user_id=user_id)
 
         return self._create_list(space_id=space_data.space_id, user_id=user_id)
 
     def _create_space(self, user_id: str, workspace_id: str):
-
         space_interactor = SpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
@@ -60,14 +58,14 @@ class WorkspaceOnboardingHandler:
         return space_interactor.create_space(space_input_data)
 
     def _create_list(self, space_id: str, user_id: str):
-
-        list_handler = ListOnboardingHandler(
+        list_handler = ListCreationHandler(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             field_storage=self.field_storage,
-            workspace_storage=self.workspace_storage
+            workspace_storage=self.workspace_storage,
+            view_storage=self.view_storage
         )
 
         list_input_data = CreateListDTO(
@@ -95,19 +93,13 @@ class WorkspaceOnboardingHandler:
 
         return self.change_permissions_for_user_in_transfer(
             workspace_id=workspace_id, user_id=current_user_id,
-            new_user_id=new_user_id, )
+            new_user_id=new_user_id)
 
     def change_permissions_for_user_in_transfer(
             self, workspace_id: str, user_id: str, new_user_id: str):
-        workspace_member_interactor = WorkspaceMemberInteractor(
-            user_storage=self.user_storage,
-            workspace_storage=self.workspace_storage,
-        )
-        workspace_member_interactor.change_member_role(
+        self.workspace_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=new_user_id,
-            role=Role.OWNER.value,
-            changed_by=new_user_id)
+            role=Role.OWNER.value)
 
-        workspace_member_interactor.change_member_role(
-            workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value,
-            changed_by=new_user_id)
+        return self.workspace_storage.update_the_member_role(
+            workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)

@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, SpaceStorageInterface, WorkspaceStorageInterface
 
 
-class FolderOnboardingHandler:
+class FolderCreationHandler:
 
     def __init__(self, folder_storage: FolderStorageInterface,
                  space_storage: SpaceStorageInterface,
