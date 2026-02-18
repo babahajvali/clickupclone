@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from task_management.interactors.dtos import AccountDTO, CreateAccountDTO, \
-    UpdateAccountDTO
+from task_management.interactors.dtos import AccountDTO
 
 
 class AccountStorageInterface(ABC):

@@ -403,19 +403,6 @@ class TaskFieldValuesDTO:
 
 
 @dataclass
-class CreateAccountDTO:
-    name: str
-    description: Optional[str]
-    owner_id: str
-
-@dataclass
-class UpdateAccountDTO:
-    account_id: str
-    name: Optional[str]
-    description: Optional[str]
-
-
-@dataclass
 class AccountDTO:
     account_id: str
     name: str

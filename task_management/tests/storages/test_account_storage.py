@@ -1,6 +1,5 @@
 import pytest
 
-from task_management.interactors.dtos import CreateAccountDTO
 from task_management.storages.account_storage import AccountStorage
 from task_management.tests.factories.storage_factory import AccountFactory, \
     UserFactory

@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import create_autospec, Mock
 
-from task_management.interactors.account.account_interactor import AccountInteractor
+from task_management.interactors.account.account_interactor import \
+    AccountInteractor
 from task_management.interactors.storage_interfaces.account_storage_interface import (
     AccountStorageInterface
 )
@@ -11,8 +12,8 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
 from task_management.exceptions.custom_exceptions import (
     AccountNameAlreadyExistsException, UserNotAccountOwnerException
 )
-from task_management.tests.factories.interactor_factory import (
-    CreateAccountFactory, AccountDTOFactory)
+from task_management.tests.factories.interactor_factory import \
+    AccountDTOFactory
 
 
 class TestAccountInteractor:
@@ -36,10 +37,7 @@ class TestAccountInteractor:
             {"owner_id": owner_id, "is_active": True}
         )()
 
-
-
     def test_create_account_success(self, snapshot):
-        create_data = CreateAccountFactory()
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
