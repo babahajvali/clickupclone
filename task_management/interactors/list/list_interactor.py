@@ -191,13 +191,15 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     @staticmethod
     def _check_list_name_not_empty(list_name: str):
         is_name_empty = not list_name or not list_name.strip()
+
         if is_name_empty:
             raise EmptyNameException(name=list_name)
 
     @staticmethod
     def _check_visibility_type(visibility: str):
         existed_visibilities = Visibility.get_values()
+        is_visibility_invalid = visibility not in existed_visibilities
 
-        if visibility not in existed_visibilities:
+        if is_visibility_invalid:
             raise UnsupportedVisibilityTypeException(
                 visibility_type=visibility)

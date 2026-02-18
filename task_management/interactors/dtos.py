@@ -84,13 +84,6 @@ class CreateTemplateDTO:
 
 
 @dataclass
-class UpdateTemplateDTO:
-    template_id: str
-    name: Optional[str]
-    description: Optional[str]
-
-
-@dataclass
 class TemplateDTO:
     template_id: str
     name: str

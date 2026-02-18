@@ -56,7 +56,8 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
         is_exist = self.view_storage.is_list_view_exist(list_id=list_id,
                                                         view_id=view_id)
 
-        if not is_exist:
+        is_list_view_not_found = not is_exist
+        if is_list_view_not_found:
             raise ListViewNotFoundException(view_id=view_id, list_id=list_id)
 
     def _validate_user_has_access_to_list(self, list_id: str, user_id: str):

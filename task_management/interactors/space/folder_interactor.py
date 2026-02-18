@@ -161,6 +161,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def _validate_visibility_type(visibility: str):
         existed_visibilities = [each.value for each in Visibility]
 
-        if visibility not in existed_visibilities:
+        is_visibility_invalid = visibility not in existed_visibilities
+        if is_visibility_invalid:
             raise UnsupportedVisibilityTypeException(
                 visibility_type=visibility)

@@ -176,7 +176,8 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
         except ObjectDoesNotExist:
             pass
         else:
-            if account_data.account_id != account_id:
+            is_different_account = str(account_data) != str(account_id)
+            if is_different_account:
                 raise AccountNameAlreadyExistsException(name=name)
 
     def _check_account_ids(self, account_ids: list[str]):

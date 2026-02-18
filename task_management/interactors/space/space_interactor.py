@@ -155,8 +155,9 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def validate_permission(permission: str):
 
         existed_permissions = Permissions.get_values()
+        is_permission_invalid = permission not in existed_permissions
 
-        if permission not in existed_permissions:
+        if is_permission_invalid:
             raise UnexpectedPermissionException(permission=permission)
 
     @staticmethod
@@ -171,6 +172,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
         existed_visibilities = [each.value for each in Visibility]
 
-        if visibility not in existed_visibilities:
+        is_visibility_invalid = visibility not in existed_visibilities
+        if is_visibility_invalid:
             raise UnsupportedVisibilityTypeException(
                 visibility_type=visibility)

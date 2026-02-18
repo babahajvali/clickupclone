@@ -90,17 +90,18 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @staticmethod
     def _get_permission_type_by_role(role: str) -> Permissions:
 
-        if role == Role.GUEST.value:
+        is_guest_role = role == Role.GUEST.value
+        if is_guest_role:
             return Permissions.VIEW
-        else:
-            return Permissions.FULL_EDIT
+        return Permissions.FULL_EDIT
 
     @staticmethod
     def validate_role(role: str):
 
         existed_roles = Role.get_values()
+        is_role_invalid = role not in existed_roles
 
-        if role not in existed_roles:
+        if is_role_invalid:
             raise UnexpectedRoleException(role=role)
 
     def _validate_workspace_member_is_active(
@@ -109,10 +110,12 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
         workspace_member = self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id, user_id=user_id)
 
-        if not workspace_member:
+        is_member_not_found = not workspace_member
+        if is_member_not_found:
             raise WorkspaceMemberNotFound(workspace_id=workspace_id,
                                           user_id=user_id)
 
-        if not workspace_member.is_active:
+        is_member_inactive = not workspace_member.is_active
+        if is_member_inactive:
             raise InactiveWorkspaceMemberException(
                 workspace_member_id=workspace_member.id)

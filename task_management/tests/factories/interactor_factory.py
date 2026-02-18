@@ -4,7 +4,7 @@ import factory
 
 from task_management.exceptions.enums import FieldTypes, Role
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    CreateTemplateDTO, TemplateDTO, UpdateTemplateDTO, CreateListDTO, \
+    CreateTemplateDTO, TemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
     TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
@@ -54,14 +54,6 @@ class CreateTemplateDTOFactory(factory.Factory):
     list_id = factory.Faker("uuid4")
     created_by = factory.Faker("uuid4")
 
-
-class UpdateTemplateDTOFactory(factory.Factory):
-    class Meta:
-        model = UpdateTemplateDTO
-
-    template_id = factory.Faker("uuid4")
-    name = factory.Faker("word")
-    description = factory.Faker("sentence")
 
 
 class TemplateDTOFactory(factory.Factory):
