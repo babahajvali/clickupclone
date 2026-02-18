@@ -31,9 +31,6 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
             workspace_id=workspace_member_data.workspace_id)
         self.validate_user_is_active(
             user_id=workspace_member_data.user_id)
-        self._validate_workspace_member_is_active(
-            workspace_id=workspace_member_data.workspace_id,
-            user_id=workspace_member_data.user_id)
         self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
