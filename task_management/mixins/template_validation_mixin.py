@@ -14,5 +14,6 @@ class TemplateValidationMixin:
         is_exists = self.template_storage.validate_template_exists(
             template_id=template_id)
 
-        if not is_exists:
+        is_template_not_found = not is_exists
+        if is_template_not_found:
             raise TemplateNotFoundException(template_id=template_id)

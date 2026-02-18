@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from task_management.constants.field_constants import FIELD_TYPE_RULES
 from task_management.exceptions.custom_exceptions import \
     UnsupportedFieldTypeException, FieldNameAlreadyExistsException, \
@@ -17,8 +19,9 @@ class FieldValidationMixin:
     @staticmethod
     def check_field_type(field_type: str):
         field_types = FieldTypes.get_values()
+        is_field_type_invalid = field_type not in field_types
 
-        if field_type not in field_types:
+        if is_field_type_invalid:
             raise UnsupportedFieldTypeException(field_type=field_type)
 
     def check_field_name_not_exist_in_db(self, field_name: str,
@@ -27,20 +30,22 @@ class FieldValidationMixin:
         try:
             field_data = self.field_storage.get_field_by_name(
                 field_name=field_name, template_id=template_id)
-
-            if field_data:
-                raise FieldNameAlreadyExistsException(field_name=field_name)
-
-        except Exception:
+        except ObjectDoesNotExist:
             pass
+        else:
+            is_field_exists = field_data is not None
+            if is_field_exists:
+                raise FieldNameAlreadyExistsException(field_name=field_name)
 
     def validate_field_is_active(self, field_id: str):
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
 
-        if not field_data:
+        is_field_not_found = not field_data
+        if is_field_not_found:
             raise FieldNotFoundException(field_id=field_id)
 
-        if not field_data.is_active:
+        is_field_inactive = not field_data.is_active
+        if is_field_inactive:
             raise InactiveFieldException(field_id=field_id)
 
     def check_field_name_in_db_except_current_field(
@@ -49,11 +54,12 @@ class FieldValidationMixin:
         try:
             field_data = self.field_storage.get_field_by_name(
                 field_name=field_name, template_id=template_id)
-
-            if field_data.field_id != field_id:
+        except ObjectDoesNotExist:
+            pass
+        else:
+            is_different_field = field_data.field_id != field_id
+            if is_different_field:
                 raise FieldNameAlreadyExistsException(field_name=field_name)
-        except FieldNotFoundException:
-            raise FieldNotFoundException(field_id=field_id)
 
     @staticmethod
     def validate_field_config(field_type: str, config: dict):

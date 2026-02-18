@@ -27,6 +27,7 @@ class FieldNameAlreadyExistsException(Exception):
     def __init__(self, field_name: str):
         self.field_name = field_name
 
+
 class InactiveFieldException(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
@@ -110,6 +111,7 @@ class InActiveTaskAssigneeFoundException(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
 
+
 class DeletedTaskException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
@@ -159,6 +161,7 @@ class InvalidWorkspaceIdsFoundException(Exception):
     def __init__(self, workspace_ids: list[str]):
         self.workspace_ids = workspace_ids
 
+
 class InactiveWorkspaceException(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
@@ -182,6 +185,7 @@ class UnexpectedRoleException(Exception):
 class UnexpectedPermissionException(Exception):
     def __init__(self, permission: str):
         self.permission = permission
+
 
 class EmailNotFoundException(Exception):
     def __init__(self, email: str):
@@ -228,9 +232,25 @@ class InvalidOrderException(Exception):
         self.order = order
 
 
+class UserNotWorkspaceMemberException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+
+
+class WorkspaceMemberNotFoundException(Exception):
+    def __init__(self, workspace_member_id: int):
+        self.workspace_member_id = workspace_member_id
+
+
 class InactiveWorkspaceMemberException(Exception):
     def __init__(self, workspace_member_id: int):
         self.workspace_member_id = workspace_member_id
+
+
+class WorkspaceMemberNotFound(Exception):
+    def __init__(self, workspace_id: str, user_id: str):
+        self.workspace_id = workspace_id
+        self.user_id = user_id
 
 
 class AccountNameAlreadyExistsException(Exception):
@@ -281,6 +301,7 @@ class NothingToUpdateTaskException(Exception):
 class NothingToUpdateViewException(Exception):
     def __init__(self, view_id: str):
         self.view_id = view_id
+
 
 class AccountNotFoundException(Exception):
     def __init__(self, account_id: str):
@@ -338,6 +359,7 @@ class ResetTokenExpiredException(Exception):
 class MissingFieldConfigException(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
+
 
 class InvalidFieldValueException(Exception):
     def __init__(self, message: str):

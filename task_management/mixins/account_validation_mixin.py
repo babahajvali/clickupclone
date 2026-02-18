@@ -14,17 +14,20 @@ class AccountValidationMixin:
 
         account_data = self.account_storage.get_account_by_id(account_id=account_id)
 
-        if not account_data:
+        is_account_not_found = not account_data
+        if is_account_not_found:
             raise AccountNotFoundException(account_id=account_id)
 
-        if not account_data.is_active:
+        is_account_inactive = not account_data.is_active
+        if is_account_inactive:
             raise InactiveAccountException(account_id=account_id)
 
     def validate_user_is_account_owner(self, user_id: str,account_id: str):
 
         account_data = self.account_storage.get_account_by_id(account_id=account_id)
 
-        if str(account_data.owner_id) != user_id:
+        is_not_account_owner = str(account_data.owner_id) != user_id
+        if is_not_account_owner:
             raise UserNotAccountOwnerException(user_id=user_id)
 
 

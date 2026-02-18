@@ -1,7 +1,8 @@
 from task_management.exceptions.custom_exceptions import \
     InactiveWorkspaceException, ModificationNotAllowedException, \
     UserNotWorkspaceOwnerException, WorkspaceNotFoundException, \
-    InactiveWorkspaceMemberException
+    InactiveWorkspaceMemberException, UserNotWorkspaceMemberException, \
+    WorkspaceMemberNotFoundException
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
@@ -37,13 +38,24 @@ class WorkspaceValidationMixin:
             workspace_id=workspace_id,
             user_id=user_id
         )
+        is_member_not_found = not member_permission
+        is_user_not_allowed = member_permission.role == Role.GUEST
 
-        if not member_permission or member_permission.role == Role.GUEST:
+        if is_member_not_found:
+            raise UserNotWorkspaceMemberException(user_id=user_id)
+
+        if is_user_not_allowed:
             raise ModificationNotAllowedException(user_id=user_id)
 
     def validate_workspace_member_is_active(self, workspace_member_id: int):
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
+
+        is_member_not_found = not workspace_member_data
+
+        if is_member_not_found:
+            raise WorkspaceMemberNotFoundException(
+                workspace_member_id=workspace_member_id)
 
         if not workspace_member_data.is_active:
             raise InactiveWorkspaceMemberException(
@@ -54,9 +66,14 @@ class WorkspaceValidationMixin:
 
         member_permission = self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id, user_id=user_id)
+
+        is_member_not_found = not member_permission
+
+        if is_member_not_found:
+            raise UserNotWorkspaceMemberException(user_id=user_id)
+
         user_role = member_permission.role
+        is_user_not_allowed = user_role == Role.MEMBER or user_role == Role.GUEST
 
-        if not member_permission or (
-                user_role == Role.MEMBER or user_role == Role.GUEST):
+        if is_user_not_allowed:
             raise ModificationNotAllowedException(user_id=user_id)
-

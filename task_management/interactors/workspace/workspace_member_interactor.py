@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
-    UnexpectedRoleException
+    UnexpectedRoleException, InactiveWorkspaceMemberException, \
+    WorkspaceMemberNotFound
 from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
     WorkspaceMemberDTO
@@ -29,6 +30,9 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
         self.validate_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
         self.validate_user_is_active(
+            user_id=workspace_member_data.user_id)
+        self._validate_workspace_member_is_active(
+            workspace_id=workspace_member_data.workspace_id,
             user_id=workspace_member_data.user_id)
         self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
@@ -64,6 +68,8 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_active(user_id=user_id)
+        self._validate_workspace_member_is_active(
+            workspace_id=workspace_id, user_id=user_id)
         self.validate_user_permission_for_change_workspace_role(
             user_id=changed_by, workspace_id=workspace_id)
         self.validate_role(role=role)
@@ -96,3 +102,17 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
         if role not in existed_roles:
             raise UnexpectedRoleException(role=role)
+
+    def _validate_workspace_member_is_active(
+            self, workspace_id: str, user_id: str):
+
+        workspace_member = self.workspace_storage.get_workspace_member(
+            workspace_id=workspace_id, user_id=user_id)
+
+        if not workspace_member:
+            raise WorkspaceMemberNotFound(workspace_id=workspace_id,
+                                          user_id=user_id)
+
+        if not workspace_member.is_active:
+            raise InactiveWorkspaceMemberException(
+                workspace_member_id=workspace_member.id)

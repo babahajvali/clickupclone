@@ -12,8 +12,10 @@ class TaskValidationMixin:
     def validate_task_is_active(self, task_id: str):
         task_data = self.task_storage.get_task_by_id(task_id=task_id)
 
-        if not task_data:
+        is_task_not_found = not task_data
+        if is_task_not_found:
             raise TaskNotFoundException(task_id=task_id)
 
-        if task_data.is_deleted:
+        is_task_deleted = task_data.is_deleted
+        if is_task_deleted:
             raise DeletedTaskException(task_id=task_id)

@@ -12,8 +12,10 @@ class ListValidationMixin:
     def validate_list_is_active(self, list_id: str):
         list_data = self.list_storage.get_list(list_id=list_id)
 
-        if not list_data:
+        is_list_not_found = not list_data
+        if is_list_not_found:
             raise ListNotFoundException(list_id=list_id)
 
-        if not list_data.is_active:
+        is_list_inactive = not list_data.is_active
+        if is_list_inactive:
             raise InactiveListException(list_id=list_id)

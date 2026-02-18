@@ -14,14 +14,17 @@ class SpaceValidationMixin:
 
         space_data = self.space_storage.get_space(space_id=space_id)
 
-        if not space_data:
+        is_space_not_found = not space_data
+        if is_space_not_found:
             raise SpaceNotFoundException(space_id=space_id)
 
-        if not space_data.is_active:
+        is_space_inactive = not space_data.is_active
+        if is_space_inactive:
             raise InactiveSpaceException(space_id=space_id)
 
     def check_space_exists(self, space_id: str):
         is_exist = self.space_storage.check_space_exists(space_id=space_id)
 
-        if not is_exist:
+        is_space_not_found = not is_exist
+        if is_space_not_found:
             raise SpaceNotFoundException(space_id=space_id)

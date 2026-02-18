@@ -20,6 +20,7 @@ class ViewValidationMixin:
     @staticmethod
     def check_view_type(view_type: str):
         view_types = ViewTypes.get_values()
+        is_view_type_invalid = view_type not in view_types
 
-        if view_type not in view_types:
+        if is_view_type_invalid:
             raise ViewTypeNotFoundException(view_type=view_type)

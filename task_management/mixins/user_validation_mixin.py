@@ -14,8 +14,10 @@ class UserValidationMixin:
 
         user_data = self.user_storage.get_user_data(user_id=user_id)
 
-        if not user_data:
+        is_user_not_found = not user_data
+        if is_user_not_found:
             raise UserNotFoundException(user_id=user_id)
 
-        if not user_data.is_active:
+        is_user_inactive = not user_data.is_active
+        if is_user_inactive:
             raise InactiveUserException(user_id=user_id)
