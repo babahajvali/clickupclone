@@ -74,7 +74,7 @@ class GetWorkspaceInputParams(graphene.InputObjectType):
 
 
 class DeleteAccountInputParams(graphene.InputObjectType):
-    account_id = graphene.List(graphene.String,required=True)
+    account_id = graphene.List(graphene.String, required=True)
 
 
 class GetUserProfileInputParams(graphene.InputObjectType):
@@ -332,6 +332,7 @@ class RemoveListViewInputParams(graphene.InputObjectType):
 class GetListViewsInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
 
+
 class GetUserWorkspacesInputParams(graphene.InputObjectType):
     user_id = graphene.String(required=True)
 
@@ -361,10 +362,6 @@ class ForgotPasswordReqParams(graphene.InputObjectType):
 class ResetPasswordReqParams(graphene.InputObjectType):
     token = graphene.String(required=True)
     new_password = graphene.String(required=True)
-
-
-class GetListTaskAssigneesInputParams(graphene.InputObjectType):
-    list_id = graphene.String(required=True)
 
 
 class GetAccountsInputParams(graphene.InputObjectType):
