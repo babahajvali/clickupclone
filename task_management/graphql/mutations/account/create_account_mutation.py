@@ -7,9 +7,11 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import CreateAccountInputParams
 from task_management.graphql.types.response_types import CreateAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.account.account_interactor import \
-    AccountInteractor
-from task_management.storages import UserStorage, AccountStorage
+from task_management.interactors.account.account_onboarding import \
+    AccountOnboardingHandler
+from task_management.storages import UserStorage, AccountStorage, \
+    WorkspaceStorage, SpaceStorage, ListStorage, TemplateStorage, FieldStorage, \
+    FolderStorage, ViewStorage
 
 
 class CreateAccountMutation(graphene.Mutation):
@@ -26,14 +28,28 @@ class CreateAccountMutation(graphene.Mutation):
 
         user_storage = UserStorage()
         account_storage = AccountStorage()
+        workspace_storage = WorkspaceStorage()
+        space_storage = SpaceStorage()
+        list_storage = ListStorage()
+        template_storage = TemplateStorage()
+        field_storage = FieldStorage()
+        folder_storage = FolderStorage()
+        view_storage = ViewStorage()
 
-
-        interactor = AccountInteractor(
+        account_onboarding = AccountOnboardingHandler(
             user_storage=user_storage,
-            account_storage=account_storage)
+            account_storage=account_storage,
+            workspace_storage=workspace_storage,
+            space_storage=space_storage,
+            list_storage=list_storage,
+            template_storage=template_storage,
+            field_storage=field_storage,
+            folder_storage=folder_storage,
+            view_storage=view_storage, )
 
         try:
-            result = interactor.create_account(name=name, description=description,created_by=owner_id)
+            result = account_onboarding.handle(
+                name=name, description=description, created_by=owner_id)
 
             return AccountType(
                 account_id=result.account_id,
@@ -50,4 +66,3 @@ class CreateAccountMutation(graphene.Mutation):
             return InactiveUserType(user_id=e.user_id)
         except custom_exceptions.EmptyNameException as e:
             return EmptyAccountNameExistsType(name=e.name)
-

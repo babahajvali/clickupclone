@@ -1,6 +1,8 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import \
+    UnsupportedVisibilityTypeException
 from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import ListNotFoundType, \
     InactiveListType, ModificationNotAllowedType, UnsupportedVisibilityType
@@ -39,7 +41,7 @@ class SetListVisibilityMutation(graphene.Mutation):
 
         try:
             visibility = Visibility(params.visibility)
-        except Exception:
+        except UnsupportedVisibilityTypeException as e:
             return UnsupportedVisibilityType(visibility=params.visibility)
 
         try:

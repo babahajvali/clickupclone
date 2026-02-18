@@ -9,8 +9,6 @@ from task_management.graphql.types.types import TaskType
 from task_management.interactors.dtos import CreateTaskDTO
 from task_management.interactors.task.task_creation_handler import \
     TaskCreationHandler
-from task_management.interactors.task.task_interactor import \
-    TaskInteractor
 from task_management.storages import ListStorage, TaskStorage, \
     WorkspaceStorage, FieldStorage
 

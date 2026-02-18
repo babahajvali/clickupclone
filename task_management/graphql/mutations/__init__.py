@@ -28,6 +28,8 @@ from task_management.graphql.mutations.folder.set_folder_visibility_mutation imp
     SetFolderVisibilityMutation
 from task_management.graphql.mutations.folder.update_folder_mutation import \
     UpdateFolderMutation
+from task_management.graphql.mutations.list.add_list_permission_for_user import \
+    AddListPermissionForUserMutation
 from task_management.graphql.mutations.list.create_list_mutation import \
     CreateListMutation
 from task_management.graphql.mutations.list.delete_list_mutation import \
@@ -291,3 +293,6 @@ class ValidateResetToken(graphene.ObjectType):
 class UpdateAccount(graphene.ObjectType):
     update_account = UpdateAccountMutation.Field(required=True)
 
+
+class AddUserForListPermission(graphene.ObjectType):
+    add_list_permission_for_user = AddListPermissionForUserMutation.Field(required=True)

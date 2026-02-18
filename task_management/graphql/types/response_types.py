@@ -18,7 +18,8 @@ from task_management.graphql.types.error_types import \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, \
     ResetTokenExpired, InvalidAccountIds, InvalidFieldValue, \
-    EmptyAccountNameExistsType, NothingToUpdateAccountType
+    EmptyAccountNameExistsType, NothingToUpdateAccountType, \
+    InvalidAccountIdsType, UserHaveAlreadyListPermissionType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -727,7 +728,15 @@ class ResetPasswordResponse(graphene.Union):
 
 class GetAccountsResponse(graphene.Union):
     class Meta:
-        types = (AccountsType,)
+        types = (AccountsType,
+                 InvalidAccountIdsType,)
+
+
+class GetUserAccountsResponse(graphene.Union):
+    class Meta:
+        types = (
+            AccountsType,
+        )
 
 
 class GetUserWithEmailResponse(graphene.Union):
@@ -744,3 +753,11 @@ class ValidateResetTokenResponse(graphene.Union):
             InvalidResetToken,
             ResetTokenExpired
         )
+
+
+class AddListPermissionForUserResponse(graphene.Union):
+    class Meta:
+        types = (UserListPermissionType,
+                 InactiveListType,
+                 UserHaveAlreadyListPermissionType,
+                 ModificationNotAllowedType)

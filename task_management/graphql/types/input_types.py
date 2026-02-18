@@ -376,3 +376,9 @@ class UpdateAccountInputParams(graphene.InputObjectType):
     account_id = graphene.String(required=True)
     name = graphene.String()
     description = graphene.String()
+
+
+class AddListPermissionForUserInputParams(graphene.InputObjectType):
+    list_id = graphene.String(required=True)
+    user_id = graphene.String(required=True)
+    permission = graphene.String(required=True)

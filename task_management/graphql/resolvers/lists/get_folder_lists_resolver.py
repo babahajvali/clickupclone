@@ -13,21 +13,19 @@ def get_folder_lists_resolver(root, info, params):
     list_storage = ListStorage()
     folder_storage = FolderStorage()
     space_storage = SpaceStorage()
-    
     workspace_storage = WorkspaceStorage()
 
     interactor = ListInteractor(
         list_storage=list_storage,
         folder_storage=folder_storage,
         space_storage=space_storage,
-        
         workspace_storage=workspace_storage
     )
 
     try:
         lists_data = interactor.get_folder_lists(folder_id=folder_id)
 
-        lists_output = [
+        result = [
             ListType(
                 list_id=list_item.list_id,
                 name=list_item.name,
@@ -41,7 +39,7 @@ def get_folder_lists_resolver(root, info, params):
             ) for list_item in lists_data
         ]
 
-        return ListsType(lists=lists_output)
+        return ListsType(lists=result)
 
     except custom_exceptions.FolderNotFoundException as e:
         return FolderNotFoundType(folder_id=e.folder_id)

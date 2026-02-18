@@ -12,14 +12,12 @@ def get_list_resolver(root, info, params):
     list_storage = ListStorage()
     folder_storage = FolderStorage()
     space_storage = SpaceStorage()
-    
     workspace_storage = WorkspaceStorage()
 
     interactor = ListInteractor(
         list_storage=list_storage,
         folder_storage=folder_storage,
         space_storage=space_storage,
-        
         workspace_storage=workspace_storage
     )
 

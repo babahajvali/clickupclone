@@ -11,13 +11,14 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace, TaskAssignee, \
     RemoveTaskAssignee, UpdateView, UpdateField, CreateField, DeleteField, \
     ReorderField, ApplyListView, RemoveListView, UpdateFieldValue, \
-    ForgotPassword, ResetPassword, ValidateResetToken, UpdateAccount
+    ForgotPassword, ResetPassword, ValidateResetToken, UpdateAccount, \
+    AddUserForListPermission
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetField, GetListViews, \
     GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks, \
-    GetAccounts, GetUserWithEmail
+    GetAccounts, GetUserWithEmail, GetUserAccounts
 
 QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetSpaceFolders, GetFolder, GetList, GetFolderLists,
@@ -25,7 +26,7 @@ QUERY_CLASSES = [GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace,
                  GetTaskAssignees, GetViews, GetTemplateFields, GetField,
                  GetListViews, GetUserWorkspaces, GetTaskValues,
                  GetWorkspaceMembers, GetUserTasks, GetAccounts,
-                 GetUserWithEmail]
+                 GetUserWithEmail, GetUserAccounts]
 
 MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     UserLogin, DeleteAccount, CreateWorkspace,
@@ -40,7 +41,7 @@ MUTATION_CLASSES = [CreateAccount, CreateUser, UpdateUser, BlockUser,
                     RemoveTaskAssignee, UpdateView, UpdateField, CreateField,
                     DeleteField, ReorderField, ApplyListView, RemoveListView,
                     ResetPassword, UpdateFieldValue, ForgotPassword,
-                    ValidateResetToken, UpdateAccount]
+                    ValidateResetToken, UpdateAccount, AddUserForListPermission]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

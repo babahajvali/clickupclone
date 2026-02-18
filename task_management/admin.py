@@ -105,7 +105,7 @@ class ListAdmin(admin.ModelAdmin):
 
 @admin.register(ListPermission)
 class ListPermissionAdmin(admin.ModelAdmin):
-    list_display = ('list', 'user', 'permission_type', 'is_active', 'added_by',
+    list_display = ('list', 'user','id', 'permission_type', 'is_active', 'added_by',
                     'created_at')
     list_filter = ('permission_type', 'is_active', 'created_at')
     search_fields = ('list__name', 'user__username')

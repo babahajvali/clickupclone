@@ -1,5 +1,7 @@
 from task_management.exceptions.custom_exceptions import ListNotFoundException, \
-    InactiveListException
+    InactiveListException, UnexpectedPermissionException, \
+    UserListPermissionNotFoundException, InactiveUserListPermissionException
+from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
 
@@ -19,3 +21,25 @@ class ListValidationMixin:
         is_list_inactive = not list_data.is_active
         if is_list_inactive:
             raise InactiveListException(list_id=list_id)
+
+    @staticmethod
+    def validate_permission(permission: str):
+
+        existed_permissions = Permissions.get_values()
+        is_permission_invalid = permission not in existed_permissions
+
+        if is_permission_invalid:
+            raise UnexpectedPermissionException(permission=permission)
+
+    def check_user_list_permission(self, user_id: str, list_id: str):
+        user_permission_data = self.list_storage.get_user_permission_for_list(
+            list_id=list_id, user_id=user_id)
+
+        is_user_permission_not_found = not user_permission_data
+        if is_user_permission_not_found:
+            raise UserListPermissionNotFoundException(list_id=list_id,
+                                                      user_id=user_id)
+
+        is_user_permission_inactive = not user_permission_data.is_active
+        if is_user_permission_inactive:
+            raise InactiveUserListPermissionException(user_id=user_id)

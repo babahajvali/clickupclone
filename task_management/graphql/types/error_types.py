@@ -5,6 +5,10 @@ class UserNotFoundType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
+class InvalidAccountIdsType(graphene.ObjectType):
+    account_ids = graphene.List(graphene.String, required=True)
+
+
 class InactiveUserType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
@@ -24,6 +28,9 @@ class FieldNameAlreadyExistsType(graphene.ObjectType):
 class ModificationNotAllowedType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
+
+class UserHaveAlreadyListPermissionType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
 
 class InvalidFieldValue(graphene.ObjectType):
     message = graphene.String(required=True)

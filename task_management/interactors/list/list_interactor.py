@@ -2,10 +2,10 @@ from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOrderException, \
     EmptyNameException, NothingToUpdateListException, \
-    UnsupportedVisibilityTypeException
+    UnsupportedVisibilityTypeException, UserHaveAlreadyListPermissionException
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
-    CreateListPermissionDTO
+    CreateListPermissionDTO, UserListPermissionDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
     WorkspaceStorageInterface
@@ -148,17 +148,21 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
         return self.list_storage.get_space_lists(space_ids=[space_id])
 
-    def add_user_in_list_permission(
-            self, user_permission_data: CreateListPermissionDTO):
-
+    def add_user_in_list_permission(self,
+                                    user_permission_data: CreateListPermissionDTO) -> UserListPermissionDTO:
+        self._check_user_have_already_list_permission(
+            user_id=user_permission_data.user_id,
+            list_id=user_permission_data.list_id)
         self.validate_list_is_active(list_id=user_permission_data.list_id)
         space_id = self.list_storage.get_list_space_id(
             list_id=user_permission_data.list_id)
         self._validate_user_access_for_space(
-            space_id=space_id, user_id=user_permission_data.user_id)
+            space_id=space_id, user_id=user_permission_data.added_by)
+        self.validate_permission(
+            permission=user_permission_data.permission_type.value)
 
         return self.list_storage.create_list_users_permissions(
-            user_permissions=[user_permission_data])
+            user_permissions=[user_permission_data])[0]
 
     # Helping functions
 
@@ -203,3 +207,14 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
         if is_visibility_invalid:
             raise UnsupportedVisibilityTypeException(
                 visibility_type=visibility)
+
+    def _check_user_have_already_list_permission(self, list_id: str,
+                                                 user_id: str):
+
+        user_list_permission = self.list_storage.get_user_permission_for_list(
+            list_id=list_id, user_id=user_id)
+
+        if user_list_permission:
+            is_user_permission_inactive = user_list_permission.is_active
+            if is_user_permission_inactive:
+                raise UserHaveAlreadyListPermissionException(user_id=user_id)

@@ -97,6 +97,19 @@ class ListNotFoundException(Exception):
         self.list_id = list_id
 
 
+class UserListPermissionNotFoundException(Exception):
+    def __init__(self, user_id: str, list_id: str):
+        self.user_id = user_id
+        self.list_id = list_id
+
+class InactiveUserListPermissionException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+
+class UserHaveAlreadyListPermissionException(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+
 class TaskNotFoundException(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
