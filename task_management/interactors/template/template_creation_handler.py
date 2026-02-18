@@ -4,8 +4,8 @@ from task_management.constants.field_constants import FIXED_FIELDS
 from task_management.exceptions.enums import FieldTypes
 from task_management.interactors.dtos import CreateTemplateDTO, CreateFieldDTO
 from task_management.interactors.storage_interfaces import \
-    TemplateStorageInterface, ListStorageInterface, SpaceStorageInterface, \
-    FieldStorageInterface, WorkspaceStorageInterface
+    TemplateStorageInterface, ListStorageInterface, FieldStorageInterface, \
+    WorkspaceStorageInterface
 from task_management.interactors.template.template_interactor import \
     TemplateInteractor
 
@@ -41,7 +41,6 @@ class TemplateCreationHandler:
         return template_interactor.create_template(template_data=template_data)
 
     def _create_template_fixed_fields(self, template_id: str, user_id: str):
-
         fixed_fields = []
         for field in FIXED_FIELDS:
             create_field_dto = CreateFieldDTO(

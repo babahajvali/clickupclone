@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     EmailNotFoundException, IncorrectPasswordException, \
-    UsernameAlreadyExistsException, EmailAlreadyExistsException,\
+    UsernameAlreadyExistsException, EmailAlreadyExistsException, \
     PhoneNumberAlreadyExistsException, InactiveUserException
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
@@ -92,16 +92,18 @@ class UserInteractor(UserValidationMixin):
 
     def _check_username_except_current_user(self, username: str,
                                             user_id: str):
-        is_user_exist_username = self.user_storage.check_username_except_current_user(
-            user_id=user_id, username=username)
+        is_user_exist_username = (
+            self.user_storage.check_username_except_current_user(
+                user_id=user_id, username=username))
 
         if is_user_exist_username:
             raise UsernameAlreadyExistsException(username=username)
 
     def _check_email_except_current_user(self, user_id: str, email: str):
 
-        is_user_exist_email = self.user_storage.check_email_exists_except_current_user(
-            user_id=user_id, email=email)
+        is_user_exist_email = (
+            self.user_storage.check_email_exists_except_current_user(
+                user_id=user_id, email=email))
 
         if is_user_exist_email:
             raise EmailAlreadyExistsException(email=email)
@@ -109,8 +111,9 @@ class UserInteractor(UserValidationMixin):
     def _check_phone_number_except_current_user(self, user_id: str,
                                                 phone_number: str):
 
-        is_user_exist_phone_number = self.user_storage.check_phone_number_except_current_user(
-            user_id=user_id, phone_number=phone_number)
+        is_user_exist_phone_number = (
+            self.user_storage.check_phone_number_except_current_user(
+                user_id=user_id, phone_number=phone_number))
 
         if is_user_exist_phone_number:
             raise PhoneNumberAlreadyExistsException(phone_number=phone_number)

@@ -108,7 +108,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             update_field_data.config is not None,
             update_field_data.field_name is not None,
             update_field_data.description is not None,
-            update_field_data.is_required is not None ])
+            update_field_data.is_required is not None])
 
         if not is_field_property_provided:
             raise NothingToUpdateFieldException
@@ -143,7 +143,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         return self.field_storage.delete_field(field_id=field_id)
 
     @interactor_cache(cache_name="field", timeout=5 * 60)
-    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+    def get_active_fields_for_template(self, template_id: str) -> list[
+        FieldDTO]:
 
         self.check_template_exists(template_id=template_id)
 

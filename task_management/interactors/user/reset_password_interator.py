@@ -50,7 +50,6 @@ class PasswordResetInteractor(UserValidationMixin):
 
     def reset_password(self, token: str, new_password: str):
 
-
         reset_token_data = self.user_storage.get_reset_token(
             token=token)
 

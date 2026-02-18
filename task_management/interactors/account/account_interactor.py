@@ -167,7 +167,8 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
     def _check_account_name_in_db_except_current_account(self, name: str,
                                                          account_id: str):
         try:
-            account_data = self.account_storage.get_account_by_name(account_name=name)
+            account_data = self.account_storage.get_account_by_name(
+                account_name=name)
             if account_data.account_id != account_id:
                 from task_management.exceptions.custom_exceptions import \
                     AccountNameAlreadyExistsException

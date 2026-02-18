@@ -83,8 +83,8 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         if not fields_to_update:
             raise NothingToUpdateTemplateException(template_id=template_id)
 
-        return self.template_storage.update_template(template_id=template_id,
-                                                     update_fields=fields_to_update)
+        return self.template_storage.update_template(
+            template_id=template_id, update_fields=fields_to_update)
 
     def _validate_user_access_for_list(self, list_id: str, user_id: str):
 

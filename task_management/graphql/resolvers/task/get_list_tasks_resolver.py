@@ -4,10 +4,8 @@ from task_management.graphql.types.error_types import ListNotFoundType, \
 from task_management.graphql.types.types import TaskType, TasksType, \
     TaskAssigneeType, FieldValuesType
 from task_management.interactors.task.task_interactor import TaskInteractor
-from task_management.interactors.task.task_assignee_interactor import \
-    TaskAssigneeInteractor
 from task_management.storages import ListStorage, TaskStorage, \
-    WorkspaceStorage, UserStorage, FieldStorage
+    WorkspaceStorage, FieldStorage
 
 
 def get_list_tasks_resolver(root, info, params):
@@ -16,7 +14,6 @@ def get_list_tasks_resolver(root, info, params):
     list_storage = ListStorage()
     task_storage = TaskStorage()
     workspace_storage = WorkspaceStorage()
-    user_storage = UserStorage()
     field_storage = FieldStorage()
 
     task_interactor = TaskInteractor(
@@ -25,17 +22,11 @@ def get_list_tasks_resolver(root, info, params):
         workspace_storage=workspace_storage,
     )
 
-    assignee_interactor = TaskAssigneeInteractor(
-        user_storage=user_storage,
-        task_storage=task_storage,
-        workspace_storage=workspace_storage
-    )
-
     try:
         tasks_data = task_interactor.get_active_tasks_for_list(list_id=list_id)
         task_ids = [task.task_id for task in tasks_data]
 
-        assignees_data = assignee_interactor.get_assignees_for_list_tasks(
+        assignees_data = task_storage.get_assignees_for_list_tasks(
             list_id=list_id
         )
 

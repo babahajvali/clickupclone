@@ -76,7 +76,10 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @interactor_cache(cache_name="user_workspaces", timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
-        return self.workspace_storage.get_active_user_workspaces(user_id=user_id)
+        self.validate_user_is_active(user_id=user_id)
+
+        return self.workspace_storage.get_active_user_workspaces(
+            user_id=user_id)
 
     @staticmethod
     def _get_permission_type_by_role(role: str) -> Permissions:

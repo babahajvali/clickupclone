@@ -2,7 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    TaskAssigneeNotFoundException, InActiveTaskAssigneeFoundException
+    TaskAssigneeNotFoundException, InActiveTaskAssigneeFoundException, \
+    InactiveListException, ListNotFoundException
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, UserStorageInterface, \
@@ -89,13 +90,6 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         self.validate_task_is_active(task_id=task_id)
 
         return self.task_storage.get_task_assignees(task_id=task_id)
-
-    @interactor_cache(timeout=30 * 60, cache_name="list_task_assignees")
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[
-        TaskAssigneeDTO]:
-
-        return self.task_storage.get_assignees_for_list_tasks(
-            list_id=list_id)
 
     def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
 
