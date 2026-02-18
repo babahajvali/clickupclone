@@ -2,7 +2,7 @@ from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
     InvalidOffsetException, InvalidLimitException, InvalidOrderException, \
-    EmptyNameException
+    EmptyNameException, NothingToUpdateTaskException
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, FilterDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, ListStorageInterface, WorkspaceStorageInterface
@@ -46,17 +46,20 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
         is_title_provided = title is not None
         is_description_provided = description is not None
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_title_provided:
             self._check_task_title_not_empty(title=title)
-            fields_to_update['title'] = title
+            field_properties_to_update['title'] = title
 
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        return self.task_storage.update_task(task_id=task_id,
-                                             update_field=fields_to_update)
+        if not field_properties_to_update:
+            raise NothingToUpdateTaskException(task_id=task_id)
+
+        return self.task_storage.update_task(
+            task_id=task_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
@@ -123,7 +126,8 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     @staticmethod
     def _check_task_title_not_empty(title: str):
 
-        if not title or not title.strip():
+        is_title_empty = not title or not title.strip()
+        if is_title_empty:
             raise EmptyNameException(name=title)
 
     def _validate_user_has_access_for_list(self, list_id: str, user_id: str):

@@ -101,7 +101,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder(folder_id=folder_id, update_fields={"name": name, "description": description})
+        result = storage.update_folder(folder_id=folder_id, field_properties={"name": name, "description": description})
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_folder_success.txt")

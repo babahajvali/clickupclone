@@ -158,7 +158,7 @@ class TestListStorage:
 
         # Act
         result = storage.update_list(
-            list_id=list_id, update_field_properties={"name": name,
+            list_id=list_id, field_properties={"name": name,
                                                       "description": description})
 
         # Assert

@@ -44,7 +44,7 @@ class AccountStorageInterface(ABC):
 
     @abstractmethod
     def update_account(self, account_id: str,
-                       update_fields: dict) -> AccountDTO:
+                       field_properties: dict) -> AccountDTO:
         pass
 
     @abstractmethod

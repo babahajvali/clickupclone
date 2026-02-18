@@ -104,7 +104,7 @@ class TestWorkspaceStorage:
 
         # Act
         result = storage.update_workspace(workspace_id=workspace_id,
-                                          update_fields={"name": name,
+                                          field_properties={"name": name,
                                                          'description': description})
 
         # Assert

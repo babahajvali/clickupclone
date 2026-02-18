@@ -72,8 +72,8 @@ class ListStorage(ListStorageInterface):
         return list_data.space.workspace.workspace_id
 
     def update_list(self, list_id: str,
-                    update_field_properties: dict) -> ListDTO:
-        List.objects.filter(list_id=list_id).update(**update_field_properties)
+                    field_properties: dict) -> ListDTO:
+        List.objects.filter(list_id=list_id).update(**field_properties)
         list_data = List.objects.get(list_id=list_id)
 
         return self._list_dto(list_data=list_data)

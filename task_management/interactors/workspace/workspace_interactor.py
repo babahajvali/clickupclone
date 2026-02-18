@@ -77,18 +77,18 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
         has_name_provided = name is not None
         has_description_provided = description is not None
 
-        fields_to_update = {}
+        field_properties_to_update = {}
         if has_name_provided:
             self._validate_workspace_name_not_empty(workspace_name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
         if has_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             raise NothingToUpdateWorkspaceException(workspace_id=workspace_id)
 
         return self.workspace_storage.update_workspace(
-            workspace_id=workspace_id, update_fields=fields_to_update)
+            workspace_id=workspace_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(self, workspace_id: str,
@@ -129,7 +129,9 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
 
     @staticmethod
     def _validate_workspace_name_not_empty(workspace_name: str):
-        if not workspace_name or not workspace_name.strip():
+        is_name_empty = not workspace_name or not workspace_name.strip()
+
+        if is_name_empty:
             raise EmptyNameException(name=workspace_name)
 
     def check_workspace_ids(self, workspace_ids: list[str]):

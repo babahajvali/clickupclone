@@ -16,7 +16,8 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_folder(self, folder_id: str, update_fields: dict) -> FolderDTO:
+    def update_folder(self, folder_id: str,
+                      field_properties: dict) -> FolderDTO:
         pass
 
     @abstractmethod

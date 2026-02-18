@@ -49,20 +49,20 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
         is_name_provided = name is not None
         is_description_provided = description is not None
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_name_provided:
             self._check_space_name_not_empty(name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
 
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             raise NothingToUpdateSpaceException(space_id=space_id)
 
-        return self.space_storage.update_space(space_id=space_id,
-                                               update_fields=fields_to_update)
+        return self.space_storage.update_space(
+            space_id=space_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def reorder_space(self, workspace_id: str, space_id: str, order: int,
@@ -162,7 +162,8 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     @staticmethod
     def _check_space_name_not_empty(name: str):
 
-        if not name or not name.strip():
+        is_name_empty = not name or not name.strip()
+        if is_name_empty:
             raise EmptyNameException(name=name)
 
     @staticmethod

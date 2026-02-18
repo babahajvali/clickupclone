@@ -19,7 +19,7 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_view(self, view_id: str, update_fields: dict) -> ViewDTO:
+    def update_view(self, view_id: str, field_properties: dict) -> ViewDTO:
         pass
 
     @abstractmethod
@@ -47,4 +47,8 @@ class ViewStorageInterface(ABC):
 
     @abstractmethod
     def get_list_view(self, list_id: str, view_id: str) -> ListViewDTO:
+        pass
+
+    @abstractmethod
+    def get_list_view_id(self, view_type: str) -> str:
         pass

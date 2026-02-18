@@ -16,7 +16,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_space(self, space_id: str, update_fields: dict) -> SpaceDTO:
+    def update_space(self, space_id: str, field_properties: dict) -> SpaceDTO:
         pass
 
     @abstractmethod

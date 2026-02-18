@@ -57,20 +57,20 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
         is_name_provided = name is not None
         is_description_provided = description is not None
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_name_provided:
             self._check_list_name_not_empty(list_name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
 
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             raise NothingToUpdateListException(list_id=list_id)
 
         return self.list_storage.update_list(
-            list_id=list_id, update_field_properties=fields_to_update)
+            list_id=list_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
@@ -190,7 +190,8 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
 
     @staticmethod
     def _check_list_name_not_empty(list_name: str):
-        if not list_name or not list_name.strip():
+        is_name_empty = not list_name or not list_name.strip()
+        if is_name_empty:
             raise EmptyNameException(name=list_name)
 
     @staticmethod

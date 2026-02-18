@@ -73,7 +73,7 @@ class TestTaskStorage:
 
         # Act
         result = storage.update_task(task_id=task_id,
-                                     update_field={"title": title,
+                                     field_properties={"title": title,
                                                    'description': description})
 
         # Assert

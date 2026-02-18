@@ -65,14 +65,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             field_name=create_field_data.field_name,
             template_id=create_field_data.template_id)
         self.check_field_type(field_type=create_field_data.field_type.value)
-        self._check_dropdown_config(
-            field_type=create_field_data.field_type.value,
-            config=create_field_data.config)
-
-        if create_field_data.config:
-            self.validate_field_config(
-                field_type=create_field_data.field_type.value,
-                config=create_field_data.config)
+        self._validate_config(config=create_field_data.config,
+                              field_type=create_field_data.field_type.value)
 
         return self.field_storage.create_field(
             create_field_data=create_field_data)
@@ -105,8 +99,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
                                        config=update_field_data.config)
 
         is_field_property_provided = any([
-            update_field_data.config is not None,
-            update_field_data.field_name is not None,
+            is_field_name_provided,
+            is_config_provided,
             update_field_data.description is not None,
             update_field_data.is_required is not None])
 
@@ -178,18 +172,25 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             template_id=template_id)
 
         self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id,
-            user_id=user_id
-        )
+            workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
     def _check_dropdown_config(field_type: str, config: dict):
-        is_dropdown_type = (field_type == FieldTypes.DROPDOWN.value)
+        is_dropdown_field_type = (field_type == FieldTypes.DROPDOWN.value)
 
-        if is_dropdown_type and not config:
+        if is_dropdown_field_type and not config:
             raise MissingFieldConfigException(field_type=field_type)
 
     @staticmethod
     def check_field_name_not_empty(field_name: str):
-        if not field_name or not field_name.strip():
+        is_name_empty = not field_name or not field_name.strip()
+
+        if is_name_empty:
             raise EmptyNameException(name=field_name)
+
+    def _validate_config(self, config: dict, field_type: str):
+
+        self._check_dropdown_config(field_type=field_type, config=config)
+
+        if config:
+            self.validate_field_config(field_type=field_type, config=config)

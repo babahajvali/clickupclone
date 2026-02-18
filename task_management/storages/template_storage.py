@@ -41,9 +41,9 @@ class TemplateStorage(TemplateStorageInterface):
             template_id=template_id).exists()
 
     def update_template(self, template_id: str,
-                        update_fields: dict) -> TemplateDTO:
+                        field_properties: dict) -> TemplateDTO:
         Template.objects.filter(template_id=template_id).update(
-            **update_fields)
+            **field_properties)
         template_data = Template.objects.get(template_id=template_id)
 
         return self._template_dto(data=template_data)

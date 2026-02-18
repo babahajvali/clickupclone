@@ -1,6 +1,7 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyNameException
+from task_management.exceptions.custom_exceptions import EmptyNameException, \
+    NothingToUpdateViewException
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces import \
     ViewStorageInterface, ListStorageInterface
@@ -29,19 +30,20 @@ class ViewInteractor(ViewValidationMixin):
 
         is_name_provided = name is not None
         is_description_provided = description is not None
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_name_provided:
             self._validate_view_name_not_empty(name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
 
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
-            raise EmptyNameException(name=name)
-        return self.view_storage.update_view(view_id=view_id,
-                                             update_fields=fields_to_update)
+        if not field_properties_to_update:
+            raise NothingToUpdateViewException(view_id=view_id)
+
+        return self.view_storage.update_view(
+            view_id=view_id, field_properties=field_properties_to_update)
 
     def get_views(self):
         return self.view_storage.get_all_views()
@@ -49,5 +51,6 @@ class ViewInteractor(ViewValidationMixin):
     @staticmethod
     def _validate_view_name_not_empty(name: str):
 
-        if not name or not name.strip():
+        is_name_empty = not name or not name.strip()
+        if is_name_empty:
             raise EmptyNameException(name=name)

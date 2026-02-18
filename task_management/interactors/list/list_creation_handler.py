@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import Permissions, ViewTypes
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     CreateListPermissionDTO, CreateTemplateDTO
 from task_management.interactors.list.list_interactor import \
@@ -48,7 +48,8 @@ class ListCreationHandler:
         )
 
         self._create_default_template(template_data=create_template_dto)
-        view_id = "807ceaef-57f5-4362-af9d-9b21b79d643c"
+        view_id = self.view_storage.get_list_view_id(
+            view_type=ViewTypes.LIST.value)
         self._create_default_list_view(
             list_id=list_obj.list_id, view_id=view_id,
             user_id=list_obj.created_by)

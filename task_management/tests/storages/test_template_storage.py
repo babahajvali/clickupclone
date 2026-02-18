@@ -136,7 +136,7 @@ class TestTemplateStorage:
         storage = TemplateStorage()
 
         # Act
-        result = storage.update_template(template_id=template_id, update_fields={"name": name, 'description': description})
+        result = storage.update_template(template_id=template_id, field_properties={"name": name, 'description': description})
 
         # Assert
         snapshot.assert_match(

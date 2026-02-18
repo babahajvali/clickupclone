@@ -1,5 +1,7 @@
 from typing import Optional
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from task_management.exceptions.custom_exceptions import \
     AccountNameAlreadyExistsException
 from task_management.interactors.dtos import AccountDTO
@@ -76,21 +78,21 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        fields_to_update = {}
+        field_properties_to_update = {}
         if is_name_provided:
             self._check_account_name_in_db_except_current_account(
                 account_id=account_id, name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             from task_management.exceptions.custom_exceptions import \
                 NothingToUpdateAccountException
             raise NothingToUpdateAccountException(account_id=account_id)
 
-        return self.account_storage.update_account(account_id=account_id,
-                                                   update_fields=fields_to_update)
+        return self.account_storage.update_account(
+            account_id=account_id, field_properties=field_properties_to_update)
 
     def delete_account(self, account_id: str, deleted_by: str):
         """ Delete account data after validation
@@ -157,24 +159,25 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
 
     def _check_account_name_in_db(self, account_name: str):
         try:
-            self.account_storage.get_account_by_name(
+            account_data = self.account_storage.get_account_by_name(
                 account_name=account_name
             )
-            raise AccountNameAlreadyExistsException(name=account_name)
-        except Exception:
+        except ObjectDoesNotExist:
             pass
+        else:
+            if account_data:
+                raise AccountNameAlreadyExistsException(name=account_name)
 
     def _check_account_name_in_db_except_current_account(self, name: str,
                                                          account_id: str):
         try:
             account_data = self.account_storage.get_account_by_name(
                 account_name=name)
-            if account_data.account_id != account_id:
-                from task_management.exceptions.custom_exceptions import \
-                    AccountNameAlreadyExistsException
-                raise AccountNameAlreadyExistsException(name=name)
-        except Exception:
+        except ObjectDoesNotExist:
             pass
+        else:
+            if account_data.account_id != account_id:
+                raise AccountNameAlreadyExistsException(name=name)
 
     def _check_account_ids(self, account_ids: list[str]):
         accounts_data = self.account_storage.get_accounts(
@@ -192,7 +195,9 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
 
     @staticmethod
     def _check_account_name_is_not_empty(account_name: str):
-        if not account_name or not account_name.strip():
+        is_name_empty =  not account_name or not account_name.strip()
+
+        if is_name_empty:
             from task_management.exceptions.custom_exceptions import \
                 EmptyNameException
             raise EmptyNameException(name=account_name)

@@ -272,6 +272,16 @@ class NothingToUpdateSpaceException(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
+
+class NothingToUpdateTaskException(Exception):
+    def __init__(self, task_id: str):
+        self.task_id = task_id
+
+
+class NothingToUpdateViewException(Exception):
+    def __init__(self, view_id: str):
+        self.view_id = view_id
+
 class AccountNotFoundException(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id

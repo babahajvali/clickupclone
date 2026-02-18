@@ -51,9 +51,9 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return self._workspace_dto(data=workspace_data)
 
     def update_workspace(self, workspace_id: str,
-                         update_fields: dict) -> WorkspaceDTO:
+                         field_properties: dict) -> WorkspaceDTO:
         Workspace.objects.filter(workspace_id=workspace_id).update(
-            **update_fields)
+            **field_properties)
         workspace_obj = Workspace.objects.get(workspace_id=workspace_id)
 
         return self._workspace_dto(data=workspace_obj)

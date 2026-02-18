@@ -38,9 +38,9 @@ class ViewStorage(ViewStorageInterface):
 
         return self._view_dto(data=view_data)
 
-    def update_view(self, view_id: str, update_fields: dict) -> ViewDTO:
+    def update_view(self, view_id: str, field_properties: dict) -> ViewDTO:
 
-        View.objects.filter(view_id=view_id).update(**update_fields)
+        View.objects.filter(view_id=view_id).update(**field_properties)
         view_data = View.objects.get(view_id=view_id)
 
         return self._view_dto(data=view_data)
@@ -111,3 +111,8 @@ class ViewStorage(ViewStorageInterface):
             )
         except ObjectDoesNotExist:
             return None
+
+    def get_list_view_id(self, view_type: str) -> str:
+        view_data = View.objects.get(view_type=view_type)
+
+        return view_data.view_id

@@ -45,8 +45,8 @@ class FolderStorage(FolderStorageInterface):
 
         return self._folder_dto(folder_data)
 
-    def update_folder(self, folder_id: str, update_fields: dict) -> FolderDTO:
-        Folder.objects.filter(folder_id=folder_id).update(**update_fields)
+    def update_folder(self, folder_id: str, field_properties: dict) -> FolderDTO:
+        Folder.objects.filter(folder_id=folder_id).update(**field_properties)
         folder_data = Folder.objects.get(
             folder_id=folder_id)
 

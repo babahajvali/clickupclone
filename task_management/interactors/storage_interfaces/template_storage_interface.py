@@ -19,14 +19,13 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_template_name_exist_except_this_template(self,
-                                                       template_name: str,
-                                                       template_id: str) -> bool:
+    def check_template_name_exist_except_this_template(
+            self, template_name: str, template_id: str) -> bool:
         pass
 
     @abstractmethod
     def update_template(self, template_id: str,
-                        update_fields: dict) -> TemplateDTO:
+                        field_properties: dict) -> TemplateDTO:
         pass
 
     @abstractmethod

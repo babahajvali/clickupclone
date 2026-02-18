@@ -51,20 +51,20 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_name_provided:
             self._check_folder_name_not_empty(name=name)
-            fields_to_update['name'] = name
+            field_properties_to_update['name'] = name
 
         if is_description_provided:
-            fields_to_update['description'] = description
+            field_properties_to_update['description'] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             raise NothingToUpdateFolderException(folder_id=folder_id)
 
-        return self.folder_storage.update_folder(folder_id=folder_id,
-                                                 update_fields=fields_to_update)
+        return self.folder_storage.update_folder(
+            folder_id=folder_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="folders")
     def reorder_folder(self, space_id: str, folder_id: str, user_id: str,
@@ -145,7 +145,9 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     @staticmethod
     def _check_folder_name_not_empty(name: str):
 
-        if name is None or not name.strip():
+        is_name_empty = name is None or not name.strip()
+
+        if is_name_empty:
             raise EmptyNameException(name=name)
 
     def _validate_user_access_for_space(self, space_id: str, user_id: str):

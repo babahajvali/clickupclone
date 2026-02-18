@@ -45,8 +45,8 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
-    def update_task(self, task_id: str, update_field: dict) -> TaskDTO:
-        Task.objects.filter(task_id=task_id).update(**update_field)
+    def update_task(self, task_id: str, field_properties: dict) -> TaskDTO:
+        Task.objects.filter(task_id=task_id).update(**field_properties)
 
         task_data = Task.objects.get(task_id=task_id)
 

@@ -27,7 +27,7 @@ class View(models.Model):
                                editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    view_type = models.CharField(max_length=20,
+    view_type = models.CharField(max_length=20, unique=True,
                                  choices=ViewTypes.get_list_of_tuples(),
                                  default=ViewTypes.LIST.value)
     created_by = models.ForeignKey(

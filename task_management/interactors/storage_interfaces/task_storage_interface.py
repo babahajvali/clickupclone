@@ -11,7 +11,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_task(self, task_id: str, update_field: dict) -> TaskDTO:
+    def update_task(self, task_id: str, field_properties: dict) -> TaskDTO:
         pass
 
     @abstractmethod

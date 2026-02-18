@@ -64,8 +64,8 @@ class SpaceStorage(SpaceStorageInterface):
 
         return self._to_dto(space)
 
-    def update_space(self, space_id: str, update_fields: dict) -> SpaceDTO:
-        Space.objects.filter(space_id=space_id).update(**update_fields)
+    def update_space(self, space_id: str, field_properties: dict) -> SpaceDTO:
+        Space.objects.filter(space_id=space_id).update(**field_properties)
         space = Space.objects.get(space_id=space_id)
 
         return self._to_dto(space)

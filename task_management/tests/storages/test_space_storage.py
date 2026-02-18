@@ -103,7 +103,7 @@ class TestSpaceStorage:
 
         # Act
         result = storage.update_space(
-            space_id=space_id, update_fields={'name': name,
+            space_id=space_id, field_properties={'name': name,
                                               'description': description})
 
         # Assert

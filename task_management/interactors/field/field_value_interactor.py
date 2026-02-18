@@ -56,14 +56,17 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
 
         field_data = self.field_storage.get_field_by_id(field_id=field_id)
         config = field_data.config or {}
+        is_text_field = field_data.field_type == FieldTypes.TEXT
+        is_number_field = field_data.field_type == FieldTypes.NUMBER
+        is_dropdown_field = field_data.field_type == FieldTypes.DROPDOWN
 
-        if field_data.field_type == FieldTypes.TEXT:
+        if is_text_field:
             self._validate_text_field(value, config)
 
-        elif field_data.field_type == FieldTypes.NUMBER:
+        elif is_number_field:
             self._validate_number_field(value, config)
 
-        elif field_data.field_type == FieldTypes.DROPDOWN:
+        elif is_dropdown_field:
             self._validate_dropdown_field(value, config)
 
     @staticmethod

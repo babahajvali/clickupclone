@@ -25,7 +25,7 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_list(self, list_id: str, update_field_properties: dict) -> ListDTO:
+    def update_list(self, list_id: str, field_properties: dict) -> ListDTO:
         pass
 
     @abstractmethod

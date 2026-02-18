@@ -96,7 +96,7 @@ class TestViewStorage:
 
         # Act
         result = storage.update_view(view_id=view_id,
-                                     update_fields={"name": name,
+                                     field_properties={"name": name,
                                                     'description': description})
 
         # Assert

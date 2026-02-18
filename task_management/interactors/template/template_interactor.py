@@ -71,20 +71,20 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        fields_to_update = {}
+        field_properties_to_update = {}
 
         if is_name_provided:
             self._validate_template_name_not_empty(template_name=name)
-            fields_to_update["name"] = name
+            field_properties_to_update["name"] = name
 
         if is_description_provided:
-            fields_to_update["description"] = description
+            field_properties_to_update["description"] = description
 
-        if not fields_to_update:
+        if not field_properties_to_update:
             raise NothingToUpdateTemplateException(template_id=template_id)
 
         return self.template_storage.update_template(
-            template_id=template_id, update_fields=fields_to_update)
+            template_id=template_id, field_properties=field_properties_to_update)
 
     def _validate_user_access_for_list(self, list_id: str, user_id: str):
 
@@ -95,5 +95,6 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
     @staticmethod
     def _validate_template_name_not_empty(template_name: str):
-        if not template_name or not template_name.strip():
+        is_name_empty = not template_name or not template_name.strip()
+        if is_name_empty:
             raise EmptyNameException(name=template_name)
