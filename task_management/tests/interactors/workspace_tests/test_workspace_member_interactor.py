@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedRoleException
 )
 from task_management.exceptions.enums import  Role
-from task_management.interactors.workspace.workspace_member_interactors import (
+from task_management.interactors.workspace.workspace_member_interactor import (
     WorkspaceMemberInteractor
 )
 
@@ -64,7 +64,7 @@ class TestWorkspaceMemberInteractor:
         dto = AddMemberToWorkspaceDTOFactory()
         expected = WorkspaceMemberDTOFactory()
 
-        self.workspace_storage.get_workspace.return_value = (
+        self.workspace_storage.get_workspaces.return_value = (
             self._mock_active_workspace(owner_id=dto.added_by)
         )
         self.workspace_storage.get_workspace_member.return_value = type("WorkspaceMember", (), {'role': Role.MEMBER, 'is_active': True})()
@@ -79,7 +79,7 @@ class TestWorkspaceMemberInteractor:
         dto = AddMemberToWorkspaceDTOFactory()
         dto.role = type("Role", (), {"value": "INVALID"})()
 
-        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspaces.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace_member.return_value = None
 
@@ -91,7 +91,7 @@ class TestWorkspaceMemberInteractor:
     def test_add_member_permission_denied(self, snapshot):
         dto = AddMemberToWorkspaceDTOFactory()
 
-        self.workspace_storage.get_workspace.return_value = (
+        self.workspace_storage.get_workspaces.return_value = (
             self._mock_active_workspace(owner_id="someone_else")
         )
         self.user_storage.get_user_data.return_value = self._mock_active_user()
@@ -110,7 +110,7 @@ class TestWorkspaceMemberInteractor:
     def test_remove_member_success(self):
         expected = WorkspaceMemberDTOFactory()
 
-        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspaces.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.remove_member_from_workspace.return_value = expected
 
@@ -125,7 +125,7 @@ class TestWorkspaceMemberInteractor:
     def test_change_member_role_success(self):
         expected = WorkspaceMemberDTOFactory(role=Role.MEMBER)
 
-        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspaces.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.update_the_member_role.return_value = expected
 
@@ -141,7 +141,7 @@ class TestWorkspaceMemberInteractor:
         # snapshot.assert_match(repr(result), "change_role_success.txt")
 
     def test_change_member_role_invalid(self, snapshot):
-        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspaces.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
         with pytest.raises(UnexpectedRoleException) as exc:

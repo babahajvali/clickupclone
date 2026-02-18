@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import AccountValidationMixin, UserValidationMixin
 
 
-class Account(AccountValidationMixin, UserValidationMixin):
+class AccountInteractor(AccountValidationMixin, UserValidationMixin):
     """
     Account management class
     create account, update account, delete account, deactivate account, get accounts

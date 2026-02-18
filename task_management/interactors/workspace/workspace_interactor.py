@@ -3,7 +3,8 @@ from typing import Optional
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    NothingToUpdateWorkspaceException, EmptyNameException
+    NothingToUpdateWorkspaceException, EmptyNameException, \
+    InvalidWorkspaceIdsFoundException
 from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, AccountStorageInterface, \
@@ -12,8 +13,8 @@ from task_management.mixins import AccountValidationMixin, \
     WorkspaceValidationMixin, UserValidationMixin
 
 
-class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
-                UserValidationMixin):
+class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
+                          UserValidationMixin):
     """Workspace Management Business Logic Interactor.
     
     Handles all workspace-related operations including creation, updating, transferring,
@@ -90,7 +91,8 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
             workspace_id=workspace_id, update_fields=fields_to_update)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def delete_workspace(self, workspace_id: str, user_id: str) -> WorkspaceDTO:
+    def delete_workspace(self, workspace_id: str,
+                         user_id: str) -> WorkspaceDTO:
 
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_workspace_owner(
@@ -111,11 +113,12 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
         return self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
 
-    def get_workspace(self, workspace_id: str) -> WorkspaceDTO:
+    def get_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
+        self.check_workspace_ids(workspace_ids=workspace_ids)
 
-        return self.workspace_storage.get_workspace(workspace_id=workspace_id)
+        return self.workspace_storage.get_active_workspaces(
+            workspace_ids=workspace_ids)
 
     def get_active_account_workspaces(self, account_id: str) -> list[
         WorkspaceDTO]:
@@ -128,3 +131,16 @@ class Workspace(AccountValidationMixin, WorkspaceValidationMixin,
     def _validate_workspace_name_not_empty(workspace_name: str):
         if not workspace_name or not workspace_name.strip():
             raise EmptyNameException(name=workspace_name)
+
+    def check_workspace_ids(self, workspace_ids: list[str]):
+
+        workspaces_data = self.workspace_storage.get_workspaces(
+            workspace_ids=workspace_ids)
+
+        existed_workspace_ids = [obj.workspace_id for obj in workspaces_data]
+        invalid_workspace_ids = [workspace_id for workspace_id in workspace_ids
+                                 if workspace_id not in existed_workspace_ids]
+
+        if invalid_workspace_ids:
+            raise InvalidWorkspaceIdsFoundException(
+                workspace_ids=invalid_workspace_ids)

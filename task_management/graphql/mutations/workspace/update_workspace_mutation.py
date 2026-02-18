@@ -9,8 +9,8 @@ from task_management.graphql.types.response_types import \
     UpdateWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.dtos import UpdateWorkspaceDTO
-from task_management.interactors.workspace.workspace import \
-    Workspace
+from task_management.interactors.workspace.workspace_interactor import \
+    WorkspaceInteractor
 from task_management.storages import WorkspaceStorage, UserStorage, \
     AccountStorage
 
@@ -27,7 +27,7 @@ class UpdateWorkspaceMutation(graphene.Mutation):
         user_storage = UserStorage()
         account_storage = AccountStorage()
 
-        interactor = Workspace(
+        interactor = WorkspaceInteractor(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
             account_storage=account_storage,

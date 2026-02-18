@@ -155,6 +155,10 @@ class WorkspaceNotFoundException(Exception):
         self.workspace_id = workspace_id
 
 
+class InvalidWorkspaceIdsFoundException(Exception):
+    def __init__(self, workspace_ids: list[str]):
+        self.workspace_ids = workspace_ids
+
 class InactiveWorkspaceException(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id

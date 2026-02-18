@@ -4,8 +4,8 @@ from unittest.mock import create_autospec
 from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
 
-from task_management.interactors.workspace.workspace import (
-    Workspace
+from task_management.interactors.workspace.workspace_interactor import (
+    WorkspaceInteractor
 )
 from task_management.interactors.storage_interfaces.workspace_storage_interface import (
     WorkspaceStorageInterface
@@ -30,7 +30,7 @@ class TestWorkspaceInteractor:
         self.user_storage = create_autospec(UserStorageInterface)
         self.account_storage = create_autospec(AccountStorageInterface)
 
-        self.interactor = Workspace(
+        self.interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             account_storage=self.account_storage,
@@ -76,7 +76,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspace.return_value = \
+        self.workspace_storage.get_workspaces.return_value = \
             self._mock_active_workspace(update_data.user_id)
         self.workspace_storage.update_workspace.return_value = expected
 
@@ -92,7 +92,7 @@ class TestWorkspaceInteractor:
         update_data = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspace.return_value = None
+        self.workspace_storage.get_workspaces.return_value = None
 
         with pytest.raises(WorkspaceNotFoundException) as exc:
             self.interactor.update_workspace(update_data, user_id="user_id")
@@ -108,7 +108,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspace.return_value = \
+        self.workspace_storage.get_workspaces.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.delete_workspace.return_value = expected
 
@@ -126,7 +126,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspace.return_value = \
+        self.workspace_storage.get_workspaces.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.transfer_workspace.return_value = expected
 
@@ -147,7 +147,7 @@ class TestWorkspaceInteractor:
         new_user_id = "invalid-user"
 
         self.user_storage.get_user_data.side_effect = [None]
-        self.workspace_storage.get_workspace.return_value = \
+        self.workspace_storage.get_workspaces.return_value = \
             self._mock_active_workspace(user_id)
 
         with pytest.raises(UserNotFoundException) as exc:

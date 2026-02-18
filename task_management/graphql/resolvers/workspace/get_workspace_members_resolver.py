@@ -3,18 +3,18 @@ from task_management.graphql.types.types import WorkspaceUserType, \
 from task_management.models import WorkspaceMember
 
 
-
 def get_workspace_members_resolver(root, info, params):
     workspace_id = params.workspace_id
 
-    members = WorkspaceMember.objects.filter(workspace_id=workspace_id,is_active=True)
+    members = WorkspaceMember.objects.filter(workspace_id=workspace_id,
+                                             is_active=True)
 
-    result = [ WorkspaceUserType(
+    result = [WorkspaceUserType(
         id=each.pk,
         workspace_id=workspace_id,
         user_id=each.user.user_id,
         role=each.role,
-        gender = each.user.gender,
+        gender=each.user.gender,
         is_active=each.is_active,
         added_by=each.added_by.user_id,
         full_name=each.user.full_name,

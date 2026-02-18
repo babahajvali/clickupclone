@@ -7,8 +7,9 @@ from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface,UserStorageInterface
-from task_management.mixins import WorkspaceValidationMixin,UserValidationMixin
+    WorkspaceStorageInterface, UserStorageInterface
+from task_management.mixins import WorkspaceValidationMixin, \
+    UserValidationMixin
 
 
 class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
@@ -25,23 +26,14 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
 
-        is_existed_member = self.workspace_storage.get_workspace_member(
-            workspace_id=workspace_member_data.workspace_id,
-            user_id=workspace_member_data.user_id)
-        if is_existed_member:
-            if not is_existed_member.is_active:
-                is_existed_member = self.workspace_storage.re_add_member_to_workspace(
-                    workspace_member_data=workspace_member_data)
-            return is_existed_member
-
         self.validate_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
         self.validate_user_is_active(
             user_id=workspace_member_data.user_id)
-        self.validate_role(role=workspace_member_data.role.value)
         self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
+        self.validate_role(role=workspace_member_data.role.value)
 
         workspace_member = self.workspace_storage.add_member_to_workspace(
             workspace_member_data=workspace_member_data)
@@ -84,8 +76,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @interactor_cache(cache_name="user_workspaces", timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
-        return self.workspace_storage.get_user_workspaces(
-            user_id=user_id)
+        return self.workspace_storage.get_active_user_workspaces(user_id=user_id)
 
     @staticmethod
     def _get_permission_type_by_role(role: str) -> Permissions:

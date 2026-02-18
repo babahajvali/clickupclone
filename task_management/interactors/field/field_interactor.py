@@ -108,8 +108,8 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             update_field_data.config is not None,
             update_field_data.field_name is not None,
             update_field_data.description is not None,
-            update_field_data.is_required is not None
-])
+            update_field_data.is_required is not None ])
+
         if not is_field_property_provided:
             raise NothingToUpdateFieldException
 

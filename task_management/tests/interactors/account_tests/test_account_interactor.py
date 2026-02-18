@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec, Mock
 
-from task_management.interactors.account.account import Account
+from task_management.interactors.account.account_interactor import AccountInteractor
 from task_management.interactors.storage_interfaces.account_storage_interface import (
     AccountStorageInterface
 )
@@ -21,7 +21,7 @@ class TestAccountInteractor:
         self.account_storage = create_autospec(AccountStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
 
-        self.interactor = Account(
+        self.interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
         )

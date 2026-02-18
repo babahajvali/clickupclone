@@ -11,8 +11,8 @@ from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     AccountStorageInterface, ViewStorageInterface
-from task_management.interactors.workspace.workspace import \
-    Workspace
+from task_management.interactors.workspace.workspace_interactor import \
+    WorkspaceInteractor
 
 
 class WorkspaceHandler:
@@ -82,7 +82,7 @@ class WorkspaceHandler:
 
     def transfer_the_workspace(self, workspace_id: str, current_user_id: str,
                                new_user_id: str):
-        workspace_interactor = Workspace(
+        workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
             user_storage=self.user_storage
@@ -106,7 +106,7 @@ class WorkspaceHandler:
             workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)
 
     def delete_workspace_handle(self, workspace_id: str, user_id: str):
-        workspace_interactor = Workspace(
+        workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
             user_storage=self.user_storage

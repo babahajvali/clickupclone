@@ -6,8 +6,8 @@ from task_management.graphql.types.error_types import AccountNotFoundType, \
 from task_management.graphql.types.input_types import DeleteAccountInputParams
 from task_management.graphql.types.response_types import DeleteAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.account.account import \
-    Account
+from task_management.interactors.account.account_interactor import \
+    AccountInteractor
 from task_management.storages import UserStorage, AccountStorage
 
 
@@ -25,7 +25,7 @@ class DeleteAccountMutation(graphene.Mutation):
         user_storage = UserStorage()
         account_storage = AccountStorage()
 
-        interactor = Account(
+        interactor = AccountInteractor(
             user_storage=user_storage,
             account_storage=account_storage)
 

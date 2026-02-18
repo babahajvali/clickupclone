@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.db import transaction
 
-from task_management.interactors.account.account import Account
+from task_management.interactors.account.account_interactor import AccountInteractor
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
@@ -10,8 +10,8 @@ from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     ViewStorageInterface
 
-from task_management.interactors.workspace.workspace import \
-    Workspace
+from task_management.interactors.workspace.workspace_interactor import \
+    WorkspaceInteractor
 
 
 class AccountOnboardingHandler:
@@ -52,7 +52,7 @@ class AccountOnboardingHandler:
                         description: Optional[str]):
         """ First create the account interactor
         and the create account based on input data"""
-        account_interactor = Account(
+        account_interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
         )
@@ -78,7 +78,7 @@ class AccountOnboardingHandler:
             account_storage=self.account_storage,
             view_storage=self.view_storage
         )
-        workspace_interactor = Workspace(
+        workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
             user_storage=self.user_storage

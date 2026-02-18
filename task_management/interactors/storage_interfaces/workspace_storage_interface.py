@@ -41,6 +41,10 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_active_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
+        pass
+
+    @abstractmethod
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
         pass
@@ -73,7 +77,7 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
+    def get_active_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
         pass
 
     @abstractmethod
@@ -85,4 +89,8 @@ class WorkspaceStorageInterface(ABC):
     @abstractmethod
     def deactivate_workspace_members(self, member_ids: list[int]) -> list[
         WorkspaceMemberDTO]:
+        pass
+
+    @abstractmethod
+    def get_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
         pass

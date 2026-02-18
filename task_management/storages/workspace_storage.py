@@ -89,6 +89,13 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
 
+    def get_active_workspaces(self, workspace_ids: list[str]) -> list[
+        WorkspaceDTO]:
+        workspaces_data = Workspace.objects.filter(
+            workspace_id__in=workspace_ids, is_active=True)
+
+        return [self._workspace_dto(data=each) for each in workspaces_data]
+
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
         workspace = Workspace.objects.get(
@@ -146,7 +153,8 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return [self._workspace_member_dto(data=each) for each in
                 workspace_members]
 
-    def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
+    def get_active_user_workspaces(self, user_id: str) -> list[
+        WorkspaceMemberDTO]:
 
         user_workspaces = WorkspaceMember.objects.filter(
             user_id=user_id, is_active=True).distinct()
@@ -178,3 +186,10 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         return [self._workspace_member_dto(data=each) for each in
                 workspace_members]
+
+    def get_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
+
+        workspaces_data = Workspace.objects.filter(
+            workspace_id__in=workspace_ids)
+
+        return [self._workspace_dto(data=each) for each in workspaces_data]
