@@ -53,13 +53,17 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
 
         self.create_field_input_validation(field_data=field_data)
+        self.check_template_exists(template_id=field_data.template_id)
+        self.check_field_name_not_exist_in_template(
+            field_name=field_data.field_name,
+            template_id=field_data.template_id)
         self.check_user_has_edit_access_to_template(
             template_id=field_data.template_id,
             user_id=field_data.created_by_user_id)
 
         last_field_order_in_template = (
             self.field_storage.get_active_last_field_order_in_template(
-            template_id=field_data.template_id))
+                template_id=field_data.template_id))
 
         return self.field_storage.create_field(
             create_field_data=field_data, order=last_field_order_in_template)
@@ -69,7 +73,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
                      user_id: str) -> FieldDTO:
 
         self.check_field_is_active(field_id=update_field_data.field_id)
-        field_data = self.field_storage.get_field_by_id(
+        field_data = self.field_storage.get_active_field_by_id(
             field_id=update_field_data.field_id)
         self.update_field_properties_validation(
             update_field_data=update_field_data, field_data=field_data)
@@ -98,7 +102,7 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
 
         self.check_field_is_active(field_id=field_id)
-        field_data = self.field_storage.get_field_by_id(
+        field_data = self.field_storage.get_active_field_by_id(
             field_id=field_id)
         self.check_user_has_edit_access_to_template(
             template_id=field_data.template_id, user_id=user_id)
@@ -114,11 +118,11 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         return self.field_storage.get_active_fields_for_template(
             template_id=template_id)
 
-    def get_field(self, field_id: str) -> FieldDTO:
+    def get_active_field(self, field_id: str) -> FieldDTO:
 
         self.check_field_is_active(field_id=field_id)
 
-        return self.field_storage.get_field_by_id(field_id=field_id)
+        return self.field_storage.get_active_field_by_id(field_id=field_id)
 
     def check_user_has_edit_access_to_template(self, template_id: str,
                                                user_id: str):
@@ -133,18 +137,16 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
 
     def create_field_input_validation(self, field_data: CreateFieldDTO):
 
-        self.check_template_exists(template_id=field_data.template_id)
-        self.check_field_name_not_empty(
-            field_name=field_data.field_name)
-        self.check_field_name_not_exist_in_template(
-            field_name=field_data.field_name,
-            template_id=field_data.template_id)
+        self.check_field_name_not_empty(field_name=field_data.field_name)
         self.check_field_type(field_type=field_data.field_type.value)
         self.check_config(config=field_data.config,
                           field_type=field_data.field_type)
 
     def update_field_properties_validation(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
+
+        if not self._has_any_update(update_field_data=update_field_data):
+            raise NothingToUpdateFieldException(field_id=field_data.field_id)
 
         is_field_name_provided = update_field_data.field_name is not None
         if is_field_name_provided:
@@ -159,9 +161,6 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         if is_config_provided:
             self.check_field_config(field_type=field_data.field_type,
                                     config=update_field_data.config)
-
-        if not self._has_any_update(update_field_data=update_field_data):
-            raise NothingToUpdateFieldException(field_id=field_data.field_id)
 
     @staticmethod
     def _has_any_update(update_field_data: UpdateFieldDTO) -> bool:

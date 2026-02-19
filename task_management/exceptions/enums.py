@@ -1,7 +1,7 @@
 from enum import Enum
 
-
-class FieldTypes(Enum):
+#Rename as singular
+class FieldType(Enum):
     DROPDOWN = "DROPDOWN"
     TEXT = "TEXT"
     NUMBER = "NUMBER"
@@ -16,6 +16,10 @@ class FieldTypes(Enum):
     @classmethod
     def get_values(cls):
         return [member.value for member in cls]
+
+    @classmethod
+    def mandatory_config_field_type(cls) -> list[str]:
+        return [cls.DROPDOWN.value]
 
 
 class Role(Enum):
@@ -91,7 +95,7 @@ class Gender(Enum):
         return [member.value for member in cls]
 
 
-class FieldConfigs(Enum):
+class FieldConfig(Enum):
     DEFAULT = "default"
     MAX = "max"
     MIN = "min"

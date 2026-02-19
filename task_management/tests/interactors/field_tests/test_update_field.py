@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypes, Role
+from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import (
     FieldDTO,
     WorkspaceMemberDTO,
@@ -56,7 +56,7 @@ class TestUpdateFieldInteractor:
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
@@ -83,7 +83,7 @@ class TestUpdateFieldInteractor:
         field_storage.is_field_exists.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
         field_storage.update_field.return_value = self._get_field_dto()
-        field_storage.get_field_by_id.return_value = self._get_field_dto()
+        field_storage.get_active_field_by_id.return_value = self._get_field_dto()
 
         if template_exists:
             template_storage.get_template_by_id.return_value = DummyTemplate(

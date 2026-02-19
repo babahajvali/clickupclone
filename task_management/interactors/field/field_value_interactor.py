@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     InvalidFieldValueException
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
 from task_management.interactors.storage_interfaces import \
@@ -52,24 +52,20 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
         return self.field_storage.create_bulk_field_values(
             create_bulk_field_values=[create_field_value])[0]
 
-
-
     def _validate_field_value(self, field_id: str, value: str):
-
-        field_data = self.field_storage.get_field_by_id(field_id=field_id)
+        field_data = self.field_storage.get_active_field_by_id(
+            field_id=field_id)
         config = field_data.config or {}
-        is_text_field = field_data.field_type == FieldTypes.TEXT
-        is_number_field = field_data.field_type == FieldTypes.NUMBER
-        is_dropdown_field = field_data.field_type == FieldTypes.DROPDOWN
 
-        if is_text_field:
-            self._validate_text_field(value, config)
+        validation_handlers = {
+            FieldType.TEXT: self._validate_text_field,
+            FieldType.NUMBER: self._validate_number_field,
+            FieldType.DROPDOWN: self._validate_dropdown_field,
+        }
 
-        elif is_number_field:
-            self._validate_number_field(value, config)
-
-        elif is_dropdown_field:
-            self._validate_dropdown_field(value, config)
+        handler = validation_handlers.get(field_data.field_type)
+        if handler:
+            handler(value=value, config=config)
 
     @staticmethod
     def _validate_text_field(value: str, config: dict):

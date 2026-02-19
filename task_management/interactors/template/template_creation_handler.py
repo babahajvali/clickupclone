@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from task_management.constants.field_constants import FIXED_FIELDS
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateTemplateDTO, CreateFieldDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, FieldStorageInterface, \
@@ -44,7 +44,7 @@ class TemplateCreationHandler:
         fixed_fields = []
         for field in FIXED_FIELDS:
             create_field_dto = CreateFieldDTO(
-                field_type=FieldTypes(field["field_type"]),
+                field_type=FieldType(field["field_type"]),
                 field_name=field["field_name"],
                 description=field.get("description", ""),
                 template_id=template_id,

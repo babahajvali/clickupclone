@@ -9,7 +9,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNameAlreadyExistsException,
     ModificationNotAllowedException,
 )
-from task_management.exceptions.enums import FieldTypes, Role
+from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.field.field_interactor import (
     FieldInteractor
 )
@@ -55,7 +55,7 @@ class TestCreateFieldInteractor:
     def _get_field_dto():
         return FieldDTO(
             field_id="field_1",
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
@@ -111,7 +111,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor()
 
         dto = CreateFieldDTO(
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="Task priority",
             template_id="tpl_1",
@@ -131,7 +131,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor(template_exists=False)
 
         dto = CreateFieldDTO(
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="invalid_tpl",
@@ -176,7 +176,7 @@ class TestCreateFieldInteractor:
         )
 
         dto = CreateFieldDTO(
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",
@@ -197,7 +197,7 @@ class TestCreateFieldInteractor:
         interactor = self._get_interactor(name_exists=True)
 
         dto = CreateFieldDTO(
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             field_name="Priority",
             description="",
             template_id="tpl_1",

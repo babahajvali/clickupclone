@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import F
 
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO, UpdateFieldValueDTO, TaskFieldValueDTO, TaskFieldValuesDTO, \
     FieldValueDTO, CreateFieldValueDTO
@@ -19,7 +19,7 @@ class FieldStorage(FieldStorageInterface):
             field_id=field_data.field_id,
             field_name=field_data.field_name,
             description=field_data.description,
-            field_type=FieldTypes(field_data.field_type),
+            field_type=FieldType(field_data.field_type),
             template_id=field_data.template_id,
             is_active=field_data.is_active,
             order=field_data.order,
@@ -47,9 +47,9 @@ class FieldStorage(FieldStorageInterface):
         return Field.objects.filter(field_name=field_name,
                                     template_id=template_id).exists()
 
-    def get_field_by_id(self, field_id: str) -> FieldDTO | None:
+    def get_active_field_by_id(self, field_id: str) -> FieldDTO | None:
         try:
-            field_data = Field.objects.get(field_id=field_id)
+            field_data = Field.objects.get(field_id=field_id, is_active=True)
             return self._field_dto(field_data=field_data)
         except ObjectDoesNotExist:
             return None

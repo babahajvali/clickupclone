@@ -3,7 +3,7 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from task_management.exceptions.enums import Gender, ViewTypes, FieldTypes
+from task_management.exceptions.enums import Gender, ViewTypes, FieldType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
     Task, Template, View, ListView, TaskAssignee, Field, FieldValue,
@@ -168,7 +168,7 @@ class FieldFactory(DjangoModelFactory):
     field_id = factory.LazyFunction(uuid.uuid4)
     field_name = factory.Faker("word")
     description = factory.Faker("sentence")
-    field_type = FieldTypes.TEXT.value
+    field_type = FieldType.TEXT.value
     template = factory.SubFactory(TemplateFactory)
     order = factory.Sequence(lambda n: n + 1)
     config = {}

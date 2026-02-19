@@ -2,7 +2,7 @@ import pytest
 from factory.random import reseed_random
 from freezegun import freeze_time
 
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, UpdateFieldDTO
 from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldFactory, \
@@ -31,7 +31,7 @@ class TestFieldStorage:
         create_field_data = CreateFieldDTO(
             field_name="Test Field",
             description="Test description",
-            field_type=FieldTypes.TEXT,
+            field_type=FieldType.TEXT,
             template_id=str(template_id),
             config={},
             is_required=False,
@@ -64,7 +64,7 @@ class TestFieldStorage:
         create_field_data = CreateFieldDTO(
             field_name="New Field",
             description="New field description",
-            field_type=FieldTypes.NUMBER,
+            field_type=FieldType.NUMBER,
             template_id=str(template_id),
             config={},
             is_required=True,
@@ -136,7 +136,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field_by_id(field_id=str(field_id))
+        result = storage.get_active_field_by_id(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_success.txt")
@@ -148,7 +148,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field_by_id(field_id=str(field_id))
+        result = storage.get_active_field_by_id(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_failure.txt")

@@ -1,34 +1,38 @@
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType, FieldConfig
 
-FIELD_TYPE_RULES = {
-    FieldTypes.TEXT.value: {
-        "config_keys": {"max_length", "default"},
+FIELD_TYPE_KEYS = {
+    FieldType.TEXT.value: {
+        FieldConfig.CONFIG_KEYS.value: {FieldConfig.MAX_LENGTH.value,
+                                        FieldConfig.DEFAULT.value},
     },
-    FieldTypes.NUMBER.value: {
-        "config_keys": {"min", "max", "default"},
+    FieldType.NUMBER.value: {
+        FieldConfig.CONFIG_KEYS.value: {
+            FieldConfig.MIN.value, FieldConfig.MAX.value,
+            FieldConfig.DEFAULT.value},
     },
-    FieldTypes.DROPDOWN.value: {
-        "config_keys": {"options", "default"},
+    FieldType.DROPDOWN.value: {
+        FieldConfig.CONFIG_KEYS.value: {FieldConfig.OPTIONS.value,
+                                        FieldConfig.DEFAULT.value},
     },
 }
 
 FIXED_FIELDS = [
     {
-        "field_type": FieldTypes.DATE.value,
+        "field_type": FieldType.DATE.value,
         "field_name": "Due Date",
         "description": "Due date for complete task",
     },
     {
-        "field_type": FieldTypes.DROPDOWN.value,
+        "field_type": FieldType.DROPDOWN.value,
         "field_name": "Priority",
         "description": "Priority for complete task",
         "config": {
-            "options": ["Low", "Medium", "High","Urgent"],
+            "options": ["Low", "Medium", "High", "Urgent"],
             "default": "Medium"
         }
     },
     {
-        "field_type": FieldTypes.DROPDOWN.value,
+        "field_type": FieldType.DROPDOWN.value,
         "field_name": "Status",
         "description": "Status for complete task",
         "config": {

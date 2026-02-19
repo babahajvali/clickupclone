@@ -2,7 +2,7 @@ import uuid
 
 from django.db import models
 
-from task_management.exceptions.enums import FieldTypes
+from task_management.exceptions.enums import FieldType
 
 
 class Field(models.Model):
@@ -12,14 +12,14 @@ class Field(models.Model):
     is_active = models.BooleanField(default=True)
     description = models.TextField(null=True, blank=True)
     field_type = models.CharField(max_length=50,
-                                  choices=FieldTypes.get_list_of_tuples())
+                                  choices=FieldType.get_list_of_tuples())
     template = models.ForeignKey(
         'Template',
         on_delete=models.CASCADE,
         related_name='field'
     )
     order = models.PositiveIntegerField()
-    config = models.JSONField(default=dict, blank=True)
+    config = models.JSONField(default=dict, blank=True, null=True)
     is_required = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         'User',

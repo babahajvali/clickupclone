@@ -66,13 +66,16 @@ class InvalidFieldConfigException(Exception):
         super().__init__(self.message)
 
 
+class DropdownOptionsMissingException(Exception):
+    def __init__(self, field_type: str):
+        self.field_type = field_type
+
+
 class InvalidFieldDefaultValueException(Exception):
     def __init__(
-            self,
-            field_type: str,
-            default_value=None,
-            message: str | None = None
-    ):
+            self, field_type: str, default_value=None,
+            message: str | None = None):
+
         self.field_type = field_type
         self.default_value = default_value
 
@@ -102,13 +105,16 @@ class UserListPermissionNotFoundException(Exception):
         self.user_id = user_id
         self.list_id = list_id
 
+
 class InactiveUserListPermissionException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
+
 class UserHaveAlreadyListPermissionException(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
+
 
 class TaskNotFoundException(Exception):
     def __init__(self, task_id: str):
