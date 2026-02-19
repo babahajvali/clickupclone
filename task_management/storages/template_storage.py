@@ -15,7 +15,7 @@ class TemplateStorage(TemplateStorageInterface):
             name=data.name,
             description=data.description,
             list_id=data.list.list_id,
-            created_by=data.list.created_by.user_id,
+            created_by=data.list.created_by_user_id.user_id,
         )
 
     def get_template_by_id(self, template_id: str) -> TemplateDTO:

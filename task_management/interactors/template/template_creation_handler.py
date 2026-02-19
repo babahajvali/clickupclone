@@ -50,7 +50,7 @@ class TemplateCreationHandler:
                 template_id=template_id,
                 config=field.get("config", {}),
                 is_required=field.get("is_required", False),
-                created_by=user_id
+                created_by_user_id=user_id
             )
             fixed_fields.append(create_field_dto)
         self.field_storage.create_bulk_fields(fields_data=fixed_fields)

@@ -89,3 +89,12 @@ class Gender(Enum):
     @classmethod
     def get_values(cls):
         return [member.value for member in cls]
+
+
+class FieldConfigs(Enum):
+    DEFAULT = "default"
+    MAX = "max"
+    MIN = "min"
+    OPTIONS = "options"
+    CONFIG_KEYS = "config_keys"
+    MAX_LENGTH = "max_length"

@@ -117,7 +117,7 @@ class TestCreateFieldInteractor:
             template_id="tpl_1",
             config={"max_length": 10},
             is_required=True,
-            created_by="user_1",
+            created_by_user_id="user_1",
         )
 
         result = interactor.create_field(dto)
@@ -137,7 +137,7 @@ class TestCreateFieldInteractor:
             template_id="invalid_tpl",
             config={},
             is_required=False,
-            created_by="user_1",
+            created_by_user_id="user_1",
         )
 
         with pytest.raises(TemplateNotFoundException) as exc:
@@ -159,7 +159,7 @@ class TestCreateFieldInteractor:
             template_id="tpl_1",
             config={},
             is_required=False,
-            created_by="user_1",
+            created_by_user_id="user_1",
         )
 
         with pytest.raises(UnsupportedFieldTypeException) as exc:
@@ -182,7 +182,7 @@ class TestCreateFieldInteractor:
             template_id="tpl_1",
             config={},
             is_required=False,
-            created_by="user_1",
+            created_by_user_id="user_1",
         )
 
         with pytest.raises(ModificationNotAllowedException) as exc:
@@ -203,7 +203,7 @@ class TestCreateFieldInteractor:
             template_id="tpl_1",
             config={},
             is_required=False,
-            created_by="user_1",
+            created_by_user_id="user_1",
         )
 
         with pytest.raises(FieldNameAlreadyExistsException) as exc:

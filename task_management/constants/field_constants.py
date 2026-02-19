@@ -10,15 +10,6 @@ FIELD_TYPE_RULES = {
     FieldTypes.DROPDOWN.value: {
         "config_keys": {"options", "default"},
     },
-    FieldTypes.DATE.value: {
-        "config_keys": set("default"),
-    },
-    FieldTypes.CHECKBOX.value: {
-        "config_keys": set("default"),
-    },
-    FieldTypes.EMAIL.value: {
-        "config_keys": set("default"),
-    },
 }
 
 FIXED_FIELDS = [

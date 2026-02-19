@@ -34,7 +34,7 @@ def get_space_lists_resolver(root, info, params):
                 is_active=list_item.is_active,
                 order=list_item.order,
                 is_private=list_item.is_private,
-                created_by=list_item.created_by,
+                created_by=list_item.created_by_user_id,
                 folder_id=list_item.folder_id if list_item.folder_id else None
             ) for list_item in lists_data
         ]

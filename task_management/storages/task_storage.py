@@ -180,7 +180,7 @@ class TaskStorage(TaskStorageInterface):
                 description=assignee.task.description,
                 list_id=str(assignee.task.list.list_id),
                 order=assignee.task.order,
-                created_by=str(assignee.task.created_by.user_id),
+                created_by=str(assignee.task.created_by_user_id.user_id),
                 is_deleted=assignee.task.is_deleted
             ))
 

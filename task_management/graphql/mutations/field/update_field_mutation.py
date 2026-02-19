@@ -35,10 +35,10 @@ class UpdateFieldMutation(graphene.Mutation):
         try:
             update_field_data = UpdateFieldDTO(
                 field_id=params.field_id,
-                description=params.description if params.description else None,
-                field_name=params.field_name if params.field_name else None,
-                config=params.config if params.config else None,
-                is_required=params.is_required if params.is_required is not None else None
+                description=params.description,
+                field_name=params.field_name,
+                config=params.config,
+                is_required=params.is_required
             )
 
             result = interactor.update_field(

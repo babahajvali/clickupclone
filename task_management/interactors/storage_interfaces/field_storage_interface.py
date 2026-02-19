@@ -8,7 +8,8 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
 class FieldStorageInterface(ABC):
 
     @abstractmethod
-    def create_field(self, create_field_data: CreateFieldDTO) -> FieldDTO:
+    def create_field(self, create_field_data: CreateFieldDTO,
+                     order: int) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -84,4 +85,8 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
+        pass
+
+    @abstractmethod
+    def get_active_last_field_order_in_template(self, template_id: str) -> int:
         pass

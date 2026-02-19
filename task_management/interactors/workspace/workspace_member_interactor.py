@@ -29,7 +29,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
         self.validate_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
-        self.validate_user_is_active(
+        self.check_user_is_active(
             user_id=workspace_member_data.user_id)
         self.validate_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
@@ -64,7 +64,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
                            changed_by: str) -> WorkspaceMemberDTO:
 
         self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_is_active(user_id=user_id)
+        self.check_user_is_active(user_id=user_id)
         self._validate_workspace_member_is_active(
             workspace_id=workspace_id, user_id=user_id)
         self.validate_user_permission_for_change_workspace_role(
@@ -79,7 +79,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     @interactor_cache(cache_name="user_workspaces", timeout=5 * 60)
     def get_user_workspaces(self, user_id: str) -> list[WorkspaceMemberDTO]:
 
-        self.validate_user_is_active(user_id=user_id)
+        self.check_user_is_active(user_id=user_id)
 
         return self.workspace_storage.get_active_user_workspaces(
             user_id=user_id)

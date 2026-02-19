@@ -43,20 +43,20 @@ class CreateUserDTO:
 
 @dataclass
 class CreateFieldDTO:
-    field_type: FieldTypes
+    template_id: str
     field_name: str
     description: str
-    template_id: str
+    field_type: FieldTypes
     config: Optional[dict]
     is_required: bool
-    created_by: str
+    created_by_user_id: str
 
 
 @dataclass
 class UpdateFieldDTO:
     field_id: str
-    description: Optional[str]
     field_name: Optional[str]
+    description: Optional[str]
     config: Optional[dict]
     is_required: Optional[bool]
 

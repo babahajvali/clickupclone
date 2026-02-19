@@ -10,7 +10,7 @@ class UserValidationMixin:
         self.user_storage = user_storage
         super().__init__(**kwargs)
 
-    def validate_user_is_active(self, user_id: str):
+    def check_user_is_active(self, user_id: str):
 
         user_data = self.user_storage.get_user_data(user_id=user_id)
 

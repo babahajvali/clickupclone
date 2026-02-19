@@ -43,11 +43,11 @@ class CreateFieldMutation(graphene.Mutation):
                 template_id=params.template_id,
                 config=params.config,
                 is_required=params.is_required,
-                created_by=info.context.user_id
+                created_by_user_id=info.context.user_id
             )
 
             result = interactor.create_field(
-                create_field_data=create_field_data)
+                field_data=create_field_data)
 
             return FieldType(
                 field_id=result.field_id,

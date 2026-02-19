@@ -43,7 +43,7 @@ class ReorderSpaceMutation(graphene.Mutation):
                 order=result.order,
                 is_active=result.is_active,
                 is_private=result.is_private,
-                created_by=result.created_by
+                created_by=result.created_by_user_id
             )
 
         except custom_exceptions.WorkspaceNotFoundException as e:

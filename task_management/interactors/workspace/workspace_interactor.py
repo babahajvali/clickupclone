@@ -56,8 +56,8 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
     def create_workspace(self, workspace_data: CreateWorkspaceDTO) \
             -> WorkspaceDTO:
 
-        self.validate_account_is_active(workspace_data.account_id)
-        self.validate_user_is_account_owner(
+        self.check_account_is_active(workspace_data.account_id)
+        self.check_user_is_account_owner(
             workspace_data.user_id,
             account_id=workspace_data.account_id)
         self._validate_workspace_name_not_empty(
@@ -108,7 +108,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
         self.validate_workspace_is_active(workspace_id=workspace_id)
         self.validate_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)
-        self.validate_user_is_active(user_id=new_user_id)
+        self.check_user_is_active(user_id=new_user_id)
 
         return self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
@@ -122,7 +122,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
 
     def get_active_account_workspaces(self, account_id: str) -> list[
         WorkspaceDTO]:
-        self.validate_account_is_active(account_id=account_id)
+        self.check_account_is_active(account_id=account_id)
 
         return self.workspace_storage.get_active_account_workspaces(
             account_id=account_id)

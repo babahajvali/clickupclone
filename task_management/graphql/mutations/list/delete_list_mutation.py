@@ -46,7 +46,7 @@ class DeleteListMutation(graphene.Mutation):
                 is_active=result.is_active,
                 order=result.order,
                 is_private=result.is_private,
-                created_by=result.created_by,
+                created_by=result.created_by_user_id,
                 folder_id=result.folder_id if result.folder_id else None
             )
 

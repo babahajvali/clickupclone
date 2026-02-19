@@ -27,30 +27,32 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
                              user_id: str) -> TaskFieldValueDTO:
 
         self.validate_task_is_active(task_id=set_value_data.task_id)
-        self.validate_field_is_active(field_id=set_value_data.field_id)
+        self.check_field_is_active(field_id=set_value_data.field_id)
+        is_task_field_value_exists = self.field_storage.get_task_field_value(
+            task_id=set_value_data.task_id, field_id=set_value_data.field_id)
+
+
         self._validate_field_value(field_id=set_value_data.field_id,
                                    value=set_value_data.value)
-
         workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=set_value_data.field_id)
         self.validate_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-        is_task_field_value_exists = self.field_storage.get_task_field_value(
-            task_id=set_value_data.task_id, field_id=set_value_data.field_id)
+        if is_task_field_value_exists:
+            return self.field_storage.set_task_field_value(
+                field_value_data=set_value_data)
 
-        if not is_task_field_value_exists:
-            create_field_value = CreateFieldValueDTO(
-                task_id=set_value_data.task_id,
-                field_id=set_value_data.field_id,
-                value=set_value_data.value,
-                created_by=user_id
-            )
-            return self.field_storage.create_bulk_field_values(
-                create_bulk_field_values=[create_field_value])[0]
+        create_field_value = CreateFieldValueDTO(
+            task_id=set_value_data.task_id,
+            field_id=set_value_data.field_id,
+            value=set_value_data.value,
+            created_by=user_id
+        )
+        return self.field_storage.create_bulk_field_values(
+            create_bulk_field_values=[create_field_value])[0]
 
-        return self.field_storage.set_task_field_value(
-            field_value_data=set_value_data)
+
 
     def _validate_field_value(self, field_id: str, value: str):
 

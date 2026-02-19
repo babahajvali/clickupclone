@@ -35,7 +35,7 @@ class TestFieldStorage:
             template_id=str(template_id),
             config={},
             is_required=False,
-            created_by=str(user_id)
+            created_by_user_id=str(user_id)
         )
         storage = FieldStorage()
 
@@ -68,7 +68,7 @@ class TestFieldStorage:
             template_id=str(template_id),
             config={},
             is_required=True,
-            created_by=str(user_id)
+            created_by_user_id=str(user_id)
         )
         storage = FieldStorage()
 

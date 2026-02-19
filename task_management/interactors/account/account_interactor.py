@@ -1,9 +1,5 @@
 from typing import Optional
 
-from django.core.exceptions import ObjectDoesNotExist
-
-from task_management.exceptions.custom_exceptions import \
-    AccountNameAlreadyExistsException
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface, UserStorageInterface
@@ -49,9 +45,9 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
             AccountNameAlreadyExistsException: If the account name is already taken.
         """
 
-        self.validate_user_is_active(user_id=created_by)
-        self._check_account_name_is_not_empty(account_name=name)
-        self._check_account_name_in_db(account_name=name)
+        self.check_user_is_active(user_id=created_by)
+        self.check_account_name_is_not_empty(account_name=name)
+        self.check_account_name_in_db(account_name=name)
 
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)
@@ -71,25 +67,12 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
             3.description: account description optional
         """
 
-        self.validate_account_is_active(account_id=account_id)
-        self.validate_user_is_account_owner(
+        self.check_account_is_active(account_id=account_id)
+        field_properties_to_update = self.check_update_account_field_properties(
+            account_id=account_id, name=name, description=description)
+
+        self.check_user_is_account_owner(
             user_id=user_id, account_id=account_id)
-
-        is_name_provided = name is not None
-        is_description_provided = description is not None
-
-        field_properties_to_update = {}
-        if is_name_provided:
-            self._check_account_name_in_db_except_current_account(
-                account_id=account_id, name=name)
-            field_properties_to_update['name'] = name
-        if is_description_provided:
-            field_properties_to_update['description'] = description
-
-        if not field_properties_to_update:
-            from task_management.exceptions.custom_exceptions import \
-                NothingToUpdateAccountException
-            raise NothingToUpdateAccountException(account_id=account_id)
 
         return self.account_storage.update_account(
             account_id=account_id, field_properties=field_properties_to_update)
@@ -111,9 +94,8 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
             3.InactiveAccountException: If the account is not active.
             """
 
-        self.validate_account_is_active(account_id=account_id)
-
-        self.validate_user_is_account_owner(
+        self.check_account_is_active(account_id=account_id)
+        self.check_user_is_account_owner(
             account_id=account_id, user_id=deleted_by)
 
         return self.account_storage.delete_account(account_id=account_id)
@@ -135,9 +117,9 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
                 3.InactiveAccountException: If the account is not active.
         """
 
-        self.validate_account_is_active(account_id=account_id)
-        self.validate_user_is_account_owner(account_id=account_id,
-                                            user_id=deactivated_by)
+        self.check_account_is_active(account_id=account_id)
+        self.check_user_is_account_owner(account_id=account_id,
+                                         user_id=deactivated_by)
 
         return self.account_storage.deactivate_account(account_id=account_id)
 
@@ -151,54 +133,30 @@ class AccountInteractor(AccountValidationMixin, UserValidationMixin):
         Exceptions:
             InvalidAccountIdsFoundException: If the account does not exist.
             """
-        self._check_account_ids(account_ids=account_ids)
+        self.check_account_ids(account_ids=account_ids)
 
         return self.account_storage.get_accounts(account_ids=account_ids)
 
     # Helping functions
 
-    def _check_account_name_in_db(self, account_name: str):
-        try:
-            account_data = self.account_storage.get_account_by_name(
-                account_name=account_name
-            )
-        except ObjectDoesNotExist:
-            pass
-        else:
-            if account_data:
-                raise AccountNameAlreadyExistsException(name=account_name)
+    def check_update_account_field_properties(
+            self, account_id: str, name: Optional[str],
+            description: Optional[str]) -> dict:
 
-    def _check_account_name_in_db_except_current_account(self, name: str,
-                                                         account_id: str):
-        try:
-            account_data = self.account_storage.get_account_by_name(
-                account_name=name)
-        except ObjectDoesNotExist:
-            pass
-        else:
-            is_different_account = str(account_data) != str(account_id)
-            if is_different_account:
-                raise AccountNameAlreadyExistsException(name=name)
+        field_properties_to_update = {}
+        is_name_provided = name is not None
+        if is_name_provided:
+            self.check_account_name_in_db_except_current_account(
+                account_id=account_id, name=name)
+            field_properties_to_update['name'] = name
 
-    def _check_account_ids(self, account_ids: list[str]):
-        accounts_data = self.account_storage.get_accounts(
-            account_ids=account_ids)
+        is_description_provided = description is not None
+        if is_description_provided:
+            field_properties_to_update['description'] = description
 
-        existed_account_ids = [str(obj.account_id) for obj in accounts_data]
-        invalid_account_ids = [account_id for account_id in account_ids if
-                               account_id not in existed_account_ids]
-
-        if invalid_account_ids:
+        if not field_properties_to_update:
             from task_management.exceptions.custom_exceptions import \
-                InvalidAccountIdsException
-            raise InvalidAccountIdsException(
-                account_ids=invalid_account_ids)
+                NothingToUpdateAccountException
+            raise NothingToUpdateAccountException(account_id=account_id)
 
-    @staticmethod
-    def _check_account_name_is_not_empty(account_name: str):
-        is_name_empty =  not account_name or not account_name.strip()
-
-        if is_name_empty:
-            from task_management.exceptions.custom_exceptions import \
-                EmptyNameException
-            raise EmptyNameException(name=account_name)
+        return field_properties_to_update
