@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOrderException, \
-    EmptyNameException, NothingToUpdateListException, \
+    NothingToUpdateListException, \
     UnsupportedVisibilityTypeException, UserHaveAlreadyListPermissionException
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
@@ -35,7 +35,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     @invalidate_interactor_cache(cache_name="folder_lists")
     def create_list(self, list_data: CreateListDTO) -> ListDTO:
 
-        self._check_list_name_not_empty(list_name=list_data.name)
+        self.check_list_name_not_empty(list_name=list_data.name)
         if list_data.folder_id:
             self.validate_folder_is_active(folder_id=list_data.folder_id)
 
@@ -50,24 +50,13 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     def update_list(self, list_id: str, user_id: str, name: Optional[str],
                     description: Optional[str]) -> ListDTO:
 
+        field_properties_to_update = self._check_update_field_properties(
+            list_id=list_id, name=name, description=description)
+
         self.validate_list_is_active(list_id=list_id)
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-
-        is_name_provided = name is not None
-        is_description_provided = description is not None
-        field_properties_to_update = {}
-
-        if is_name_provided:
-            self._check_list_name_not_empty(list_name=name)
-            field_properties_to_update['name'] = name
-
-        if is_description_provided:
-            field_properties_to_update['description'] = description
-
-        if not field_properties_to_update:
-            raise NothingToUpdateListException(list_id=list_id)
 
         return self.list_storage.update_list(
             list_id=list_id, field_properties=field_properties_to_update)
@@ -75,7 +64,7 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
                                user_id: str) -> ListDTO:
-
+        self._validate_list_order_in_folder(folder_id=folder_id, order=order)
         self.validate_list_is_active(list_id=list_id)
         self.validate_folder_is_active(folder_id=folder_id)
 
@@ -83,7 +72,6 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
         self.validate_space_is_active(space_id=space_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-        self._validate_list_order_in_folder(folder_id=folder_id, order=order)
 
         return self.list_storage.reorder_list_in_folder(
             folder_id=folder_id, list_id=list_id, order=order)
@@ -91,12 +79,11 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     @invalidate_interactor_cache(cache_name="space_lists")
     def reorder_list_in_space(self, list_id: str, space_id: str, order: int,
                               user_id: str) -> ListDTO:
-
+        self._validate_list_order_in_space(space_id=space_id, order=order)
         self.validate_list_is_active(list_id=list_id)
         self.validate_space_is_active(space_id=space_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-        self._validate_list_order_in_space(space_id=space_id, order=order)
 
         return self.list_storage.reorder_list_in_space(
             space_id=space_id, list_id=list_id, order=order)
@@ -117,11 +104,12 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
     def set_list_visibility(self, list_id: str, visibility: Visibility,
                             user_id: str) -> ListDTO:
 
+        self._check_visibility_type(visibility=visibility.value)
+
         self.validate_list_is_active(list_id=list_id)
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
-        self._check_visibility_type(visibility=visibility.value)
 
         if visibility == Visibility.PUBLIC:
             return self.list_storage.make_list_public(list_id=list_id)
@@ -193,13 +181,6 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
-    def _check_list_name_not_empty(list_name: str):
-        is_name_empty = not list_name or not list_name.strip()
-
-        if is_name_empty:
-            raise EmptyNameException(name=list_name)
-
-    @staticmethod
     def _check_visibility_type(visibility: str):
         existed_visibilities = Visibility.get_values()
         is_visibility_invalid = visibility not in existed_visibilities
@@ -218,3 +199,22 @@ class ListInteractor(ListValidationMixin, SpaceValidationMixin,
             is_user_permission_inactive = user_list_permission.is_active
             if is_user_permission_inactive:
                 raise UserHaveAlreadyListPermissionException(user_id=user_id)
+
+    def _check_update_field_properties(self, list_id: str, name: Optional[str],
+                                       description: Optional[str]) -> dict:
+
+        field_properties_to_update = {}
+
+        is_name_provided = name is not None
+        if is_name_provided:
+            self.check_list_name_not_empty(list_name=name)
+            field_properties_to_update['name'] = name
+
+        is_description_provided = description is not None
+        if is_description_provided:
+            field_properties_to_update['description'] = description
+
+        if not field_properties_to_update:
+            raise NothingToUpdateListException(list_id=list_id)
+
+        return field_properties_to_update

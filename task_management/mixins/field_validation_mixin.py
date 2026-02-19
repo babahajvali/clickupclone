@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
-    UnsupportedFieldTypeException, FieldNameAlreadyExistsException, \
+    FieldNameAlreadyExistsException, \
     InvalidFieldDefaultValueException, InvalidFieldConfigException, \
     FieldNotFoundException, InactiveFieldException, InvalidOrderException, \
     MissingFieldConfigException, EmptyNameException, \
@@ -17,27 +17,6 @@ class FieldValidationMixin:
     def __init__(self, field_storage: FieldStorageInterface, **kwargs):
         self.field_storage = field_storage
         super().__init__(**kwargs)
-
-    @staticmethod
-    def check_field_type(field_type: str):
-        field_types = FieldType.get_values()
-        is_field_type_invalid = field_type not in field_types
-
-        if is_field_type_invalid:
-            raise UnsupportedFieldTypeException(field_type=field_type)
-
-    def check_field_name_not_exist_in_template(self, field_name: str,
-                                               template_id: str):
-
-        try:
-            field_data = self.field_storage.get_field_by_name(
-                field_name=field_name, template_id=template_id)
-        except ObjectDoesNotExist:
-            pass
-        else:
-            is_field_exists = field_data is not None
-            if is_field_exists:
-                raise FieldNameAlreadyExistsException(field_name=field_name)
 
     def check_field_is_active(self, field_id: str):
         field_data = self.field_storage.get_active_field_by_id(

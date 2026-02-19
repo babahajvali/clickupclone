@@ -1,6 +1,7 @@
 from task_management.exceptions.custom_exceptions import ListNotFoundException, \
     InactiveListException, UnexpectedPermissionException, \
-    UserListPermissionNotFoundException, InactiveUserListPermissionException
+    UserListPermissionNotFoundException, InactiveUserListPermissionException, \
+    EmptyNameException
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
@@ -43,3 +44,10 @@ class ListValidationMixin:
         is_user_permission_inactive = not user_permission_data.is_active
         if is_user_permission_inactive:
             raise InactiveUserListPermissionException(user_id=user_id)
+
+    @staticmethod
+    def check_list_name_not_empty(list_name: str):
+        is_name_empty = not list_name or not list_name.strip()
+
+        if is_name_empty:
+            raise EmptyNameException(name=list_name)

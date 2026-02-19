@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     InvalidFieldValueException
-from task_management.exceptions.enums import FieldType
+from task_management.exceptions.enums import FieldType, FieldConfig
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
 from task_management.interactors.storage_interfaces import \
@@ -70,7 +70,7 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
     @staticmethod
     def _validate_text_field(value: str, config: dict):
 
-        max_length = config.get("max_length")
+        max_length = config.get(FieldConfig.MAX_LENGTH.value)
         if max_length and len(value) > max_length:
             raise InvalidFieldValueException(
                 message=f"Text exceeds maximum length of {max_length} characters")
@@ -83,19 +83,19 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
             raise InvalidFieldValueException(
                 message="Number field value must be a valid number")
 
-        min_value = config.get("min")
+        min_value = config.get(FieldConfig.MIN.value)
         if min_value is not None and numeric_value < min_value:
             raise InvalidFieldValueException(
                 message=f"Number must be at least {min_value}")
 
-        max_value = config.get("max")
+        max_value = config.get(FieldConfig.MAX.value)
         if max_value is not None and numeric_value > max_value:
             raise InvalidFieldValueException(
                 message=f"Number must not exceed {max_value}")
 
     @staticmethod
     def _validate_dropdown_field(value: str, config: dict):
-        options = config.get("options", [])
+        options = config.get(FieldConfig.OPTIONS.value, [])
 
         if value not in options:
             raise InvalidFieldValueException(

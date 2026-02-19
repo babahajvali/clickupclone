@@ -1,5 +1,9 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from task_management.exceptions.custom_exceptions import \
-    NothingToUpdateFieldException
+    NothingToUpdateFieldException, UnsupportedFieldTypeException, \
+    FieldNameAlreadyExistsException
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO
 
@@ -169,3 +173,24 @@ class FieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             update_field_data.config is not None,
             update_field_data.description is not None,
             update_field_data.is_required is not None])
+
+    @staticmethod
+    def check_field_type(field_type: str):
+        field_types = FieldType.get_values()
+        is_field_type_invalid = field_type not in field_types
+
+        if is_field_type_invalid:
+            raise UnsupportedFieldTypeException(field_type=field_type)
+
+    def check_field_name_not_exist_in_template(self, field_name: str,
+                                               template_id: str):
+
+        try:
+            field_data = self.field_storage.get_field_by_name(
+                field_name=field_name, template_id=template_id)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            is_field_exists = field_data is not None
+            if is_field_exists:
+                raise FieldNameAlreadyExistsException(field_name=field_name)
