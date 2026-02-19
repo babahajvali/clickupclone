@@ -19,7 +19,8 @@ from task_management.graphql.types.error_types import \
     InvalidResetToken, \
     ResetTokenExpired, InvalidAccountIds, InvalidFieldValue, \
     EmptyAccountNameExistsType, NothingToUpdateAccountType, \
-    InvalidAccountIdsType, UserHaveAlreadyListPermissionType
+    InvalidAccountIdsType, UserHaveAlreadyListPermissionType, \
+    NothingToUpdateFieldType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -95,7 +96,9 @@ class UpdateFieldResponse(graphene.Union):
             FieldNotFoundType,
             ModificationNotAllowedType,
             InvalidFieldConfigType,
-            InvalidFieldDefaultValueType
+            InvalidFieldDefaultValueType,
+            NothingToUpdateFieldType,
+            FieldNameAlreadyExistsType
         )
 
 

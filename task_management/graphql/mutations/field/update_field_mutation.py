@@ -4,7 +4,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
     TemplateNotFoundType, FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
-    InvalidFieldDefaultValueType
+    InvalidFieldDefaultValueType, NothingToUpdateFieldType
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -62,9 +62,6 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.FieldNotFoundException as e:
             return FieldNotFoundType(field_id=e.field_id)
 
-        except custom_exceptions.TemplateNotFoundException as e:
-            return TemplateNotFoundType(template_id=e.template_id)
-
         except custom_exceptions.FieldNameAlreadyExistsException as e:
             return FieldNameAlreadyExistsType(field_name=e.field_name)
 
@@ -84,3 +81,6 @@ class UpdateFieldMutation(graphene.Mutation):
                 default_value=e.default_value,
                 message=e.message
             )
+
+        except custom_exceptions.NothingToUpdateFieldException as e:
+            return NothingToUpdateFieldType(field_id=e.field_id)

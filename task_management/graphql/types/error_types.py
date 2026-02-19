@@ -29,6 +29,9 @@ class ModificationNotAllowedType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
+class NothingToUpdateFieldType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+
 class UserHaveAlreadyListPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 

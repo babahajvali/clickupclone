@@ -66,7 +66,6 @@ class FieldStorage(FieldStorageInterface):
             fields_to_update['config'] = update_field_data.config
         if update_field_data.is_required is not None:
             fields_to_update['is_required'] = update_field_data.is_required
-        print(update_field_data, fields_to_update)
 
         Field.objects.filter(field_id=field_id).update(**fields_to_update)
 
