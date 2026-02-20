@@ -7,9 +7,9 @@ from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.field.validators.field_validator import \
+from task_management.interactors.fields.validators.field_validator import \
     FieldValidator
-from task_management.interactors.field.validators.field_config_validator import \
+from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
 from task_management.mixins import TemplateValidationMixin, \
     WorkspaceValidationMixin, FieldValidationMixin
@@ -18,18 +18,18 @@ from task_management.mixins import TemplateValidationMixin, \
 class FieldInteractor:
     """Field Management Business Logic Interactor.
     
-    Handles all field-related operations including creation, updating, deletion,
-    reordering, and retrieval of field within templates. This interactor
+    Handles all fields-related operations including creation, updating, deletion,
+    reordering, and retrieval of fields within templates. This interactor
     enforces business rules and validates user permissions before performing
-    any field operations.
+    any fields operations.
     
     Key Responsibilities:
-        - Create new field with validation
-        - Update existing field properties
-        - Delete field with permission checks
-        - Reorder field within templates
-        - Retrieve field for specific templates
-        - Validate field configurations and types
+        - Create new fields with validation
+        - Update existing fields properties
+        - Delete fields with permission checks
+        - Reorder fields within templates
+        - Retrieve fields for specific templates
+        - Validate fields configurations and types
     
     Dependencies:
         - FieldStorageInterface: Field data persistence
@@ -37,8 +37,8 @@ class FieldInteractor:
         - WorkspaceStorageInterface: User permission validation
 
     Attributes:
-        field_storage (FieldStorageInterface): Storage for field operations
-        template_storage (TemplateStorageInterface): Storage for template operations
+        field_storage (FieldStorageInterface): Storage for fields operations
+        template_storage (TemplateStorageInterface): Storage for templates operations
         workspace_storage (WorkspaceStorageInterface): validate the user permissions
     """
 
@@ -70,7 +70,7 @@ class FieldInteractor:
     def field_validator(self) -> FieldValidator:
         return FieldValidator(field_storage=self.field_storage)
 
-    @invalidate_interactor_cache(cache_name="field")
+    @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
 
         self._create_field_input_validation(field_data=field_data)
@@ -92,7 +92,7 @@ class FieldInteractor:
         return self.field_storage.create_field(
             create_field_data=field_data, order=last_field_order_in_template)
 
-    @invalidate_interactor_cache(cache_name="field")
+    @invalidate_interactor_cache(cache_name="fields")
     def update_field(
             self, update_field_data: UpdateFieldDTO, user_id: str) -> FieldDTO:
 
@@ -111,7 +111,7 @@ class FieldInteractor:
             field_id=update_field_data.field_id,
             update_field_data=update_field_data)
 
-    @invalidate_interactor_cache(cache_name="field")
+    @invalidate_interactor_cache(cache_name="fields")
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> FieldDTO:
 
@@ -125,7 +125,7 @@ class FieldInteractor:
         return self.field_storage.reorder_fields(
             field_id=field_id, template_id=template_id, new_order=new_order)
 
-    @invalidate_interactor_cache(cache_name="field")
+    @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
 
         self.field_mixin.check_field_is_active(field_id=field_id)
@@ -136,7 +136,7 @@ class FieldInteractor:
 
         return self.field_storage.delete_field(field_id=field_id)
 
-    @interactor_cache(cache_name="field", timeout=5 * 60)
+    @interactor_cache(cache_name="fields", timeout=5 * 60)
     def get_active_fields_for_template(
             self, template_id: str) -> list[FieldDTO]:
 

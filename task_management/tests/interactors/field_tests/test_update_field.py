@@ -15,7 +15,7 @@ from task_management.interactors.dtos import (
     FieldDTO,
     WorkspaceMemberDTO,
 )
-from task_management.interactors.field.field_interactor import FieldInteractor
+from task_management.interactors.fields.field_interactor import FieldInteractor
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, ListStorageInterface, \
     SpaceStorageInterface, WorkspaceStorageInterface

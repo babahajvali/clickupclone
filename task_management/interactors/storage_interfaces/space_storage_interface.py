@@ -21,7 +21,7 @@ class SpaceStorageInterface(ABC):
 
     @abstractmethod
     def delete_space(self, space_id: str):
-        # set the space is_active is false
+        # set the spaces is_active is false
         pass
 
     @abstractmethod
@@ -38,13 +38,13 @@ class SpaceStorageInterface(ABC):
 
     @abstractmethod
     def get_workspace_spaces_count(self, workspace_id: str) -> int:
-        # get the active spaces count in workspace
+        # get the active spaces count in workspaces
         pass
 
     @abstractmethod
     def reorder_space(self, workspace_id: str, space_id: str,
                       new_order: int) -> SpaceDTO:
-        # get the space order and provided order to reorder spaces
+        # get the spaces order and provided order to reorder spaces
         pass
 
     @abstractmethod

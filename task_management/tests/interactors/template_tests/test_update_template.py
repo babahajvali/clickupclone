@@ -9,7 +9,7 @@ from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TemplateStorageInterface,  \
     SpaceStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.template.template_interactor import \
+from task_management.interactors.templates.template_interactor import \
     TemplateInteractor
 from task_management.tests.factories.interactor_factory import (
     TemplateDTOFactory

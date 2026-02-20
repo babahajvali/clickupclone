@@ -61,7 +61,7 @@ class TestTemplateStorage:
 
         dto = CreateTemplateDTO(
             name="Bug Template",
-            description="Bug task template",
+            description="Bug tasks templates",
             list_id=str(list_obj.list_id),
             created_by=list_obj.created_by
         )

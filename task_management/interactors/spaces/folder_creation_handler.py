@@ -3,7 +3,7 @@ from django.db import transaction
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     CreateFolderPermissionDTO
-from task_management.interactors.space.folder_interactor import \
+from task_management.interactors.spaces.folder_interactor import \
     FolderInteractor
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, SpaceStorageInterface, WorkspaceStorageInterface
@@ -19,7 +19,8 @@ class FolderCreationHandler:
         self.workspace_storage = workspace_storage
 
     @transaction.atomic
-    def handle_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
+    def handle_folder_creation(
+            self, folder_data: CreateFolderDTO) -> FolderDTO:
         folder_obj = self._create_folder(folder_data=folder_data)
 
         self._create_folder_permission_for_user(

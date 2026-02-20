@@ -31,7 +31,7 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
-        # get the space active folders
+        # get the spaces active folders
         pass
 
     @abstractmethod
@@ -46,7 +46,7 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def get_space_folder_count(self, space_id: str) -> int:
-        # get the active folder count in space
+        # get the active folder count in spaces
         pass
 
     @abstractmethod

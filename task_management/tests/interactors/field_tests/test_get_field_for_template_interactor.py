@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import \
     TemplateNotFound
-from task_management.interactors.field.field_interactor import \
+from task_management.interactors.fields.field_interactor import \
     FieldInteractor
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
@@ -36,15 +36,15 @@ class TestGetFieldForTemplateInteractor:
         )
 
     def test_get_fields_for_template_success(self, snapshot):
-        list_id = "list-123"
-        template_id = "template-123"
+        list_id = "lists-123"
+        template_id = "templates-123"
 
         expected_fields = [
             FieldDTOFactory(),
             FieldDTOFactory()
         ]
 
-        self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "list-123"})()
+        self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "lists-123"})()
 
         self.field_storage.get_active_fields_for_template.return_value = expected_fields
 
@@ -56,8 +56,8 @@ class TestGetFieldForTemplateInteractor:
         )
 
     def test_get_fields_for_template_not_found(self, snapshot):
-        template_id = "non-existent-template"
-        list_id = "list-123"
+        template_id = "non-existent-templates"
+        list_id = "lists-123"
 
         self.interactor.validate_list_is_active.return_value = True
 

@@ -5,7 +5,7 @@ from faker import Faker
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.list.list_interactor import \
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,

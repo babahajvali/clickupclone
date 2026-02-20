@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Permissions, Visibility, Role
 from task_management.interactors.dtos import UserSpacePermissionDTO
-from task_management.interactors.space.space_interactor import \
+from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
@@ -156,7 +156,7 @@ class TestSpaceInteractor:
 
     def test_delete_space_success(self):
         # Arrange
-        space_id = "test-space-id"
+        space_id = "test-spaces-id"
         user_id = "test-user-id"
         expected_result = SpaceDTOFactory()
 
@@ -176,7 +176,7 @@ class TestSpaceInteractor:
 
     def test_set_space_private_success(self):
         # Arrange
-        space_id = "test-space-id"
+        space_id = "test-spaces-id"
         user_id = "test-user-id"
         expected_result = SpaceDTOFactory()
 
@@ -197,7 +197,7 @@ class TestSpaceInteractor:
 
     def test_set_space_public_success(self):
         # Arrange
-        space_id = "test-space-id"
+        space_id = "test-spaces-id"
         user_id = "test-user-id"
         expected_result = SpaceDTOFactory()
 
@@ -218,7 +218,7 @@ class TestSpaceInteractor:
 
     def test_get_workspace_spaces_success(self):
         # Arrange
-        workspace_id = "test-workspace-id"
+        workspace_id = "test-workspaces-id"
         expected_result = [SpaceDTOFactory() for _ in range(3)]
 
         self.workspace_storage.get_workspaces.return_value = type('Workspace',
@@ -236,7 +236,7 @@ class TestSpaceInteractor:
 
     def test_get_workspace_spaces_workspace_not_found(self, snapshot):
         # Arrange
-        workspace_id = "non-existent-workspace"
+        workspace_id = "non-existent-workspaces"
         self.workspace_storage.get_workspaces.return_value = None
 
         # Act & Assert
@@ -247,7 +247,7 @@ class TestSpaceInteractor:
 
     def test_get_workspace_spaces_workspace_inactive(self, snapshot):
         # Arrange
-        workspace_id = "inactive-workspace"
+        workspace_id = "inactive-workspaces"
         self.workspace_storage.get_workspaces.return_value = type('Workspace',
                                                                   (), {
                                                                      'is_active': False})()

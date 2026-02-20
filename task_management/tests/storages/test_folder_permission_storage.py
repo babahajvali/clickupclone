@@ -21,7 +21,7 @@ class TestFolderPermissionStorage:
         folder = FolderFactory(folder_id=folder_id)
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
-                                permission_type="view")
+                                permission_type="views")
         storage = FolderStorage()
 
         # Act
@@ -59,7 +59,7 @@ class TestFolderPermissionStorage:
         folder = FolderFactory(folder_id=folder_id)
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user, folder=folder, added_by=added_by,
-                                permission_type="view")
+                                permission_type="views")
         storage = FolderStorage()
 
         # Act
@@ -104,7 +104,7 @@ class TestFolderPermissionStorage:
         user2 = UserFactory(user_id="12345678-1234-5678-1234-567812345682")
         added_by = UserFactory(user_id=added_by_id)
         FolderPermissionFactory(user=user1, folder=folder, added_by=added_by,
-                                permission_type="view")
+                                permission_type="views")
         FolderPermissionFactory(user=user2, folder=folder, added_by=added_by,
                                 permission_type="edit")
         storage = FolderStorage()

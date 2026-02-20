@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
 from task_management.graphql.types.input_types import ReorderSpaceInputParams
 from task_management.graphql.types.response_types import ReorderSpaceResponse
 from task_management.graphql.types.types import SpaceType
-from task_management.interactors.space.space_interactor import \
+from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 

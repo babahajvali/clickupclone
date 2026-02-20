@@ -8,7 +8,7 @@ from task_management.graphql.types.response_types import \
     SetTaskFieldValueResponse
 from task_management.graphql.types.types import FieldValueType
 from task_management.interactors.dtos import UpdateFieldValueDTO
-from task_management.interactors.field.field_value_interactor import \
+from task_management.interactors.fields.field_value_interactor import \
     FieldValueInteractor
 from task_management.storages import FieldStorage, TaskStorage, \
     WorkspaceStorage

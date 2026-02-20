@@ -204,7 +204,7 @@ class FolderPermissionFactory(DjangoModelFactory):
 
     folder = factory.SubFactory(FolderFactory)
     user = factory.SubFactory(UserFactory)
-    permission_type = "view"
+    permission_type = "views"
     is_active = True
     added_by = factory.SubFactory(UserFactory)
 
@@ -215,6 +215,6 @@ class ListPermissionFactory(DjangoModelFactory):
 
     list = factory.SubFactory(ListFactory)
     user = factory.SubFactory(UserFactory)
-    permission_type = "view"
+    permission_type = "views"
     is_active = True
     added_by = factory.SubFactory(UserFactory)

@@ -2,16 +2,17 @@ from django.db import transaction
 
 from task_management.exceptions.enums import Permissions, ViewTypes
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
-    CreateListPermissionDTO, CreateTemplateDTO
-from task_management.interactors.list.list_interactor import \
+    CreateListPermissionDTO, CreateTemplateDTO, UserListPermissionDTO, \
+    ListViewDTO, TemplateDTO
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, SpaceStorageInterface, FolderStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, \
     WorkspaceStorageInterface, ViewStorageInterface
-from task_management.interactors.template.template_creation_handler import \
+from task_management.interactors.templates.template_creation_handler import \
     TemplateCreationHandler
-from task_management.interactors.view.list_view_interactor import \
+from task_management.interactors.views.list_view_interactor import \
     ListViewInteractor
 
 
@@ -75,8 +76,8 @@ class ListCreationHandler:
 
         return list_interactor.create_list(list_data=list_data)
 
-    def _create_list_permission_for_created_by_user(self, list_id: str,
-                                                    user_id: str):
+    def _create_list_permission_for_created_by_user(
+            self, list_id: str, user_id: str) -> UserListPermissionDTO:
         list_interactor = self._get_list_interactor()
         permission_data = CreateListPermissionDTO(
             list_id=list_id,
@@ -88,7 +89,8 @@ class ListCreationHandler:
             user_permission_data=permission_data
         )
 
-    def _create_default_template(self, template_data: CreateTemplateDTO):
+    def _create_default_template(
+            self, template_data: CreateTemplateDTO) -> TemplateDTO:
         template_creation_handler = TemplateCreationHandler(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
@@ -99,8 +101,8 @@ class ListCreationHandler:
         return template_creation_handler.handle_template(
             template_data=template_data)
 
-    def _create_default_list_view(self, view_id: str, list_id: str,
-                                  user_id: str):
+    def _create_default_list_view(
+            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
         list_view_interactor = ListViewInteractor(
             list_storage=self.list_storage,
             view_storage=self.view_storage,

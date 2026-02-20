@@ -3,7 +3,7 @@ from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TaskStorageInterface, \
     WorkspaceStorageInterface, FieldStorageInterface
-from task_management.interactors.task.task_interactor import TaskInteractor
+from task_management.interactors.tasks.task_interactor import TaskInteractor
 
 
 class TaskCreationHandler:

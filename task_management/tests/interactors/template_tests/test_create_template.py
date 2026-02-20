@@ -17,7 +17,7 @@ from task_management.interactors.storage_interfaces.space_storage_interface impo
 from task_management.interactors.storage_interfaces.template_storage_interface import (
     TemplateStorageInterface
 )
-from task_management.interactors.template.template_interactor import (
+from task_management.interactors.templates.template_interactor import (
     TemplateInteractor
 )
 from task_management.tests.factories.interactor_factory import (

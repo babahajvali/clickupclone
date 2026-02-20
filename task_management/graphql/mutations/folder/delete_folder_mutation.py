@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import FolderNotFoundType, \
 from task_management.graphql.types.input_types import DeleteFolderInputParams
 from task_management.graphql.types.response_types import DeleteFolderResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.space.folder_interactor import \
+from task_management.interactors.spaces.folder_interactor import \
     FolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage

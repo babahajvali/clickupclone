@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
     InactiveListType
 from task_management.graphql.types.types import ListType
-from task_management.interactors.list.list_interactor import \
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
     WorkspaceStorage

@@ -20,12 +20,12 @@ FIXED_FIELDS = [
     {
         "field_type": FieldType.DATE.value,
         "field_name": "Due Date",
-        "description": "Due date for complete task",
+        "description": "Due date for complete tasks",
     },
     {
         "field_type": FieldType.DROPDOWN.value,
         "field_name": "Priority",
-        "description": "Priority for complete task",
+        "description": "Priority for complete tasks",
         "config": {
             "options": ["Low", "Medium", "High", "Urgent"],
             "default": "Medium"
@@ -34,7 +34,7 @@ FIXED_FIELDS = [
     {
         "field_type": FieldType.DROPDOWN.value,
         "field_name": "Status",
-        "description": "Status for complete task",
+        "description": "Status for complete tasks",
         "config": {
             "options": ["Todo", "In Progress", "Complete"],
             "default": "Todo"

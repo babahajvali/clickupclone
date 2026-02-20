@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import TaskNotFoundType, \
 from task_management.graphql.types.input_types import DeleteTaskInputParams
 from task_management.graphql.types.response_types import DeleteTaskResponse
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.task.task_interactor import \
+from task_management.interactors.tasks.task_interactor import \
     TaskInteractor
 from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
 

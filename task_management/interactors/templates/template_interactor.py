@@ -13,27 +13,27 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
                          WorkspaceValidationMixin):
     """Template Management Business Logic Interactor.
     
-    Handles all template-related operations including creation, updating, and
+    Handles all templates-related operations including creation, updating, and
     retrieval of templates within lists. This interactor enforces business
-    rules and validates user permissions before performing any template operations.
+    rules and validates user permissions before performing any templates operations.
     
     Key Responsibilities:
         - Create new templates with validation
-        - Update existing template properties
-        - Validate template names and descriptions
-        - Ensure user has proper workspace access
-        - Manage template-field relationships
+        - Update existing templates properties
+        - Validate templates names and descriptions
+        - Ensure user has proper workspaces access
+        - Manage templates-fields relationships
     
     Dependencies:
-        - FieldStorageInterface: Field operations for template validation
+        - FieldStorageInterface: Field operations for templates validation
         - WorkspaceMemberStorageInterface: User permission validation
         - TemplateStorageInterface: Template data persistence
         - ListStorageInterface: List access validation
         - SpaceStorageInterface: Space access validation
     
     Attributes:
-        template_storage (TemplateStorageInterface): Storage for template operations
-        list_storage (ListStorageInterface): Storage for list operations
+        template_storage (TemplateStorageInterface): Storage for templates operations
+        list_storage (ListStorageInterface): Storage for lists operations
     """
 
     def __init__(self, workspace_storage: WorkspaceStorageInterface,

@@ -9,7 +9,7 @@ from task_management.graphql.types.response_types import CreateListResponse
 from task_management.graphql.types.types import ListType
 
 from task_management.interactors.dtos import CreateListDTO
-from task_management.interactors.list.list_creation_handler import \
+from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
 from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
     WorkspaceStorage, FieldStorage, TemplateStorage, ViewStorage

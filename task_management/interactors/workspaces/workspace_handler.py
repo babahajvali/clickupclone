@@ -2,16 +2,16 @@ from django.db import transaction
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO
-from task_management.interactors.list.list_creation_handler import \
+from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
-from task_management.interactors.space.space_interactor import \
+from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \
     WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     AccountStorageInterface, ViewStorageInterface
-from task_management.interactors.workspace.workspace_interactor import \
+from task_management.interactors.workspaces.workspace_interactor import \
     WorkspaceInteractor
 
 

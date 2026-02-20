@@ -1,7 +1,7 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import WorkspaceNotFoundType
 from task_management.graphql.types.types import WorkspaceType
-from task_management.interactors.workspace.workspace_interactor import \
+from task_management.interactors.workspaces.workspace_interactor import \
     WorkspaceInteractor
 from task_management.storages import WorkspaceStorage, UserStorage, \
     AccountStorage

@@ -17,19 +17,19 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
                              WorkspaceValidationMixin):
     """Task Assignee Management Business Logic Interactor.
     
-    Handles all task assignment operations including assigning users to tasks,
+    Handles all tasks assignment operations including assigning users to tasks,
     removing assignments, and retrieving assignment information. This interactor
     enforces business rules and validates user permissions before performing
-    any task assignment operations.
+    any tasks assignment operations.
     
     Key Responsibilities:
         - Assign users to tasks with validation
-        - Remove task assignments with permission checks
-        - Retrieve task assignee information
+        - Remove tasks assignments with permission checks
+        - Retrieve tasks assignee information
         - Get all assignees for specific tasks
         - Get all assignees for lists
         - Get all tasks assigned to specific users
-        - Handle task reassignment scenarios
+        - Handle tasks reassignment scenarios
     
     Dependencies:
         - TaskStorageInterface: Task validation and access control
@@ -40,7 +40,7 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         - SpaceStorageInterface: Space access validation
     
     Attributes:
-        task_storage (TaskStorageInterface): Storage for task operations
+        task_storage (TaskStorageInterface): Storage for tasks operations
         task_storage (TaskAssigneeStorageInterface): Storage for assignment operations
         user_storage (UserStorageInterface): Storage for user operations
     """

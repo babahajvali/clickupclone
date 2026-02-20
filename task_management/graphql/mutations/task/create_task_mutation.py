@@ -7,7 +7,7 @@ from task_management.graphql.types.input_types import CreateTaskInputParams
 from task_management.graphql.types.response_types import CreateTaskResponse
 from task_management.graphql.types.types import TaskType
 from task_management.interactors.dtos import CreateTaskDTO
-from task_management.interactors.task.task_creation_handler import \
+from task_management.interactors.tasks.task_creation_handler import \
     TaskCreationHandler
 from task_management.storages import ListStorage, TaskStorage, \
     WorkspaceStorage, FieldStorage

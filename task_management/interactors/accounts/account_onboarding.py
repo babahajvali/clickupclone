@@ -11,14 +11,14 @@ from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     ViewStorageInterface
 
-from task_management.interactors.workspace.workspace_interactor import \
+from task_management.interactors.workspaces.workspace_interactor import \
     WorkspaceInteractor
 
 
 class AccountOnboardingHandler:
     """
     This Handler handle the create the accounts along with
-        default workspace and space, list...
+        default workspaces and spaces, lists...
 
     """
 
@@ -65,11 +65,11 @@ class AccountOnboardingHandler:
 
     def _create_default_workspace(self, owner_id: str, account_id: str,
                                   name: str):
-        """ Create default workspace
-        create the workspace interactor
-        then create the workspace"""
+        """ Create default workspaces
+        create the workspaces interactor
+        then create the workspaces"""
 
-        from task_management.interactors.workspace.workspace_handler import \
+        from task_management.interactors.workspaces.workspace_handler import \
             WorkspaceHandler
         workspace_onboarding = WorkspaceHandler(
             workspace_storage=self.workspace_storage,
@@ -90,7 +90,7 @@ class AccountOnboardingHandler:
 
         workspace_input_data = CreateWorkspaceDTO(
             name=f"{name}'s Workspace",
-            description=f"Default workspace",
+            description=f"Default workspaces",
             user_id=owner_id,
             account_id=account_id
         )

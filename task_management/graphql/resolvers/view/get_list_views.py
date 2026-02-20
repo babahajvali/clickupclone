@@ -1,5 +1,5 @@
 from task_management.graphql.types.types import ListViewType, ListViewsType
-from task_management.interactors.view.list_view_interactor import \
+from task_management.interactors.views.list_view_interactor import \
     ListViewInteractor
 from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 

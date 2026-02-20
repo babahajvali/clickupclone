@@ -3,7 +3,7 @@ from typing import Optional
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     CreateListPermissionDTO, UserListPermissionDTO
-from task_management.interactors.list.validator.list_validator import \
+from task_management.interactors.lists.validator.list_validator import \
     ListValidator
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -69,12 +69,14 @@ class ListInteractor:
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
-    def update_list(self, list_id: str, user_id: str, name: Optional[str],
-                    description: Optional[str]) -> ListDTO:
+    def update_list(
+            self, list_id: str, user_id: str, name: Optional[str],
+            description: Optional[str]) -> ListDTO:
 
-        field_properties_to_update = self.list_validator.check_update_field_properties(
-            list_id=list_id, name=name, description=description
-        )
+        field_properties_to_update = (
+            self.list_validator.check_update_field_properties(
+                list_id=list_id, name=name, description=description
+            ))
 
         self.list_mixin.check_list_is_active(list_id=list_id)
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
@@ -85,8 +87,9 @@ class ListInteractor:
             list_id=list_id, field_properties=field_properties_to_update)
 
     @invalidate_interactor_cache(cache_name="folder_lists")
-    def reorder_list_in_folder(self, folder_id: str, list_id: str, order: int,
-                               user_id: str) -> ListDTO:
+    def reorder_list_in_folder(
+            self, folder_id: str, list_id: str, order: int, user_id: str)\
+            -> ListDTO:
 
         self.list_validator.check_list_order_in_folder(
             folder_id=folder_id, order=order)
@@ -103,8 +106,8 @@ class ListInteractor:
 
     @invalidate_interactor_cache(cache_name="space_lists")
     def reorder_list_in_space(
-            self, list_id: str, space_id: str, order: int,
-            user_id: str) -> ListDTO:
+            self, list_id: str, space_id: str, order: int, user_id: str)\
+            -> ListDTO:
         self.list_validator.check_list_order_in_space(
             space_id=space_id, order=order
         )

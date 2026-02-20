@@ -54,7 +54,7 @@ class NumberField:
             numeric_value = float(value)
         except (ValueError, TypeError):
             raise InvalidFieldValue(
-                message="Number field value must be a valid number")
+                message="Number fields value must be a valid number")
 
         min_value = config.get(FieldConfig.MIN.value)
         if min_value is not None and numeric_value < min_value:

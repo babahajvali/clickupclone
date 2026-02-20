@@ -11,7 +11,7 @@ from task_management.graphql.types.response_types import \
     AddMemberToWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO
-from task_management.interactors.workspace.workspace_member_interactor import \
+from task_management.interactors.workspaces.workspace_member_interactor import \
     WorkspaceMemberInteractor
 from task_management.storages import WorkspaceStorage, UserStorage
 

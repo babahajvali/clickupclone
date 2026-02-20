@@ -10,7 +10,7 @@ from task_management.graphql.types.response_types import \
     AddListPermissionForUserResponse
 from task_management.graphql.types.types import UserListPermissionType
 from task_management.interactors.dtos import CreateListPermissionDTO
-from task_management.interactors.list.list_interactor import ListInteractor
+from task_management.interactors.lists.list_interactor import ListInteractor
 from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
     WorkspaceStorage
 

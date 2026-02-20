@@ -8,7 +8,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     RemoveTaskAssigneeResponse
 from task_management.graphql.types.types import TaskAssigneeType
-from task_management.interactors.task.task_assignee_interactor import \
+from task_management.interactors.tasks.task_assignee_interactor import \
     TaskAssigneeInteractor
 from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
 

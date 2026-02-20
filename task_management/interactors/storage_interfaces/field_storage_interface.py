@@ -70,13 +70,13 @@ class FieldStorageInterface(ABC):
     @abstractmethod
     def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> \
             TaskFieldValueDTO:
-        # set field value
+        # set fields value
         pass
 
     @abstractmethod
     def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
         TaskFieldValuesDTO]:
-        # get task field values
+        # get tasks fields values
         pass
 
     @abstractmethod

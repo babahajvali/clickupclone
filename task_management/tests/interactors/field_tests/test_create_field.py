@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
 )
 from task_management.exceptions.enums import FieldType, Role
-from task_management.interactors.field.field_interactor import (
+from task_management.interactors.fields.field_interactor import (
     FieldInteractor
 )
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
@@ -79,7 +79,7 @@ class TestCreateFieldInteractor:
         space_storage = create_autospec(SpaceStorageInterface)
         workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        # template mock
+        # templates mock
         if template_exists:
             class DummyTemplate:
                 def __init__(self, list_id):

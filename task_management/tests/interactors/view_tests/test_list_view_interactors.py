@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
-from task_management.interactors.view.list_view_interactor import (
+from task_management.interactors.views.list_view_interactor import (
     ListViewInteractor
 )
 from task_management.interactors.storage_interfaces.list_storage_interface import (

@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Visibility, Role
 from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.space.folder_interactor import \
+from task_management.interactors.spaces.folder_interactor import \
     FolderInteractor
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface

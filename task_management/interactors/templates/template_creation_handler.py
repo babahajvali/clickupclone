@@ -2,11 +2,12 @@ from django.db import transaction
 
 from task_management.constants.field_constants import FIXED_FIELDS
 from task_management.exceptions.enums import FieldType
-from task_management.interactors.dtos import CreateTemplateDTO, CreateFieldDTO
+from task_management.interactors.dtos import CreateTemplateDTO, CreateFieldDTO, \
+    TemplateDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, FieldStorageInterface, \
     WorkspaceStorageInterface
-from task_management.interactors.template.template_interactor import \
+from task_management.interactors.templates.template_interactor import \
     TemplateInteractor
 
 
@@ -22,7 +23,7 @@ class TemplateCreationHandler:
         self.workspace_storage = workspace_storage
 
     @transaction.atomic
-    def handle_template(self, template_data: CreateTemplateDTO):
+    def handle_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
         template_obj = self._create_template(template_data=template_data)
 
         self._create_template_fixed_fields(

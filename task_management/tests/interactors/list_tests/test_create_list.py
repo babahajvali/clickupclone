@@ -3,7 +3,7 @@ from unittest.mock import create_autospec, patch
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import  WorkspaceMemberDTO
-from task_management.interactors.list.list_interactor import \
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
@@ -47,7 +47,7 @@ class TestCreateList:
         )
 
     @patch(
-        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
+        "task_management.interactors.lists.lists.CreateTemplateInteractor.create_template"
     )
     def test_create_list_success(self, mock_create_template, snapshot):
         mock_create_template.return_value = None
@@ -85,7 +85,7 @@ class TestCreateList:
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
 
     @patch(
-        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
+        "task_management.interactors.lists.lists.CreateTemplateInteractor.create_template"
     )
     def test_space_not_found(self, mock_create_template, snapshot):
         mock_create_template.return_value = None
@@ -102,7 +102,7 @@ class TestCreateList:
             self.interactor.create_list(dto)
 
     @patch(
-        "task_management.interactors.list.list.CreateTemplateInteractor.create_template"
+        "task_management.interactors.lists.lists.CreateTemplateInteractor.create_template"
     )
     def test_space_inactive(self, mock_create_template, snapshot):
         mock_create_template.return_value = None

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec, patch
 
-from task_management.interactors.list.list_interactor import \
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,

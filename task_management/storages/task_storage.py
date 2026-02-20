@@ -59,7 +59,7 @@ class TaskStorage(TaskStorageInterface):
 
     def get_task_list_id(self, task_id: str) -> str:
 
-        task = Task.objects.select_related('list').get(task_id=task_id)
+        task = Task.objects.select_related('lists').get(task_id=task_id)
         return task.list.list_id
 
     def get_workspace_id_from_task_id(self, task_id: str) -> str | None:

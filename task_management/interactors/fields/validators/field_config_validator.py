@@ -1,11 +1,11 @@
 from task_management.exceptions.custom_exceptions import \
     MissingFieldConfig
 from task_management.exceptions.enums import FieldType
-from task_management.interactors.field.validators.dropdown_validator import \
+from task_management.interactors.fields.validators.dropdown_validator import \
     DropdownField
-from task_management.interactors.field.validators.text_validator import \
+from task_management.interactors.fields.validators.text_validator import \
     TextField
-from task_management.interactors.field.validators.number_validator import \
+from task_management.interactors.fields.validators.number_validator import \
     NumberField
 
 

@@ -4,7 +4,7 @@ from unittest.mock import create_autospec
 from task_management.interactors.storage_interfaces.account_storage_interface import \
     AccountStorageInterface
 
-from task_management.interactors.workspace.workspace_interactor import (
+from task_management.interactors.workspaces.workspace_interactor import (
     WorkspaceInteractor
 )
 from task_management.interactors.storage_interfaces.workspace_storage_interface import (
@@ -44,7 +44,7 @@ class TestWorkspaceInteractor:
             "Workspace",
             (),
             {
-                "workspace_id": "workspace-123",
+                "workspace_id": "workspaces-123",
                 "user_id": owner_id,
                 "account_id": "accounts-123",
                 "is_active": True,
@@ -103,7 +103,7 @@ class TestWorkspaceInteractor:
         )
 
     def test_delete_workspace_success(self, snapshot):
-        workspace_id = "workspace-123"
+        workspace_id = "workspaces-123"
         user_id = "owner-123"
         expected = WorkspaceDTOFactory()
 
@@ -120,7 +120,7 @@ class TestWorkspaceInteractor:
         )
 
     def test_transfer_workspace_success(self, snapshot):
-        workspace_id = "workspace-123"
+        workspace_id = "workspaces-123"
         user_id = "owner-123"
         new_user_id = "new-owner-123"
         expected = WorkspaceDTOFactory()
@@ -142,7 +142,7 @@ class TestWorkspaceInteractor:
         )
 
     def test_transfer_workspace_new_user_not_found(self, snapshot):
-        workspace_id = "workspace-123"
+        workspace_id = "workspaces-123"
         user_id = "owner-123"
         new_user_id = "invalid-user"
 

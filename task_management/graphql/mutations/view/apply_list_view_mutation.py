@@ -7,7 +7,7 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import ApplyListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
-from task_management.interactors.view.list_view_interactor import \
+from task_management.interactors.views.list_view_interactor import \
     ListViewInteractor
 from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 

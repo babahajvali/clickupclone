@@ -1,7 +1,7 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TemplateNotFoundType
 from task_management.graphql.types.types import FieldType, FieldsType
-from task_management.interactors.field.field_interactor import \
+from task_management.interactors.fields.field_interactor import \
     FieldInteractor
 from task_management.storages import FieldStorage, TemplateStorage, \
     WorkspaceStorage, ListStorage

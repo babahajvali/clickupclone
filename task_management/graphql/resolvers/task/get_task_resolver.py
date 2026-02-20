@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
     DeletedTaskType
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.task.task_interactor import \
+from task_management.interactors.tasks.task_interactor import \
     TaskInteractor
 from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
 

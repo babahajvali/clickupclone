@@ -17,7 +17,7 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
-        # order is auto-increase in folder or space
+        # order is auto-increase in folder or spaces
         pass
     
     @abstractmethod

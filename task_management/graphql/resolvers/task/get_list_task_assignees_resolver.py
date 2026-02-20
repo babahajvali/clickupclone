@@ -3,7 +3,7 @@ from task_management.graphql.types.error_types import InactiveListType, \
     ListNotFoundType
 from task_management.graphql.types.types import TaskAssigneeType, \
     TaskAssigneesType
-from task_management.interactors.task.task_assignee_interactor import \
+from task_management.interactors.tasks.task_assignee_interactor import \
     TaskAssigneeInteractor
 from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
 

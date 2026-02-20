@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces.field_storage_interface impo
     FieldStorageInterface
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.task.task_interactor import \
+from task_management.interactors.tasks.task_interactor import \
     TaskInteractor
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface

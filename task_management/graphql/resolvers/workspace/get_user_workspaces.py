@@ -3,7 +3,7 @@ from task_management.graphql.types.error_types import UserNotFoundType
 from task_management.graphql.types.types import WorkspaceMemberType, \
     WorkspaceMembersType
 
-from task_management.interactors.workspace.workspace_member_interactor import \
+from task_management.interactors.workspaces.workspace_member_interactor import \
     WorkspaceMemberInteractor
 from task_management.storages import WorkspaceStorage, UserStorage
 

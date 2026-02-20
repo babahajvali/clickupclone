@@ -9,7 +9,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetFolderVisibilityResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.space.folder_interactor import \
+from task_management.interactors.spaces.folder_interactor import \
     FolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage

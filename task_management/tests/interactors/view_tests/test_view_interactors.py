@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import ViewTypes
-from task_management.interactors.view.view_interactor import \
+from task_management.interactors.views.view_interactor import \
     ViewInteractor
 from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface

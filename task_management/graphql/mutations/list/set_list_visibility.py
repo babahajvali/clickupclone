@@ -11,7 +11,7 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetListVisibilityResponse
 from task_management.graphql.types.types import ListType
-from task_management.interactors.list.list_interactor import \
+from task_management.interactors.lists.list_interactor import \
     ListInteractor
 from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
     WorkspaceStorage

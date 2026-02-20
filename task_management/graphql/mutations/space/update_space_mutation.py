@@ -9,7 +9,7 @@ from task_management.graphql.types.response_types import UpdateSpaceResponse
 from task_management.graphql.types.types import SpaceType
 
 from task_management.interactors.dtos import UpdateSpaceDTO
-from task_management.interactors.space.space_interactor import \
+from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 

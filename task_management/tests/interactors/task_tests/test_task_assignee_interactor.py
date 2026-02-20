@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces.list_storage_interface impor
     ListStorageInterface
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.interactors.task.task_assignee_interactor import (
+from task_management.interactors.tasks.task_assignee_interactor import (
     TaskAssigneeInteractor
 )
 from task_management.interactors.storage_interfaces.task_storage_interface import (

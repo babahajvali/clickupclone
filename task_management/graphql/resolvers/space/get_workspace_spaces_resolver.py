@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
     InactiveWorkspaceType
 from task_management.graphql.types.types import SpaceType, WorkspaceSpacesType
-from task_management.interactors.space.space_interactor import \
+from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 

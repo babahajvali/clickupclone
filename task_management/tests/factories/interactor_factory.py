@@ -196,7 +196,7 @@ class CreateViewDTOFactory(factory.Factory):
 
     name = factory.Faker('word')
     description = factory.Faker('sentence')
-    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
+    view_type = factory.Iterator(['lists', 'board', 'calendar', 'table'])
     created_by = factory.Faker('uuid4')
 
 
@@ -216,7 +216,7 @@ class ViewDTOFactory(factory.Factory):
     view_id = factory.Faker('uuid4')
     name = factory.Faker('word')
     description = factory.Faker('sentence')
-    view_type = factory.Iterator(['list', 'board', 'calendar', 'table'])
+    view_type = factory.Iterator(['lists', 'board', 'calendar', 'table'])
     created_by = factory.Faker('uuid4')
 
 

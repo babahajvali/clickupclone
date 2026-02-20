@@ -20,7 +20,7 @@ class TestListPermissionStorage:
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
-                              permission_type="view")
+                              permission_type="views")
         storage = ListStorage()
 
         # Act
@@ -46,7 +46,7 @@ class TestListPermissionStorage:
         user2 = UserFactory(user_id=user_id2)
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user1, added_by=added_by,
-                              permission_type="view")
+                              permission_type="views")
         ListPermissionFactory(list=list_obj, user=user2, added_by=added_by,
                               permission_type="edit")
         storage = ListStorage()
@@ -82,7 +82,7 @@ class TestListPermissionStorage:
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
-                              permission_type="view")
+                              permission_type="views")
         storage = ListStorage()
 
         # Act

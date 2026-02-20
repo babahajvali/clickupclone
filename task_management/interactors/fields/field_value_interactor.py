@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
-from task_management.interactors.field.validators.field_value_validator import \
+from task_management.interactors.fields.validators.field_value_validator import \
     FieldValueValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TaskStorageInterface, WorkspaceStorageInterface

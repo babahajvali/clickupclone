@@ -63,7 +63,7 @@ class TestFieldStorage:
                      created_by=user)
         create_field_data = CreateFieldDTO(
             field_name="New Field",
-            description="New field description",
+            description="New fields description",
             field_type=FieldType.NUMBER,
             template_id=str(template_id),
             config={},

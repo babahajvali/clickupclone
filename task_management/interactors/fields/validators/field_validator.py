@@ -12,7 +12,7 @@ class FieldValidator:
         self.field_storage = field_storage
 
     def check_field_is_active(self, field_id: str):
-        """Validate that a field exists and is active."""
+        """Validate that a fields exists and is active."""
         field_data = self.field_storage.get_field_by_id(
             field_id=field_id)
 

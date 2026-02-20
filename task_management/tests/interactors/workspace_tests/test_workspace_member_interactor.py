@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedRole
 )
 from task_management.exceptions.enums import  Role
-from task_management.interactors.workspace.workspace_member_interactor import (
+from task_management.interactors.workspaces.workspace_member_interactor import (
     WorkspaceMemberInteractor
 )
 

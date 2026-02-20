@@ -17,18 +17,18 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
                           UserValidationMixin):
     """Workspace Management Business Logic Interactor.
     
-    Handles all workspace-related operations including creation, updating, transferring,
+    Handles all workspaces-related operations including creation, updating, transferring,
     deletion, and retrieval of workspaces. This interactor enforces business
-    rules and validates user permissions before performing any workspace operations.
+    rules and validates user permissions before performing any workspaces operations.
     
     Key Responsibilities:
         - Create new workspaces with validation
-        - Update existing workspace properties
-        - Transfer workspace ownership between users
+        - Update existing workspaces properties
+        - Transfer workspaces ownership between users
         - Delete workspaces with permission checks
-        - Retrieve workspace information
-        - Manage workspace member relationships
-        - Validate workspace names and descriptions
+        - Retrieve workspaces information
+        - Manage workspaces member relationships
+        - Validate workspaces names and descriptions
     
     Dependencies:
         - WorkspaceStorageInterface: Workspace data persistence
@@ -37,7 +37,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
         - UserStorageInterface: User validation and information
     
     Attributes:
-        workspace_storage (WorkspaceStorageInterface): Storage for workspace operations
+        workspace_storage (WorkspaceStorageInterface): Storage for workspaces operations
         account_storage (AccountStorageInterface): Storage for accounts operations
         user_storage (UserStorageInterface): Storage for user operations
     """

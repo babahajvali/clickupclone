@@ -8,7 +8,7 @@ from task_management.graphql.types.error_types import FieldNotFoundType, \
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.field.field_interactor import \
+from task_management.interactors.fields.field_interactor import \
     FieldInteractor
 from task_management.interactors.dtos import UpdateFieldDTO
 from task_management.storages import FieldStorage, TemplateStorage, \

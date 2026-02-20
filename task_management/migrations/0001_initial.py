@@ -84,22 +84,22 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "space",
+                    "spaces",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="space_list",
-                        to="task_management.space",
+                        to="task_management.spaces",
                     ),
                 ),
             ],
         ),
         migrations.AddField(
             model_name="folder",
-            name="space",
+            name="spaces",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="space_folder",
-                to="task_management.space",
+                to="task_management.spaces",
             ),
         ),
         migrations.CreateModel(
@@ -121,11 +121,11 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "list",
+                    "lists",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="list_tasks",
-                        to="task_management.list",
+                        to="task_management.lists",
                     ),
                 ),
             ],
@@ -147,11 +147,11 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "list",
+                    "lists",
                     models.OneToOneField(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="list_template",
-                        to="task_management.list",
+                        to="task_management.lists",
                     ),
                 ),
             ],
@@ -192,11 +192,11 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "template",
+                    "templates",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="field",
-                        to="task_management.template",
+                        related_name="fields",
+                        to="task_management.templates",
                     ),
                 ),
             ],
@@ -261,11 +261,11 @@ class Migration(migrations.Migration):
                 ("is_active", models.BooleanField(default=True)),
                 ("assigned_at", models.DateTimeField(auto_now_add=True)),
                 (
-                    "task",
+                    "tasks",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="task_assignees",
-                        to="task_management.task",
+                        to="task_management.tasks",
                     ),
                 ),
                 (
@@ -289,7 +289,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="task",
+            model_name="tasks",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -316,7 +316,7 @@ class Migration(migrations.Migration):
                     models.CharField(
                         choices=[
                             ("full_edit", "Full Edit"),
-                            ("view", "View"),
+                            ("views", "View"),
                             ("comment", "Comment"),
                         ],
                         max_length=20,
@@ -326,10 +326,10 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "space",
+                    "spaces",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="task_management.space",
+                        to="task_management.spaces",
                     ),
                 ),
                 (
@@ -353,7 +353,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="space",
+            model_name="spaces",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -410,7 +410,7 @@ class Migration(migrations.Migration):
                     models.CharField(
                         choices=[
                             ("full_edit", "Full Edit"),
-                            ("view", "View"),
+                            ("views", "View"),
                             ("comment", "Comment"),
                         ],
                         max_length=20,
@@ -420,10 +420,10 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "list",
+                    "lists",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="task_management.list",
+                        to="task_management.lists",
                     ),
                 ),
                 (
@@ -447,7 +447,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="list",
+            model_name="lists",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -474,7 +474,7 @@ class Migration(migrations.Migration):
                     models.CharField(
                         choices=[
                             ("full_edit", "Full Edit"),
-                            ("view", "View"),
+                            ("views", "View"),
                             ("comment", "Comment"),
                         ],
                         max_length=20,
@@ -537,19 +537,19 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "field",
+                    "fields",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="field_values",
-                        to="task_management.field",
+                        to="task_management.fields",
                     ),
                 ),
                 (
-                    "task",
+                    "tasks",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="task_field_values",
-                        to="task_management.task",
+                        to="task_management.tasks",
                     ),
                 ),
                 (
@@ -565,7 +565,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="field",
+            model_name="fields",
             name="created_by",
             field=models.ForeignKey(
                 blank=True,
@@ -626,10 +626,10 @@ class Migration(migrations.Migration):
                             ("calendar", "Calendar"),
                             ("board", "Board"),
                             ("dashboard", "Dashboard"),
-                            ("list", "List"),
+                            ("lists", "List"),
                             ("gantt", "Gantt"),
                         ],
-                        default="list",
+                        default="lists",
                         max_length=20,
                     ),
                 ),
@@ -662,11 +662,11 @@ class Migration(migrations.Migration):
                 ("is_active", models.BooleanField(default=True)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
-                    "list",
+                    "lists",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="list_views",
-                        to="task_management.list",
+                        to="task_management.lists",
                     ),
                 ),
                 (
@@ -680,10 +680,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "view",
+                    "views",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="task_management.view",
+                        to="task_management.views",
                     ),
                 ),
             ],
@@ -725,12 +725,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="space",
-            name="workspace",
+            model_name="spaces",
+            name="workspaces",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="workspace_space",
-                to="task_management.workspace",
+                to="task_management.workspaces",
             ),
         ),
         migrations.CreateModel(
@@ -780,42 +780,42 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "workspace",
+                    "workspaces",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="task_management.workspace",
+                        to="task_management.workspaces",
                     ),
                 ),
             ],
         ),
         migrations.AddIndex(
-            model_name="task",
+            model_name="tasks",
             index=models.Index(
-                fields=["list", "is_deleted"], name="task_manage_list_id_8cf8d6_idx"
+                fields=["lists", "is_deleted"], name="task_manage_list_id_8cf8d6_idx"
             ),
         ),
         migrations.AddIndex(
-            model_name="list",
-            index=models.Index(fields=["space"], name="task_manage_space_i_d6df48_idx"),
+            model_name="lists",
+            index=models.Index(fields=["spaces"], name="task_manage_space_i_d6df48_idx"),
         ),
         migrations.AddIndex(
-            model_name="list",
+            model_name="lists",
             index=models.Index(
                 fields=["folder"], name="task_manage_folder__ec4265_idx"
             ),
         ),
         migrations.AddIndex(
             model_name="folder",
-            index=models.Index(fields=["space"], name="task_manage_space_i_4c4c72_idx"),
+            index=models.Index(fields=["spaces"], name="task_manage_space_i_4c4c72_idx"),
         ),
         migrations.AddIndex(
             model_name="fieldvalue",
-            index=models.Index(fields=["task"], name="task_manage_task_id_3cc632_idx"),
+            index=models.Index(fields=["tasks"], name="task_manage_task_id_3cc632_idx"),
         ),
         migrations.AddIndex(
-            model_name="field",
+            model_name="fields",
             index=models.Index(
-                fields=["template", "is_active"], name="task_manage_templat_1cda02_idx"
+                fields=["templates", "is_active"], name="task_manage_templat_1cda02_idx"
             ),
         ),
         migrations.AddIndex(
@@ -831,25 +831,25 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddIndex(
-            model_name="workspace",
+            model_name="workspaces",
             index=models.Index(
                 fields=["is_active"], name="task_manage_is_acti_9539d2_idx"
             ),
         ),
         migrations.AddIndex(
-            model_name="workspace",
+            model_name="workspaces",
             index=models.Index(
                 fields=["created_at"], name="task_manage_created_d2dded_idx"
             ),
         ),
         migrations.AddIndex(
-            model_name="space",
+            model_name="spaces",
             index=models.Index(
-                fields=["workspace"], name="task_manage_workspa_73f020_idx"
+                fields=["workspaces"], name="task_manage_workspa_73f020_idx"
             ),
         ),
         migrations.AddIndex(
-            model_name="space",
+            model_name="spaces",
             index=models.Index(
                 fields=["is_active"], name="task_manage_is_acti_6097fb_idx"
             ),

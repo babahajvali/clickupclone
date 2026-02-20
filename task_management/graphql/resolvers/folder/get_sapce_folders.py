@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     InactiveSpaceType
 from task_management.graphql.types.types import FolderType, SpaceFoldersType
-from task_management.interactors.space.folder_interactor import \
+from task_management.interactors.spaces.folder_interactor import \
     FolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage
