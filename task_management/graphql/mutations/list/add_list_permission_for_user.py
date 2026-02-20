@@ -59,9 +59,9 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 permission_type=result.permission_type
             )
 
-        except custom_exceptions.InactiveListException as e:
+        except custom_exceptions.InactiveList as e:
             return InactiveListType(list_id=e.list_id)
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-        except custom_exceptions.UserHaveAlreadyListPermissionException as e:
+        except custom_exceptions.UserHaveAlreadyListPermission as e:
             return UserHaveAlreadyListPermissionType(user_id=e.user_id)

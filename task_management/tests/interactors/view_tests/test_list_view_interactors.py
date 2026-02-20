@@ -13,10 +13,10 @@ from task_management.interactors.storage_interfaces.view_storage_interface impor
     ViewStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    ViewNotFoundException,
-    ListNotFoundException,
-    InactiveListException
+    ModificationNotAllowed,
+    ViewNotFound,
+    ListNotFound,
+    InactiveList
 )
 from task_management.tests.factories.interactor_factory import (
     ListViewDTOFactory,
@@ -75,7 +75,7 @@ class TestListViewInteractor:
             make_permission(Permissions.VIEW)
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -90,7 +90,7 @@ class TestListViewInteractor:
 
         self.view_storage.get_view.return_value = None
 
-        with pytest.raises(ViewNotFoundException) as exc:
+        with pytest.raises(ViewNotFound) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -109,7 +109,7 @@ class TestListViewInteractor:
 
         self.list_storage.get_active_list.return_value = None
 
-        with pytest.raises(ListNotFoundException) as exc:
+        with pytest.raises(ListNotFound) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -130,7 +130,7 @@ class TestListViewInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListException) as exc:
+        with pytest.raises(InactiveList) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -164,7 +164,7 @@ class TestListViewInteractor:
             make_permission(Permissions.VIEW)
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.remove_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -188,7 +188,7 @@ class TestListViewInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListException) as exc:
+        with pytest.raises(InactiveList) as exc:
             self.interactor.get_list_views("list_id")
 
         snapshot.assert_match(repr(exc.value), "get_list_inactive.txt")
@@ -196,7 +196,7 @@ class TestListViewInteractor:
     def test_get_views_for_nonexistent_list_raises_exception(self, snapshot):
         self.list_storage.get_active_list.return_value = None
 
-        with pytest.raises(ListNotFoundException) as exc:
+        with pytest.raises(ListNotFound) as exc:
             self.interactor.get_list_views("list_id")
 
         snapshot.assert_match(repr(exc.value), "get_list_not_found.txt")

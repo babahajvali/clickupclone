@@ -48,5 +48,5 @@ class CreateViewMutation(graphene.Mutation):
                 created_by=result.created_by
             )
 
-        except custom_exceptions.ViewTypeNotFoundException as e:
+        except custom_exceptions.ViewTypeNotFound as e:
             return ViewTypeNotFoundType(view_type=e.view_type)

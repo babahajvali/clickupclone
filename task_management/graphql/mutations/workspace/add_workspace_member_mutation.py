@@ -52,17 +52,17 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
                 added_by=result.added_by
             )
 
-        except custom_exceptions.WorkspaceNotFoundException as e:
+        except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.InactiveWorkspaceException as e:
+        except custom_exceptions.InactiveWorkspace as e:
             return InactiveWorkspaceType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.UserNotFoundException as e:
+        except custom_exceptions.UserNotFound as e:
             return UserNotFoundType(user_id=e.user_id)
 
-        except custom_exceptions.InactiveUserException as e:
+        except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)
 
-        except custom_exceptions.UnexpectedRoleException as e:
+        except custom_exceptions.UnexpectedRole as e:
             return UnexpectedRoleType(role=e.role)

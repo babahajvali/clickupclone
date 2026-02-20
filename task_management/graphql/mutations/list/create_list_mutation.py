@@ -51,7 +51,7 @@ class CreateListMutation(graphene.Mutation):
                 folder_id=params.folder_id if params.folder_id else None
             )
 
-            result = interactor.handel_list(list_data=create_list_data)
+            result = interactor.handle_list_creation(list_data=create_list_data)
 
             return ListType(
                 list_id=result.list_id,
@@ -66,17 +66,17 @@ class CreateListMutation(graphene.Mutation):
             )
 
 
-        except custom_exceptions.SpaceNotFoundException as e:
+        except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.InactiveSpaceException as e:
+        except custom_exceptions.InactiveSpace as e:
             return InactiveSpaceType(space_id=e.space_id)
 
-        except custom_exceptions.FolderNotFoundException as e:
+        except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.InactiveFolderException as e:
+        except custom_exceptions.InactiveFolder as e:
             return InactiveFolderType(folder_id=e.folder_id)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

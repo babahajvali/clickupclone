@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    TemplateNotFoundException
+    TemplateNotFound
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface
 
@@ -16,4 +16,4 @@ class TemplateValidationMixin:
 
         is_template_not_found = not is_exists
         if is_template_not_found:
-            raise TemplateNotFoundException(template_id=template_id)
+            raise TemplateNotFound(template_id=template_id)

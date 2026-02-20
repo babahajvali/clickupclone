@@ -61,14 +61,14 @@ class TransferWorkspaceMutation(graphene.Mutation):
                 is_active=result.is_active
             )
 
-        except custom_exceptions.WorkspaceNotFoundException as e:
+        except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.UserNotWorkspaceOwnerException as e:
+        except custom_exceptions.UserNotWorkspaceOwner as e:
             return UserNotWorkspaceOwnerType(user_id=e.user_id)
 
-        except custom_exceptions.UserNotFoundException as e:
+        except custom_exceptions.UserNotFound as e:
             return UserNotFoundType(user_id=e.user_id)
 
-        except custom_exceptions.InactiveUserException as e:
+        except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)

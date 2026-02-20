@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldValueDTO, TaskFieldValueDTO, TaskFieldValuesDTO, \
@@ -8,21 +9,25 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
 class FieldStorageInterface(ABC):
 
     @abstractmethod
-    def create_field(self, create_field_data: CreateFieldDTO,
-                     order: int) -> FieldDTO:
+    def create_field(
+            self, create_field_data: CreateFieldDTO,
+            order: int) -> FieldDTO:
         pass
 
     @abstractmethod
-    def is_field_name_exists(self, field_name: str, template_id: str) -> bool:
+    def is_field_name_exists(
+            self, field_name: str, template_id: str,
+            exclude_field_id: Optional[str]) -> bool:
         pass
 
     @abstractmethod
-    def get_active_field_by_id(self, field_id: str) -> FieldDTO:
+    def get_field_by_id(self, field_id: str) -> FieldDTO:
         pass
 
     @abstractmethod
-    def update_field(self, field_id: str,
-                     update_field_data: UpdateFieldDTO) -> FieldDTO:
+    def update_field(
+            self, field_id: str, update_field_data: UpdateFieldDTO) \
+            -> FieldDTO:
         pass
 
     @abstractmethod
@@ -30,13 +35,13 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_field_name_except_this_field(self, field_id: str,
-                                           field_name: str,
-                                           template_id: str) -> bool:
+    def check_field_name_except_this_field(
+            self, field_id: str, field_name: str, template_id: str) -> bool:
         pass
 
     @abstractmethod
-    def get_field_by_name(self, field_name: str, template_id: str) -> FieldDTO:
+    def get_field_by_name(
+            self, field_name: str, template_id: str) -> FieldDTO:
         pass
 
     @abstractmethod

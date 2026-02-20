@@ -3,8 +3,8 @@ from django.conf import settings
 
 from task_management.email_service.email_service import EmailService
 from task_management.exceptions.custom_exceptions import \
-    EmailNotFoundException, InvalidResetTokenException, \
-    ResetTokenExpiredException
+    EmailNotFound, InvalidResetToken, \
+    ResetTokenExpired
 from task_management.graphql.types.error_types import EmailNotFound, \
     InvalidResetToken, ResetTokenExpired
 from task_management.graphql.types.input_types import ForgotPasswordReqParams, \
@@ -59,7 +59,7 @@ class ForgotPasswordMutation(graphene.Mutation):
                     message="Failed to send email. Please try again later."
                 )
 
-        except EmailNotFoundException as e:
+        except EmailNotFound as e:
             return EmailNotFound(email=e.email)
 
         except Exception as e:
@@ -102,8 +102,8 @@ class ResetPasswordMutation(graphene.Mutation):
                 image_url=result.image_url
             )
 
-        except InvalidResetTokenException as e:
+        except InvalidResetToken as e:
             return InvalidResetToken(token=e.token)
 
-        except ResetTokenExpiredException as e:
+        except ResetTokenExpired as e:
             return ResetTokenExpired(token=e.token)

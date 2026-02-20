@@ -2,8 +2,8 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    UserNotFoundException,
-    InactiveUserException,  # use your actual exception name
+    UserNotFound,
+    InactiveUser,  # use your actual exception name
 )
 from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import UserDTO
@@ -52,7 +52,7 @@ class TestGetUserProfile:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(UserNotFoundException) as exc:
+        with pytest.raises(UserNotFound) as exc:
             interactor.get_user_profile(user_id="user123")
 
         snapshot.assert_match(
@@ -79,7 +79,7 @@ class TestGetUserProfile:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(InactiveUserException) as exc:
+        with pytest.raises(InactiveUser) as exc:
             interactor.get_user_profile(user_id="user123")
 
         snapshot.assert_match(

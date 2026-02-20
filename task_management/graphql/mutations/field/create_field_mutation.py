@@ -62,26 +62,26 @@ class CreateFieldMutation(graphene.Mutation):
                 created_by=result.created_by
             )
 
-        except custom_exceptions.TemplateNotFoundException as e:
+        except custom_exceptions.TemplateNotFound as e:
             return TemplateNotFoundType(template_id=e.template_id)
 
-        except custom_exceptions.UnsupportedFieldTypeException as e:
+        except custom_exceptions.UnsupportedFieldType as e:
             return UnsupportedFieldTypeType(field_type=e.field_type)
 
-        except custom_exceptions.FieldNameAlreadyExistsException as e:
+        except custom_exceptions.FieldNameAlreadyExists as e:
             return FieldNameAlreadyExistsType(field_name=e.field_name)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.InvalidFieldConfigException as e:
+        except custom_exceptions.InvalidFieldConfig as e:
             return InvalidFieldConfigType(
                 field_type=e.field_type,
                 invalid_keys=e.invalid_keys,
                 message=e.message
             )
 
-        except custom_exceptions.InvalidFieldDefaultValueException as e:
+        except custom_exceptions.InvalidFieldDefaultValue as e:
             return InvalidFieldDefaultValueType(
                 field_type=e.field_type,
                 default_value=e.default_value,

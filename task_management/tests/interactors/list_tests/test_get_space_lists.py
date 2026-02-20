@@ -4,8 +4,8 @@ from unittest.mock import create_autospec, patch
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    SpaceNotFoundException,
-    InactiveSpaceException,
+    SpaceNotFound,
+    InactiveSpace,
 )
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -42,7 +42,7 @@ class TestGetSpaceLists:
         with patch("django.core.cache.cache.get", return_value=None):
             self.interactor.space_storage.get_space.return_value = None
 
-            with pytest.raises(SpaceNotFoundException) as exc:
+            with pytest.raises(SpaceNotFound) as exc:
                 self.interactor.get_active_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
@@ -53,7 +53,7 @@ class TestGetSpaceLists:
                 "Space", (), {"is_active": False}
             )()
 
-            with pytest.raises(InactiveSpaceException) as exc:
+            with pytest.raises(InactiveSpace) as exc:
                 self.interactor.get_active_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")

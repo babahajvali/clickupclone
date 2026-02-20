@@ -4,8 +4,8 @@ from unittest.mock import create_autospec, patch
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    FolderNotFoundException,
-    InactiveFolderException,
+    FolderNotFound,
+    InactiveFolder,
 )
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -45,7 +45,7 @@ class TestGetFolderLists:
     def test_folder_not_found(self, snapshot):
         with patch("django.core.cache.cache.get", return_value=None):
             self.interactor.folder_storage.get_folder.return_value = None
-            with pytest.raises(FolderNotFoundException) as exc:
+            with pytest.raises(FolderNotFound) as exc:
                 self.interactor.get_active_folder_lists("folder_1")
 
         snapshot.assert_match(
@@ -58,7 +58,7 @@ class TestGetFolderLists:
             self.interactor.folder_storage.get_folder.return_value = type(
                 "Folder", (), {"is_active": False}
             )()
-            with pytest.raises(InactiveFolderException) as exc:
+            with pytest.raises(InactiveFolder) as exc:
                 self.interactor.get_active_folder_lists("folder_1")
 
         snapshot.assert_match(

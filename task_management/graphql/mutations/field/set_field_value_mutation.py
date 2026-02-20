@@ -49,8 +49,8 @@ class SetFieldValueMutation(graphene.Mutation):
                 value=result.value
             )
 
-        except custom_exceptions.ModificationNotAllowedException as exc:
+        except custom_exceptions.ModificationNotAllowed as exc:
             return ModificationNotAllowedType(user_id=exc.user_id)
 
-        except custom_exceptions.InvalidFieldValueException as e:
+        except custom_exceptions.InvalidFieldValue as e:
             return InvalidFieldValue(message=e.message)

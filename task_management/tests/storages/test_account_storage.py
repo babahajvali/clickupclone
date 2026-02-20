@@ -16,7 +16,7 @@ class TestAccountStorage:
         AccountFactory(
             account_id=account_id,
             name="Test Account",
-            description="Test account description",  # Fixed description
+            description="Test accounts description",  # Fixed description
             owner=owner
         )
         storage = AccountStorage()
@@ -76,7 +76,7 @@ class TestAccountStorage:
         owner_id = "12345678-1234-5678-1234-567812345678"
         owner = UserFactory(user_id=owner_id)
         name = "New Account"
-        description = "New account description"
+        description = "New accounts description"
         owner_id = str(owner_id)
 
         storage = AccountStorage()
@@ -87,7 +87,7 @@ class TestAccountStorage:
 
         # Assert - Test what matters
         assert result.name == "New Account"
-        assert result.description == "New account description"
+        assert result.description == "New accounts description"
         assert str(result.owner_id) == owner_id
 
     @pytest.mark.django_db
@@ -99,7 +99,7 @@ class TestAccountStorage:
         AccountFactory(
             account_id=account_id,
             name="Delete Account",  # Fixed name
-            description="Delete account description",  # Fixed description
+            description="Delete accounts description",  # Fixed description
             owner=owner,
             is_active=True
         )

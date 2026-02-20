@@ -2,9 +2,9 @@ from typing import Optional
 
 from django.db import transaction
 
-from task_management.interactors.account.account_interactor import \
+from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
-from task_management.interactors.dtos import CreateWorkspaceDTO
+from task_management.interactors.dtos import CreateWorkspaceDTO, AccountDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, \
@@ -17,7 +17,7 @@ from task_management.interactors.workspace.workspace_interactor import \
 
 class AccountOnboardingHandler:
     """
-    This Handler handle the create the account along with
+    This Handler handle the create the accounts along with
         default workspace and space, list...
 
     """
@@ -42,7 +42,10 @@ class AccountOnboardingHandler:
         self.view_storage = view_storage
 
     @transaction.atomic
-    def handle(self, name: str, created_by: str, description: Optional[str]):
+    def handle_account_onboarding(
+            self, name: str, created_by: str, description: Optional[str])\
+            -> AccountDTO:
+
         account_data = self._create_account(name=name, created_by=created_by,
                                             description=description)
 
@@ -51,8 +54,8 @@ class AccountOnboardingHandler:
 
     def _create_account(self, name: str, created_by: str,
                         description: Optional[str]):
-        """ First create the account interactor
-        and the create account based on input data"""
+        """ First create the accounts interactor
+        and the create accounts based on input data"""
         account_interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,

@@ -51,14 +51,14 @@ def task_filter_resolver(root, info, params):
     except ObjectDoesNotExist:
         return ModificationNotAllowedType(user_id=params.user_id)
 
-    except custom_exceptions.ListNotFoundException as e:
+    except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
 
-    except custom_exceptions.InactiveListException as e:
+    except custom_exceptions.InactiveList as e:
         return InactiveListType(list_id=e.list_id)
 
-    except custom_exceptions.InvalidOffsetException as e:
+    except custom_exceptions.InvalidOffset as e:
         return InvalidOffset(offset=e.offset)
 
-    except custom_exceptions.InvalidLimitException as e:
+    except custom_exceptions.InvalidLimit as e:
         return InvalidLimitType(limit=e.limit)

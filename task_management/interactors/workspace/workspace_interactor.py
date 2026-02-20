@@ -3,8 +3,8 @@ from typing import Optional
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    NothingToUpdateWorkspaceException, EmptyNameException, \
-    InvalidWorkspaceIdsFoundException
+    NothingToUpdateWorkspace, EmptyName, \
+    InvalidWorkspaceIdsFound
 from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, AccountStorageInterface, \
@@ -38,7 +38,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
     
     Attributes:
         workspace_storage (WorkspaceStorageInterface): Storage for workspace operations
-        account_storage (AccountStorageInterface): Storage for account operations
+        account_storage (AccountStorageInterface): Storage for accounts operations
         user_storage (UserStorageInterface): Storage for user operations
     """
 
@@ -71,8 +71,8 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
             self, workspace_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> WorkspaceDTO:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_is_workspace_owner(
+        self.check_workspace_is_active(workspace_id=workspace_id)
+        self.check_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)
         has_name_provided = name is not None
         has_description_provided = description is not None
@@ -85,7 +85,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
             field_properties_to_update['description'] = description
 
         if not field_properties_to_update:
-            raise NothingToUpdateWorkspaceException(workspace_id=workspace_id)
+            raise NothingToUpdateWorkspace(workspace_id=workspace_id)
 
         return self.workspace_storage.update_workspace(
             workspace_id=workspace_id, field_properties=field_properties_to_update)
@@ -94,8 +94,8 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
     def delete_workspace(self, workspace_id: str,
                          user_id: str) -> WorkspaceDTO:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_is_workspace_owner(
+        self.check_workspace_is_active(workspace_id=workspace_id)
+        self.check_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)
 
         return self.workspace_storage.delete_workspace(
@@ -105,8 +105,8 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
     def transfer_workspace(self, workspace_id: str, user_id: str,
                            new_user_id: str) -> WorkspaceDTO:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_is_workspace_owner(
+        self.check_workspace_is_active(workspace_id=workspace_id)
+        self.check_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)
         self.check_user_is_active(user_id=new_user_id)
 
@@ -132,7 +132,7 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
         is_name_empty = not workspace_name or not workspace_name.strip()
 
         if is_name_empty:
-            raise EmptyNameException(name=workspace_name)
+            raise EmptyName(name=workspace_name)
 
     def check_workspace_ids(self, workspace_ids: list[str]):
 
@@ -144,5 +144,5 @@ class WorkspaceInteractor(AccountValidationMixin, WorkspaceValidationMixin,
                                  if workspace_id not in existed_workspace_ids]
 
         if invalid_workspace_ids:
-            raise InvalidWorkspaceIdsFoundException(
+            raise InvalidWorkspaceIdsFound(
                 workspace_ids=invalid_workspace_ids)

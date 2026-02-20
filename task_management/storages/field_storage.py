@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import F
@@ -28,7 +30,8 @@ class FieldStorage(FieldStorageInterface):
             created_by=field_data.created_by_id,
         )
 
-    def create_field(self, create_field_data: CreateFieldDTO, order: int) -> FieldDTO:
+    def create_field(self, create_field_data: CreateFieldDTO,
+                     order: int) -> FieldDTO:
 
         field_data = Field.objects.create(
             field_name=create_field_data.field_name,
@@ -43,11 +46,17 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def is_field_name_exists(self, field_name: str, template_id: str) -> bool:
-        return Field.objects.filter(field_name=field_name,
-                                    template_id=template_id).exists()
+    def is_field_name_exists(self, field_name: str, template_id: str,
+                             exclude_field_id: Optional[str]) -> bool:
+        field_data = Field.objects.filter(
+            field_name=field_name, template_id=template_id)
 
-    def get_active_field_by_id(self, field_id: str) -> FieldDTO | None:
+        if exclude_field_id:
+            field_data = field_data.exclude(field_id=exclude_field_id)
+
+        return field_data.exists()
+
+    def get_field_by_id(self, field_id: str) -> FieldDTO | None:
         try:
             field_data = Field.objects.get(field_id=field_id, is_active=True)
             return self._field_dto(field_data=field_data)
@@ -87,11 +96,15 @@ class FieldStorage(FieldStorageInterface):
                                        template_id=template_id)
         return self._field_dto(field_data=field_data)
 
-    def get_active_fields_for_template(self, template_id: str) -> list[FieldDTO]:
-        fields_data = Field.objects.filter(template_id=template_id,
-                                           is_active=True)
-        return [self._field_dto(field_data=field_data) for field_data in
-                fields_data]
+    def get_active_fields_for_template(self, template_id: str) -> list[
+        FieldDTO]:
+        fields_data = Field.objects.filter(
+            template_id=template_id, is_active=True
+        )
+        return [
+            self._field_dto(field_data=field_data)
+            for field_data in fields_data
+        ]
 
     @transaction.atomic
     def reorder_fields(self, field_id: str, template_id: str,
@@ -139,7 +152,8 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[
+        FieldDTO]:
         fields_to_create = [
             Field(
                 field_name=field_data.field_name,
@@ -157,7 +171,8 @@ class FieldStorage(FieldStorageInterface):
         created_fields = Field.objects.bulk_create(fields_to_create)
         return [self._field_dto(field) for field in created_fields]
 
-    def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
+    def set_task_field_value(self,
+                             field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
         field_value_obj = FieldValue.objects.get(
             task_id=field_value_data.task_id,
             field_id=field_value_data.field_id)
@@ -171,7 +186,8 @@ class FieldStorage(FieldStorageInterface):
             value=field_value_obj.value,
         )
 
-    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
+    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
+        TaskFieldValuesDTO]:
         field_values = FieldValue.objects.filter(task_id__in=task_ids)
 
         task_values_map = {}
@@ -196,7 +212,8 @@ class FieldStorage(FieldStorageInterface):
             for task_id in task_ids
         ]
 
-    def create_bulk_field_values(self, create_bulk_field_values: list[CreateFieldValueDTO]):
+    def create_bulk_field_values(self, create_bulk_field_values: list[
+        CreateFieldValueDTO]):
         field_values_to_create = [
             FieldValue(
                 task_id=fv_data.task_id,

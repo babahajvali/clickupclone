@@ -30,12 +30,12 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(Workspace)
 class WorkspaceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'workspace_id', 'account', 'created_by',
+    list_display = ('name', 'workspace_id', 'accounts', 'created_by',
                     'is_active', 'created_at')
     list_filter = ('is_active', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('workspace_id', 'created_at', 'updated_at')
-    raw_id_fields = ('account', 'created_by')
+    raw_id_fields = ('accounts', 'created_by')
 
 
 @admin.register(WorkspaceMember)

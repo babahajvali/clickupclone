@@ -41,8 +41,8 @@ def get_folder_lists_resolver(root, info, params):
 
         return ListsType(lists=result)
 
-    except custom_exceptions.FolderNotFoundException as e:
+    except custom_exceptions.FolderNotFound as e:
         return FolderNotFoundType(folder_id=e.folder_id)
 
-    except custom_exceptions.InactiveFolderException as e:
+    except custom_exceptions.InactiveFolder as e:
         return InactiveFolderType(folder_id=e.folder_id)

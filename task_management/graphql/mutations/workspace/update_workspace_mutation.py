@@ -54,12 +54,12 @@ class UpdateWorkspaceMutation(graphene.Mutation):
                 is_active=result.is_active
             )
 
-        except custom_exceptions.WorkspaceNotFoundException as e:
+        except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.InactiveWorkspaceException as e:
+        except custom_exceptions.InactiveWorkspace as e:
             return InactiveWorkspaceType(workspace_id=e.workspace_id)
 
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

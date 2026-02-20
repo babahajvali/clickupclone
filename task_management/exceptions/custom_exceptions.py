@@ -1,49 +1,49 @@
-class UserNotFoundException(Exception):
+class UserNotFound(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class EmptyNameException(Exception):
+class EmptyName(Exception):
     def __init__(self, name: str):
         self.name = name
 
 
-class InactiveUserException(Exception):
+class InactiveUser(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class TemplateNotFoundException(Exception):
+class TemplateNotFound(Exception):
     def __init__(self, template_id: str):
         self.template_id = template_id
 
 
-class UnsupportedFieldTypeException(Exception):
+class UnsupportedFieldType(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
 
-class FieldNameAlreadyExistsException(Exception):
+class FieldNameAlreadyExists(Exception):
     def __init__(self, field_name: str):
         self.field_name = field_name
 
 
-class InactiveFieldException(Exception):
+class InactiveField(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
 
 
-class ModificationNotAllowedException(Exception):
+class ModificationNotAllowed(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class FieldNotFoundException(Exception):
+class FieldNotFound(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
 
 
-class InvalidFieldConfigException(Exception):
+class InvalidFieldConfig(Exception):
     def __init__(
             self,
             field_type: str,
@@ -63,15 +63,16 @@ class InvalidFieldConfigException(Exception):
         else:
             self.message = f"Invalid config for field type '{field_type}'."
 
-        super().__init__(self.message)
+    def __str__(self):
+        return self.message
 
 
-class DropdownOptionsMissingException(Exception):
+class DropdownOptionsMissing(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
 
-class InvalidFieldDefaultValueException(Exception):
+class InvalidFieldDefaultValue(Exception):
     def __init__(
             self, field_type: str, default_value=None,
             message: str | None = None):
@@ -87,181 +88,177 @@ class InvalidFieldDefaultValueException(Exception):
                 f"for field type '{field_type}'."
             )
 
-        super().__init__(self.message)
+    def __str__(self):
+        return self.message
 
 
-class TemplateNameAlreadyExistsException(Exception):
-    def __init__(self, template_name: str):
-        self.template_name = template_name
-
-
-class ListNotFoundException(Exception):
+class ListNotFound(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
 
-class UserListPermissionNotFoundException(Exception):
+class UserListPermissionNotFound(Exception):
     def __init__(self, user_id: str, list_id: str):
         self.user_id = user_id
         self.list_id = list_id
 
 
-class InactiveUserListPermissionException(Exception):
+class InactiveUserListPermission(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class UserHaveAlreadyListPermissionException(Exception):
+class UserHaveAlreadyListPermission(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class TaskNotFoundException(Exception):
+class TaskNotFound(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
 
 
-class TaskAssigneeNotFoundException(Exception):
+class TaskAssigneeNotFound(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
 
 
-class InActiveTaskAssigneeFoundException(Exception):
+class InActiveTaskAssigneeFound(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
 
 
-class DeletedTaskException(Exception):
+class DeletedTaskFound(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
 
 
-class InactiveListException(Exception):
+class InactiveList(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
 
-class SpaceNotFoundException(Exception):
+class SpaceNotFound(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
 
-class InactiveSpaceException(Exception):
+class InactiveSpace(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
 
-class FolderNotFoundException(Exception):
+class FolderNotFound(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 
 
-class InactiveFolderException(Exception):
+class InactiveFolder(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 
 
-class ViewTypeNotFoundException(Exception):
+class ViewTypeNotFound(Exception):
     def __init__(self, view_type: str):
         self.view_type = view_type
 
 
-class ViewNotFoundException(Exception):
+class ViewNotFound(Exception):
     def __init__(self, view_id: str):
         self.view_id = view_id
 
 
-class WorkspaceNotFoundException(Exception):
+class WorkspaceNotFound(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
 
-class InvalidWorkspaceIdsFoundException(Exception):
+class InvalidWorkspaceIdsFound(Exception):
     def __init__(self, workspace_ids: list[str]):
         self.workspace_ids = workspace_ids
 
 
-class InactiveWorkspaceException(Exception):
+class InactiveWorkspace(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
 
-class UserNotWorkspaceOwnerException(Exception):
+class UserNotWorkspaceOwner(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class UnsupportedVisibilityTypeException(Exception):
+class UnsupportedVisibilityType(Exception):
     def __init__(self, visibility_type: str):
         self.visibility_type = visibility_type
 
 
-class UnexpectedRoleException(Exception):
+class UnexpectedRole(Exception):
     def __init__(self, role: str):
         self.role = role
 
 
-class UnexpectedPermissionException(Exception):
+class UnexpectedPermission(Exception):
     def __init__(self, permission: str):
         self.permission = permission
 
 
-class EmailNotFoundException(Exception):
+class EmailNotFound(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class IncorrectPasswordException(Exception):
+class IncorrectPassword(Exception):
     def __init__(self, password: str):
         self.password = password
 
 
-class UsernameAlreadyExistsException(Exception):
+class UsernameAlreadyExists(Exception):
     def __init__(self, username: str):
         self.username = username
 
 
-class EmailAlreadyExistsException(Exception):
+class EmailAlreadyExists(Exception):
     def __init__(self, email: str):
         self.email = email
 
 
-class PhoneNumberAlreadyExistsException(Exception):
+class PhoneNumberAlreadyExists(Exception):
     def __init__(self, phone_number: str):
         self.phone_number = phone_number
 
 
-class UsernameNotFoundException(Exception):
+class UsernameNotFound(Exception):
     def __init__(self, username: str):
         self.username = username
 
 
-class InvalidOffsetException(Exception):
+class InvalidOffset(Exception):
     def __init__(self, offset: int):
         self.offset = offset
 
 
-class InvalidLimitException(Exception):
+class InvalidLimit(Exception):
     def __init__(self, limit: int):
         self.limit = limit
 
 
-class InvalidOrderException(Exception):
+class InvalidOrder(Exception):
     def __init__(self, order: int):
         self.order = order
 
 
-class UserNotWorkspaceMemberException(Exception):
+class UserNotWorkspaceMember(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class WorkspaceMemberNotFoundException(Exception):
+class WorkspaceMemberIdNotFound(Exception):
     def __init__(self, workspace_member_id: int):
         self.workspace_member_id = workspace_member_id
 
 
-class InactiveWorkspaceMemberException(Exception):
+class InactiveWorkspaceMember(Exception):
     def __init__(self, workspace_member_id: int):
         self.workspace_member_id = workspace_member_id
 
@@ -272,32 +269,32 @@ class WorkspaceMemberNotFound(Exception):
         self.user_id = user_id
 
 
-class AccountNameAlreadyExistsException(Exception):
+class AccountNameAlreadyExists(Exception):
     def __init__(self, name: str):
         self.name = name
 
 
-class NothingToUpdateAccountException(Exception):
+class NothingToUpdateAccount(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
 
 
-class NothingToUpdateWorkspaceException(Exception):
+class NothingToUpdateWorkspace(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
 
-class NothingToUpdateFieldException(Exception):
+class NothingToUpdateField(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
 
 
-class NothingToUpdateTemplateException(Exception):
+class NothingToUpdateTemplate(Exception):
     def __init__(self, template_id: str):
         self.template_id = template_id
 
 
-class NothingToUpdateListException(Exception):
+class NothingToUpdateList(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -307,79 +304,83 @@ class NothingToUpdateFolderException(Exception):
         self.folder_id = folder_id
 
 
-class NothingToUpdateSpaceException(Exception):
+class NothingToUpdateSpace(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
 
-class NothingToUpdateTaskException(Exception):
+class NothingToUpdateTask(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
 
 
-class NothingToUpdateViewException(Exception):
+class NothingToUpdateView(Exception):
     def __init__(self, view_id: str):
         self.view_id = view_id
 
 
-class AccountNotFoundException(Exception):
+class AccountNotFound(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
 
 
-class InvalidAccountIdsException(Exception):
+class InvalidAccountIds(Exception):
     def __init__(self, account_ids: list[str]):
         self.account_ids = account_ids
 
 
-class InactiveAccountIdsException(Exception):
+class InactiveAccountIds(Exception):
     def __init__(self, account_ids: list[str]):
         self.account_ids = account_ids
 
 
-class InactiveAccountException(Exception):
+class InactiveAccount(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
 
 
-class UserNotAccountOwnerException(Exception):
+class UserNotAccountOwner(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class UserDoesNotHaveAccountPermissionException(Exception):
+class UserDoesNotHaveAccountPermission(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
 
-class ListViewNotFoundException(Exception):
+class ListViewNotFound(Exception):
     def __init__(self, list_id: str, view_id: str):
         self.list_id = list_id
         self.view_id = view_id
 
 
-class AccountMemberNotFoundException(Exception):
+class AccountMemberNotFound(Exception):
     def __init__(self, account_member_id: int):
         self.account_member_id = account_member_id
 
 
-class InvalidResetTokenException(Exception):
+class InvalidResetToken(Exception):
     def __init__(self, token: str):
         self.token = token
-        super().__init__(f"Invalid or expired reset token: {token}")
+
+    def __str__(self):
+        return f"Invalid or expired reset token: {self.token}"
 
 
-class ResetTokenExpiredException(Exception):
+class ResetTokenExpired(Exception):
     def __init__(self, token: str):
         self.token = token
-        super().__init__(f"Reset token has expired: {token}")
+
+    def __str__(self):
+        return f"Invalid or expired reset token: {self.token}"
 
 
-class MissingFieldConfigException(Exception):
+class MissingFieldConfig(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
 
-class InvalidFieldValueException(Exception):
+class InvalidFieldValue(Exception):
     def __init__(self, message: str):
         self.message = message

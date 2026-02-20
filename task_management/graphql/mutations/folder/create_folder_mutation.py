@@ -55,11 +55,11 @@ class CreateFolderMutation(graphene.Mutation):
                 is_private=result.is_private
             )
 
-        except custom_exceptions.SpaceNotFoundException as e:
+        except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.InactiveSpaceException as e:
+        except custom_exceptions.InactiveSpace as e:
             return InactiveSpaceType(space_id=e.space_id)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

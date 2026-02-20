@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec, Mock
 
-from task_management.interactors.account.account_interactor import \
+from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
 from task_management.interactors.storage_interfaces.account_storage_interface import (
     AccountStorageInterface
@@ -10,10 +10,10 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
     UserStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    AccountNameAlreadyExistsException, UserNotAccountOwnerException,
-    EmptyNameException, UserNotFoundException, InactiveUserException,
-    AccountNotFoundException, InactiveAccountException,
-    NothingToUpdateAccountException, InvalidAccountIdsException
+    AccountNameAlreadyExists, UserNotAccountOwner,
+    EmptyName, UserNotFound, InactiveUser,
+    AccountNotFound, InactiveAccount,
+    NothingToUpdateAccount, InvalidAccountIds
 )
 from task_management.tests.factories.interactor_factory import \
     AccountDTOFactory
@@ -48,7 +48,7 @@ class TestAccountInteractor:
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.get_account_by_name.return_value = False
+        self.account_storage.is_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
         self.interactor._create_workspace = Mock()
 
@@ -65,10 +65,10 @@ class TestAccountInteractor:
     def test_create_account_name_already_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.get_account_by_name.return_value = type(
+        self.account_storage.is_name_exists.return_value = type(
             "Account", (), {"is_active": True, "owner_id": owner_id})
 
-        with pytest.raises(AccountNameAlreadyExistsException) as exc:
+        with pytest.raises(AccountNameAlreadyExists) as exc:
             self.interactor.create_account(
                 name="Sample Account",
                 description="Sample Account description",
@@ -81,10 +81,10 @@ class TestAccountInteractor:
 
     def test_empty_account_name_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
-        self.account_storage.get_account_by_name.return_value = None
+        self.account_storage.is_name_exists.return_value = None
         account_name = ""
 
-        with pytest.raises(EmptyNameException) as exc:
+        with pytest.raises(EmptyName) as exc:
             self.interactor.create_account(
                 name=account_name,
                 description="Sample Account description",
@@ -97,7 +97,7 @@ class TestAccountInteractor:
     def test_create_account_whitespace_name(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        with pytest.raises(EmptyNameException) as exc:
+        with pytest.raises(EmptyName) as exc:
             self.interactor.create_account(
                 name="   ",
                 description="desc",
@@ -112,7 +112,7 @@ class TestAccountInteractor:
 
         self.user_storage.get_user_data.return_value = None
 
-        with pytest.raises(UserNotFoundException) as exc:
+        with pytest.raises(UserNotFound) as exc:
             self.interactor.create_account(
                 name="Sample Account",
                 description="Sample Account description",
@@ -127,7 +127,7 @@ class TestAccountInteractor:
         self.user_storage.get_user_data.return_value = type('user', (), {
             "is_active": False})()
 
-        with pytest.raises(InactiveUserException) as e:
+        with pytest.raises(InactiveUser) as e:
             self.interactor.create_account(
                 name="Sample Account",
                 description="Sample Account description",
@@ -142,7 +142,7 @@ class TestAccountInteractor:
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.get_account_by_name.return_value = False
+        self.account_storage.is_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
 
         result = self.interactor.create_account(
@@ -161,12 +161,12 @@ class TestAccountInteractor:
     def test_update_account_name_success(self, snapshot):
         from django.core.exceptions import ObjectDoesNotExist
 
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.get_account_by_name.side_effect = ObjectDoesNotExist
+        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -180,7 +180,7 @@ class TestAccountInteractor:
         snapshot.assert_match(repr(result), "update_account_name_success.txt")
 
     def test_update_account_description_success(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
@@ -201,12 +201,12 @@ class TestAccountInteractor:
     def test_update_account_both_fields_success(self, snapshot):
         from django.core.exceptions import ObjectDoesNotExist
 
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.get_account_by_name.side_effect = ObjectDoesNotExist
+        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -221,13 +221,13 @@ class TestAccountInteractor:
                               "update_account_both_fields_success.txt")
 
     def test_update_account_nothing_to_update(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
 
-        with pytest.raises(NothingToUpdateAccountException) as exc:
+        with pytest.raises(NothingToUpdateAccount) as exc:
             self.interactor.update_account(
                 account_id=account_id,
                 user_id=owner_id,
@@ -239,15 +239,15 @@ class TestAccountInteractor:
                               "update_account_nothing_to_update.txt")
 
     def test_update_account_name_already_exists(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        # Returns a *different* account with the same name
-        self.account_storage.get_account_by_name.return_value = "different-account-id"
+        # Returns a *different* accounts with the same name
+        self.account_storage.is_name_exists.return_value = "different-accounts-id"
 
-        with pytest.raises(AccountNameAlreadyExistsException) as exc:
+        with pytest.raises(AccountNameAlreadyExists) as exc:
             self.interactor.update_account(
                 account_id=account_id,
                 user_id=owner_id,
@@ -259,14 +259,14 @@ class TestAccountInteractor:
                               "update_account_name_already_exists.txt")
 
     def test_update_account_non_owner(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "actual-owner"
         other_user = "intruder-user"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
 
-        with pytest.raises(UserNotAccountOwnerException) as exc:
+        with pytest.raises(UserNotAccountOwner) as exc:
             self.interactor.update_account(
                 account_id=account_id,
                 user_id=other_user,
@@ -278,12 +278,12 @@ class TestAccountInteractor:
                               "update_account_non_owner.txt")
 
     def test_update_account_not_found(self, snapshot):
-        account_id = "non-existent-account"
+        account_id = "non-existent-accounts"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = None
 
-        with pytest.raises(AccountNotFoundException) as exc:
+        with pytest.raises(AccountNotFound) as exc:
             self.interactor.update_account(
                 account_id=account_id,
                 user_id=owner_id,
@@ -295,13 +295,13 @@ class TestAccountInteractor:
                               "update_account_not_found.txt")
 
     def test_update_account_inactive(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id, is_active=False)
 
-        with pytest.raises(InactiveAccountException) as exc:
+        with pytest.raises(InactiveAccount) as exc:
             self.interactor.update_account(
                 account_id=account_id,
                 user_id=owner_id,
@@ -317,7 +317,7 @@ class TestAccountInteractor:
     # ------------------------------------------------------------------ #
 
     def test_delete_account_success(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
@@ -334,37 +334,37 @@ class TestAccountInteractor:
         )
 
     def test_account_not_found(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "12345678-1234-5678-1234-567812345678"
 
         self.account_storage.get_account_by_id.return_value = None
-        with pytest.raises(AccountNotFoundException) as e:
+        with pytest.raises(AccountNotFound) as e:
             self.interactor.delete_account(account_id=account_id,
                                            deleted_by=owner_id)
 
         snapshot.assert_match(repr(e.value), 'account_not_found.txt')
 
     def test_inactive_account_exists(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "12345678-1234-5678-1234-567812345678"
 
         self.account_storage.get_account_by_id.return_value = type(
-            'account', (), {'is_active': False})()
+            'accounts', (), {'is_active': False})()
 
-        with pytest.raises(InactiveAccountException) as e:
+        with pytest.raises(InactiveAccount) as e:
             self.interactor.delete_account(account_id=account_id,
                                            deleted_by=owner_id)
 
         snapshot.assert_match(repr(e.value), 'inactive_account_exists.txt')
 
     def test_delete_account_non_owner(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         user_id = "user-999"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             "some-other-user")
 
-        with pytest.raises(UserNotAccountOwnerException) as exc:
+        with pytest.raises(UserNotAccountOwner) as exc:
             self.interactor.delete_account(
                 account_id=account_id,
                 deleted_by=user_id
@@ -380,7 +380,7 @@ class TestAccountInteractor:
     # ------------------------------------------------------------------ #
 
     def test_deactivate_account_success(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
@@ -399,7 +399,7 @@ class TestAccountInteractor:
 
         self.account_storage.get_account_by_id.return_value = None
 
-        with pytest.raises(AccountNotFoundException) as exc:
+        with pytest.raises(AccountNotFound) as exc:
             self.interactor.deactivate_account(
                 account_id=account_id,
                 deactivated_by=owner_id
@@ -409,13 +409,13 @@ class TestAccountInteractor:
                               "deactivate_account_not_found.txt")
 
     def test_deactivate_account_already_inactive(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id, is_active=False)
 
-        with pytest.raises(InactiveAccountException) as exc:
+        with pytest.raises(InactiveAccount) as exc:
             self.interactor.deactivate_account(
                 account_id=account_id,
                 deactivated_by=owner_id
@@ -425,14 +425,14 @@ class TestAccountInteractor:
                               "deactivate_account_already_inactive.txt")
 
     def test_deactivate_account_non_owner(self, snapshot):
-        account_id = "account-123"
+        account_id = "accounts-123"
         owner_id = "actual-owner"
         other_user = "intruder"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
 
-        with pytest.raises(UserNotAccountOwnerException) as exc:
+        with pytest.raises(UserNotAccountOwner) as exc:
             self.interactor.deactivate_account(
                 account_id=account_id,
                 deactivated_by=other_user
@@ -465,12 +465,12 @@ class TestAccountInteractor:
         valid_id = "12345678-1234-5678-1234-567812345678"
         invalid_id = "invalid-id-999"
 
-        # Storage returns only the valid account
+        # Storage returns only the valid accounts
         mock_account = type("Account", (), {
             "account_id": valid_id, "is_active": True})()
         self.account_storage.get_accounts.return_value = [mock_account]
 
-        with pytest.raises(InvalidAccountIdsException) as exc:
+        with pytest.raises(InvalidAccountIds) as exc:
             self.interactor.get_accounts(
                 account_ids=[valid_id, invalid_id]
             )

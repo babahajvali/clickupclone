@@ -51,14 +51,14 @@ class ReorderFieldMutation(graphene.Mutation):
                 created_by=result.created_by
             )
 
-        except custom_exceptions.FieldNotFoundException as e:
+        except custom_exceptions.FieldNotFound as e:
             return FieldNotFoundType(field_id=e.field_id)
 
-        except custom_exceptions.TemplateNotFoundException as e:
+        except custom_exceptions.TemplateNotFound as e:
             return TemplateNotFoundType(template_id=e.template_id)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.InvalidOrderException as e:
+        except custom_exceptions.InvalidOrder as e:
             return InvalidOrderType(order=e.order)

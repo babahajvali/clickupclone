@@ -6,9 +6,9 @@ from task_management.interactors.dtos import WorkspaceMemberDTO
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    ListNotFoundException,
-    InactiveListException,
+    ModificationNotAllowed,
+    ListNotFound,
+    InactiveList,
 )
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -60,7 +60,7 @@ class TestSetListPublic:
             make_permission(Role.GUEST)
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.set_list_visibility("list_1", user_id="user_1",
                                                 visibility=Visibility.PUBLIC)
 
@@ -72,7 +72,7 @@ class TestSetListPublic:
         )
         self.interactor.list_storage.get_list.return_value = None
 
-        with pytest.raises(ListNotFoundException) as exc:
+        with pytest.raises(ListNotFound) as exc:
             self.interactor.set_list_visibility("list_1", user_id="user_1",
                                                 visibility=Visibility.PUBLIC)
 
@@ -86,7 +86,7 @@ class TestSetListPublic:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListException) as exc:
+        with pytest.raises(InactiveList) as exc:
             self.interactor.set_list_visibility("list_1", user_id="user_1",
                                                 visibility=Visibility.PUBLIC)
 

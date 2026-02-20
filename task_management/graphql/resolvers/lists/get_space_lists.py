@@ -41,8 +41,8 @@ def get_space_lists_resolver(root, info, params):
 
         return ListsType(lists=lists_output)
 
-    except custom_exceptions.SpaceNotFoundException as e:
+    except custom_exceptions.SpaceNotFound as e:
         return SpaceNotFoundType(space_id=e.space_id)
 
-    except custom_exceptions.InactiveSpaceException as e:
+    except custom_exceptions.InactiveSpace as e:
         return InactiveSpaceType(space_id=e.space_id)

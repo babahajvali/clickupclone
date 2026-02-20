@@ -15,8 +15,9 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_account(self, name: str, description: Optional[str],
-                       created_by: str) -> AccountDTO:
+    def create_account(
+            self, name: str, description: Optional[str], created_by: str)\
+            -> AccountDTO:
         pass
 
     @abstractmethod
@@ -37,15 +38,16 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_account_name_except_current(self, name: str,
-                                             account_id: str) -> bool:
+    def validate_account_name_except_current(
+            self, name: str, account_id: str) -> bool:
         pass
 
     @abstractmethod
-    def update_account(self, account_id: str,
-                       field_properties: dict) -> AccountDTO:
+    def update_account(
+            self, account_id: str, field_properties: dict) -> AccountDTO:
         pass
 
     @abstractmethod
-    def get_account_by_name(self, account_name: str) -> AccountDTO:
+    def is_name_exists(
+            self, account_name: str, account_id: Optional[str]) -> bool:
         pass

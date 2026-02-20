@@ -3,7 +3,7 @@ import pytest
 from faker import Faker
 
 from task_management.exceptions.custom_exceptions import \
-    ModificationNotAllowedException
+    ModificationNotAllowed
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserListPermissionDTO
 from task_management.interactors.storage_interfaces import \
@@ -117,7 +117,7 @@ class TestUpdateTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
         self.list_storage.get_active_list.return_value = self._mock_active_list()
-        with pytest.raises(ModificationNotAllowedException):
+        with pytest.raises(ModificationNotAllowed):
             self.interactor.update_template(template_id=template_id,
                                             user_id="user_id", name=name,
                                             description=description)

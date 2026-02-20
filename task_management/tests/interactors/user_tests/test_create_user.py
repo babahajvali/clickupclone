@@ -2,9 +2,9 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    UsernameAlreadyExistsException,
-    EmailAlreadyExistsException,
-    PhoneNumberAlreadyExistsException,
+    UsernameAlreadyExists,
+    EmailAlreadyExists,
+    PhoneNumberAlreadyExists,
 )
 from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import CreateUserDTO
@@ -74,7 +74,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(UsernameAlreadyExistsException) as exc:
+        with pytest.raises(UsernameAlreadyExists) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -102,7 +102,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(EmailAlreadyExistsException) as exc:
+        with pytest.raises(EmailAlreadyExists) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(
@@ -130,7 +130,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        with pytest.raises(PhoneNumberAlreadyExistsException) as exc:
+        with pytest.raises(PhoneNumberAlreadyExists) as exc:
             interactor.create_user(user_input_data)
 
         snapshot.assert_match(

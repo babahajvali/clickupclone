@@ -38,7 +38,7 @@ def get_user_tasks_resolver(root, info,params):
                 for task in result.tasks
             ]
         )
-    except custom_exceptions.UserNotFoundException as e:
+    except custom_exceptions.UserNotFound as e:
         return UserNotFoundType(user_id=e.user_id)
-    except custom_exceptions.InactiveUserException as e:
+    except custom_exceptions.InactiveUser as e:
         return InactiveUserType(user_id=e.user_id)

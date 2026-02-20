@@ -1,8 +1,8 @@
 from task_management.exceptions.custom_exceptions import \
-    InactiveWorkspaceException, ModificationNotAllowedException, \
-    UserNotWorkspaceOwnerException, WorkspaceNotFoundException, \
-    InactiveWorkspaceMemberException, UserNotWorkspaceMemberException, \
-    WorkspaceMemberNotFoundException
+    InactiveWorkspace, ModificationNotAllowed, \
+    UserNotWorkspaceOwner, WorkspaceNotFound, \
+    InactiveWorkspaceMember, UserNotWorkspaceMember, \
+    WorkspaceMemberIdNotFound
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
@@ -13,25 +13,25 @@ class WorkspaceValidationMixin:
         self.workspace_storage = workspace_storage
         super().__init__(**kwargs)
 
-    def validate_workspace_is_active(self, workspace_id: str):
+    def check_workspace_is_active(self, workspace_id: str):
         workspace_data = self.workspace_storage.get_workspace(
             workspace_id=workspace_id)
 
         if not workspace_data:
-            raise WorkspaceNotFoundException(workspace_id=workspace_id)
+            raise WorkspaceNotFound(workspace_id=workspace_id)
 
         if not workspace_data.is_active:
-            raise InactiveWorkspaceException(workspace_id=workspace_id)
+            raise InactiveWorkspace(workspace_id=workspace_id)
 
-    def validate_user_is_workspace_owner(self, user_id: str,
-                                         workspace_id: str):
+    def check_user_is_workspace_owner(self, user_id: str,
+                                      workspace_id: str):
         is_owner = self.workspace_storage.validate_user_is_workspace_owner(
             workspace_id=workspace_id, user_id=user_id)
 
         if not is_owner:
-            raise UserNotWorkspaceOwnerException(user_id=user_id)
+            raise UserNotWorkspaceOwner(user_id=user_id)
 
-    def validate_user_has_access_to_workspace(
+    def check_user_has_access_to_workspace(
             self, user_id: str, workspace_id: str):
 
         member_permission = self.workspace_storage.get_workspace_member(
@@ -42,26 +42,26 @@ class WorkspaceValidationMixin:
         is_user_not_allowed = member_permission.role == Role.GUEST
 
         if is_member_not_found:
-            raise UserNotWorkspaceMemberException(user_id=user_id)
+            raise UserNotWorkspaceMember(user_id=user_id)
 
         if is_user_not_allowed:
-            raise ModificationNotAllowedException(user_id=user_id)
+            raise ModificationNotAllowed(user_id=user_id)
 
-    def validate_workspace_member_is_active(self, workspace_member_id: int):
+    def check_workspace_member_is_active(self, workspace_member_id: int):
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
 
         is_member_not_found = not workspace_member_data
 
         if is_member_not_found:
-            raise WorkspaceMemberNotFoundException(
+            raise WorkspaceMemberIdNotFound(
                 workspace_member_id=workspace_member_id)
 
         if not workspace_member_data.is_active:
-            raise InactiveWorkspaceMemberException(
+            raise InactiveWorkspaceMember(
                 workspace_member_id=workspace_member_id)
 
-    def validate_user_permission_for_change_workspace_role(
+    def check_user_permission_for_change_workspace_role(
             self, workspace_id: str, user_id: str):
 
         member_permission = self.workspace_storage.get_workspace_member(
@@ -70,10 +70,10 @@ class WorkspaceValidationMixin:
         is_member_not_found = not member_permission
 
         if is_member_not_found:
-            raise UserNotWorkspaceMemberException(user_id=user_id)
+            raise UserNotWorkspaceMember(user_id=user_id)
 
         user_role = member_permission.role
         is_user_not_allowed = user_role == Role.MEMBER or user_role == Role.GUEST
 
         if is_user_not_allowed:
-            raise ModificationNotAllowedException(user_id=user_id)
+            raise ModificationNotAllowed(user_id=user_id)

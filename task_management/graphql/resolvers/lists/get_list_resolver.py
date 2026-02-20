@@ -38,7 +38,7 @@ def get_list_resolver(root, info, params):
 
         return list_output
 
-    except custom_exceptions.ListNotFoundException as e:
+    except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
-    except custom_exceptions.InactiveListException as e:
+    except custom_exceptions.InactiveList as e:
         return InactiveListType(list_id=e.list_id)

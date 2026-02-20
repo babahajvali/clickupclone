@@ -1,8 +1,8 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import InvalidOrderException, \
-    UnexpectedPermissionException, EmptyNameException, \
-    NothingToUpdateSpaceException, UnsupportedVisibilityTypeException
+from task_management.exceptions.custom_exceptions import InvalidOrder, \
+    UnexpectedPermission, EmptyName, \
+    NothingToUpdateSpace, UnsupportedVisibilityType
 from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     UserSpacePermissionDTO, CreateUserSpacePermissionDTO
@@ -27,9 +27,9 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def create_space(self, space_data: CreateSpaceDTO) -> SpaceDTO:
 
         self._check_space_name_not_empty(name=space_data.name)
-        self.validate_workspace_is_active(
+        self.check_workspace_is_active(
             workspace_id=space_data.workspace_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=space_data.created_by,
             workspace_id=space_data.workspace_id)
 
@@ -40,11 +40,11 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def update_space(self, space_id: str, user_id: str, name: Optional[str],
                      description: Optional[str]) -> SpaceDTO:
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_is_active(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_workspace_is_active(workspace_id=workspace_id)
+        self.check_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id)
 
         is_name_provided = name is not None
@@ -59,7 +59,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
             field_properties_to_update['description'] = description
 
         if not field_properties_to_update:
-            raise NothingToUpdateSpaceException(space_id=space_id)
+            raise NothingToUpdateSpace(space_id=space_id)
 
         return self.space_storage.update_space(
             space_id=space_id, field_properties=field_properties_to_update)
@@ -68,9 +68,9 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def reorder_space(self, workspace_id: str, space_id: str, order: int,
                       user_id: str):
 
-        self.validate_space_is_active(space_id=space_id)
-        self.validate_workspace_is_active(workspace_id=workspace_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_space_is_active(space_id=space_id)
+        self.check_workspace_is_active(workspace_id=workspace_id)
+        self.check_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id)
         self._validate_space_order(workspace_id=workspace_id, order=order)
 
@@ -80,10 +80,10 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     @invalidate_interactor_cache(cache_name="spaces")
     def delete_space(self, space_id: str, deleted_by: str) -> SpaceDTO:
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_is_active(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=deleted_by, workspace_id=workspace_id)
 
         return self.space_storage.delete_space(space_id=space_id)
@@ -92,10 +92,10 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def set_space_visibility(self, space_id: str, user_id: str,
                              visibility: Visibility):
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_is_active(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id)
 
         self._validate_visibility_type(visibility=visibility.value)
@@ -108,7 +108,7 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     @interactor_cache(cache_name="spaces", timeout=30 * 60)
     def get_active_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
+        self.check_workspace_is_active(workspace_id=workspace_id)
 
         return self.space_storage.get_active_workspace_spaces(
             workspace_id=workspace_id)
@@ -124,17 +124,17 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def get_space_permissions(self, space_id: str) -> list[
         UserSpacePermissionDTO]:
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_is_active(space_id=space_id)
 
         return self.space_storage.get_space_permissions(
             space_id=space_id)
 
     def add_user_for_space_permission(self,
                                       user_data: CreateUserSpacePermissionDTO):
-        self.validate_space_is_active(space_id=user_data.space_id)
+        self.check_space_is_active(space_id=user_data.space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=user_data.space_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=user_data.user_id, workspace_id=workspace_id)
         self.validate_permission(permission=user_data.permission_type.value)
 
@@ -144,12 +144,12 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def _validate_space_order(self, workspace_id: str, order: int):
 
         if order < 1:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
         space_count = self.space_storage.get_workspace_spaces_count(
             workspace_id=workspace_id)
 
         if order > space_count:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
 
     @staticmethod
     def validate_permission(permission: str):
@@ -158,14 +158,14 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
         is_permission_invalid = permission not in existed_permissions
 
         if is_permission_invalid:
-            raise UnexpectedPermissionException(permission=permission)
+            raise UnexpectedPermission(permission=permission)
 
     @staticmethod
     def _check_space_name_not_empty(name: str):
 
         is_name_empty = not name or not name.strip()
         if is_name_empty:
-            raise EmptyNameException(name=name)
+            raise EmptyName(name=name)
 
     @staticmethod
     def _validate_visibility_type(visibility: str):
@@ -174,5 +174,5 @@ class SpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
         is_visibility_invalid = visibility not in existed_visibilities
         if is_visibility_invalid:
-            raise UnsupportedVisibilityTypeException(
+            raise UnsupportedVisibilityType(
                 visibility_type=visibility)

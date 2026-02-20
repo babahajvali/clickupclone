@@ -1,43 +1,61 @@
-from task_management.exceptions.custom_exceptions import \
-    InvalidFieldValueException
-from task_management.exceptions.enums import FieldType, FieldConfig
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO, CreateFieldValueDTO
+from task_management.interactors.field.validators.field_value_validator import \
+    FieldValueValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TaskStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FieldValidationMixin, \
     WorkspaceValidationMixin, TaskValidationMixin
 
 
-class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
-                           WorkspaceValidationMixin):
+class FieldValueInteractor:
 
     def __init__(self,
                  field_storage: FieldStorageInterface,
                  task_storage: TaskStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
-        super().__init__(field_storage=field_storage,
-                         task_storage=task_storage,
-                         workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
 
-    def set_task_field_value(self, set_value_data: UpdateFieldValueDTO,
-                             user_id: str) -> TaskFieldValueDTO:
+    @property
+    def field_mixin(self) -> FieldValidationMixin:
+        return FieldValidationMixin(field_storage=self.field_storage)
 
-        self.validate_task_is_active(task_id=set_value_data.task_id)
-        self.check_field_is_active(field_id=set_value_data.field_id)
+    @property
+    def task_mixin(self) -> TaskValidationMixin:
+        return TaskValidationMixin(task_storage=self.task_storage)
+
+    @property
+    def field_value_validator(self):
+        return FieldValueValidator()
+
+    @property
+    def workspace_mixin(self) -> WorkspaceValidationMixin:
+        return WorkspaceValidationMixin(
+            workspace_storage=self.workspace_storage)
+
+    def set_task_field_value(
+            self, set_value_data: UpdateFieldValueDTO, user_id: str) \
+            -> TaskFieldValueDTO:
+        self.task_mixin.validate_task_is_active(task_id=set_value_data.task_id)
+        self.field_mixin.check_field_is_active(
+            field_id=set_value_data.field_id
+        )
+
+        field_data = self.field_storage.get_field_by_id(
+            field_id=set_value_data.field_id
+        )
+        self.field_value_validator.validate_field_value(
+            config=field_data.config,
+            value=set_value_data.value,
+            field_type=field_data.field_type.value
+        )
+        self._check_user_has_edit_access_for_field(
+            field_id=set_value_data.field_id, user_id=user_id
+        )
         is_task_field_value_exists = self.field_storage.get_task_field_value(
             task_id=set_value_data.task_id, field_id=set_value_data.field_id)
-
-
-        self._validate_field_value(field_id=set_value_data.field_id,
-                                   value=set_value_data.value)
-        workspace_id = self.field_storage.get_workspace_id_from_field_id(
-            field_id=set_value_data.field_id)
-        self.validate_user_has_access_to_workspace(
-            workspace_id=workspace_id, user_id=user_id)
 
         if is_task_field_value_exists:
             return self.field_storage.set_task_field_value(
@@ -52,51 +70,11 @@ class FieldValueInteractor(FieldValidationMixin, TaskValidationMixin,
         return self.field_storage.create_bulk_field_values(
             create_bulk_field_values=[create_field_value])[0]
 
-    def _validate_field_value(self, field_id: str, value: str):
-        field_data = self.field_storage.get_active_field_by_id(
+    def _check_user_has_edit_access_for_field(
+            self, field_id: str, user_id: str):
+        workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=field_id)
-        config = field_data.config or {}
 
-        validation_handlers = {
-            FieldType.TEXT: self._validate_text_field,
-            FieldType.NUMBER: self._validate_number_field,
-            FieldType.DROPDOWN: self._validate_dropdown_field,
-        }
-
-        handler = validation_handlers.get(field_data.field_type)
-        if handler:
-            handler(value=value, config=config)
-
-    @staticmethod
-    def _validate_text_field(value: str, config: dict):
-
-        max_length = config.get(FieldConfig.MAX_LENGTH.value)
-        if max_length and len(value) > max_length:
-            raise InvalidFieldValueException(
-                message=f"Text exceeds maximum length of {max_length} characters")
-
-    @staticmethod
-    def _validate_number_field(value, config: dict):
-        try:
-            numeric_value = float(value)
-        except (ValueError, TypeError):
-            raise InvalidFieldValueException(
-                message="Number field value must be a valid number")
-
-        min_value = config.get(FieldConfig.MIN.value)
-        if min_value is not None and numeric_value < min_value:
-            raise InvalidFieldValueException(
-                message=f"Number must be at least {min_value}")
-
-        max_value = config.get(FieldConfig.MAX.value)
-        if max_value is not None and numeric_value > max_value:
-            raise InvalidFieldValueException(
-                message=f"Number must not exceed {max_value}")
-
-    @staticmethod
-    def _validate_dropdown_field(value: str, config: dict):
-        options = config.get(FieldConfig.OPTIONS.value, [])
-
-        if value not in options:
-            raise InvalidFieldValueException(
-                message=f"Invalid option. Option must be one of: {', '.join(options)}")
+        self.workspace_mixin.check_user_has_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id
+        )

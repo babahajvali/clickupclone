@@ -1,5 +1,5 @@
-from task_management.exceptions.custom_exceptions import TaskNotFoundException, \
-    DeletedTaskException
+from task_management.exceptions.custom_exceptions import TaskNotFound, \
+    DeletedTaskFound
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 
 
@@ -14,8 +14,8 @@ class TaskValidationMixin:
 
         is_task_not_found = not task_data
         if is_task_not_found:
-            raise TaskNotFoundException(task_id=task_id)
+            raise TaskNotFound(task_id=task_id)
 
         is_task_deleted = task_data.is_deleted
         if is_task_deleted:
-            raise DeletedTaskException(task_id=task_id)
+            raise DeletedTaskFound(task_id=task_id)

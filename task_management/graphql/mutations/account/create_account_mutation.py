@@ -7,7 +7,7 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import CreateAccountInputParams
 from task_management.graphql.types.response_types import CreateAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.account.account_onboarding import \
+from task_management.interactors.accounts.account_onboarding import \
     AccountOnboardingHandler
 from task_management.storages import UserStorage, AccountStorage, \
     WorkspaceStorage, SpaceStorage, ListStorage, TemplateStorage, FieldStorage, \
@@ -48,7 +48,7 @@ class CreateAccountMutation(graphene.Mutation):
             view_storage=view_storage, )
 
         try:
-            result = account_onboarding.handle(
+            result = account_onboarding.handle_account_onboarding(
                 name=name, description=description, created_by=owner_id)
 
             return AccountType(
@@ -58,11 +58,11 @@ class CreateAccountMutation(graphene.Mutation):
                 owner_id=result.owner_id,
                 is_active=result.is_active,
             )
-        except custom_exceptions.AccountNameAlreadyExistsException as e:
+        except custom_exceptions.AccountNameAlreadyExists as e:
             return AccountNameAlreadyExistsType(name=e.name)
-        except custom_exceptions.UserNotFoundException as e:
+        except custom_exceptions.UserNotFound as e:
             return UserNotFoundType(user_id=e.user_id)
-        except custom_exceptions.InactiveUserException as e:
+        except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)
-        except custom_exceptions.EmptyNameException as e:
+        except custom_exceptions.EmptyName as e:
             return EmptyAccountNameExistsType(name=e.name)

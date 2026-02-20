@@ -4,10 +4,10 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    TemplateNotFoundException,
-    UnsupportedFieldTypeException,
-    FieldNameAlreadyExistsException,
-    ModificationNotAllowedException,
+    TemplateNotFound,
+    UnsupportedFieldType,
+    FieldNameAlreadyExists,
+    ModificationNotAllowed,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.field.field_interactor import (
@@ -140,7 +140,7 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
-        with pytest.raises(TemplateNotFoundException) as exc:
+        with pytest.raises(TemplateNotFound) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -162,7 +162,7 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
-        with pytest.raises(UnsupportedFieldTypeException) as exc:
+        with pytest.raises(UnsupportedFieldType) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -185,7 +185,7 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -206,7 +206,7 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
-        with pytest.raises(FieldNameAlreadyExistsException) as exc:
+        with pytest.raises(FieldNameAlreadyExists) as exc:
             interactor.create_field(dto)
 
         snapshot.assert_match(

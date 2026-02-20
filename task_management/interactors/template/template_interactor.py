@@ -1,7 +1,7 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyNameException, \
-    NothingToUpdateTemplateException
+from task_management.exceptions.custom_exceptions import EmptyName, \
+    NothingToUpdateTemplate
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, TemplateStorageInterface, ListStorageInterface
@@ -50,7 +50,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
         self._validate_template_name_not_empty(
             template_name=template_data.name)
-        self.validate_list_is_active(list_id=template_data.list_id)
+        self.check_list_is_active(list_id=template_data.list_id)
         self._validate_user_access_for_list(list_id=template_data.list_id,
                                             user_id=template_data.created_by)
 
@@ -81,7 +81,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
             field_properties_to_update["description"] = description
 
         if not field_properties_to_update:
-            raise NothingToUpdateTemplateException(template_id=template_id)
+            raise NothingToUpdateTemplate(template_id=template_id)
 
         return self.template_storage.update_template(
             template_id=template_id, field_properties=field_properties_to_update)
@@ -90,11 +90,11 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
     def _validate_template_name_not_empty(template_name: str):
         is_name_empty = not template_name or not template_name.strip()
         if is_name_empty:
-            raise EmptyNameException(name=template_name)
+            raise EmptyName(name=template_name)

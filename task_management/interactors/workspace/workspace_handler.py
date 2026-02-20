@@ -78,7 +78,7 @@ class WorkspaceHandler:
             folder_id=None
         )
 
-        return list_handler.handel_list(list_input_data)
+        return list_handler.handle_list_creation(list_input_data)
 
     def transfer_the_workspace(self, workspace_id: str, current_user_id: str,
                                new_user_id: str):

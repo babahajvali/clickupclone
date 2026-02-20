@@ -47,14 +47,14 @@ class UpdateUserMutation(graphene.Mutation):
                 gender=result.gender,
             )
 
-        except custom_exceptions.UserNotFoundException as e:
+        except custom_exceptions.UserNotFound as e:
             return UserNotFoundType(user_id=e.user_id)
 
-        except custom_exceptions.UsernameAlreadyExistsException as e:
+        except custom_exceptions.UsernameAlreadyExists as e:
             return UsernameAlreadyExists(username=e.username)
 
-        except custom_exceptions.EmailAlreadyExistsException as e:
+        except custom_exceptions.EmailAlreadyExists as e:
             return EmailAlreadyExists(email=e.email)
 
-        except custom_exceptions.PhoneNumberAlreadyExistsException as e:
+        except custom_exceptions.PhoneNumberAlreadyExists as e:
             return PhoneNumberAlreadyExists(phone_number=e.phone_number)

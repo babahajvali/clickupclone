@@ -1,7 +1,7 @@
 from task_management.exceptions.custom_exceptions import \
-    EmailNotFoundException, IncorrectPasswordException, \
-    UsernameAlreadyExistsException, EmailAlreadyExistsException, \
-    PhoneNumberAlreadyExistsException, InactiveUserException
+    EmailNotFound, IncorrectPassword, \
+    UsernameAlreadyExists, EmailAlreadyExists, \
+    PhoneNumberAlreadyExists, InactiveUser
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import \
@@ -59,36 +59,36 @@ class UserInteractor(UserValidationMixin):
         is_email_exist = self.user_storage.check_email_exists(email=email)
 
         if not is_email_exist:
-            raise EmailNotFoundException(email=email)
+            raise EmailNotFound(email=email)
         user_data = self.user_storage.get_user_details(email=email)
 
         if not user_data.is_active:
-            raise InactiveUserException(user_id=user_data.user_id)
+            raise InactiveUser(user_id=user_data.user_id)
 
         if user_data.password == password:
             return user_data
 
-        raise IncorrectPasswordException(password=password)
+        raise IncorrectPassword(password=password)
 
     def _is_username_taken(self, username: str):
         is_existed_username = self.user_storage.check_username_exists(
             username=username)
 
         if is_existed_username:
-            raise UsernameAlreadyExistsException(username=username)
+            raise UsernameAlreadyExists(username=username)
 
     def _is_email_registered(self, email: str):
         is_existed_email = self.user_storage.check_email_exists(email=email)
 
         if is_existed_email:
-            raise EmailAlreadyExistsException(email=email)
+            raise EmailAlreadyExists(email=email)
 
     def _is_phone_number_exists(self, phone_number: str):
         is_existed_phone_number = self.user_storage.check_phone_number_exists(
             phone_number=phone_number)
 
         if is_existed_phone_number:
-            raise PhoneNumberAlreadyExistsException(phone_number=phone_number)
+            raise PhoneNumberAlreadyExists(phone_number=phone_number)
 
     def _check_username_except_current_user(self, username: str,
                                             user_id: str):
@@ -97,7 +97,7 @@ class UserInteractor(UserValidationMixin):
                 user_id=user_id, username=username))
 
         if is_user_exist_username:
-            raise UsernameAlreadyExistsException(username=username)
+            raise UsernameAlreadyExists(username=username)
 
     def _check_email_except_current_user(self, user_id: str, email: str):
 
@@ -106,7 +106,7 @@ class UserInteractor(UserValidationMixin):
                 user_id=user_id, email=email))
 
         if is_user_exist_email:
-            raise EmailAlreadyExistsException(email=email)
+            raise EmailAlreadyExists(email=email)
 
     def _check_phone_number_except_current_user(self, user_id: str,
                                                 phone_number: str):
@@ -116,4 +116,4 @@ class UserInteractor(UserValidationMixin):
                 user_id=user_id, phone_number=phone_number))
 
         if is_user_exist_phone_number:
-            raise PhoneNumberAlreadyExistsException(phone_number=phone_number)
+            raise PhoneNumberAlreadyExists(phone_number=phone_number)

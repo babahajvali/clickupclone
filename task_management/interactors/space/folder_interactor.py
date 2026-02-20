@@ -1,7 +1,7 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import InvalidOrderException, \
-    EmptyNameException, UnsupportedVisibilityTypeException, \
+from task_management.exceptions.custom_exceptions import InvalidOrder, \
+    EmptyName, UnsupportedVisibilityType, \
     NothingToUpdateFolderException
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
@@ -31,7 +31,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def create_folder(self, create_folder_data: CreateFolderDTO) -> FolderDTO:
 
         self._check_folder_name_not_empty(name=create_folder_data.name)
-        self.validate_space_is_active(space_id=create_folder_data.space_id)
+        self.check_space_is_active(space_id=create_folder_data.space_id)
         self._validate_user_access_for_space(
             space_id=create_folder_data.space_id,
             user_id=create_folder_data.created_by)
@@ -42,7 +42,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def update_folder(self, folder_id: str, user_id: str, name: Optional[str],
                       description: Optional[str]) -> FolderDTO:
 
-        self.validate_folder_is_active(folder_id=folder_id)
+        self.check_folder_is_active(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(
             folder_id=folder_id)
         self._validate_user_access_for_space(space_id=space_id,
@@ -70,8 +70,8 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def reorder_folder(self, space_id: str, folder_id: str, user_id: str,
                        order: int) -> FolderDTO:
 
-        self.validate_folder_is_active(folder_id=folder_id)
-        self.validate_space_is_active(space_id=space_id)
+        self.check_folder_is_active(folder_id=folder_id)
+        self.check_space_is_active(space_id=space_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
         self._validate_the_folder_order(space_id=space_id, order=order)
@@ -82,7 +82,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     @invalidate_interactor_cache(cache_name="folders")
     def remove_folder(self, folder_id: str, user_id: str) -> FolderDTO:
 
-        self.validate_folder_is_active(folder_id=folder_id)
+        self.check_folder_is_active(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._validate_user_access_for_space(space_id=space_id,
                                              user_id=user_id)
@@ -93,7 +93,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def set_folder_visibility(self, folder_id: str, user_id: str,
                               visibility: Visibility) -> FolderDTO:
 
-        self.validate_folder_is_active(folder_id=folder_id)
+        self.check_folder_is_active(folder_id=folder_id)
         self._validate_visibility_type(visibility=visibility.value)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._validate_user_access_for_space(space_id=space_id,
@@ -107,14 +107,14 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     @interactor_cache(cache_name="folders", timeout=5 * 60)
     def get_space_folders(self, space_id: str) -> list[FolderDTO]:
 
-        self.validate_space_is_active(space_id=space_id)
+        self.check_space_is_active(space_id=space_id)
 
         return self.folder_storage.get_space_folders(space_ids=[space_id])
 
     def get_folder_permissions(self, folder_id: str) -> list[
         UserFolderPermissionDTO]:
 
-        self.validate_folder_is_active(folder_id=folder_id)
+        self.check_folder_is_active(folder_id=folder_id)
 
         return self.folder_storage.get_folder_permissions(
             folder_id=folder_id)
@@ -122,7 +122,7 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
     def add_user_for_folder_permission(self,
                                        permission_data: CreateFolderPermissionDTO):
 
-        self.validate_folder_is_active(folder_id=permission_data.folder_id)
+        self.check_folder_is_active(folder_id=permission_data.folder_id)
         space_id = self.folder_storage.get_folder_space_id(
             folder_id=permission_data.folder_id)
         self._validate_user_access_for_space(space_id=space_id,
@@ -135,12 +135,12 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
 
     def _validate_the_folder_order(self, space_id: str, order: int):
         if order < 1:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
         lists_count = self.folder_storage.get_space_folder_count(
             space_id=space_id)
 
         if order > lists_count:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
 
     @staticmethod
     def _check_folder_name_not_empty(name: str):
@@ -148,13 +148,13 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
         is_name_empty = name is None or not name.strip()
 
         if is_name_empty:
-            raise EmptyNameException(name=name)
+            raise EmptyName(name=name)
 
     def _validate_user_access_for_space(self, space_id: str, user_id: str):
 
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id)
 
     @staticmethod
@@ -163,5 +163,5 @@ class FolderInteractor(FolderValidationMixin, SpaceValidationMixin,
 
         is_visibility_invalid = visibility not in existed_visibilities
         if is_visibility_invalid:
-            raise UnsupportedVisibilityTypeException(
+            raise UnsupportedVisibilityType(
                 visibility_type=visibility)

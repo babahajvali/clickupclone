@@ -70,17 +70,17 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 is_active=result.is_active
             )
 
-        except custom_exceptions.UserNotFoundException as e:
+        except custom_exceptions.UserNotFound as e:
             return UserNotFoundType(user_id=e.user_id)
 
-        except custom_exceptions.InactiveUserException as e:
+        except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)
 
-        except custom_exceptions.AccountNotFoundException as e:
+        except custom_exceptions.AccountNotFound as e:
             return AccountNotFoundType(account_id=e.account_id)
 
-        except custom_exceptions.InactiveAccountException as e:
+        except custom_exceptions.InactiveAccount as e:
             return InactiveAccountType(account_id=e.account_id)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

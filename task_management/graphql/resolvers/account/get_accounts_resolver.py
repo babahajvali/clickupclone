@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import InvalidAccountIdsType
 
 from task_management.graphql.types.types import AccountsType, AccountType
-from task_management.interactors.account.account_interactor import \
+from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
 from task_management.storages import AccountStorage, UserStorage
 
@@ -26,5 +26,5 @@ def get_accounts_resolver(root, info, params):
         ) for result in accounts_data]
 
         return AccountsType(accounts=results)
-    except custom_exceptions.InvalidAccountIdsException as e:
+    except custom_exceptions.InvalidAccountIds as e:
         return InvalidAccountIdsType(account_ids=e.account_ids)

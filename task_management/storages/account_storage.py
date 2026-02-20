@@ -85,8 +85,10 @@ class AccountStorage(AccountStorageInterface):
         return Account.objects.filter(name=name).exclude(
             account_id=account_id).exists()
 
-    def update_account(self, account_id: str, field_properties: dict) -> AccountDTO:
-        Account.objects.filter(account_id=account_id).update(**field_properties)
+    def update_account(self, account_id: str,
+                       field_properties: dict) -> AccountDTO:
+        Account.objects.filter(account_id=account_id).update(
+            **field_properties)
         account_data = Account.objects.get(account_id=account_id)
 
         account_data.save(update_fields=[])
@@ -99,13 +101,11 @@ class AccountStorage(AccountStorageInterface):
             is_active=account_data.is_active,
         )
 
-    def get_account_by_name(self, account_name: str) -> AccountDTO:
-        account_data = Account.objects.get(name=account_name)
+    def is_name_exists(
+            self, account_name: str, account_id: Optional[str]) -> bool:
+        account_data = Account.objects.filter(name=account_name)
 
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+        if account_id:
+            account_data = account_data.exclude(account_id=account_id)
+
+        return account_data.exists()

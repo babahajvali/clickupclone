@@ -44,11 +44,11 @@ class ApplyListViewMutation(graphene.Mutation):
                 applied_by=result.applied_by,
                 is_active=result.is_active
             )
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-        except custom_exceptions.ListNotFoundException as e:
+        except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
-        except custom_exceptions.ViewNotFoundException as e:
+        except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
-        except custom_exceptions.InactiveListException as e:
+        except custom_exceptions.InactiveList as e:
             return InactiveListType(list_id=e.list_id)

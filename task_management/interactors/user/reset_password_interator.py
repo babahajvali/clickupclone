@@ -24,8 +24,8 @@ class PasswordResetInteractor(UserValidationMixin):
         user_data = self.user_storage.get_user_details(email=email)
         if not user_data:
             from task_management.exceptions.custom_exceptions import \
-                EmailNotFoundException
-            raise EmailNotFoundException(email=email)
+                EmailNotFound
+            raise EmailNotFound(email=email)
 
         reset_token = secrets.token_urlsafe(32)
 
@@ -55,14 +55,14 @@ class PasswordResetInteractor(UserValidationMixin):
 
         if not reset_token_data:
             from task_management.exceptions.custom_exceptions import \
-                InvalidResetTokenException
-            raise InvalidResetTokenException(token=token)
+                InvalidResetToken
+            raise InvalidResetToken(token=token)
 
         if timezone.now() > reset_token_data.expires_at:
             self.user_storage.used_reset_token(token=token)
             from task_management.exceptions.custom_exceptions import \
-                ResetTokenExpiredException
-            raise ResetTokenExpiredException(token=token)
+                ResetTokenExpired
+            raise ResetTokenExpired(token=token)
 
         updated_user = self.user_storage.update_user_password(
             user_id=reset_token_data.user_id,
@@ -80,17 +80,17 @@ class PasswordResetInteractor(UserValidationMixin):
 
         if not reset_token_data:
             from task_management.exceptions.custom_exceptions import \
-                InvalidResetTokenException
-            raise InvalidResetTokenException(token=token)
+                InvalidResetToken
+            raise InvalidResetToken(token=token)
 
         if reset_token_data.is_used:
             from task_management.exceptions.custom_exceptions import \
-                InvalidResetTokenException
-            raise InvalidResetTokenException(token=token)
+                InvalidResetToken
+            raise InvalidResetToken(token=token)
 
         if timezone.now() > reset_token_data.expires_at:
             from task_management.exceptions.custom_exceptions import \
-                ResetTokenExpiredException
-            raise ResetTokenExpiredException(token=token)
+                ResetTokenExpired
+            raise ResetTokenExpired(token=token)
 
         return True

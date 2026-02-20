@@ -6,9 +6,9 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    TemplateNotFoundException,
-    FieldNameAlreadyExistsException,
-    ModificationNotAllowedException,
+    TemplateNotFound,
+    FieldNameAlreadyExists,
+    ModificationNotAllowed,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import (
@@ -83,7 +83,7 @@ class TestUpdateFieldInteractor:
         field_storage.is_field_exists.return_value = True
         field_storage.check_field_name_except_this_field.return_value = name_exists
         field_storage.update_field.return_value = self._get_field_dto()
-        field_storage.get_active_field_by_id.return_value = self._get_field_dto()
+        field_storage.get_field_by_id.return_value = self._get_field_dto()
 
         if template_exists:
             template_storage.get_template_by_id.return_value = DummyTemplate(
@@ -132,7 +132,7 @@ class TestUpdateFieldInteractor:
         )
         dto = self._get_update_dto()
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
@@ -144,7 +144,7 @@ class TestUpdateFieldInteractor:
         interactor = self._get_interactor(name_exists=True)
         dto = self._get_update_dto(field_name="Priority")
 
-        with pytest.raises(FieldNameAlreadyExistsException) as exc:
+        with pytest.raises(FieldNameAlreadyExists) as exc:
             interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
@@ -156,5 +156,5 @@ class TestUpdateFieldInteractor:
         interactor = self._get_interactor(template_exists=False)
         dto = self._get_update_dto()
 
-        with pytest.raises(TemplateNotFoundException):
+        with pytest.raises(TemplateNotFound):
             interactor.update_field(dto, user_id="user_1")

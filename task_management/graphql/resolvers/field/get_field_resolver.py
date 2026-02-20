@@ -34,5 +34,5 @@ def get_field_resolver(root, info, params):
             created_by=field_data.created_by
         )
 
-    except custom_exceptions.FieldNotFoundException as e:
+    except custom_exceptions.FieldNotFound as e:
         return FieldNotFoundType(field_id=e.field_id)

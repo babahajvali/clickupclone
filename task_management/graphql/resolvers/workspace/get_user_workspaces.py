@@ -33,5 +33,5 @@ def get_user_workspace_resolver(root, info, params):
 
         return WorkspaceMembersType(members=user_workspaces)
 
-    except custom_exceptions.UserNotFoundException as e:
+    except custom_exceptions.UserNotFound as e:
         return UserNotFoundType(user_id=e.user_id)

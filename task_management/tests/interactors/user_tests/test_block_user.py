@@ -2,8 +2,8 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    UserNotFoundException,
-    InactiveUserException,  # use your real exception name
+    UserNotFound,
+    InactiveUser,  # use your real exception name
 )
 from task_management.exceptions.enums import Gender
 from task_management.interactors.dtos import UserDTO
@@ -56,7 +56,7 @@ class TestBlockUser:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(UserNotFoundException) as exc:
+        with pytest.raises(UserNotFound) as exc:
             interactor.block_user(user_id="user123")
 
         snapshot.assert_match(
@@ -83,7 +83,7 @@ class TestBlockUser:
 
         interactor = UserInteractor(user_storage=user_storage)
 
-        with pytest.raises(InactiveUserException) as exc:
+        with pytest.raises(InactiveUser) as exc:
             interactor.block_user(user_id="user123")
 
         snapshot.assert_match(

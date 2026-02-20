@@ -14,8 +14,8 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
     UserStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    UserNotFoundException,
-    WorkspaceNotFoundException
+    UserNotFound,
+    WorkspaceNotFound
 )
 from task_management.tests.factories.interactor_factory import (
     CreateWorkspaceFactory,
@@ -46,7 +46,7 @@ class TestWorkspaceInteractor:
             {
                 "workspace_id": "workspace-123",
                 "user_id": owner_id,
-                "account_id": "account-123",
+                "account_id": "accounts-123",
                 "is_active": True,
             }
         )()
@@ -94,7 +94,7 @@ class TestWorkspaceInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspaces.return_value = None
 
-        with pytest.raises(WorkspaceNotFoundException) as exc:
+        with pytest.raises(WorkspaceNotFound) as exc:
             self.interactor.update_workspace(update_data, user_id="user_id")
 
         snapshot.assert_match(
@@ -150,7 +150,7 @@ class TestWorkspaceInteractor:
         self.workspace_storage.get_workspaces.return_value = \
             self._mock_active_workspace(user_id)
 
-        with pytest.raises(UserNotFoundException) as exc:
+        with pytest.raises(UserNotFound) as exc:
             self.interactor.transfer_workspace(
                 workspace_id,
                 user_id,

@@ -36,8 +36,8 @@ def get_workspace_spaces_resolver(root, info, params):
 
         return WorkspaceSpacesType(spaces=spaces_output)
 
-    except custom_exceptions.WorkspaceNotFoundException as e:
+    except custom_exceptions.WorkspaceNotFound as e:
         return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-    except custom_exceptions.InactiveWorkspaceException as e:
+    except custom_exceptions.InactiveWorkspace as e:
         return InactiveWorkspaceType(workspace_id=e.workspace_id)

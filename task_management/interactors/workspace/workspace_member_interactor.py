@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    UnexpectedRoleException, InactiveWorkspaceMemberException, \
+    UnexpectedRole, InactiveWorkspaceMember, \
     WorkspaceMemberNotFound
 from task_management.exceptions.enums import Permissions, Role
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
@@ -27,11 +27,11 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     def add_member_to_workspace(self,
                                 workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
 
-        self.validate_workspace_is_active(
+        self.check_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
         self.check_user_is_active(
             user_id=workspace_member_data.user_id)
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
         self.validate_role(role=workspace_member_data.role.value)
@@ -45,12 +45,12 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     def remove_member_from_workspace(self, workspace_member_id: int,
                                      removed_by: str) -> WorkspaceMemberDTO:
 
-        self.validate_workspace_member_is_active(
+        self.check_workspace_member_is_active(
             workspace_member_id=workspace_member_id)
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
 
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             user_id=removed_by,
             workspace_id=workspace_member_data.workspace_id)
 
@@ -63,11 +63,11 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
     def change_member_role(self, workspace_id: str, user_id: str, role: str,
                            changed_by: str) -> WorkspaceMemberDTO:
 
-        self.validate_workspace_is_active(workspace_id=workspace_id)
+        self.check_workspace_is_active(workspace_id=workspace_id)
         self.check_user_is_active(user_id=user_id)
         self._validate_workspace_member_is_active(
             workspace_id=workspace_id, user_id=user_id)
-        self.validate_user_permission_for_change_workspace_role(
+        self.check_user_permission_for_change_workspace_role(
             user_id=changed_by, workspace_id=workspace_id)
         self.validate_role(role=role)
 
@@ -99,7 +99,7 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
         is_role_invalid = role not in existed_roles
 
         if is_role_invalid:
-            raise UnexpectedRoleException(role=role)
+            raise UnexpectedRole(role=role)
 
     def _validate_workspace_member_is_active(
             self, workspace_id: str, user_id: str):
@@ -114,5 +114,5 @@ class WorkspaceMemberInteractor(WorkspaceValidationMixin, UserValidationMixin):
 
         is_member_inactive = not workspace_member.is_active
         if is_member_inactive:
-            raise InactiveWorkspaceMemberException(
+            raise InactiveWorkspaceMember(
                 workspace_member_id=workspace_member.id)

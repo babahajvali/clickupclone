@@ -6,9 +6,9 @@ from task_management.interactors.dtos import  WorkspaceMemberDTO
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    SpaceNotFoundException,
-    InactiveSpaceException,
+    ModificationNotAllowed,
+    SpaceNotFound,
+    InactiveSpace,
 )
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -79,7 +79,7 @@ class TestCreateList:
             Role.GUEST
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.create_list(dto)
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
@@ -98,7 +98,7 @@ class TestCreateList:
         )
         self.space_storage.get_space.return_value = None
 
-        with pytest.raises(SpaceNotFoundException):
+        with pytest.raises(SpaceNotFound):
             self.interactor.create_list(dto)
 
     @patch(
@@ -117,5 +117,5 @@ class TestCreateList:
             "Space", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveSpaceException):
+        with pytest.raises(InactiveSpace):
             self.interactor.create_list(dto)

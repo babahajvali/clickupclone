@@ -45,12 +45,12 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
                 added_by=result.added_by
             )
 
-        except custom_exceptions.InactiveWorkspaceMemberException as e:
+        except custom_exceptions.InactiveWorkspaceMember as e:
             return InactiveWorkspaceMemberType(
                 workspace_member_id=e.workspace_member_id)
 
-        except custom_exceptions.WorkspaceNotFoundException as e:
+        except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.ModificationNotAllowedException as e:
+        except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import \
-    TemplateNotFoundException
+    TemplateNotFound
 from task_management.interactors.field.field_interactor import \
     FieldInteractor
 from task_management.interactors.storage_interfaces import \
@@ -65,7 +65,7 @@ class TestGetFieldForTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = False
 
-        with pytest.raises(TemplateNotFoundException) as exc:
+        with pytest.raises(TemplateNotFound) as exc:
             self.interactor.get_active_fields_for_template(list_id=list_id)
 
         snapshot.assert_match(

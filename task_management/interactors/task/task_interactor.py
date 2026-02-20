@@ -1,8 +1,8 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    InvalidOffsetException, InvalidLimitException, InvalidOrderException, \
-    EmptyNameException, NothingToUpdateTaskException
+    InvalidOffset, InvalidLimit, InvalidOrder, \
+    EmptyName, NothingToUpdateTask
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, FilterDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, ListStorageInterface, WorkspaceStorageInterface
@@ -27,7 +27,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
 
         self._check_task_title_not_empty(title=task_data.title)
-        self.validate_list_is_active(list_id=task_data.list_id)
+        self.check_list_is_active(list_id=task_data.list_id)
         self._validate_user_has_access_for_list(list_id=task_data.list_id,
                                                 user_id=task_data.created_by)
 
@@ -40,7 +40,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
                     description: Optional[str]) -> TaskDTO:
 
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        self.validate_list_is_active(list_id=list_id)
+        self.check_list_is_active(list_id=list_id)
         self._validate_user_has_access_for_list(list_id=list_id,
                                                 user_id=user_id)
 
@@ -56,7 +56,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
             field_properties_to_update['description'] = description
 
         if not field_properties_to_update:
-            raise NothingToUpdateTaskException(task_id=task_id)
+            raise NothingToUpdateTask(task_id=task_id)
 
         return self.task_storage.update_task(
             task_id=task_id, field_properties=field_properties_to_update)
@@ -73,7 +73,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     @interactor_cache(cache_name="tasks", timeout=5 * 60)
     def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
 
-        self.validate_list_is_active(list_id=list_id)
+        self.check_list_is_active(list_id=list_id)
 
         return self.task_storage.get_active_tasks_for_list(list_id=list_id)
 
@@ -85,7 +85,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
     def task_filter(self, task_filter_data: FilterDTO):
 
-        self.validate_list_is_active(list_id=task_filter_data.list_id)
+        self.check_list_is_active(list_id=task_filter_data.list_id)
         self._validate_filter_parameters(filter_data=task_filter_data)
 
         return self.task_storage.task_filter_data(filter_data=task_filter_data)
@@ -106,34 +106,34 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     def _validate_filter_parameters(filter_data: FilterDTO):
 
         if filter_data.offset < 1:
-            raise InvalidOffsetException(
+            raise InvalidOffset(
                 offset=filter_data.offset,
             )
 
         if filter_data.limit < 1:
-            raise InvalidLimitException(
+            raise InvalidLimit(
                 limit=filter_data.limit)
 
     def _validate_the_task_order(self, list_id: str, order: int):
         if order < 1:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
         tasks_count = self.task_storage.get_tasks_count(
             list_id=list_id)
 
         if order > tasks_count:
-            raise InvalidOrderException(order=order)
+            raise InvalidOrder(order=order)
 
     @staticmethod
     def _check_task_title_not_empty(title: str):
 
         is_title_empty = not title or not title.strip()
         if is_title_empty:
-            raise EmptyNameException(name=title)
+            raise EmptyName(name=title)
 
     def _validate_user_has_access_for_list(self, list_id: str, user_id: str):
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
 
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

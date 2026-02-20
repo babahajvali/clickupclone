@@ -44,13 +44,13 @@ class UserLoginMutation(graphene.Mutation):
                 access_token=jwt_token
             )
 
-        except custom_exceptions.EmailNotFoundException as e:
+        except custom_exceptions.EmailNotFound as e:
             return EmailNotFound(email=e.email)
 
-        except custom_exceptions.IncorrectPasswordException as e:
+        except custom_exceptions.IncorrectPassword as e:
             return IncorrectPassword(password=e.password)
 
-        except custom_exceptions.InactiveUserException as e:
+        except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)
 
     @staticmethod

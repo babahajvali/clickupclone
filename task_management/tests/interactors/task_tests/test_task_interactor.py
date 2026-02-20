@@ -18,10 +18,10 @@ from task_management.interactors.storage_interfaces.task_storage_interface impor
     TaskStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    ListNotFoundException,
-    InactiveListException,
-    TaskNotFoundException
+    ModificationNotAllowed,
+    ListNotFound,
+    InactiveList,
+    TaskNotFound
 )
 from task_management.tests.factories.interactor_factory import (
     CreateTaskDTOFactory,
@@ -86,7 +86,7 @@ class TestCreateTaskInteractor:
             make_permission(Role.GUEST)
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(
@@ -99,7 +99,7 @@ class TestCreateTaskInteractor:
 
         self.list_storage.get_active_list.return_value = None
 
-        with pytest.raises(ListNotFoundException) as exc:
+        with pytest.raises(ListNotFound) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(
@@ -114,7 +114,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListException) as exc:
+        with pytest.raises(InactiveList) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(
@@ -171,7 +171,7 @@ class TestCreateTaskInteractor:
     def test_get_task_not_found(self, snapshot):
         self.task_storage.get_task_by_id.return_value = None
 
-        with pytest.raises(TaskNotFoundException) as exc:
+        with pytest.raises(TaskNotFound) as exc:
             self.interactor.get_task("invalid_task")
 
         snapshot.assert_match(

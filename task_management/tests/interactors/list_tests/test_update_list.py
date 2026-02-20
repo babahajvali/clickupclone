@@ -6,8 +6,8 @@ from task_management.interactors.dtos import WorkspaceMemberDTO
 from task_management.interactors.list.list_interactor import \
     ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    ListNotFoundException, InactiveListException, SpaceNotFoundException,
-    ModificationNotAllowedException,
+    ListNotFound, InactiveList, SpaceNotFound,
+    ModificationNotAllowed,
 )
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
@@ -70,7 +70,7 @@ class TestUpdateList:
         dto = UpdateListDTOFactory()
         self.interactor.list_storage.get_list.return_value = None
 
-        with pytest.raises(ListNotFoundException) as exc:
+        with pytest.raises(ListNotFound) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
@@ -81,7 +81,7 @@ class TestUpdateList:
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveListException) as exc:
+        with pytest.raises(InactiveList) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
         snapshot.assert_match(repr(exc.value), "list_inactive.txt")
@@ -96,7 +96,7 @@ class TestUpdateList:
             make_permission(Role.GUEST)
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")
@@ -113,7 +113,7 @@ class TestUpdateList:
         )
         self.interactor.space_storage.get_space.return_value = None
 
-        with pytest.raises(SpaceNotFoundException) as exc:
+        with pytest.raises(SpaceNotFound) as exc:
             self.interactor.update_list(dto, user_id="user_id")
 
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")

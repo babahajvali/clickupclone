@@ -27,10 +27,10 @@ class ValidateResetTokenMutation(graphene.Mutation):
             interactor.validate_reset_token(token=token)
             return ValidateResetTokenType(is_valid=True)
 
-        except custom_exceptions.InvalidResetTokenException as e:
+        except custom_exceptions.InvalidResetToken as e:
             return InvalidResetToken(token=e.token)
 
-        except custom_exceptions.ResetTokenExpiredException as e:
+        except custom_exceptions.ResetTokenExpired as e:
             return ResetTokenExpired(token=e.token)
 
 

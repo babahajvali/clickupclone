@@ -2,8 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    TaskAssigneeNotFoundException, InActiveTaskAssigneeFoundException, \
-    InactiveListException, ListNotFoundException
+    TaskAssigneeNotFound, InActiveTaskAssigneeFound, \
+    InactiveList, ListNotFound
 from task_management.interactors.dtos import TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, UserStorageInterface, \
@@ -104,10 +104,10 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
             assignee_data = self.task_storage.get_task_assignee(
                 assign_id=assign_id)
         except ObjectDoesNotExist:
-            raise TaskAssigneeNotFoundException(assign_id=assign_id)
+            raise TaskAssigneeNotFound(assign_id=assign_id)
 
         if not assignee_data.is_active:
-            raise InActiveTaskAssigneeFoundException(assign_id=assign_id)
+            raise InActiveTaskAssigneeFound(assign_id=assign_id)
 
         return assignee_data
 
@@ -116,5 +116,5 @@ class TaskAssigneeInteractor(TaskValidationMixin, UserValidationMixin,
         workspace_id = self.task_storage.get_workspace_id_from_task_id(
             task_id=task_id)
 
-        self.validate_user_has_access_to_workspace(
+        self.check_user_has_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

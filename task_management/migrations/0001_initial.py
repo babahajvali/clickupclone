@@ -706,10 +706,10 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
-                    "account",
+                    "accounts",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="task_management.account",
+                        to="task_management.accounts",
                     ),
                 ),
                 (
@@ -819,13 +819,13 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddIndex(
-            model_name="account",
+            model_name="accounts",
             index=models.Index(
                 fields=["is_active"], name="task_manage_is_acti_df1d04_idx"
             ),
         ),
         migrations.AddIndex(
-            model_name="account",
+            model_name="accounts",
             index=models.Index(
                 fields=["created_at"], name="task_manage_created_322040_idx"
             ),

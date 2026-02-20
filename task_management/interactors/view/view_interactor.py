@@ -1,7 +1,7 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyNameException, \
-    NothingToUpdateViewException
+from task_management.exceptions.custom_exceptions import EmptyName, \
+    NothingToUpdateView
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces import \
     ViewStorageInterface, ListStorageInterface
@@ -40,7 +40,7 @@ class ViewInteractor(ViewValidationMixin):
             field_properties_to_update['description'] = description
 
         if not field_properties_to_update:
-            raise NothingToUpdateViewException(view_id=view_id)
+            raise NothingToUpdateView(view_id=view_id)
 
         return self.view_storage.update_view(
             view_id=view_id, field_properties=field_properties_to_update)
@@ -53,4 +53,4 @@ class ViewInteractor(ViewValidationMixin):
 
         is_name_empty = not name or not name.strip()
         if is_name_empty:
-            raise EmptyNameException(name=name)
+            raise EmptyName(name=name)

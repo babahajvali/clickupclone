@@ -19,9 +19,9 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
     UserStorageInterface
 )
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    TaskNotFoundException,
-    UserNotFoundException
+    ModificationNotAllowed,
+    TaskNotFound,
+    UserNotFound
 )
 from task_management.tests.factories.interactor_factory import (
     TaskAssigneeDTOFactory, UserTasksDTOFactory
@@ -103,7 +103,7 @@ class TestTaskAssigneeInteractor:
         )
         self.task_storage.get_user_task_assignee.return_value = None
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.assign_task_assignee(
                 task_id="task123",
                 user_id="user123",
@@ -119,7 +119,7 @@ class TestTaskAssigneeInteractor:
         self.user_storage.get_user_data.return_value = None
         self.task_storage.get_user_task_assignee.return_value = None
 
-        with pytest.raises(UserNotFoundException) as exc:
+        with pytest.raises(UserNotFound) as exc:
             self.interactor.assign_task_assignee(
                 task_id="task123",
                 user_id="user123",
@@ -136,7 +136,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_task_by_id.return_value = None
         self.task_storage.get_user_task_assignee.return_value = None
 
-        with pytest.raises(TaskNotFoundException) as exc:
+        with pytest.raises(TaskNotFound) as exc:
             self.interactor.assign_task_assignee(
                 task_id="task123",
                 user_id="user123",

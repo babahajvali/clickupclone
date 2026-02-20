@@ -26,7 +26,7 @@ def get_folder_resolver(root, info, params):
 
         return folder_output
 
-    except custom_exceptions.FolderNotFoundException as e:
+    except custom_exceptions.FolderNotFound as e:
         return FolderNotFoundType(folder_id=e.folder_id)
 
     except ObjectDoesNotExist:

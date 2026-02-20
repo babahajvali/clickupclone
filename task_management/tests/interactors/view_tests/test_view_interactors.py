@@ -9,8 +9,8 @@ from task_management.interactors.storage_interfaces.view_storage_interface impor
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    ViewNotFoundException,
-    ViewTypeNotFoundException
+    ViewNotFound,
+    ViewTypeNotFound
 )
 from task_management.tests.factories.interactor_factory import (
     CreateViewDTOFactory,
@@ -54,7 +54,7 @@ class TestViewInteractor:
                                      {'value': 'invalid_type'})()
 
         # Act & Assert
-        with pytest.raises(ViewTypeNotFoundException) as exc:
+        with pytest.raises(ViewTypeNotFound) as exc:
             self.interactor.create_view(create_data)
 
         snapshot.assert_match(repr(exc.value), "create_view_invalid_type.txt")
@@ -80,7 +80,7 @@ class TestViewInteractor:
         self.view_storage.get_view.return_value = None
 
         # Act & Assert
-        with pytest.raises(ViewNotFoundException) as exc:
+        with pytest.raises(ViewNotFound) as exc:
             self.interactor.update_view(update_data)
 
         snapshot.assert_match(repr(exc.value), "update_view_not_found.txt")

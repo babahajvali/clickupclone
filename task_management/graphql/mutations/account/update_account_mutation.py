@@ -7,7 +7,7 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import UpdateAccountInputParams
 from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.account.account_interactor import \
+from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
 from task_management.storages import UserStorage, AccountStorage
 
@@ -43,13 +43,13 @@ class UpdateAccountMutation(graphene.Mutation):
                 is_active=result.is_active,
             )
 
-        except custom_exceptions.AccountNameAlreadyExistsException as e:
+        except custom_exceptions.AccountNameAlreadyExists as e:
             return AccountNameAlreadyExistsType(name=e.name)
-        except custom_exceptions.AccountNotFoundException as e:
+        except custom_exceptions.AccountNotFound as e:
             return AccountNotFoundType(account_id=e.account_id)
-        except custom_exceptions.InactiveAccountException as e:
+        except custom_exceptions.InactiveAccount as e:
             return InactiveAccountType(account_id=e.account_id)
-        except custom_exceptions.UserNotAccountOwnerException as e:
+        except custom_exceptions.UserNotAccountOwner as e:
             return UserNotAccountOwnerType(user_id=e.user_id)
-        except custom_exceptions.NothingToUpdateAccountException as e:
+        except custom_exceptions.NothingToUpdateAccount as e:
             return NothingToUpdateAccountType(account_id=e.account_id)

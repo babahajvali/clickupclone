@@ -43,5 +43,5 @@ def get_fields_for_template_resolver(root, info, params):
 
         return FieldsType(fields=fields_output)
 
-    except custom_exceptions.TemplateNotFoundException as e:
+    except custom_exceptions.TemplateNotFound as e:
         return TemplateNotFoundType(template_id=e.template_id)

@@ -12,10 +12,10 @@ from task_management.interactors.storage_interfaces.folder_storage_interface imp
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowedException,
-    InactiveSpaceException,
-    FolderNotFoundException,
-    InactiveFolderException,
+    ModificationNotAllowed,
+    InactiveSpace,
+    FolderNotFound,
+    InactiveFolder,
 )
 from task_management.tests.factories.interactor_factory import (
     CreateFolderDTOFactory,
@@ -75,7 +75,7 @@ class TestFolderInteractor:
             Role.GUEST
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.create_folder(dto)
 
         snapshot.assert_match(
@@ -93,7 +93,7 @@ class TestFolderInteractor:
             "Space", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveSpaceException) as exc:
+        with pytest.raises(InactiveSpace) as exc:
             self.interactor.create_folder(dto)
 
         snapshot.assert_match(
@@ -131,7 +131,7 @@ class TestFolderInteractor:
             Role.GUEST
         )
 
-        with pytest.raises(ModificationNotAllowedException) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.update_folder(dto, user_id="user_id1")
 
         snapshot.assert_match(
@@ -147,7 +147,7 @@ class TestFolderInteractor:
         )
         self.folder_storage.get_folder.return_value = None
 
-        with pytest.raises(FolderNotFoundException) as exc:
+        with pytest.raises(FolderNotFound) as exc:
             self.interactor.update_folder(dto, user_id="user_id1")
 
         snapshot.assert_match(
@@ -184,7 +184,7 @@ class TestFolderInteractor:
         )
         self.folder_storage.get_folder.return_value = None
 
-        with pytest.raises(FolderNotFoundException) as exc:
+        with pytest.raises(FolderNotFound) as exc:
             self.interactor.remove_folder(folder_id, user_id)
 
         snapshot.assert_match(
@@ -203,7 +203,7 @@ class TestFolderInteractor:
             "Folder", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveFolderException) as exc:
+        with pytest.raises(InactiveFolder) as exc:
             self.interactor.remove_folder(folder_id, user_id)
 
         snapshot.assert_match(
@@ -243,7 +243,7 @@ class TestFolderInteractor:
             "Folder", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveFolderException) as exc:
+        with pytest.raises(InactiveFolder) as exc:
             self.interactor.set_folder_visibility(folder_id, user_id,
                                                   Visibility.PUBLIC)
 
