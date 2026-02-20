@@ -57,7 +57,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 account_id=params.account_id
             )
 
-            result = workspace_onboarding.handle(
+            result = workspace_onboarding.handle_workspace(
                 workspace_data=create_workspace_data
             )
 

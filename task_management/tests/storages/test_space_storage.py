@@ -54,7 +54,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(create_space_data=create_space_data)
+        result = storage.create_space(space_data=create_space_data)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_create_space_success.txt")
@@ -79,7 +79,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(create_space_data=create_space_data)
+        result = storage.create_space(space_data=create_space_data)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_create_space_with_existing_spaces.txt")

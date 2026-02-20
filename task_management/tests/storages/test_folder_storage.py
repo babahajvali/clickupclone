@@ -175,7 +175,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.remove_folder(folder_id=str(folder_id))
+        result = storage.delete_folder(folder_id=str(folder_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_folder_success.txt")
@@ -197,7 +197,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.get_space_folders(space_ids=space_ids)
+        result = storage.get_active_space_folders(space_ids=space_ids)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_get_space_folders_success.txt")
@@ -212,7 +212,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.get_space_folders(space_ids=space_ids)
+        result = storage.get_active_space_folders(space_ids=space_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_space_folders_empty.txt")

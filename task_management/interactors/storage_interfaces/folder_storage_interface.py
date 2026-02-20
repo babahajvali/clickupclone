@@ -12,7 +12,12 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_folder(self, create_folder_data: CreateFolderDTO) -> FolderDTO:
+    def create_folder(self, create_folder_data: CreateFolderDTO, order: int) \
+            -> FolderDTO:
+        pass
+
+    @abstractmethod
+    def get_next_folder_order_in_space(self, space_id: str) -> int:
         pass
 
     @abstractmethod
@@ -25,12 +30,12 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_folder(self, folder_id: str) -> FolderDTO:
+    def delete_folder(self, folder_id: str) -> FolderDTO:
         # in this case update the value is_active is  False
         pass
 
     @abstractmethod
-    def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
+    def get_active_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
         # get the spaces active folders
         pass
 

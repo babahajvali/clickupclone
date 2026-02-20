@@ -166,9 +166,9 @@ class TestFolderInteractor:
         self.folder_storage.get_folder.return_value = type(
             "Folder", (), {"is_active": True}
         )()
-        self.folder_storage.remove_folder.return_value = expected
+        self.folder_storage.delete_folder.return_value = expected
 
-        result = self.interactor.remove_folder(folder_id, user_id)
+        result = self.interactor.delete_folder(folder_id, user_id)
 
         snapshot.assert_match(
             repr(result),
@@ -185,7 +185,7 @@ class TestFolderInteractor:
         self.folder_storage.get_folder.return_value = None
 
         with pytest.raises(FolderNotFound) as exc:
-            self.interactor.remove_folder(folder_id, user_id)
+            self.interactor.delete_folder(folder_id, user_id)
 
         snapshot.assert_match(
             repr(exc.value.folder_id),
@@ -204,7 +204,7 @@ class TestFolderInteractor:
         )()
 
         with pytest.raises(InactiveFolder) as exc:
-            self.interactor.remove_folder(folder_id, user_id)
+            self.interactor.delete_folder(folder_id, user_id)
 
         snapshot.assert_match(
             repr(exc.value.folder_id),

@@ -97,6 +97,6 @@ class AccountOnboardingHandler:
         workspace_data = workspace_interactor.create_workspace(
             workspace_input_data)
 
-        return workspace_onboarding.handle(
+        return workspace_onboarding.handle_workspace(
             workspace_id=workspace_data.workspace_id,
             user_id=workspace_data.user_id)

@@ -22,7 +22,7 @@ def get_workspace_resolver(root, info, params):
 
 
     try:
-        workspace_data = interactor.get_workspaces(workspace_ids=workspace_ids)
+        workspace_data = interactor.get_active_workspaces(workspace_ids=workspace_ids)
 
         workspace_output = WorkspaceType(
             workspace_id=workspace_data.workspace_id,

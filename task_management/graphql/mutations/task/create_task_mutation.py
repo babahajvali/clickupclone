@@ -41,7 +41,7 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         try:
-            result = handler.handle_task(create_task_dto)
+            result = handler.handle_task_creation(create_task_dto)
 
             return TaskType(
                 task_id=result.task_id,

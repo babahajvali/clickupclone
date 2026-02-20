@@ -22,16 +22,16 @@ class FieldStorage(FieldStorageInterface):
             field_name=field_data.field_name,
             description=field_data.description,
             field_type=FieldType(field_data.field_type),
-            template_id=field_data.template_id,
+            template_id=field_data.template.template_id,
             is_active=field_data.is_active,
             order=field_data.order,
             config=field_data.config,
             is_required=field_data.is_required,
-            created_by=field_data.created_by_id,
+            created_by=field_data.created_by.user_id,
         )
 
-    def create_field(self, create_field_data: CreateFieldDTO,
-                     order: int) -> FieldDTO:
+    def create_field(
+            self, create_field_data: CreateFieldDTO, order: int) -> FieldDTO:
 
         field_data = Field.objects.create(
             field_name=create_field_data.field_name,
@@ -46,8 +46,10 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def is_field_name_exists(self, field_name: str, template_id: str,
-                             exclude_field_id: Optional[str]) -> bool:
+    def is_field_name_exists(
+            self, field_name: str, template_id: str,
+            exclude_field_id: Optional[str]) -> bool:
+
         field_data = Field.objects.filter(
             field_name=field_name, template_id=template_id)
 
@@ -98,6 +100,7 @@ class FieldStorage(FieldStorageInterface):
 
     def get_active_fields_for_template(self, template_id: str) -> list[
         FieldDTO]:
+
         fields_data = Field.objects.filter(
             template_id=template_id, is_active=True
         )
@@ -107,8 +110,9 @@ class FieldStorage(FieldStorageInterface):
         ]
 
     @transaction.atomic
-    def reorder_fields(self, field_id: str, template_id: str,
-                       new_order: int) -> FieldDTO:
+    def reorder_fields(
+            self, field_id: str, template_id: str, new_order: int) -> FieldDTO:
+
         field_data = Field.objects.get(field_id=field_id)
         old_order = field_data.order
 
@@ -136,8 +140,8 @@ class FieldStorage(FieldStorageInterface):
         return self._field_dto(field_data=field_data)
 
     def template_fields_count(self, template_id: str) -> int:
-        return Field.objects.filter(template_id=template_id,
-                                    is_active=True).count()
+        return Field.objects.filter(
+            template_id=template_id, is_active=True).count()
 
     def delete_field(self, field_id: str):
         field_data = Field.objects.get(field_id=field_id)
@@ -145,15 +149,16 @@ class FieldStorage(FieldStorageInterface):
         field_data.save()
 
         Field.objects.filter(
-            template_id=field_data.template_id,
+            template_id=field_data.template.template_id,
             is_active=True,
             order__gt=field_data.order
         ).update(order=F("order") - 1)
 
         return self._field_dto(field_data=field_data)
 
-    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[
-        FieldDTO]:
+    def create_bulk_fields(
+            self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+
         fields_to_create = [
             Field(
                 field_name=field_data.field_name,
@@ -171,8 +176,9 @@ class FieldStorage(FieldStorageInterface):
         created_fields = Field.objects.bulk_create(fields_to_create)
         return [self._field_dto(field) for field in created_fields]
 
-    def set_task_field_value(self,
-                             field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
+    def set_task_field_value(
+            self, field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
+
         field_value_obj = FieldValue.objects.get(
             task_id=field_value_data.task_id,
             field_id=field_value_data.field_id)
@@ -181,25 +187,26 @@ class FieldStorage(FieldStorageInterface):
 
         return TaskFieldValueDTO(
             id=field_value_obj.pk,
-            task_id=field_value_obj.task_id,
-            field_id=field_value_obj.field_id,
+            task_id=field_value_obj.task.task_id,
+            field_id=field_value_obj.field.field_id,
             value=field_value_obj.value,
         )
 
-    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
-        TaskFieldValuesDTO]:
+    def get_field_values_by_task_ids(
+            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
+
         field_values = FieldValue.objects.filter(task_id__in=task_ids)
 
         task_values_map = {}
         for fv in field_values:
             if fv.value is None:
                 continue
-            task_id = str(fv.task_id)
+            task_id = str(fv.task.task_id)
             if task_id not in task_values_map:
                 task_values_map[task_id] = []
             task_values_map[task_id].append(
                 FieldValueDTO(
-                    field_id=fv.field_id,
+                    field_id=fv.field.field_id,
                     value=fv.value
                 )
             )
@@ -212,8 +219,9 @@ class FieldStorage(FieldStorageInterface):
             for task_id in task_ids
         ]
 
-    def create_bulk_field_values(self, create_bulk_field_values: list[
-        CreateFieldValueDTO]):
+    def create_bulk_field_values(
+            self, create_bulk_field_values: list[CreateFieldValueDTO]):
+
         field_values_to_create = [
             FieldValue(
                 task_id=fv_data.task_id,
@@ -226,15 +234,15 @@ class FieldStorage(FieldStorageInterface):
         FieldValue.objects.bulk_create(field_values_to_create)
 
     def get_task_field_value(self, task_id: str, field_id: str) -> bool:
-        return FieldValue.objects.filter(task_id=task_id,
-                                         field_id=field_id).exists()
+        return FieldValue.objects.filter(
+            task_id=task_id, field_id=field_id).exists()
 
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
         field_data = Field.objects.select_related(
             "template__list__space__workspace").get(field_id=field_id)
         return field_data.template.list.space.workspace.workspace_id
 
-    def get_active_last_field_order_in_template(self, template_id: str) -> int:
+    def get_next_field_order_in_template(self, template_id: str) -> int:
         last_field = Field.objects.filter(
             template_id=template_id,
             is_active=True).order_by('-order').first()

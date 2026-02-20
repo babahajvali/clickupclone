@@ -12,7 +12,12 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
+    def create_space(
+            self, space_data: CreateSpaceDTO, order: int) -> SpaceDTO:
+        pass
+
+    @abstractmethod
+    def get_next_space_order_in_workspace(self, workspace_id: str) -> int:
         pass
 
     @abstractmethod

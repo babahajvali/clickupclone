@@ -51,7 +51,7 @@ class TestSpaceInteractor:
 
         self.space_storage.get_user_permission_for_space.return_value = make_permission(
             Permissions.FULL_EDIT.value)
-        self.workspace_storage.get_workspaces.return_value = type(
+        self.workspace_storage.get_active_workspaces.return_value = type(
             'Workspace', (), {
                 'is_active': True,
                 'user_id': create_data.created_by
@@ -70,7 +70,7 @@ class TestSpaceInteractor:
     def test_create_space_permission_denied(self, snapshot):
         create_data = CreateSpaceDTOFactory()
 
-        self.workspace_storage.get_workspaces.return_value = type(
+        self.workspace_storage.get_active_workspaces.return_value = type(
             "Workspace", (), {
                 "is_active": True,
                 "user_id": "some-other-user"
@@ -96,7 +96,7 @@ class TestSpaceInteractor:
         create_data = CreateSpaceDTOFactory()
         self.space_storage.get_user_permission_for_space.return_value = make_permission(
             Permissions.FULL_EDIT.value)
-        self.workspace_storage.get_workspaces.return_value = None
+        self.workspace_storage.get_active_workspaces.return_value = None
 
         # Act & Assert
         with pytest.raises(WorkspaceNotFound) as exc:
@@ -109,8 +109,8 @@ class TestSpaceInteractor:
         create_data = CreateSpaceDTOFactory()
         self.space_storage.get_user_permission_for_space.return_value = make_permission(
             Permissions.FULL_EDIT.value)
-        self.workspace_storage.get_workspaces.return_value = type('Workspace',
-                                                                  (), {
+        self.workspace_storage.get_active_workspaces.return_value = type('Workspace',
+                                                                         (), {
                                                                      'is_active': False})()
 
         # Act & Assert
@@ -129,8 +129,8 @@ class TestSpaceInteractor:
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True,
                                                           "workspace_id": "workspace_id_1"})()
-        self.workspace_storage.get_workspaces.return_value = type('Workspace',
-                                                                  (), {
+        self.workspace_storage.get_active_workspaces.return_value = type('Workspace',
+                                                                         (), {
                                                                      'is_active': True})()
         self.space_storage.update_space.return_value = expected_result
 
@@ -221,8 +221,8 @@ class TestSpaceInteractor:
         workspace_id = "test-workspaces-id"
         expected_result = [SpaceDTOFactory() for _ in range(3)]
 
-        self.workspace_storage.get_workspaces.return_value = type('Workspace',
-                                                                  (), {
+        self.workspace_storage.get_active_workspaces.return_value = type('Workspace',
+                                                                         (), {
                                                                      'is_active': True})()
         self.space_storage.get_active_workspace_spaces.return_value = expected_result
 
@@ -237,7 +237,7 @@ class TestSpaceInteractor:
     def test_get_workspace_spaces_workspace_not_found(self, snapshot):
         # Arrange
         workspace_id = "non-existent-workspaces"
-        self.workspace_storage.get_workspaces.return_value = None
+        self.workspace_storage.get_active_workspaces.return_value = None
 
         # Act & Assert
         with pytest.raises(WorkspaceNotFound) as exc:
@@ -248,8 +248,8 @@ class TestSpaceInteractor:
     def test_get_workspace_spaces_workspace_inactive(self, snapshot):
         # Arrange
         workspace_id = "inactive-workspaces"
-        self.workspace_storage.get_workspaces.return_value = type('Workspace',
-                                                                  (), {
+        self.workspace_storage.get_active_workspaces.return_value = type('Workspace',
+                                                                         (), {
                                                                      'is_active': False})()
 
         # Act & Assert

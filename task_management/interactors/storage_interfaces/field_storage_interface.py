@@ -10,8 +10,7 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def create_field(
-            self, create_field_data: CreateFieldDTO,
-            order: int) -> FieldDTO:
+            self, create_field_data: CreateFieldDTO, order: int) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -63,25 +62,23 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_bulk_fields(self, fields_data: list[CreateFieldDTO]) -> list[
-        FieldDTO]:
+    def create_bulk_fields(
+            self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
         pass
 
     @abstractmethod
-    def set_task_field_value(self, field_value_data: UpdateFieldValueDTO) -> \
-            TaskFieldValueDTO:
-        # set fields value
+    def set_task_field_value(
+            self, field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
         pass
 
     @abstractmethod
-    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
-        TaskFieldValuesDTO]:
-        # get tasks fields values
+    def get_field_values_by_task_ids(
+            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
         pass
 
     @abstractmethod
-    def create_bulk_field_values(self, create_bulk_field_values: list[
-        CreateFieldValueDTO]):
+    def create_bulk_field_values(
+            self, create_bulk_field_values: list[CreateFieldValueDTO]):
         pass
 
     @abstractmethod
@@ -93,5 +90,5 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_active_last_field_order_in_template(self, template_id: str) -> int:
+    def get_next_field_order_in_template(self, template_id: str) -> int:
         pass

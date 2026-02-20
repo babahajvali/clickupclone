@@ -46,34 +46,3 @@ class WorkspaceValidationMixin:
 
         if is_user_not_allowed:
             raise ModificationNotAllowed(user_id=user_id)
-
-    def check_workspace_member_is_active(self, workspace_member_id: int):
-        workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
-            workspace_member_id=workspace_member_id)
-
-        is_member_not_found = not workspace_member_data
-
-        if is_member_not_found:
-            raise WorkspaceMemberIdNotFound(
-                workspace_member_id=workspace_member_id)
-
-        if not workspace_member_data.is_active:
-            raise InactiveWorkspaceMember(
-                workspace_member_id=workspace_member_id)
-
-    def check_user_permission_for_change_workspace_role(
-            self, workspace_id: str, user_id: str):
-
-        member_permission = self.workspace_storage.get_workspace_member(
-            workspace_id=workspace_id, user_id=user_id)
-
-        is_member_not_found = not member_permission
-
-        if is_member_not_found:
-            raise UserNotWorkspaceMember(user_id=user_id)
-
-        user_role = member_permission.role
-        is_user_not_allowed = user_role == Role.MEMBER or user_role == Role.GUEST
-
-        if is_user_not_allowed:
-            raise ModificationNotAllowed(user_id=user_id)

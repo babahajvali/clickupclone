@@ -86,7 +86,7 @@ class FieldInteractor:
         )
 
         last_field_order_in_template = (
-            self.field_storage.get_active_last_field_order_in_template(
+            self.field_storage.get_next_field_order_in_template(
                 template_id=field_data.template_id))
 
         return self.field_storage.create_field(

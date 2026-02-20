@@ -2,10 +2,10 @@ from django.db.models import F
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
-     UserFolderPermissionDTO, CreateFolderPermissionDTO
+    UserFolderPermissionDTO, CreateFolderPermissionDTO
 from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
-from task_management.models import FolderPermission, Folder, Space, User
+from task_management.models import FolderPermission, Folder
 
 
 class FolderStorage(FolderStorageInterface):
@@ -31,21 +31,28 @@ class FolderStorage(FolderStorageInterface):
         except Folder.DoesNotExist:
             return None
 
-    def create_folder(self, create_folder_data: CreateFolderDTO) -> FolderDTO:
-        space = Space.objects.get(space_id=create_folder_data.space_id)
-        user = User.objects.get(user_id=create_folder_data.created_by)
-        last_folder = Folder.objects.filter(
-            space=space,is_active=True).order_by('-order').first()
-        next_order = (last_folder.order + 1) if last_folder else 1
+    def create_folder(
+            self, create_folder_data: CreateFolderDTO, order: int) \
+            -> FolderDTO:
 
         folder_data = Folder.objects.create(
-            name=create_folder_data.name, order=next_order,
-            description=create_folder_data.description, space=space,
-            is_private=create_folder_data.is_private, created_by=user)
+            name=create_folder_data.name, order=order,
+            description=create_folder_data.description,
+            space_id=create_folder_data.space_id,
+            is_private=create_folder_data.is_private,
+            created_by_id=create_folder_data.created_by)
 
         return self._folder_dto(folder_data)
 
-    def update_folder(self, folder_id: str, field_properties: dict) -> FolderDTO:
+    def get_next_folder_order_in_space(self, space_id: str) -> int:
+        last_folder = Folder.objects.filter(
+            space_id=space_id, is_active=True).order_by('-order').first()
+        next_order = (last_folder.order + 1) if last_folder else 1
+
+        return next_order
+
+    def update_folder(self, folder_id: str,
+                      field_properties: dict) -> FolderDTO:
         Folder.objects.filter(folder_id=folder_id).update(**field_properties)
         folder_data = Folder.objects.get(
             folder_id=folder_id)
@@ -75,14 +82,14 @@ class FolderStorage(FolderStorageInterface):
             ).update(order=F('order') + 1)
 
         folder_data.order = new_order
-        folder_data.save()
+        folder_data.save(update_fields=['order'])
 
         return self._folder_dto(folder_data)
 
-    def remove_folder(self, folder_id: str) -> FolderDTO:
+    def delete_folder(self, folder_id: str) -> FolderDTO:
         folder_data = Folder.objects.get(folder_id=folder_id)
         folder_data.is_active = False
-        folder_data.save()
+        folder_data.save(update_fields=["is_active"])
 
         current_order = folder_data.order
         Folder.objects.filter(
@@ -91,7 +98,8 @@ class FolderStorage(FolderStorageInterface):
 
         return self._folder_dto(folder_data)
 
-    def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
+    def get_active_space_folders(self, space_ids: list[str]) -> list[
+        FolderDTO]:
         folders_data = Folder.objects.filter(space_id__in=space_ids,
                                              is_active=True)
 
@@ -114,8 +122,10 @@ class FolderStorage(FolderStorageInterface):
     def get_space_folder_count(self, space_id: str) -> int:
         return Folder.objects.filter(space_id=space_id, is_active=True).count()
 
-    def get_folder_space_id(self,folder_id: str) -> str:
-        return Folder.objects.filter(folder_id=folder_id).values_list('space_id', flat=True)[0]
+    def get_folder_space_id(self, folder_id: str) -> str:
+        return \
+        Folder.objects.filter(folder_id=folder_id).values_list('space_id',
+                                                               flat=True)[0]
 
     @staticmethod
     def _user_folder_permission_dto(
@@ -123,7 +133,7 @@ class FolderStorage(FolderStorageInterface):
         return UserFolderPermissionDTO(
             id=data.pk,
             folder_id=data.folder.folder_id,
-            user_id=data.user.user_id,
+            user_id=data.user_id,
             permission_type=data.permission_type,
             is_active=data.is_active,
             added_by=data.added_by.user_id,
@@ -147,7 +157,7 @@ class FolderStorage(FolderStorageInterface):
         user_folder_permission = FolderPermission.objects.get(user_id=user_id,
                                                               folder_id=folder_id)
         user_folder_permission.permission_type = permission_type.value
-        user_folder_permission.save()
+        user_folder_permission.save(update_fields=['permission_type'])
 
         return self._user_folder_permission_dto(data=user_folder_permission)
 
@@ -156,7 +166,7 @@ class FolderStorage(FolderStorageInterface):
         user_folder_permission = FolderPermission.objects.get(user_id=user_id,
                                                               folder_id=folder_id)
         user_folder_permission.is_active = False
-        user_folder_permission.save()
+        user_folder_permission.save(update_fields=["permission_type"])
 
         return self._user_folder_permission_dto(data=user_folder_permission)
 
@@ -168,34 +178,18 @@ class FolderStorage(FolderStorageInterface):
         return [self._user_folder_permission_dto(data=data) for data in
                 folder_permissions]
 
-    def create_folder_users_permissions(self,
-                                        users_permission_data: list[
-                                            CreateFolderPermissionDTO]) -> \
+    def create_folder_users_permissions(
+            self, users_permission_data: list[CreateFolderPermissionDTO]) -> \
             list[UserFolderPermissionDTO]:
-        folder_ids = list(
-            set(perm.folder_id for perm in users_permission_data))
-        user_ids = list(set(perm.user_id for perm in users_permission_data))
-        added_by_ids = list(
-            set(perm.added_by for perm in users_permission_data))
-
-        folders = {str(f.folder_id): f for f in
-                   Folder.objects.filter(folder_id__in=folder_ids)}
-        users = {str(u.user_id): u for u in
-                 User.objects.filter(user_id__in=user_ids)}
-        added_by_users = {str(u.user_id): u for u in
-                          User.objects.filter(user_id__in=added_by_ids)}
 
         permissions_to_create = []
         for perm_data in users_permission_data:
-            folder = folders.get(str(perm_data.folder_id))
-            user = users.get(str(perm_data.user_id))
-            added_by_user = added_by_users.get(str(perm_data.added_by))
             permissions_to_create.append(
                 FolderPermission(
-                    folder=folder,
-                    user=user,
+                    folder_id=perm_data.folder_id,
+                    user_id=perm_data.user_id,
                     permission_type=perm_data.permission_type.value,
-                    added_by=added_by_user,
+                    added_by_id=perm_data.added_by,
                 )
             )
         created_permissions = FolderPermission.objects.bulk_create(

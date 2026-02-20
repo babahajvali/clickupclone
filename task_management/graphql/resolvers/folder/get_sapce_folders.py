@@ -22,7 +22,7 @@ def get_space_folders_resolver(root, info, params):
     )
 
     try:
-        folders_data = interactor.get_space_folders(space_id=space_id)
+        folders_data = interactor.get_active_space_folders(space_id=space_id)
 
         folders_output = [
             FolderType(

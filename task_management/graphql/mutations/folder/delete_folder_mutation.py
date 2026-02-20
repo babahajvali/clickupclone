@@ -31,7 +31,7 @@ class DeleteFolderMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.remove_folder(
+            result = interactor.delete_folder(
                 folder_id=params.folder_id,
                 user_id=info.context.user_id
             )

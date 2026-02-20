@@ -17,7 +17,7 @@ class TaskCreationHandler:
         self.workspace_storage = workspace_storage
         self.field_storage = field_storage
 
-    def handle_task(self, task_data: CreateTaskDTO) -> TaskDTO:
+    def handle_task_creation(self, task_data: CreateTaskDTO) -> TaskDTO:
         task = self._create_task(task_data=task_data)
 
         self._create_default_field_values_at_task(

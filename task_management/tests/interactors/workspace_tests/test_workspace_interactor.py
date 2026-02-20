@@ -76,7 +76,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspaces.return_value = \
+        self.workspace_storage.get_active_workspaces.return_value = \
             self._mock_active_workspace(update_data.user_id)
         self.workspace_storage.update_workspace.return_value = expected
 
@@ -92,7 +92,7 @@ class TestWorkspaceInteractor:
         update_data = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspaces.return_value = None
+        self.workspace_storage.get_active_workspaces.return_value = None
 
         with pytest.raises(WorkspaceNotFound) as exc:
             self.interactor.update_workspace(update_data, user_id="user_id")
@@ -108,7 +108,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspaces.return_value = \
+        self.workspace_storage.get_active_workspaces.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.delete_workspace.return_value = expected
 
@@ -126,7 +126,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_workspaces.return_value = \
+        self.workspace_storage.get_active_workspaces.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.transfer_workspace.return_value = expected
 
@@ -147,7 +147,7 @@ class TestWorkspaceInteractor:
         new_user_id = "invalid-user"
 
         self.user_storage.get_user_data.side_effect = [None]
-        self.workspace_storage.get_workspaces.return_value = \
+        self.workspace_storage.get_active_workspaces.return_value = \
             self._mock_active_workspace(user_id)
 
         with pytest.raises(UserNotFound) as exc:

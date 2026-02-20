@@ -42,7 +42,7 @@ class CreateFolderMutation(graphene.Mutation):
             )
 
             result = interactor.create_folder(
-                create_folder_data=create_folder_data)
+                folder_data=create_folder_data)
 
             return FolderType(
                 folder_id=result.folder_id,

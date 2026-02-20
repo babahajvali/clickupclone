@@ -39,7 +39,7 @@ class FolderCreationHandler:
     def _create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
         folder_interactor = self._get_folder_interactor()
 
-        return folder_interactor.create_folder(create_folder_data=folder_data)
+        return folder_interactor.create_folder(folder_data=folder_data)
 
     def _create_folder_permission_for_user(self, folder_id: str, user_id: str):
         folder_interactor = self._get_folder_interactor()

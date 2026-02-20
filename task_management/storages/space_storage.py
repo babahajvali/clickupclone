@@ -2,11 +2,11 @@ from django.db import transaction
 from django.db.models import F
 
 from task_management.exceptions.enums import Permissions
-from task_management.interactors.dtos import  SpaceDTO, \
+from task_management.interactors.dtos import SpaceDTO, \
     CreateSpaceDTO, UserSpacePermissionDTO, CreateUserSpacePermissionDTO
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
-from task_management.models import Space, Workspace, User, SpacePermission
+from task_management.models import Space, SpacePermission
 
 
 class SpaceStorage(SpaceStorageInterface):
@@ -44,25 +44,29 @@ class SpaceStorage(SpaceStorageInterface):
         except Space.DoesNotExist:
             return None
 
-    def create_space(self, create_space_data: CreateSpaceDTO) -> SpaceDTO:
-        workspace = Workspace.objects.get(
-            workspace_id=create_space_data.workspace_id)
-        created_by = User.objects.get(user_id=create_space_data.created_by)
-
-        last_space = Space.objects.filter(
-            workspace=workspace, is_active=True).order_by('-order').first()
-        next_order = (last_space.order + 1) if last_space else 1
+    def create_space(
+            self, space_data: CreateSpaceDTO, order: int) -> SpaceDTO:
 
         space = Space.objects.create(
-            name=create_space_data.name,
-            description=create_space_data.description,
-            workspace=workspace,
-            order=next_order,
-            is_private=create_space_data.is_private,
-            created_by=created_by
+            name=space_data.name,
+            description=space_data.description,
+            workspace_id=space_data.workspace_id,
+            order=order,
+            is_private=space_data.is_private,
+            created_by_id=space_data.created_by
         )
 
         return self._to_dto(space)
+
+    def get_next_space_order_in_workspace(self, workspace_id: str) -> int:
+        last_space = Space.objects.filter(
+            workspace_id=workspace_id, is_active=True).order_by(
+            '-order').first()
+
+        next_order = (last_space.order + 1) if last_space else 1
+
+        return next_order
+
 
     def update_space(self, space_id: str, field_properties: dict) -> SpaceDTO:
         Space.objects.filter(space_id=space_id).update(**field_properties)
@@ -137,8 +141,9 @@ class SpaceStorage(SpaceStorageInterface):
 
         return self._to_dto(space)
 
-    def get_space_workspace_id(self,space_id: str) -> str:
-        return Space.objects.filter(space_id=space_id).values_list('workspace_id', flat=True)[0]
+    def get_space_workspace_id(self, space_id: str) -> str:
+        return Space.objects.filter(space_id=space_id).values_list(
+            'workspace_id', flat=True)[0]
 
     def get_user_permission_for_space(self, user_id: str,
                                       space_id: str) -> UserSpacePermissionDTO | None:
@@ -181,48 +186,31 @@ class SpaceStorage(SpaceStorageInterface):
 
         return [self._to_permission_dto(perm) for perm in permissions]
 
-    def create_user_space_permissions(self, permission_data: list[
-        CreateUserSpacePermissionDTO]) -> list[UserSpacePermissionDTO]:
-        space_ids = list(set(perm.space_id for perm in permission_data))
-        user_ids = list(set(perm.user_id for perm in permission_data))
-        added_by_ids = list(set(perm.added_by for perm in permission_data))
+    def create_user_space_permissions(
+            self, permission_data: list[CreateUserSpacePermissionDTO]) \
+            -> list[UserSpacePermissionDTO]:
 
-        spaces = {str(s.space_id): s for s in
-                  Space.objects.filter(space_id__in=space_ids)}
-        users = {str(u.user_id): u for u in
-                 User.objects.filter(user_id__in=user_ids)}
-        added_by_users = {str(u.user_id): u for u in
-                          User.objects.filter(user_id__in=added_by_ids)}
 
         permissions_to_create = []
         for perm_data in permission_data:
-            space = spaces.get(str(perm_data.space_id))
-            user = users.get(str(perm_data.user_id))
-            added_by_user = added_by_users.get(str(perm_data.added_by))
 
             permissions_to_create.append(
                 SpacePermission(
-                    space=space,
-                    user=user,
+                    space_id=perm_data.space_id,
+                    user=perm_data.user_id,
                     permission_type=perm_data.permission_type.value,
-                    added_by=added_by_user,
+                    added_by=perm_data.added_by,
                     is_active=True
                 )
             )
 
-        SpacePermission.objects.bulk_create(
+        created_permissions = SpacePermission.objects.bulk_create(
             permissions_to_create,
             ignore_conflicts=True
         )
 
-        created_permissions = SpacePermission.objects.filter(
-            space_id__in=space_ids,
-            user_id__in=user_ids,
-            is_active=True
-        )
 
         return [self._to_permission_dto(perm) for perm in created_permissions]
 
     def check_space_exists(self, space_id: str) -> bool:
         return Space.objects.filter(space_id=space_id).exists()
-

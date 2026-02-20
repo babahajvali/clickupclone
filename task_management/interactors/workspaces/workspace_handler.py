@@ -36,7 +36,7 @@ class WorkspaceHandler:
         self.view_storage = view_storage
 
     @transaction.atomic
-    def handle(self, user_id: str, workspace_id: str):
+    def handle_workspace(self, user_id: str, workspace_id: str):
         space_data = self._create_space(workspace_id=workspace_id,
                                         user_id=user_id)
 
