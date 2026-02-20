@@ -23,7 +23,7 @@ def get_space_lists_resolver(root, info, params):
         workspace_storage=workspace_storage)
 
     try:
-        lists_data = interactor.get_space_lists(space_id=space_id)
+        lists_data = interactor.get_active_space_lists(space_id=space_id)
 
         lists_output = [
             ListType(

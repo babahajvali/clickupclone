@@ -54,12 +54,12 @@ class FieldValidationMixin:
             raise InvalidOrderException(order=order)
 
     @staticmethod
-    def check_mandatory_config_is_not_empty(config: dict):
+    def check_mandatory_config_is_not_empty(config: dict, field_type: str):
 
         is_empty_config = not config or config == {}
         if is_empty_config:
             raise MissingFieldConfigException(
-                field_type=FieldType.DROPDOWN.value)
+                field_type=field_type)
 
     @staticmethod
     def check_field_name_not_empty(field_name: str):
@@ -72,9 +72,11 @@ class FieldValidationMixin:
 
         mandatory_config_field_types = FieldType.mandatory_config_field_type()
 
-        is_mandatory_config_field_type = field_type.value in mandatory_config_field_types
+        is_mandatory_config_field_type = (
+                field_type.value in mandatory_config_field_types)
         if is_mandatory_config_field_type:
-            self.check_mandatory_config_is_not_empty(config=config)
+            self.check_mandatory_config_is_not_empty(
+                config=config, field_type=field_type.value)
 
         if config:
             self.check_field_config(field_type=field_type, config=config)
@@ -129,12 +131,14 @@ class FieldValidationMixin:
         max_val = config.get(FieldConfig.MAX.value)
 
         is_min_max_both_provided = min_val is not None and max_val is not None
-        if is_min_max_both_provided:
-            is_max_less_than_min = max_val < min_val
-            if is_max_less_than_min:
-                raise InvalidFieldConfigException(
-                    field_type=FieldType.NUMBER.value,
-                    message=f"max {max_val} must be greater than or equal to min {min_val}")
+        if not is_min_max_both_provided:
+            return
+
+        is_max_less_than_min = max_val < min_val
+        if is_max_less_than_min:
+            raise InvalidFieldConfigException(
+                field_type=FieldType.NUMBER.value,
+                message=f"max {max_val} must be greater than or equal to min {min_val}")
 
         default_value = config.get(FieldConfig.DEFAULT.value)
         is_default_value_provided = default_value is not None

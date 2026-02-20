@@ -36,34 +36,34 @@ class ListStorage(ListStorageInterface):
         except List.DoesNotExist:
             return None
 
-    def create_list(self, create_list_data: CreateListDTO) -> ListDTO:
-        space = Space.objects.get(space_id=create_list_data.space_id)
-        folder = None
-        if create_list_data.folder_id:
-            folder = Folder.objects.get(folder_id=create_list_data.folder_id)
-        user = User.objects.get(user_id=create_list_data.created_by)
-
-        if folder:
-            last_list = List.objects.filter(
-                folder=folder, is_active=True).order_by('-order').first()
-        else:
-            last_list = List.objects.filter(
-                space=space, folder__isnull=True, is_active=True).order_by(
-                '-order').first()
-
-        next_order = (last_list.order + 1) if last_list else 1
+    def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
 
         list_data = List.objects.create(
-            name=create_list_data.name,
-            description=create_list_data.description,
-            space=space,
-            folder=folder,
-            order=next_order,
-            is_private=create_list_data.is_private,
-            created_by=user
+            name=list_data.name,
+            description=list_data.description,
+            space_id=list_data.space_id,
+            folder_id=list_data.folder_id,
+            order=order,
+            is_private=list_data.is_private,
+            created_by_id=list_data.created_by
         )
 
         return self._list_dto(list_data=list_data)
+
+    def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
+        list_data = List.objects.filter(
+            folder_id=folder_id, is_active=True).order_by('-order').first()
+        last_order = list_data.order + 1 if list_data else 1
+        return last_order
+
+    def get_active_lists_last_order_in_space(self, space_id: str) -> int:
+        list_data = List.objects.filter(
+            space_id=space_id, folder__isnull=True, is_active=True).order_by(
+            '-order').first()
+
+        last_order = list_data.order + 1 if list_data else 1
+
+        return last_order
 
     def get_workspace_id_by_list_id(self, list_id: str) -> str:
         list_data = List.objects.select_related("space__workspace").get(
@@ -78,13 +78,13 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
+    def get_active_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
         folder_lists = List.objects.filter(folder_id__in=folder_ids,
                                            is_active=True)
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
-    def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
+    def get_active_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         space_lists = List.objects.filter(
             space_id__in=space_ids, folder__isnull=True, is_active=True)
 
@@ -94,7 +94,7 @@ class ListStorage(ListStorageInterface):
         # update the is_active false
         list_data = List.objects.get(list_id=list_id)
         list_data.is_active = False
-        list_data.save()
+        list_data.save(update_fields=["is_active"])
 
         current_order = list_data.order
         if list_data.folder:
@@ -110,10 +110,10 @@ class ListStorage(ListStorageInterface):
         return self._list_dto(list_data=list_data)
 
     def make_list_private(self, list_id: str) -> ListDTO:
-        # set the is_private is true
+
         list_data = List.objects.get(list_id=list_id)
         list_data.is_private = True
-        list_data.save()
+        list_data.save(update_fields=["is_private"])
 
         return self._list_dto(list_data=list_data)
 
@@ -121,7 +121,7 @@ class ListStorage(ListStorageInterface):
         # set is_private false
         list_data = List.objects.get(list_id=list_id)
         list_data.is_private = False
-        list_data.save()
+        list_data.save(update_fields=["is_private"])
 
         return self._list_dto(list_data=list_data)
 
@@ -230,23 +230,7 @@ class ListStorage(ListStorageInterface):
     def get_user_permission_for_list(self, user_id: str,
                                      list_id: str) -> UserListPermissionDTO | None:
         permission = ListPermission.objects.filter(
-            list_id=list_id,user_id=user_id).order_by('created_at').last()
-
-        return self._list_permission_dto(permission_data=permission)
-
-
-    def add_user_permission_for_list(self, list_id: str, user_id: str,
-                                     permission_type: Permissions) -> UserListPermissionDTO:
-        list_obj = List.objects.get(list_id=list_id)
-        user = User.objects.get(user_id=user_id)
-        added_by = User.objects.get(user_id=user_id)
-
-        permission = ListPermission.objects.create(
-            list=list_obj,
-            user=user,
-            permission_type=permission_type.value,
-            added_by=added_by,
-        )
+            list_id=list_id, user_id=user_id).order_by('created_at').last()
 
         return self._list_permission_dto(permission_data=permission)
 
@@ -257,34 +241,21 @@ class ListStorage(ListStorageInterface):
             user_id=user_id
         )
         permission.is_active = False
-        permission.save()
+        permission.save(update_fields=["is_active"])
 
         return self._list_permission_dto(permission_data=permission)
 
-    def create_list_users_permissions(self, user_permissions: list[
+    def create_list_users_permission(self, user_permissions: list[
         CreateListPermissionDTO]) -> list[UserListPermissionDTO]:
-        list_ids = list(set(perm.list_id for perm in user_permissions))
-        user_ids = list(set(perm.user_id for perm in user_permissions))
-        added_by_ids = list(set(perm.added_by for perm in user_permissions))
-
-        lists = {str(l.list_id): l for l in
-                 List.objects.filter(list_id__in=list_ids)}
-        users = {str(u.user_id): u for u in
-                 User.objects.filter(user_id__in=user_ids)}
-        added_by_users = {str(u.user_id): u for u in
-                          User.objects.filter(user_id__in=added_by_ids)}
 
         permissions_to_create = []
         for perm_data in user_permissions:
-            list_obj = lists.get(str(perm_data.list_id))
-            user = users.get(str(perm_data.user_id))
-            added_by_user = added_by_users.get(str(perm_data.added_by))
             permissions_to_create.append(
                 ListPermission(
-                    list=list_obj,
-                    user=user,
+                    list_id=perm_data.list_id,
+                    user_id=perm_data.user_id,
                     permission_type=perm_data.permission_type.value,
-                    added_by=added_by_user,
+                    added_by_id=perm_data.added_by,
                 )
             )
 

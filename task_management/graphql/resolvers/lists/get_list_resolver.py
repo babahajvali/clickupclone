@@ -22,7 +22,7 @@ def get_list_resolver(root, info, params):
     )
 
     try:
-        list_data = interactor.get_list(list_id=params.list_id)
+        list_data = interactor.get_active_list(list_id=params.list_id)
 
         list_output = ListType(
             list_id=list_data.list_id,

@@ -64,7 +64,7 @@ class TestUpdateTemplateInteractor:
         )
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
-        self.list_storage.get_list.return_value = self._mock_active_list()
+        self.list_storage.get_active_list.return_value = self._mock_active_list()
         self.workspace_storage.get_user_permission_for_list.return_value = (
             make_permission(Permissions.FULL_EDIT)
         )
@@ -101,7 +101,7 @@ class TestUpdateTemplateInteractor:
         description = "description"
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
-        self.list_storage.get_list.return_value = None
+        self.list_storage.get_active_list.return_value = None
 
         with pytest.raises(Exception):
             self.interactor.update_template(template_id=template_id,
@@ -116,7 +116,7 @@ class TestUpdateTemplateInteractor:
         description = "description"
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
-        self.list_storage.get_list.return_value = self._mock_active_list()
+        self.list_storage.get_active_list.return_value = self._mock_active_list()
         with pytest.raises(ModificationNotAllowedException):
             self.interactor.update_template(template_id=template_id,
                                             user_id="user_id", name=name,

@@ -33,9 +33,9 @@ class TestGetFolderLists:
             "Folder", (), {"is_active": True}
         )()
 
-        self.list_storage.get_folder_lists.return_value = ["LIST1", "LIST2"]
+        self.list_storage.get_active_folder_lists.return_value = ["LIST1", "LIST2"]
 
-        result = self.interactor.get_folder_lists("folder_1")
+        result = self.interactor.get_active_folder_lists("folder_1")
 
         snapshot.assert_match(
             repr(result),
@@ -46,7 +46,7 @@ class TestGetFolderLists:
         with patch("django.core.cache.cache.get", return_value=None):
             self.interactor.folder_storage.get_folder.return_value = None
             with pytest.raises(FolderNotFoundException) as exc:
-                self.interactor.get_folder_lists("folder_1")
+                self.interactor.get_active_folder_lists("folder_1")
 
         snapshot.assert_match(
             repr(exc.value),
@@ -59,7 +59,7 @@ class TestGetFolderLists:
                 "Folder", (), {"is_active": False}
             )()
             with pytest.raises(InactiveFolderException) as exc:
-                self.interactor.get_folder_lists("folder_1")
+                self.interactor.get_active_folder_lists("folder_1")
 
         snapshot.assert_match(
             repr(exc.value),

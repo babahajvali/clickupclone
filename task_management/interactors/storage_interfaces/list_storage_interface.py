@@ -16,8 +16,16 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_list(self, create_list_data: CreateListDTO) -> ListDTO:
+    def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
         # order is auto-increase in folder or space
+        pass
+    
+    @abstractmethod
+    def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
+        pass
+
+    @abstractmethod
+    def get_active_lists_last_order_in_space(self, space_id: str) -> int:
         pass
 
     @abstractmethod
@@ -29,11 +37,11 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
+    def get_active_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
         pass
 
     @abstractmethod
-    def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
+    def get_active_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         pass
 
     @abstractmethod
@@ -89,16 +97,11 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_user_permission_for_list(self, list_id: str, user_id: str,
-                                     permission_type: Permissions) -> UserListPermissionDTO:
-        pass
-
-    @abstractmethod
     def remove_user_permission_for_list(self, list_id: str,
                                         user_id: str) -> UserListPermissionDTO:
         pass
 
     @abstractmethod
-    def create_list_users_permissions(self, user_permissions: list[
+    def create_list_users_permission(self, user_permissions: list[
         CreateListPermissionDTO]) -> list[UserListPermissionDTO]:
         pass

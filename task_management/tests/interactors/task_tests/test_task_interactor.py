@@ -61,7 +61,7 @@ class TestCreateTaskInteractor:
     def test_create_task_success(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
         self.workspace_member_storage.get_workspace_member.return_value = (
@@ -79,7 +79,7 @@ class TestCreateTaskInteractor:
     def test_create_task_permission_denied(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
         self.workspace_member_storage.get_workspace_member.return_value = (
@@ -97,7 +97,7 @@ class TestCreateTaskInteractor:
     def test_create_task_list_not_found(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
-        self.list_storage.get_list.return_value = None
+        self.list_storage.get_active_list.return_value = None
 
         with pytest.raises(ListNotFoundException) as exc:
             self.interactor.create_task(task_data)
@@ -110,7 +110,7 @@ class TestCreateTaskInteractor:
     def test_create_task_list_inactive(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": False}
         )()
 
@@ -126,7 +126,7 @@ class TestCreateTaskInteractor:
         update_data = UpdateTaskDTOFactory()
 
         self.task_storage.get_task_by_id.return_value = TaskDTOFactory()
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
         self.workspace_member_storage.get_workspace_member.return_value = (
@@ -145,7 +145,7 @@ class TestCreateTaskInteractor:
         list_id = "list_1"
         tasks = [TaskDTOFactory(), TaskDTOFactory()]
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
         self.task_storage.get_active_tasks_for_list.return_value = tasks

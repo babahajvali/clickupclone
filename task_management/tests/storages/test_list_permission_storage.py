@@ -165,7 +165,7 @@ class TestListPermissionStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list_users_permissions(
+        result = storage.create_list_users_permission(
             user_permissions=user_permissions)
 
         # Assert
@@ -192,7 +192,7 @@ class TestListPermissionStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list_users_permissions(
+        result = storage.create_list_users_permission(
             user_permissions=user_permissions)
 
         # Assert

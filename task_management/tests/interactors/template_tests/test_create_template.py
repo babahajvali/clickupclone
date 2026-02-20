@@ -54,7 +54,7 @@ class TestCreateTemplateInteractor:
             description=create_template_dto.description,
         )
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
 
@@ -70,7 +70,7 @@ class TestCreateTemplateInteractor:
     def test_create_template_list_not_found(self):
         # Arrange
         create_template_dto = CreateTemplateDTOFactory()
-        self.list_storage.get_list.return_value = None
+        self.list_storage.get_active_list.return_value = None
 
         # Act & Assert
         with pytest.raises(Exception):
@@ -81,7 +81,7 @@ class TestCreateTemplateInteractor:
     def test_create_template_permission_denied(self):
         create_template_dto = CreateTemplateDTOFactory()
 
-        self.list_storage.get_list.return_value = type(
+        self.list_storage.get_active_list.return_value = type(
             "List", (), {"is_active": True}
         )()
 

@@ -23,7 +23,7 @@ def get_folder_lists_resolver(root, info, params):
     )
 
     try:
-        lists_data = interactor.get_folder_lists(folder_id=folder_id)
+        lists_data = interactor.get_active_folder_lists(folder_id=folder_id)
 
         result = [
             ListType(

@@ -32,9 +32,9 @@ class TestGetSpaceLists:
         self.interactor.space_storage.get_space.return_value = type(
             "Space", (), {"is_active": True}
         )()
-        self.interactor.list_storage.get_space_lists.return_value = ["LIST1"]
+        self.interactor.list_storage.get_active_space_lists.return_value = ["LIST1"]
 
-        result = self.interactor.get_space_lists("space_1")
+        result = self.interactor.get_active_space_lists("space_1")
 
         snapshot.assert_match(repr(result), "get_space_lists_success.json")
 
@@ -43,7 +43,7 @@ class TestGetSpaceLists:
             self.interactor.space_storage.get_space.return_value = None
 
             with pytest.raises(SpaceNotFoundException) as exc:
-                self.interactor.get_space_lists("space_1")
+                self.interactor.get_active_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
@@ -54,6 +54,6 @@ class TestGetSpaceLists:
             )()
 
             with pytest.raises(InactiveSpaceException) as exc:
-                self.interactor.get_space_lists("space_1")
+                self.interactor.get_active_space_lists("space_1")
 
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")

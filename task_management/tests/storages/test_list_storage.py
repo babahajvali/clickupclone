@@ -76,7 +76,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(create_list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
@@ -101,7 +101,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(create_list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
@@ -131,7 +131,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(create_list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data)
 
         # Assert
         # snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
@@ -191,7 +191,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_folder_lists(folder_ids=folder_ids)
+        result = storage.get_active_folder_lists(folder_ids=folder_ids)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -207,7 +207,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_folder_lists(folder_ids=folder_ids)
+        result = storage.get_active_folder_lists(folder_ids=folder_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_folder_lists_empty.txt")
@@ -234,7 +234,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_space_lists(space_ids=space_ids)
+        result = storage.get_active_space_lists(space_ids=space_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_space_lists_success.txt")
@@ -248,7 +248,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_space_lists(space_ids=space_ids)
+        result = storage.get_active_space_lists(space_ids=space_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_space_lists_empty.txt")

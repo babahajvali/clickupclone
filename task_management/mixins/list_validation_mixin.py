@@ -1,7 +1,9 @@
+from typing import Optional
+
 from task_management.exceptions.custom_exceptions import ListNotFoundException, \
     InactiveListException, UnexpectedPermissionException, \
     UserListPermissionNotFoundException, InactiveUserListPermissionException, \
-    EmptyNameException
+    EmptyNameException, UserHaveAlreadyListPermissionException
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
@@ -24,7 +26,7 @@ class ListValidationMixin:
             raise InactiveListException(list_id=list_id)
 
     @staticmethod
-    def validate_permission(permission: str):
+    def check_permission(permission: str):
 
         existed_permissions = Permissions.get_values()
         is_permission_invalid = permission not in existed_permissions
@@ -51,3 +53,26 @@ class ListValidationMixin:
 
         if is_name_empty:
             raise EmptyNameException(name=list_name)
+
+    def get_list_order(self, folder_id: Optional[str], space_id: str) -> int:
+
+        is_folder_provided = folder_id is not None
+        if is_folder_provided:
+            order = self.list_storage.get_active_lists_last_order_in_folder(
+                folder_id=folder_id)
+        else:
+            order = self.list_storage.get_active_lists_last_order_in_space(
+                space_id=space_id)
+
+        return order
+
+    def check_user_have_already_list_permission(self, list_id: str,
+                                                user_id: str):
+
+        user_list_permission = self.list_storage.get_user_permission_for_list(
+            list_id=list_id, user_id=user_id)
+
+        if user_list_permission:
+            is_user_permission_inactive = user_list_permission.is_active
+            if is_user_permission_inactive:
+                raise UserHaveAlreadyListPermissionException(user_id=user_id)
