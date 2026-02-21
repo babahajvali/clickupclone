@@ -1,7 +1,7 @@
 from task_management.interactors.dtos import TaskFieldValueDTO, \
-    UpdateFieldValueDTO, CreateFieldValueDTO
-from task_management.interactors.fields.validators.field_value_validator import \
-    FieldValueValidator
+    UpdateFieldValueDTO
+from task_management.interactors.fields.validators.field_value_validator \
+    import FieldValueValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TaskStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FieldValidationMixin, \
@@ -38,7 +38,7 @@ class FieldValueInteractor:
     def set_task_field_value(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
-        self.task_mixin.validate_task_is_active(task_id=set_value_data.task_id)
+        self.task_mixin.check_task_is_active(task_id=set_value_data.task_id)
         self.field_mixin.check_field_is_active(
             field_id=set_value_data.field_id
         )
@@ -54,21 +54,9 @@ class FieldValueInteractor:
         self._check_user_has_edit_access_for_field(
             field_id=set_value_data.field_id, user_id=user_id
         )
-        is_task_field_value_exists = self.field_storage.get_task_field_value(
-            task_id=set_value_data.task_id, field_id=set_value_data.field_id)
 
-        if is_task_field_value_exists:
-            return self.field_storage.set_task_field_value(
-                field_value_data=set_value_data)
-
-        create_field_value = CreateFieldValueDTO(
-            task_id=set_value_data.task_id,
-            field_id=set_value_data.field_id,
-            value=set_value_data.value,
-            created_by=user_id
-        )
-        return self.field_storage.create_bulk_field_values(
-            create_bulk_field_values=[create_field_value])[0]
+        return self.field_storage.update_or_create_task_field_value(
+            field_value_data=set_value_data, user_id=user_id)
 
     def _check_user_has_edit_access_for_field(
             self, field_id: str, user_id: str):

@@ -16,7 +16,8 @@ class AccountInteractor:
     storages:
     account_storage for modifying the accounts data
     user_storage for validating the user related data
-    Validating the Input data """
+    Validating the Input data
+    """
 
     def __init__(self, account_storage: AccountStorageInterface,
                  user_storage: UserStorageInterface):
@@ -83,16 +84,15 @@ class AccountInteractor:
         """
 
         self.account_mixin.check_account_is_active(account_id=account_id)
-        field_properties_to_update = (
-            self.account_validator.check_update_account_field_properties(
-            account_id=account_id, name=name, description=description))
-
         self.account_mixin.check_user_is_account_owner(
             user_id=user_id, account_id=account_id
         )
 
+        self.account_validator.check_update_account_field_properties(
+            account_id=account_id, name=name, description=description)
+
         return self.account_storage.update_account(
-            account_id=account_id, field_properties=field_properties_to_update
+            account_id=account_id, name=name, description=description
         )
 
     def delete_account(self, account_id: str, deleted_by: str):
@@ -110,7 +110,7 @@ class AccountInteractor:
             1.AccountDoesNotExistException: If the accounts does not exist.
             2.UserNotOwnerOfAccountException: If the user is not owner of accounts.
             3.InactiveAccountException: If the accounts is not active.
-            """
+        """
 
         self.account_mixin.check_account_is_active(account_id=account_id)
         self.account_mixin.check_user_is_account_owner(
@@ -151,7 +151,7 @@ class AccountInteractor:
             Accounts Data
         Exceptions:
             InvalidAccountIdsFoundException: If the accounts does not exist.
-            """
+        """
         self.account_validator.check_account_ids(account_ids=account_ids)
 
         return self.account_storage.get_accounts(account_ids=account_ids)

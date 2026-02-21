@@ -18,7 +18,7 @@ class FolderStorage(FolderStorageInterface):
             description=data.description,
             space_id=data.space.space_id,
             order=data.order,
-            is_active=data.is_active,
+            is_active=data.is_delete,
             created_by=data.created_by.user_id,
             is_private=data.is_private,
         )
@@ -46,7 +46,7 @@ class FolderStorage(FolderStorageInterface):
 
     def get_next_folder_order_in_space(self, space_id: str) -> int:
         last_folder = Folder.objects.filter(
-            space_id=space_id, is_active=True).order_by('-order').first()
+            space_id=space_id, is_deleet=False).order_by('-order').first()
         next_order = (last_folder.order + 1) if last_folder else 1
 
         return next_order
@@ -88,20 +88,21 @@ class FolderStorage(FolderStorageInterface):
 
     def delete_folder(self, folder_id: str) -> FolderDTO:
         folder_data = Folder.objects.get(folder_id=folder_id)
-        folder_data.is_active = False
-        folder_data.save(update_fields=["is_active"])
+        folder_data.is_delete = True
+        folder_data.save(update_fields=["is_delete"])
 
         current_order = folder_data.order
         Folder.objects.filter(
-            space_id=folder_data.space.space_id, is_active=True,
+            space_id=folder_data.space.space_id, is_delete=False,
             order__gt=current_order).update(order=F('order') - 1)
 
         return self._folder_dto(folder_data)
 
-    def get_active_space_folders(self, space_ids: list[str]) -> list[
-        FolderDTO]:
-        folders_data = Folder.objects.filter(space_id__in=space_ids,
-                                             is_active=True)
+    def get_space_folders(
+            self, space_ids: list[str]) -> list[FolderDTO]:
+
+        folders_data = Folder.objects.filter(
+            space_id__in=space_ids, is_delete=False)
 
         return [self._folder_dto(data=data) for data in folders_data]
 
@@ -120,12 +121,13 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def get_space_folder_count(self, space_id: str) -> int:
-        return Folder.objects.filter(space_id=space_id, is_active=True).count()
+        return Folder.objects.filter(space_id=space_id, is_delete=False).count()
 
     def get_folder_space_id(self, folder_id: str) -> str:
-        return \
-        Folder.objects.filter(folder_id=folder_id).values_list('space_id',
-                                                               flat=True)[0]
+        folder_data = Folder.objects.filter(folder_id=folder_id).\
+            values('space_id')
+
+        return folder_data['space_id']
 
     @staticmethod
     def _user_folder_permission_dto(
@@ -165,7 +167,7 @@ class FolderStorage(FolderStorageInterface):
                                           user_id: str) -> UserFolderPermissionDTO:
         user_folder_permission = FolderPermission.objects.get(user_id=user_id,
                                                               folder_id=folder_id)
-        user_folder_permission.is_active = False
+        user_folder_permission.is_delete = False
         user_folder_permission.save(update_fields=["permission_type"])
 
         return self._user_folder_permission_dto(data=user_folder_permission)

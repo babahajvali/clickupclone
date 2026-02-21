@@ -26,7 +26,7 @@ class Space(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["workspaces"]),
+            models.Index(fields=["workspace"]),
             models.Index(fields=["is_active"]),
         ]
 
@@ -44,7 +44,7 @@ class Folder(models.Model):
         related_name='space_folder'
     )
     order = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",
@@ -57,7 +57,7 @@ class Folder(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["spaces"]),
+            models.Index(fields=["space"]),
         ]
 
     def __str__(self):
@@ -80,7 +80,7 @@ class List(models.Model):
         related_name='folder_list'
     )
     order = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",
@@ -93,7 +93,7 @@ class List(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["spaces"]),
+            models.Index(fields=["space"]),
             models.Index(fields=["folder"]),
         ]
 

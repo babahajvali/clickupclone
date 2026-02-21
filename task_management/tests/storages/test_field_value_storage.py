@@ -26,7 +26,7 @@ class TestFieldValueStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.set_task_field_value(field_value_data=field_value_data)
+        result = storage.update_or_create_task_field_value(field_value_data=field_value_data)
 
         # Assert
         snapshot.assert_match(repr(result), "test_set_task_field_value_success.txt")

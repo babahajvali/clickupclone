@@ -59,7 +59,7 @@ class TestCreateFieldInteractor:
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
-            is_active=True,
+            is_delete=True,
             order=1,
             config={"max_length": 10},
             is_required=True,

@@ -43,7 +43,7 @@ class DeleteListMutation(graphene.Mutation):
                 name=result.name,
                 description=result.description,
                 space_id=result.space_id,
-                is_active=result.is_active,
+                is_active=result.is_delete,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by_user_id,

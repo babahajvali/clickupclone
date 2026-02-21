@@ -18,7 +18,7 @@ class ListStorage(ListStorageInterface):
             name=list_data.name,
             description=list_data.description,
             space_id=list_data.space.space_id,
-            is_active=list_data.is_active,
+            is_active=list_data.is_delete,
             order=list_data.order,
             created_by=list_data.created_by.user_id,
             folder_id=list_data.folder.folder_id if list_data.folder else None,
@@ -52,13 +52,13 @@ class ListStorage(ListStorageInterface):
 
     def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
         list_data = List.objects.filter(
-            folder_id=folder_id, is_active=True).order_by('-order').first()
+            folder_id=folder_id, is_delete=False).order_by('-order').first()
         last_order = list_data.order + 1 if list_data else 1
         return last_order
 
     def get_active_lists_last_order_in_space(self, space_id: str) -> int:
         list_data = List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_active=True).order_by(
+            space_id=space_id, folder__isnull=True, is_delete=False).order_by(
             '-order').first()
 
         last_order = list_data.order + 1 if list_data else 1
@@ -80,30 +80,30 @@ class ListStorage(ListStorageInterface):
 
     def get_active_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
         folder_lists = List.objects.filter(folder_id__in=folder_ids,
-                                           is_active=True)
+                                           is_delete=False)
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
     def get_active_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         space_lists = List.objects.filter(
-            space_id__in=space_ids, folder__isnull=True, is_active=True)
+            space_id__in=space_ids, folder__isnull=True, is_delete=False)
 
         return [self._list_dto(list_data=data) for data in space_lists]
 
     def delete_list(self, list_id: str) -> ListDTO:
-        # update the is_active false
+
         list_data = List.objects.get(list_id=list_id)
-        list_data.is_active = False
+        list_data.is_delete = True
         list_data.save(update_fields=["is_active"])
 
         current_order = list_data.order
         if list_data.folder:
             List.objects.filter(
-                folder_id=list_data.folder.folder_id, is_active=True,
+                folder_id=list_data.folder.folder_id, is_delete=False,
                 order__gt=current_order).update(order=F('order') - 1)
         else:
             List.objects.filter(
-                space_id=list_data.space.space_id, is_active=True,
+                space_id=list_data.space.space_id, is_delete=False,
                 folder__isnull=True, order__gt=current_order).update(
                 order=F('order') - 1)
 
@@ -137,14 +137,14 @@ class ListStorage(ListStorageInterface):
         if new_order > old_order:
             List.objects.filter(
                 folder_id=folder_id,
-                is_active=True,
+                is_delete=False,
                 order__gt=old_order,
                 order__lte=new_order
             ).update(order=F('order') - 1)
         else:
             List.objects.filter(
                 folder_id=folder_id,
-                is_active=True,
+                is_delete=False,
                 order__gte=new_order,
                 order__lt=old_order
             ).update(order=F('order') + 1)
@@ -167,7 +167,7 @@ class ListStorage(ListStorageInterface):
             List.objects.filter(
                 space_id=space_id,
                 folder__isnull=True,
-                is_active=True,
+                is_delete=False,
                 order__gt=old_order,
                 order__lte=new_order
             ).update(order=F('order') - 1)
@@ -175,7 +175,7 @@ class ListStorage(ListStorageInterface):
             List.objects.filter(
                 space_id=space_id,
                 folder__isnull=True,
-                is_active=True,
+                is_delete=False,
                 order__gte=new_order,
                 order__lt=old_order
             ).update(order=F('order') + 1)
@@ -186,11 +186,11 @@ class ListStorage(ListStorageInterface):
         return self._list_dto(list_data=list_data)
 
     def get_folder_lists_count(self, folder_id: str) -> int:
-        return List.objects.filter(folder_id=folder_id, is_active=True).count()
+        return List.objects.filter(folder_id=folder_id, is_delete=False).count()
 
     def get_space_lists_count(self, space_id: str) -> int:
         return List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_active=True).count()
+            space_id=space_id, folder__isnull=True, is_delete=False).count()
 
     def get_list_space_id(self, list_id: str) -> str:
         return List.objects.filter(list_id=list_id).values_list('space_id',
@@ -240,7 +240,7 @@ class ListStorage(ListStorageInterface):
             list_id=list_id,
             user_id=user_id
         )
-        permission.is_active = False
+        permission.is_delete = False
         permission.save(update_fields=["is_active"])
 
         return self._list_permission_dto(permission_data=permission)

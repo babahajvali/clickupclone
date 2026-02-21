@@ -48,7 +48,7 @@ class TestAccountInteractor:
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.is_name_exists.return_value = False
+        self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
         self.interactor._create_workspace = Mock()
 
@@ -65,7 +65,7 @@ class TestAccountInteractor:
     def test_create_account_name_already_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.is_name_exists.return_value = type(
+        self.account_storage.is_account_name_exists.return_value = type(
             "Account", (), {"is_active": True, "owner_id": owner_id})
 
         with pytest.raises(AccountNameAlreadyExists) as exc:
@@ -81,7 +81,7 @@ class TestAccountInteractor:
 
     def test_empty_account_name_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
-        self.account_storage.is_name_exists.return_value = None
+        self.account_storage.is_account_name_exists.return_value = None
         account_name = ""
 
         with pytest.raises(EmptyName) as exc:
@@ -142,7 +142,7 @@ class TestAccountInteractor:
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.account_storage.is_name_exists.return_value = False
+        self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
 
         result = self.interactor.create_account(
@@ -166,7 +166,7 @@ class TestAccountInteractor:
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
+        self.account_storage.is_account_name_exists.side_effect = ObjectDoesNotExist
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -206,7 +206,7 @@ class TestAccountInteractor:
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
+        self.account_storage.is_account_name_exists.side_effect = ObjectDoesNotExist
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -245,7 +245,7 @@ class TestAccountInteractor:
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
         # Returns a *different* accounts with the same name
-        self.account_storage.is_name_exists.return_value = "different-accounts-id"
+        self.account_storage.is_account_name_exists.return_value = "different-accounts-id"
 
         with pytest.raises(AccountNameAlreadyExists) as exc:
             self.interactor.update_account(

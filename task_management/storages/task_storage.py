@@ -151,7 +151,7 @@ class TaskStorage(TaskStorageInterface):
 
     def remove_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
-        assignee_data.is_active = False
+        assignee_data.is_delete = False
         assignee_data.save()
 
         return self._assignee_dto(assignee_data=assignee_data)
@@ -202,7 +202,7 @@ class TaskStorage(TaskStorageInterface):
 
     def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
-        assignee_data.is_active = True
+        assignee_data.is_delete = True
         assignee_data.save()
 
         return self._assignee_dto(assignee_data=assignee_data)

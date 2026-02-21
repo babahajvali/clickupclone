@@ -14,7 +14,7 @@ class CreateUserInputParams(graphene.InputObjectType):
     gender = graphene.String(required=True)
     username = graphene.String(required=True)
     phone_number = graphene.String(required=True)
-    image_url = graphene.String(required=True)
+    image_url = graphene.String()
 
 
 class UpdateUserInputParams(graphene.InputObjectType):

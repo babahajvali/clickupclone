@@ -29,12 +29,14 @@ class TextField:
         if is_exceeds_max_length:
             raise InvalidFieldDefaultValue(
                 field_type=FieldType.TEXT.value,
-                message=f"Default value length {len(default_value)} exceeds max_length {max_length}")
+                message=f"Default value length {len(default_value)}"
+                        f" exceeds max_length {max_length}")
 
     @staticmethod
-    def validate_text_field(value: str, config: dict):
+    def check_text_field_value(value: str, config: dict):
         """Validate text fields value against max_length constraint."""
         max_length = config.get(FieldConfig.MAX_LENGTH.value)
         if max_length and len(value) > max_length:
             raise InvalidFieldValue(
-                message=f"Text exceeds maximum length of {max_length} characters")
+                message=f"Text exceeds maximum length of {max_length} "
+                        f"characters")

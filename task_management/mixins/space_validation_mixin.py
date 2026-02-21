@@ -18,7 +18,7 @@ class SpaceValidationMixin:
         if is_space_not_found:
             raise SpaceNotFound(space_id=space_id)
 
-        is_space_inactive = not space_data.is_active
+        is_space_inactive = not space_data.is_delete
         if is_space_inactive:
             raise InactiveSpace(space_id=space_id)
 

@@ -25,7 +25,7 @@ class Task(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["lists", "is_deleted"]),
+            models.Index(fields=["list", "is_deleted"]),
         ]
 
     def __str__(self):

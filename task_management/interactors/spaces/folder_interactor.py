@@ -113,7 +113,7 @@ class FolderInteractor:
     def get_active_space_folders(self, space_id: str) -> list[FolderDTO]:
         self.space_mixin.check_space_is_active(space_id=space_id)
 
-        return self.folder_storage.get_active_space_folders(
+        return self.folder_storage.get_space_folders(
             space_ids=[space_id])
 
     def add_user_for_folder_permission(

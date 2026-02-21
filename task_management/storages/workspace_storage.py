@@ -67,7 +67,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
     def delete_workspace(self, workspace_id: str) -> WorkspaceDTO:
         workspace_data = Workspace.objects.get(workspace_id=workspace_id)
-        workspace_data.is_active = False
+        workspace_data.is_delete = False
         workspace_data.save(update_fields=["is_active"])
 
         return self._workspace_dto(data=workspace_data)
@@ -132,7 +132,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         workspace_member_data = WorkspaceMember.objects.get(
             pk=workspace_member_id)
-        workspace_member_data.is_active = False
+        workspace_member_data.is_delete = False
         workspace_member_data.save(update_fields=["is_active"])
 
         return self._workspace_member_dto(data=workspace_member_data)
@@ -174,7 +174,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             workspace_id=workspace_member_data.workspace_id,
             user_id=workspace_member_data.user_id)
 
-        workspace_member.is_active = True
+        workspace_member.is_delete = True
         workspace_member.added_by = workspace_member_data.added_by
         workspace_member.save(update_fields=["is_active", "added_by"])
 

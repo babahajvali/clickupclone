@@ -61,7 +61,7 @@ class TestUpdateFieldInteractor:
             template_id="tpl_1",
             field_name="Priority",
             order=1,
-            is_active=True,
+            is_delete=True,
             config={"max_length": 10},
             is_required=True,
             created_by="user_1",

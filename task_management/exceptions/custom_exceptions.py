@@ -8,6 +8,11 @@ class EmptyName(Exception):
         self.name = name
 
 
+class EmptyAccountName(Exception):
+    def __init__(self, account_name: str):
+        self.account_name = account_name
+
+
 class InactiveUser(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id

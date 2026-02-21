@@ -79,7 +79,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
     def get_task(self, task_id: str) -> TaskDTO:
 
-        self.validate_task_is_active(task_id=task_id)
+        self.check_task_is_active(task_id=task_id)
 
         return self.task_storage.get_task_by_id(task_id=task_id)
 
@@ -93,7 +93,7 @@ class TaskInteractor(WorkspaceValidationMixin, ListValidationMixin,
     @invalidate_interactor_cache(cache_name="tasks")
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
 
-        self.validate_task_is_active(task_id=task_id)
+        self.check_task_is_active(task_id=task_id)
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
         self._validate_the_task_order(list_id=list_id, order=order)
         self._validate_user_has_access_for_list(list_id=list_id,

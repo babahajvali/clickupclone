@@ -38,7 +38,7 @@ class TaskCreationHandler:
                                              created_by: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
-        template_fields = self.field_storage.get_active_fields_for_template(
+        template_fields = self.field_storage.get_fields_for_template(
             template_id=template_id)
 
         field_values = []

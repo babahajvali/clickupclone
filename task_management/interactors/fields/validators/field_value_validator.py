@@ -12,9 +12,9 @@ class FieldValueValidator:
     @staticmethod
     def validate_field_value(field_type: str, value: str, config: dict):
         validation_handlers = {
-            FieldType.TEXT.value: TextField.validate_text_field,
-            FieldType.NUMBER.value: NumberField.validate_number_field,
-            FieldType.DROPDOWN.value: DropdownField.validate_dropdown_field,
+            FieldType.TEXT.value: TextField.check_text_field_value,
+            FieldType.NUMBER.value: NumberField.check_number_field_value,
+            FieldType.DROPDOWN.value: DropdownField.check_dropdown_field_value,
         }
 
         handler = validation_handlers.get(field_type)

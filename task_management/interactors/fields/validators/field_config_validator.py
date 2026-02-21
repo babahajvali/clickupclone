@@ -41,7 +41,7 @@ class FieldConfigValidator:
     @staticmethod
     def check_mandatory_config_is_not_empty(config: dict, field_type: str):
 
-        is_empty_config = not config or config == {}
+        is_empty_config = not config
         if is_empty_config:
             raise MissingFieldConfig(
                 field_type=field_type)

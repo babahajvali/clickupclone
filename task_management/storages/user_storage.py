@@ -67,7 +67,7 @@ class UserStorage(UserStorageInterface):
 
     def block_user(self, user_id: str) -> UserDTO:
         user_obj = User.objects.get(user_id=user_id)
-        user_obj.is_active = False
+        user_obj.is_delete = False
         user_obj.save()
 
         return self._user_dto(data=user_obj)
@@ -167,7 +167,7 @@ class UserStorage(UserStorageInterface):
                 username=user.username,
                 email=user.email,
                 phone_number=user.phone_number,
-                is_active=user.is_active,
+                is_active=user.is_delete,
                 password=None,
                 image_url=user.image_url,
             )

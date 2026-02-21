@@ -9,7 +9,7 @@ class TaskValidationMixin:
         self.task_storage = task_storage
         super().__init__(**kwargs)
 
-    def validate_task_is_active(self, task_id: str):
+    def check_task_is_active(self, task_id: str):
         task_data = self.task_storage.get_task_by_id(task_id=task_id)
 
         is_task_not_found = not task_data

@@ -46,7 +46,7 @@ class TestGetFieldForTemplateInteractor:
 
         self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "lists-123"})()
 
-        self.field_storage.get_active_fields_for_template.return_value = expected_fields
+        self.field_storage.get_fields_for_template.return_value = expected_fields
 
         result = self.interactor.get_active_fields_for_template(template_id)
 

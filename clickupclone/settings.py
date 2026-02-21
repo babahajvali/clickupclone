@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'corsheaders',
-    'django_extensions',
     'task_management',
     "graphene_django",
 ]
@@ -64,12 +63,12 @@ ASGI_APPLICATION = 'clickupclone.asgi.application'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.templates.backends.django.DjangoTemplates",
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "django.templates.context_processors.request",
+                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],

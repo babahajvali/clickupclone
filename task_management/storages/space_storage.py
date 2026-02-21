@@ -79,7 +79,7 @@ class SpaceStorage(SpaceStorageInterface):
         current_order = space.order
         workspace_id = space.workspace.workspace_id
 
-        space.is_active = False
+        space.is_delete = False
         space.save()
 
         Space.objects.filter(
@@ -174,7 +174,7 @@ class SpaceStorage(SpaceStorageInterface):
             user_id=user_id,
             space_id=space_id
         )
-        permission.is_active = False
+        permission.is_delete = False
         permission.save()
 
         return self._to_permission_dto(permission)

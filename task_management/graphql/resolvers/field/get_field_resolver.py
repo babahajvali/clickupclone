@@ -20,7 +20,7 @@ def get_field_resolver(root, info, params):
         workspace_storage=workspace_storage,
     )
     try:
-        field_data = interactor.get_active_field(field_id=field_id)
+        field_data = interactor.get_field(field_id=field_id)
 
         return FieldType(
             field_id=field_data.field_id,

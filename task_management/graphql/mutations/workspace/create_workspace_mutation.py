@@ -67,7 +67,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_active
+                is_active=result.is_delete
             )
 
         except custom_exceptions.UserNotFound as e:

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from task_management.interactors.dtos import AccountDTO
 
@@ -11,18 +11,13 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_account_name_exists(self, name: str) -> bool:
-        pass
-
-    @abstractmethod
     def create_account(
-            self, name: str, description: Optional[str], created_by: str)\
+            self, name: str, description: Optional[str], created_by: str) \
             -> AccountDTO:
         pass
 
     @abstractmethod
     def deactivate_account(self, account_id: str) -> AccountDTO:
-        # soft delete change the is_active is False
         pass
 
     @abstractmethod
@@ -30,24 +25,24 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
+    def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         pass
 
     @abstractmethod
-    def get_user_accounts(self, user_id: str) -> list[AccountDTO]:
+    def get_existing_account_ids(self, account_ids: List[str]) -> List[str]:
         pass
 
     @abstractmethod
-    def validate_account_name_except_current(
-            self, name: str, account_id: str) -> bool:
+    def get_user_accounts(self, user_id: str) -> List[AccountDTO]:
         pass
 
     @abstractmethod
     def update_account(
-            self, account_id: str, field_properties: dict) -> AccountDTO:
+            self, account_id: str, name: Optional[str],
+            description: Optional[str]) -> AccountDTO:
         pass
 
     @abstractmethod
-    def is_name_exists(
+    def is_account_name_exists(
             self, account_name: str, account_id: Optional[str]) -> bool:
         pass

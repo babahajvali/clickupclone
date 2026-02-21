@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    UpdateFieldValueDTO, TaskFieldValueDTO, TaskFieldValuesDTO, \
-    CreateFieldValueDTO, UpdateFieldDTO
+    UpdateFieldValueDTO, TaskFieldValueDTO, CreateFieldValueDTO, UpdateFieldDTO
 
 
 class FieldStorageInterface(ABC):
@@ -30,27 +29,18 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_field_exists(self, field_id: str) -> bool:
+    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         pass
 
-    @abstractmethod
-    def check_field_name_except_this_field(
-            self, field_id: str, field_name: str, template_id: str) -> bool:
+    def shift_fields_up(self, template_id: str, new_order: int,
+                        old_order: int):
         pass
 
-    @abstractmethod
-    def get_field_by_name(
-            self, field_name: str, template_id: str) -> FieldDTO:
+    def shift_fields_down(self, template_id: str, old_order: int,
+                          new_order: int):
         pass
 
-    @abstractmethod
-    def get_active_fields_for_template(self, template_id: str) -> list[
-        FieldDTO]:
-        pass
-
-    @abstractmethod
-    def reorder_fields(self, field_id: str, template_id: str,
-                       new_order: int) -> FieldDTO:
+    def update_field_order(self, field_id: str, new_order: int) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -67,22 +57,14 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def set_task_field_value(
-            self, field_value_data: UpdateFieldValueDTO) -> TaskFieldValueDTO:
-        pass
-
-    @abstractmethod
-    def get_field_values_by_task_ids(
-            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
+    def update_or_create_task_field_value(
+            self, field_value_data: UpdateFieldValueDTO, user_id: str) \
+            -> TaskFieldValueDTO:
         pass
 
     @abstractmethod
     def create_bulk_field_values(
             self, create_bulk_field_values: list[CreateFieldValueDTO]):
-        pass
-
-    @abstractmethod
-    def get_task_field_value(self, task_id: str, field_id: str) -> bool:
         pass
 
     @abstractmethod
