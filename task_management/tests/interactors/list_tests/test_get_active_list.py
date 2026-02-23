@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.custom_exceptions import InactiveList, ListNotFound
+from task_management.exceptions.custom_exceptions import ListDeletedException, ListNotFound
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.lists.list_interactor import ListInteractor
 from task_management.interactors.storage_interfaces import (
@@ -20,7 +20,7 @@ class TestGetActiveList:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
@@ -45,37 +45,29 @@ class TestGetActiveList:
             workspace_storage=workspace_storage,
         )
 
-    def test_get_active_list_success(self, snapshot):
+    def test_get_active_list_success(self):
         interactor = self._get_interactor()
 
-        result = interactor.get_active_list(list_id="list_1")
+        result = interactor.get_list(list_id="list_1")
 
-        snapshot.assert_match(
-            repr(result),
-            "test_get_active_list_success.txt",
-        )
+        assert result.list_id == "list_1"
+        interactor.list_storage.get_list.assert_called_with(list_id="list_1")
 
-    def test_get_active_list_not_found(self, snapshot):
+    def test_get_active_list_not_found(self):
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
-            interactor.get_active_list(list_id="list_1")
+            interactor.get_list(list_id="list_1")
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_get_active_list_not_found.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_get_active_list_inactive(self, snapshot):
+    def test_get_active_list_inactive(self):
         list_data = self._get_list_dto()
-        list_data.is_active = False
+        list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(InactiveList) as exc:
-            interactor.get_active_list(list_id="list_1")
+        with pytest.raises(ListDeletedException) as exc:
+            interactor.get_list(list_id="list_1")
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_get_active_list_inactive.txt",
-        )
+        assert exc.value.list_id == "list_1"

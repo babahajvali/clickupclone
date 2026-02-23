@@ -62,7 +62,8 @@ class AccountInteractor:
         self.user_mixin.check_user_is_active(user_id=created_by)
         self.account_validator.check_account_name_is_not_empty(
             account_name=name)
-        self.account_validator.check_account_name_in_db(account_name=name)
+        self.account_validator.check_account_name_in_db(
+            account_name=name, account_id=None)
 
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)

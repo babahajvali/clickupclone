@@ -44,7 +44,7 @@ class ListCreationHandler:
 
         create_template_dto = CreateTemplateDTO(
             name=f"{list_obj.name} template",
-            description=list_obj.description,
+            description=None,
             list_id=list_obj.list_id,
             created_by=list_obj.created_by
         )

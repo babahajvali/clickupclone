@@ -40,7 +40,7 @@ class WorkspaceMemberInteractor:
             workspace_id=workspace_member_data.workspace_id)
         self.user_mixin.check_user_is_active(
             user_id=workspace_member_data.user_id)
-        self.workspace_mixin.check_user_has_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
         self.workspace_validator.check_role(
@@ -57,7 +57,7 @@ class WorkspaceMemberInteractor:
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
 
-        self.workspace_mixin.check_user_has_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             user_id=removed_by,
             workspace_id=workspace_member_data.workspace_id)
 

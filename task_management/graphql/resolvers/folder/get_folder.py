@@ -19,7 +19,7 @@ def get_folder_resolver(root, info, params):
             description=folder_data.description,
             space_id=folder_data.space_id,
             order=folder_data.order,
-            is_active=folder_data.is_active,
+            is_active=folder_data.is_deleted,
             created_by=folder_data.created_by,
             is_private=folder_data.is_private
         )

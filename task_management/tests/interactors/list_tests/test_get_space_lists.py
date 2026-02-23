@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    InactiveSpace,
+    SpaceDeletedException,
     SpaceNotFound,
 )
 from task_management.interactors.dtos import ListDTO
@@ -23,7 +23,7 @@ class TestGetSpaceLists:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
@@ -37,10 +37,10 @@ class TestGetSpaceLists:
         workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         space_storage.get_space.return_value = (
-            type("Space", (), {"is_active": space_active})()
+            type("Space", (), {"is_deleted": not space_active})()
             if space_exists else None
         )
-        list_storage.get_active_space_lists.return_value = [
+        list_storage.get_space_lists.return_value = [
             self._get_list_dto()
         ]
 
@@ -51,34 +51,29 @@ class TestGetSpaceLists:
             workspace_storage=workspace_storage,
         )
 
-    def test_get_space_lists_success(self, snapshot):
+    def test_get_space_lists_success(self):
         interactor = self._get_interactor()
 
-        result = interactor.get_active_space_lists(space_id="space_1")
+        result = interactor.get_space_lists(space_id="space_1")
 
-        snapshot.assert_match(
-            repr(result),
-            "test_get_space_lists_success.txt",
+        assert len(result) == 1
+        assert result[0].space_id == "space_1"
+        interactor.list_storage.get_space_lists.assert_called_once_with(
+            space_ids=["space_1"]
         )
 
-    def test_get_space_lists_not_found(self, snapshot):
+    def test_get_space_lists_not_found(self):
         interactor = self._get_interactor(space_exists=False)
 
         with pytest.raises(SpaceNotFound) as exc:
-            interactor.get_active_space_lists(space_id="space_1")
+            interactor.get_space_lists(space_id="space_1")
 
-        snapshot.assert_match(
-            repr(exc.value.space_id),
-            "test_get_space_lists_not_found.txt",
-        )
+        assert exc.value.space_id == "space_1"
 
-    def test_get_space_lists_inactive(self, snapshot):
+    def test_get_space_lists_inactive(self):
         interactor = self._get_interactor(space_active=False)
 
-        with pytest.raises(InactiveSpace) as exc:
-            interactor.get_active_space_lists(space_id="space_1")
+        with pytest.raises(SpaceDeletedException) as exc:
+            interactor.get_space_lists(space_id="space_1")
 
-        snapshot.assert_match(
-            repr(exc.value.space_id),
-            "test_get_space_lists_inactive.txt",
-        )
+        assert exc.value.space_id == "space_1"

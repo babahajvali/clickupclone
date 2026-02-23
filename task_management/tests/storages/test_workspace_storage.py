@@ -191,7 +191,7 @@ class TestWorkspaceStorage:
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.get_active_account_workspaces(
+        result = storage.get_account_workspaces(
             account_id=str(account_id)
         )
 

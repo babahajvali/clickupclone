@@ -36,7 +36,7 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_active_account_workspaces(self, account_id: str) -> list[
+    def get_account_workspaces(self, account_id: str) -> list[
         WorkspaceDTO]:
         pass
 

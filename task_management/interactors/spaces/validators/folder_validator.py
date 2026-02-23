@@ -40,7 +40,7 @@ class FolderValidator:
 
     def check_folder_update_field_properties(
             self, folder_id: str, name: Optional[str],
-            description: Optional[str]) -> dict:
+            description: Optional[str]):
 
         field_properties_to_update = {}
 
@@ -56,4 +56,15 @@ class FolderValidator:
         if not field_properties_to_update:
             raise NothingToUpdateFolderException(folder_id=folder_id)
 
-        return field_properties_to_update
+    def reorder_folder_positions(
+            self, space_id: str, old_order: int, new_order: int):
+
+
+        if old_order > new_order:
+            self.folder_storage.shift_folders_down(
+                space_id=space_id, old_order=old_order, new_order=new_order
+            )
+        else:
+            self.folder_storage.shift_folders_up(
+                space_id=space_id, old_order=old_order, new_order=new_order
+            )

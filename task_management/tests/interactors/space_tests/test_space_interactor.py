@@ -184,7 +184,7 @@ class TestSpaceInteractor:
             Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
-        self.space_storage.set_space_private.return_value = expected_result
+        self.space_storage.update_space_visibility.return_value = expected_result
 
         # Act
         result = self.interactor.set_space_visibility(space_id, user_id,
@@ -192,7 +192,7 @@ class TestSpaceInteractor:
 
         # Assert
         assert result == expected_result
-        self.space_storage.set_space_private.assert_called_once_with(
+        self.space_storage.update_space_visibility.assert_called_once_with(
             space_id=space_id)
 
     def test_set_space_public_success(self):
@@ -205,7 +205,7 @@ class TestSpaceInteractor:
             Permissions.FULL_EDIT.value)
         self.space_storage.get_space.return_value = type('Space', (),
                                                          {'is_active': True})()
-        self.space_storage.set_space_public.return_value = expected_result
+        self.space_storage.update_space_visibility.return_value = expected_result
 
         # Act
         result = self.interactor.set_space_visibility(space_id, user_id,
@@ -213,7 +213,7 @@ class TestSpaceInteractor:
 
         # Assert
         assert result == expected_result
-        self.space_storage.set_space_public.assert_called_once_with(
+        self.space_storage.update_space_visibility.assert_called_once_with(
             space_id=space_id)
 
     def test_get_workspace_spaces_success(self):
@@ -224,14 +224,14 @@ class TestSpaceInteractor:
         self.workspace_storage.get_active_workspaces.return_value = type('Workspace',
                                                                          (), {
                                                                      'is_active': True})()
-        self.space_storage.get_active_workspace_spaces.return_value = expected_result
+        self.space_storage.get_workspace_spaces.return_value = expected_result
 
         # Act
-        result = self.interactor.get_active_workspace_spaces(workspace_id)
+        result = self.interactor.get_workspace_spaces(workspace_id)
 
         # Assert
         assert result == expected_result
-        self.space_storage.get_active_workspace_spaces.assert_called_once_with(
+        self.space_storage.get_workspace_spaces.assert_called_once_with(
             workspace_id=workspace_id)
 
     def test_get_workspace_spaces_workspace_not_found(self, snapshot):
@@ -241,7 +241,7 @@ class TestSpaceInteractor:
 
         # Act & Assert
         with pytest.raises(WorkspaceNotFound) as exc:
-            self.interactor.get_active_workspace_spaces(workspace_id)
+            self.interactor.get_workspace_spaces(workspace_id)
 
         snapshot.assert_match(repr(exc.value), "workspace_not_found.txt")
 
@@ -254,6 +254,6 @@ class TestSpaceInteractor:
 
         # Act & Assert
         with pytest.raises(InactiveWorkspace) as exc:
-            self.interactor.get_active_workspace_spaces(workspace_id)
+            self.interactor.get_workspace_spaces(workspace_id)
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")

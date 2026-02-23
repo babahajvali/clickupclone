@@ -23,7 +23,7 @@ def get_folder_lists_resolver(root, info, params):
     )
 
     try:
-        lists_data = interactor.get_active_folder_lists(folder_id=folder_id)
+        lists_data = interactor.get_folder_lists(folder_id=folder_id)
 
         result = [
             ListType(
@@ -31,7 +31,7 @@ def get_folder_lists_resolver(root, info, params):
                 name=list_item.name,
                 description=list_item.description,
                 space_id=list_item.space_id,
-                is_active=list_item.is_delete,
+                is_active=list_item.is_deleted,
                 order=list_item.order,
                 is_private=list_item.is_private,
                 created_by=list_item.created_by_user_id,
@@ -44,5 +44,5 @@ def get_folder_lists_resolver(root, info, params):
     except custom_exceptions.FolderNotFound as e:
         return FolderNotFoundType(folder_id=e.folder_id)
 
-    except custom_exceptions.InactiveFolder as e:
+    except custom_exceptions.FolderDeletedException as e:
         return InactiveFolderType(folder_id=e.folder_id)

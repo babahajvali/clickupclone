@@ -17,10 +17,12 @@ class WorkspaceValidationMixin:
         workspace_data = self.workspace_storage.get_workspace(
             workspace_id=workspace_id)
 
-        if not workspace_data:
+        is_workspace_not_found = not workspace_data
+        if is_workspace_not_found:
             raise WorkspaceNotFound(workspace_id=workspace_id)
 
-        if not workspace_data.is_active:
+        is_workspace_delete = workspace_data.is_deleted
+        if is_workspace_delete:
             raise InactiveWorkspace(workspace_id=workspace_id)
 
     def check_user_is_workspace_owner(self, user_id: str,
@@ -31,7 +33,7 @@ class WorkspaceValidationMixin:
         if not is_owner:
             raise UserNotWorkspaceOwner(user_id=user_id)
 
-    def check_user_has_access_to_workspace(
+    def check_user_has_edit_access_to_workspace(
             self, user_id: str, workspace_id: str):
 
         member_permission = self.workspace_storage.get_workspace_member(

@@ -153,8 +153,7 @@ class FieldInteractor:
         return self.field_storage.delete_field(field_id=field_id)
 
     @interactor_cache(cache_name="fields", timeout=5 * 60)
-    def get_active_fields_for_template(
-            self, template_id: str) -> list[FieldDTO]:
+    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
 
         self.template_mixin.check_template_exists(template_id=template_id)
 
@@ -173,7 +172,7 @@ class FieldInteractor:
         workspace_id = self.template_storage.get_workspace_id_from_template_id(
             template_id=template_id)
 
-        self.workspace_mixin.check_user_has_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     # Helping functions

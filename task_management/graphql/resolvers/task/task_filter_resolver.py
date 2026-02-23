@@ -54,7 +54,7 @@ def task_filter_resolver(root, info, params):
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
 
-    except custom_exceptions.InactiveList as e:
+    except custom_exceptions.ListDeletedException as e:
         return InactiveListType(list_id=e.list_id)
 
     except custom_exceptions.InvalidOffset as e:

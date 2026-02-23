@@ -1,12 +1,12 @@
 from django.db.models import F
+from typing import Optional
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
-    UpdateListDTO, UserListPermissionDTO, CreateListPermissionDTO
+    UserListPermissionDTO, CreateListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.models import ListPermission, List, Template, Space, \
-    Folder, User
+from task_management.models import ListPermission, List, Template
 
 
 class ListStorage(ListStorageInterface):
@@ -18,11 +18,23 @@ class ListStorage(ListStorageInterface):
             name=list_data.name,
             description=list_data.description,
             space_id=list_data.space.space_id,
-            is_active=list_data.is_delete,
+            is_deleted=list_data.is_deleted,
             order=list_data.order,
             created_by=list_data.created_by.user_id,
             folder_id=list_data.folder.folder_id if list_data.folder else None,
             is_private=list_data.is_private,
+        )
+
+    @staticmethod
+    def _list_permission_dto(
+            permission_data: ListPermission) -> UserListPermissionDTO:
+        return UserListPermissionDTO(
+            id=permission_data.pk,
+            list_id=permission_data.list.list_id,
+            user_id=permission_data.user.user_id,
+            permission_type=permission_data.permission_type,
+            is_active=permission_data.is_active,
+            added_by=permission_data.added_by.user_id,
         )
 
     def get_template_id_by_list_id(self, list_id: str) -> str:
@@ -52,13 +64,13 @@ class ListStorage(ListStorageInterface):
 
     def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
         list_data = List.objects.filter(
-            folder_id=folder_id, is_delete=False).order_by('-order').first()
+            folder_id=folder_id, is_deleted=False).order_by('-order').first()
         last_order = list_data.order + 1 if list_data else 1
         return last_order
 
     def get_active_lists_last_order_in_space(self, space_id: str) -> int:
         list_data = List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_delete=False).order_by(
+            space_id=space_id, folder__isnull=True, is_deleted=False).order_by(
             '-order').first()
 
         last_order = list_data.order + 1 if list_data else 1
@@ -71,39 +83,49 @@ class ListStorage(ListStorageInterface):
 
         return list_data.space.workspace.workspace_id
 
-    def update_list(self, list_id: str,
-                    field_properties: dict) -> ListDTO:
-        List.objects.filter(list_id=list_id).update(**field_properties)
+    def update_list(self, list_id: str, name: Optional[str],
+                    description: Optional[str]) -> ListDTO:
+
         list_data = List.objects.get(list_id=list_id)
+        is_name_provided = name is not None
+        is_description_provided = description is not None
+
+        if is_name_provided:
+            list_data.name = name
+
+        if is_description_provided:
+            list_data.description = description
+
+        list_data.save()
 
         return self._list_dto(list_data=list_data)
 
-    def get_active_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
+    def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
         folder_lists = List.objects.filter(folder_id__in=folder_ids,
-                                           is_delete=False)
+                                           is_deleted=False)
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
-    def get_active_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
+    def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
         space_lists = List.objects.filter(
-            space_id__in=space_ids, folder__isnull=True, is_delete=False)
+            space_id__in=space_ids, folder__isnull=True, is_deleted=False)
 
         return [self._list_dto(list_data=data) for data in space_lists]
 
     def delete_list(self, list_id: str) -> ListDTO:
 
         list_data = List.objects.get(list_id=list_id)
-        list_data.is_delete = True
+        list_data.is_deleted = True
         list_data.save(update_fields=["is_active"])
 
         current_order = list_data.order
         if list_data.folder:
             List.objects.filter(
-                folder_id=list_data.folder.folder_id, is_delete=False,
+                folder_id=list_data.folder.folder_id, is_deleted=False,
                 order__gt=current_order).update(order=F('order') - 1)
         else:
             List.objects.filter(
-                space_id=list_data.space.space_id, is_delete=False,
+                space_id=list_data.space.space_id, is_deleted=False,
                 folder__isnull=True, order__gt=current_order).update(
                 order=F('order') - 1)
 
@@ -117,99 +139,94 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def make_list_public(self, list_id: str) -> ListDTO:
+    def update_list_visibility(self, list_id: str, visibility: str) -> ListDTO:
         # set is_private false
         list_data = List.objects.get(list_id=list_id)
-        list_data.is_private = False
+        list_data.is_private = visibility == Visibility.PRIVATE.value
+
         list_data.save(update_fields=["is_private"])
 
         return self._list_dto(list_data=list_data)
 
-    def reorder_list_in_folder(self, folder_id: str, list_id: str,
-                               order: int) -> ListDTO:
+    def update_list_order_in_folder(
+            self, folder_id: str, list_id: str, order: int) -> ListDTO:
+
         list_data = List.objects.get(list_id=list_id)
-        old_order = list_data.order
-        new_order = order
 
-        if old_order == new_order:
-            return self._list_dto(list_data=list_data)
-
-        if new_order > old_order:
-            List.objects.filter(
-                folder_id=folder_id,
-                is_delete=False,
-                order__gt=old_order,
-                order__lte=new_order
-            ).update(order=F('order') - 1)
-        else:
-            List.objects.filter(
-                folder_id=folder_id,
-                is_delete=False,
-                order__gte=new_order,
-                order__lt=old_order
-            ).update(order=F('order') + 1)
-
-        list_data.order = new_order
+        list_data.order = order
         list_data.save()
 
         return self._list_dto(list_data=list_data)
 
-    def reorder_list_in_space(self, space_id: str, list_id: str, order: int) -> \
-            ListDTO:
+    def shift_lists_down_in_folder(
+            self, folder_id: str, old_order: int, new_order: int):
+
+        List.objects.filter(
+            folder_id=folder_id,
+            is_delted=False,
+            order__gt=old_order,
+            order__lte=new_order
+        ).update(order=F('order') - 1)
+
+    def shift_lists_up_in_folder(
+            self, folder_id: str, old_order: int, new_order: int):
+
+        List.objects.filter(
+            folder_id=folder_id,
+            is_deleted=False,
+            order__gte=new_order,
+            order_lt=old_order
+        ).update(order=F('order') + 1)
+
+    def update_list_order_in_space(
+            self, space_id: str, list_id: str, order: int) -> ListDTO:
+
         list_data = List.objects.get(list_id=list_id)
-        old_order = list_data.order
-        new_order = order
 
-        if old_order == new_order:
-            return self._list_dto(list_data=list_data)
-
-        if new_order > old_order:
-            List.objects.filter(
-                space_id=space_id,
-                folder__isnull=True,
-                is_delete=False,
-                order__gt=old_order,
-                order__lte=new_order
-            ).update(order=F('order') - 1)
-        else:
-            List.objects.filter(
-                space_id=space_id,
-                folder__isnull=True,
-                is_delete=False,
-                order__gte=new_order,
-                order__lt=old_order
-            ).update(order=F('order') + 1)
-
-        list_data.order = new_order
-        list_data.save()
+        list_data.order = order
+        list_data.save(update_fields=["order"])
 
         return self._list_dto(list_data=list_data)
+
+    def shift_lists_down_in_space(
+            self, space_id: str, old_order: int, new_order: int):
+
+        List.objects.filter(
+            space_id=space_id,
+            is_deleted=False,
+            order__gt=old_order,
+            order__lte=new_order
+        ).update(order=F('order') - 1)
+
+    def shift_lists_up_in_space(
+            self, space_id: str, old_order: int, new_order: int):
+
+        List.objects.filter(
+            space_id=space_id,
+            is_deleted=False,
+            order__gte=old_order,
+            order__lt=new_order
+        ).update(order=F('order') + 1)
 
     def get_folder_lists_count(self, folder_id: str) -> int:
-        return List.objects.filter(folder_id=folder_id, is_delete=False).count()
+
+        return List.objects.filter(
+            folder_id=folder_id, is_deleted=False).count()
 
     def get_space_lists_count(self, space_id: str) -> int:
+
         return List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_delete=False).count()
+            space_id=space_id, folder__isnull=True, is_deleted=False).count()
 
     def get_list_space_id(self, list_id: str) -> str:
-        return List.objects.filter(list_id=list_id).values_list('space_id',
-                                                                flat=True)[0]
 
-    @staticmethod
-    def _list_permission_dto(
-            permission_data: ListPermission) -> UserListPermissionDTO:
-        return UserListPermissionDTO(
-            id=permission_data.pk,
-            list_id=permission_data.list.list_id,
-            user_id=permission_data.user.user_id,
-            permission_type=permission_data.permission_type,
-            is_active=permission_data.is_active,
-            added_by=permission_data.added_by.user_id,
-        )
+        return List.objects.filter(list_id=list_id).values_list(
+            'space_id', flat=True)[0]
 
-    def update_user_permission_for_list(self, list_id: str, user_id: str,
-                                        permission_type: Permissions) -> UserListPermissionDTO:
+    def update_user_permission_for_list(
+            self, list_id: str, user_id: str, permission_type: Permissions) \
+            -> UserListPermissionDTO:
+
         permission = ListPermission.objects.get(
             list_id=list_id,
             user_id=user_id
@@ -219,34 +236,38 @@ class ListStorage(ListStorageInterface):
 
         return self._list_permission_dto(permission_data=permission)
 
-    def get_list_permissions(self, list_id: str) -> list[
-        UserListPermissionDTO]:
+    def get_list_permissions(
+            self, list_id: str) -> list[UserListPermissionDTO]:
+
         permissions = ListPermission.objects.filter(
             list_id=list_id
         )
 
         return [self._list_permission_dto(perm) for perm in permissions]
 
-    def get_user_permission_for_list(self, user_id: str,
-                                     list_id: str) -> UserListPermissionDTO | None:
+    def get_user_permission_for_list(
+            self, user_id: str, list_id: str) -> UserListPermissionDTO | None:
+
         permission = ListPermission.objects.filter(
             list_id=list_id, user_id=user_id).order_by('created_at').last()
 
         return self._list_permission_dto(permission_data=permission)
 
-    def remove_user_permission_for_list(self, list_id: str,
-                                        user_id: str) -> UserListPermissionDTO:
+    def remove_user_permission_for_list(
+            self, list_id: str, user_id: str) -> UserListPermissionDTO:
+
         permission = ListPermission.objects.get(
             list_id=list_id,
             user_id=user_id
         )
-        permission.is_delete = False
+        permission.is_active = False
         permission.save(update_fields=["is_active"])
 
         return self._list_permission_dto(permission_data=permission)
 
-    def create_list_users_permission(self, user_permissions: list[
-        CreateListPermissionDTO]) -> list[UserListPermissionDTO]:
+    def create_list_users_permission(
+            self, user_permissions: list[CreateListPermissionDTO]) \
+            -> list[UserListPermissionDTO]:
 
         permissions_to_create = []
         for perm_data in user_permissions:

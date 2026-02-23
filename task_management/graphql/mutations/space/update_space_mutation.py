@@ -48,7 +48,7 @@ class UpdateSpaceMutation(graphene.Mutation):
                 description=result.description,
                 workspace_id=result.workspace_id,
                 order=result.order,
-                is_active=result.is_active,
+                is_active=result.is_deleted,
                 is_private=result.is_private,
                 created_by=result.created_by
             )
@@ -56,7 +56,7 @@ class UpdateSpaceMutation(graphene.Mutation):
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.InactiveSpace as e:
+        except custom_exceptions.SpaceDeletedException as e:
             return InactiveSpaceType(space_id=e.space_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

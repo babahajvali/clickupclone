@@ -3,9 +3,9 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
-    InactiveFolder,
+    FolderDeletedException,
     InvalidOrder,
-    InactiveList,
+    ListDeletedException,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -39,7 +39,7 @@ class TestReorderListInFolder:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
@@ -65,10 +65,10 @@ class TestReorderListInFolder:
 
         list_storage.get_list.return_value = list_data
         list_storage.get_folder_lists_count.return_value = folder_lists_count
-        list_storage.reorder_list_in_folder.return_value = list_data
+        list_storage.update_list_order_in_folder.return_value = list_data
 
         folder_storage.get_folder.return_value = (
-            type("Folder", (), {"is_active": folder_active})()
+            type("Folder", (), {"is_deleted": not folder_active})()
             if folder_exists else None
         )
         folder_storage.get_folder_space_id.return_value = "space_1"
@@ -85,7 +85,25 @@ class TestReorderListInFolder:
             workspace_storage=workspace_storage,
         )
 
-    def test_reorder_list_in_folder_success(self, snapshot):
+    def test_reorder_list_in_folder_success(self):
+        interactor = self._get_interactor()
+
+        result = interactor.reorder_list_in_folder(
+            folder_id="folder_1",
+            list_id="list_1",
+            order=2,
+            user_id="user_id",
+        )
+
+        assert result.list_id == "list_1"
+        interactor.list_storage.shift_lists_down_in_folder.assert_called_once_with(
+            folder_id="folder_1", old_order=1, new_order=2
+        )
+        interactor.list_storage.update_list_order_in_folder.assert_called_once_with(
+            folder_id="folder_1", list_id="list_1", order=2
+        )
+
+    def test_reorder_list_in_folder_same_order_noop(self):
         interactor = self._get_interactor()
 
         result = interactor.reorder_list_in_folder(
@@ -95,12 +113,12 @@ class TestReorderListInFolder:
             user_id="user_id",
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "test_reorder_list_in_folder_success.txt",
-        )
+        assert result.order == 1
+        interactor.list_storage.update_list_order_in_folder.assert_not_called()
+        interactor.list_storage.shift_lists_down_in_folder.assert_not_called()
+        interactor.list_storage.shift_lists_up_in_folder.assert_not_called()
 
-    def test_reorder_list_in_folder_invalid_order_low(self, snapshot):
+    def test_reorder_list_in_folder_invalid_order_low(self):
         interactor = self._get_interactor(folder_lists_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
@@ -111,12 +129,9 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_list_in_folder_invalid_order_low.txt",
-        )
+        assert exc.value.order == 0
 
-    def test_reorder_list_in_folder_invalid_order_high(self, snapshot):
+    def test_reorder_list_in_folder_invalid_order_high(self):
         interactor = self._get_interactor(folder_lists_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
@@ -127,12 +142,9 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_list_in_folder_invalid_order_high.txt",
-        )
+        assert exc.value.order == 5
 
-    def test_reorder_list_in_folder_list_not_found(self, snapshot):
+    def test_reorder_list_in_folder_list_not_found(self):
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
@@ -144,17 +156,14 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_reorder_list_in_folder_list_not_found.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_reorder_list_in_folder_list_inactive(self, snapshot):
+    def test_reorder_list_in_folder_list_inactive(self):
         list_data = self._get_list_dto()
-        list_data.is_active = False
+        list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",
@@ -162,12 +171,9 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_reorder_list_in_folder_list_inactive.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_reorder_list_in_folder_folder_not_found(self, snapshot):
+    def test_reorder_list_in_folder_folder_not_found(self):
         interactor = self._get_interactor(folder_exists=False)
 
         with pytest.raises(FolderNotFound) as exc:
@@ -178,15 +184,12 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.folder_id),
-            "test_reorder_list_in_folder_folder_not_found.txt",
-        )
+        assert exc.value.folder_id == "folder_1"
 
-    def test_reorder_list_in_folder_folder_inactive(self, snapshot):
+    def test_reorder_list_in_folder_folder_inactive(self):
         interactor = self._get_interactor(folder_active=False)
 
-        with pytest.raises(InactiveFolder) as exc:
+        with pytest.raises(FolderDeletedException) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",
@@ -194,12 +197,9 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.folder_id),
-            "test_reorder_list_in_folder_folder_inactive.txt",
-        )
+        assert exc.value.folder_id == "folder_1"
 
-    def test_reorder_list_in_folder_permission_denied(self, snapshot):
+    def test_reorder_list_in_folder_permission_denied(self):
         interactor = self._get_interactor(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
@@ -210,7 +210,4 @@ class TestReorderListInFolder:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_reorder_list_in_folder_permission_denied.txt",
-        )
+        assert exc.value.user_id == "user_id"

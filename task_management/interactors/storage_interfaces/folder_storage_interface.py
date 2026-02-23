@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import FolderDTO, CreateFolderDTO, \
@@ -21,17 +22,26 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_folder(self, folder_id: str,
-                      field_properties: dict) -> FolderDTO:
+    def update_folder(
+            self, folder_id: str, name: Optional[str],
+            description: Optional[str]) -> FolderDTO:
         pass
 
     @abstractmethod
-    def reorder_folder(self, folder_id: str, new_order: int) -> FolderDTO:
+    def update_folder_order(self, folder_id: str, new_order: int) -> FolderDTO:
+        pass
+
+    @abstractmethod
+    def shift_folders_down(
+            self, space_id: str, old_order: int, new_order: int):
+        pass
+
+    @abstractmethod
+    def shift_folders_up(self, space_id: str, old_order: int, new_order: int):
         pass
 
     @abstractmethod
     def delete_folder(self, folder_id: str) -> FolderDTO:
-        # in this case update the value is_active is  False
         pass
 
     @abstractmethod
@@ -45,8 +55,8 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def set_folder_public(self, folder_id: str) -> FolderDTO:
-        # set folder is public
+    def update_folder_visibility(
+            self, folder_id: str, visibility: str) -> FolderDTO:
         pass
 
     @abstractmethod

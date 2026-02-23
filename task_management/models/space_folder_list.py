@@ -10,9 +10,9 @@ class Space(models.Model):
     workspace = models.ForeignKey(
         'Workspace',
         on_delete=models.CASCADE,
-        related_name='workspace_space'
+        related_name='spaces'
     )
-    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
     order = models.PositiveIntegerField()
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
@@ -27,7 +27,7 @@ class Space(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["workspace"]),
-            models.Index(fields=["is_active"]),
+            models.Index(fields=["is_deleted"]),
         ]
 
     def __str__(self):
@@ -41,16 +41,16 @@ class Folder(models.Model):
     space = models.ForeignKey(
         "Space",
         on_delete=models.CASCADE,
-        related_name='space_folder'
+        related_name='folders'
     )
     order = models.PositiveIntegerField()
-    is_delete = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",
         on_delete=models.SET_NULL,
         null=True, blank=True,
-        related_name='folders_created'
+        related_name='created_folders'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -71,22 +71,22 @@ class List(models.Model):
     space = models.ForeignKey(
         "Space",
         on_delete=models.CASCADE,
-        related_name='space_list'
+        related_name='lists'
     )
     folder = models.ForeignKey(
         "Folder",
         on_delete=models.SET_NULL,
         null=True, blank=True,
-        related_name='folder_list'
+        related_name='folder_lists'
     )
     order = models.PositiveIntegerField()
-    is_delete = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",
         on_delete=models.SET_NULL,
         null=True, blank=True,
-        related_name='lists_created'
+        related_name='created_lists'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

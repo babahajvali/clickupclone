@@ -78,7 +78,7 @@ class FieldDTO:
 @dataclass
 class CreateTemplateDTO:
     name: str
-    description: str
+    description: Optional[str]
     list_id: str
     created_by: str
 
@@ -156,7 +156,7 @@ class ListDTO:
     name: str
     description: str
     space_id: str
-    is_active: bool
+    is_deleted: bool
     order: int
     is_private: bool
     created_by: str
@@ -210,7 +210,7 @@ class FolderDTO:
     description: str
     space_id: str
     order: int
-    is_active: bool
+    is_deleted: bool
     created_by: str
     is_private: bool
 
@@ -256,7 +256,7 @@ class SpaceDTO:
     description: str
     workspace_id: str
     order: int
-    is_active: bool
+    is_deleted: bool
     is_private: bool
     created_by: str
 
@@ -268,7 +268,7 @@ class WorkspaceDTO:
     description: str
     user_id: str
     account_id: str
-    is_active: bool
+    is_deleted: bool
 
 
 @dataclass
@@ -281,7 +281,7 @@ class UpdateWorkspaceDTO:
 @dataclass
 class CreateWorkspaceDTO:
     name: str
-    description: str
+    description: Optional[str]
     user_id: str
     account_id: str
 

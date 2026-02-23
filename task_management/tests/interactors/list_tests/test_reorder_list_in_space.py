@@ -2,9 +2,9 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    InactiveSpace,
+    SpaceDeletedException,
     InvalidOrder,
-    InactiveList,
+    ListDeletedException,
     ListNotFound,
     ModificationNotAllowed,
     SpaceNotFound,
@@ -39,7 +39,7 @@ class TestReorderListInSpace:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
@@ -65,10 +65,10 @@ class TestReorderListInSpace:
 
         list_storage.get_list.return_value = list_data
         list_storage.get_space_lists_count.return_value = space_lists_count
-        list_storage.reorder_list_in_space.return_value = list_data
+        list_storage.update_list_order_in_space.return_value = list_data
 
         space_storage.get_space.return_value = (
-            type("Space", (), {"is_active": space_active})()
+            type("Space", (), {"is_deleted": not space_active})()
             if space_exists else None
         )
         space_storage.get_space_workspace_id.return_value = "workspace_id1"
@@ -84,7 +84,25 @@ class TestReorderListInSpace:
             workspace_storage=workspace_storage,
         )
 
-    def test_reorder_list_in_space_success(self, snapshot):
+    def test_reorder_list_in_space_success(self):
+        interactor = self._get_interactor()
+
+        result = interactor.reorder_list_in_space(
+            list_id="list_1",
+            space_id="space_1",
+            order=2,
+            user_id="user_id",
+        )
+
+        assert result.list_id == "list_1"
+        interactor.list_storage.shift_lists_down_in_space.assert_called_once_with(
+            space_id="space_1", old_order=1, new_order=2
+        )
+        interactor.list_storage.update_list_order_in_space.assert_called_once_with(
+            space_id="space_1", list_id="list_1", order=2
+        )
+
+    def test_reorder_list_in_space_same_order_noop(self):
         interactor = self._get_interactor()
 
         result = interactor.reorder_list_in_space(
@@ -94,12 +112,12 @@ class TestReorderListInSpace:
             user_id="user_id",
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "test_reorder_list_in_space_success.txt",
-        )
+        assert result.order == 1
+        interactor.list_storage.update_list_order_in_space.assert_not_called()
+        interactor.list_storage.shift_lists_down_in_space.assert_not_called()
+        interactor.list_storage.shift_lists_up_in_space.assert_not_called()
 
-    def test_reorder_list_in_space_invalid_order_low(self, snapshot):
+    def test_reorder_list_in_space_invalid_order_low(self):
         interactor = self._get_interactor(space_lists_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
@@ -110,12 +128,9 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_list_in_space_invalid_order_low.txt",
-        )
+        assert exc.value.order == 0
 
-    def test_reorder_list_in_space_invalid_order_high(self, snapshot):
+    def test_reorder_list_in_space_invalid_order_high(self):
         interactor = self._get_interactor(space_lists_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
@@ -126,12 +141,9 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_list_in_space_invalid_order_high.txt",
-        )
+        assert exc.value.order == 5
 
-    def test_reorder_list_in_space_list_not_found(self, snapshot):
+    def test_reorder_list_in_space_list_not_found(self):
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
@@ -143,17 +155,14 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_reorder_list_in_space_list_not_found.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_reorder_list_in_space_list_inactive(self, snapshot):
+    def test_reorder_list_in_space_list_inactive(self):
         list_data = self._get_list_dto()
-        list_data.is_active = False
+        list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -161,12 +170,9 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_reorder_list_in_space_list_inactive.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_reorder_list_in_space_space_not_found(self, snapshot):
+    def test_reorder_list_in_space_space_not_found(self):
         interactor = self._get_interactor(space_exists=False)
 
         with pytest.raises(SpaceNotFound) as exc:
@@ -177,15 +183,12 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.space_id),
-            "test_reorder_list_in_space_space_not_found.txt",
-        )
+        assert exc.value.space_id == "space_1"
 
-    def test_reorder_list_in_space_space_inactive(self, snapshot):
+    def test_reorder_list_in_space_space_inactive(self):
         interactor = self._get_interactor(space_active=False)
 
-        with pytest.raises(InactiveSpace) as exc:
+        with pytest.raises(SpaceDeletedException) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -193,12 +196,9 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.space_id),
-            "test_reorder_list_in_space_space_inactive.txt",
-        )
+        assert exc.value.space_id == "space_1"
 
-    def test_reorder_list_in_space_permission_denied(self, snapshot):
+    def test_reorder_list_in_space_permission_denied(self):
         interactor = self._get_interactor(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
@@ -209,7 +209,4 @@ class TestReorderListInSpace:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_reorder_list_in_space_permission_denied.txt",
-        )
+        assert exc.value.user_id == "user_id"

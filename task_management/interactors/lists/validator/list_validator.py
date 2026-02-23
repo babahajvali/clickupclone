@@ -98,3 +98,29 @@ class ListValidator:
 
         if is_permission_invalid:
             raise UnexpectedPermission(permission=permission)
+
+
+    def reorder_list_positions_in_folder(
+            self, folder_id: str, old_order: int, new_order: int):
+
+        if new_order > old_order:
+            self.list_storage.shift_lists_down_in_folder(
+                folder_id=folder_id,old_order=old_order,new_order=new_order
+            )
+        else:
+            self.list_storage.shift_lists_up_in_folder(
+                folder_id=folder_id,old_order=old_order,new_order=new_order
+            )
+
+
+    def reorder_list_positions_in_space(
+            self, space_id: str, old_order: int, new_order: int):
+
+        if new_order > old_order:
+            self.list_storage.shift_lists_down_in_space(
+                space_id=space_id,old_order=old_order,new_order=new_order
+            )
+        else:
+            self.list_storage.shift_lists_up_in_space(
+                space_id=space_id,old_order=old_order,new_order=new_order
+            )

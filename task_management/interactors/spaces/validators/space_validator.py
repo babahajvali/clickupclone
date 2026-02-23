@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOrder, \
-    UnexpectedPermission, EmptyName, UnsupportedVisibilityType, \
+    UnexpectedPermission, EmptySpaceName, UnsupportedVisibilityType, \
     NothingToUpdateSpace
 from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.storage_interfaces import \
@@ -37,7 +37,7 @@ class SpaceValidator:
 
         is_name_empty = not name or not name.strip()
         if is_name_empty:
-            raise EmptyName(name=name)
+            raise EmptySpaceName(space_name=name)
 
     @staticmethod
     def check_visibility_type(visibility: str):
@@ -68,3 +68,17 @@ class SpaceValidator:
             raise NothingToUpdateSpace(space_id=space_id)
 
         return field_properties_to_update
+
+    def reorder_space_positions(self, workspace_id: str, current_order: int,
+                                new_order: int):
+
+        if current_order > new_order:
+            self.space_storage.shift_spaces_down(
+                workspace_id=workspace_id, current_order=current_order,
+                new_order=new_order
+            )
+        else:
+            self.space_storage.shift_spaces_up(
+                workspace_id=workspace_id, current_order=current_order,
+                new_order=new_order
+            )

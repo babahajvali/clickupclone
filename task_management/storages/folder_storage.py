@@ -1,6 +1,8 @@
+from typing import Optional
+
 from django.db.models import F
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UserFolderPermissionDTO, CreateFolderPermissionDTO
 from task_management.interactors.storage_interfaces.folder_storage_interface import \
@@ -18,7 +20,7 @@ class FolderStorage(FolderStorageInterface):
             description=data.description,
             space_id=data.space.space_id,
             order=data.order,
-            is_active=data.is_delete,
+            is_deleted=data.is_deleted,
             created_by=data.created_by.user_id,
             is_private=data.is_private,
         )
@@ -51,45 +53,59 @@ class FolderStorage(FolderStorageInterface):
 
         return next_order
 
-    def update_folder(self, folder_id: str,
-                      field_properties: dict) -> FolderDTO:
-        Folder.objects.filter(folder_id=folder_id).update(**field_properties)
-        folder_data = Folder.objects.get(
-            folder_id=folder_id)
+    def update_folder(
+            self, folder_id: str, name: Optional[str],
+            description: Optional[str]) -> FolderDTO:
+
+        folder_data = Folder.objects.get(folder_id=folder_id)
+
+        is_name_provided = name is not None
+        if is_name_provided:
+            folder_data.name= name
+
+        is_description_provided = description is not None
+        if is_description_provided:
+            folder_data.description = description
+
+        folder_data.save()
 
         return self._folder_dto(folder_data)
 
-    def reorder_folder(self, folder_id: str, new_order: int) -> FolderDTO:
+    def update_folder_order(self, folder_id: str, new_order: int) -> FolderDTO:
+
         folder_data = Folder.objects.get(folder_id=folder_id)
-        old_order = folder_data.order
-
-        if new_order == old_order:
-            return self._folder_dto(folder_data)
-
-        if new_order > old_order:
-            Folder.objects.filter(
-                space_id=folder_data.space.space_id,
-                is_active=True,
-                order__gt=old_order,
-                order__lte=new_order
-            ).update(order=F('order') - 1)
-        else:
-            Folder.objects.filter(
-                space_id=folder_data.space.space_id,
-                is_active=True,
-                order__gte=new_order,
-                order__lt=old_order
-            ).update(order=F('order') + 1)
 
         folder_data.order = new_order
         folder_data.save(update_fields=['order'])
 
         return self._folder_dto(folder_data)
 
+    def shift_folders_down(
+            self, space_id: str, old_order: int, new_order: int):
+
+        Folder.objects.filter(
+            space_id=space_id,
+            is_deleted=False,
+            order__gt=old_order,
+            order__lte=new_order
+        ).update(order=F('order') - 1)
+
+    def shift_folders_up(self, space_id: str, old_order: int, new_order: int):
+
+        Folder.objects.filter(
+            space_id=space_id,
+            is_deleted=False,
+            order__gte=old_order,
+            order__lt=new_order
+        ).update(order=F('order') + 1)
+
+
+
     def delete_folder(self, folder_id: str) -> FolderDTO:
+
         folder_data = Folder.objects.get(folder_id=folder_id)
-        folder_data.is_delete = True
-        folder_data.save(update_fields=["is_delete"])
+        folder_data.is_deleted = True
+        folder_data.save(update_fields=["is_deleted"])
 
         current_order = folder_data.order
         Folder.objects.filter(
@@ -113,10 +129,12 @@ class FolderStorage(FolderStorageInterface):
 
         return self._folder_dto(folder_data)
 
-    def set_folder_public(self, folder_id: str) -> FolderDTO:
+    def update_folder_visibility(
+            self, folder_id: str, visibility: str) -> FolderDTO:
+
         folder_data = Folder.objects.get(folder_id=folder_id)
-        folder_data.is_private = False
-        folder_data.save()
+        folder_data.is_private = visibility == Visibility.PRIVATE.value
+        folder_data.save(update_fields=["is_private"])
 
         return self._folder_dto(folder_data)
 
@@ -127,7 +145,7 @@ class FolderStorage(FolderStorageInterface):
         folder_data = Folder.objects.filter(folder_id=folder_id).\
             values('space_id')
 
-        return folder_data['space_id']
+        return folder_data[0]['space_id']
 
     @staticmethod
     def _user_folder_permission_dto(

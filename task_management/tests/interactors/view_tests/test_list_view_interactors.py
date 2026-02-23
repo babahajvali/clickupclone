@@ -16,7 +16,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     ViewNotFound,
     ListNotFound,
-    InactiveList
+    ListDeletedException
 )
 from task_management.tests.factories.interactor_factory import (
     ListViewDTOFactory,
@@ -55,7 +55,7 @@ class TestListViewInteractor:
             "View", (), {"id": "view_id"}
         )()
 
-        self.list_storage.get_active_list.return_value = type(
+        self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
         self.list_view_storage.get_list_view.return_value = None
@@ -107,7 +107,7 @@ class TestListViewInteractor:
             "View", (), {"id": "view_id"}
         )()
 
-        self.list_storage.get_active_list.return_value = None
+        self.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
             self.interactor.apply_view_for_list(
@@ -126,11 +126,11 @@ class TestListViewInteractor:
             "View", (), {"id": "view_id"}
         )()
 
-        self.list_storage.get_active_list.return_value = type(
+        self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -146,7 +146,7 @@ class TestListViewInteractor:
             "View", (), {"id": "view_id"}
         )()
 
-        self.list_storage.get_active_list.return_value = type(
+        self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
 
@@ -172,7 +172,7 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(exc.value), "remove_permission_denied.txt")
 
     def test_get_list_views_success(self, snapshot):
-        self.list_storage.get_active_list.return_value = type(
+        self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}
         )()
 
@@ -184,17 +184,17 @@ class TestListViewInteractor:
         snapshot.assert_match(repr(result), "get_list_views_success.txt")
 
     def test_get_views_for_inactive_list_raises_exception(self, snapshot):
-        self.list_storage.get_active_list.return_value = type(
+        self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": False}
         )()
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             self.interactor.get_list_views("list_id")
 
         snapshot.assert_match(repr(exc.value), "get_list_inactive.txt")
 
     def test_get_views_for_nonexistent_list_raises_exception(self, snapshot):
-        self.list_storage.get_active_list.return_value = None
+        self.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
             self.interactor.get_list_views("list_id")

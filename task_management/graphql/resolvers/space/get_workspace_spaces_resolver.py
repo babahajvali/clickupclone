@@ -19,7 +19,7 @@ def get_workspace_spaces_resolver(root, info, params):
     )
 
     try:
-        spaces_data = interactor.get_active_workspace_spaces(workspace_id=workspace_id)
+        spaces_data = interactor.get_workspace_spaces(workspace_id=workspace_id)
 
         spaces_output = [
             SpaceType(
@@ -28,7 +28,7 @@ def get_workspace_spaces_resolver(root, info, params):
                 description=space.description,
                 workspace_id=space.workspace_id,
                 order=space.order,
-                is_active=space.is_active,
+                is_active=space.is_deleted,
                 is_private=space.is_private,
                 created_by=space.created_by
             ) for space in spaces_data

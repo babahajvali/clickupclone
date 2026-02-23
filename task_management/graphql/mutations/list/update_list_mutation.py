@@ -52,7 +52,7 @@ class UpdateListMutation(graphene.Mutation):
                 name=result.name,
                 description=result.description,
                 space_id=result.space_id,
-                is_active=result.is_active,
+                is_active=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
@@ -62,7 +62,7 @@ class UpdateListMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.InactiveList as e:
+        except custom_exceptions.ListDeletedException as e:
             return InactiveListType(list_id=e.list_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
@@ -71,11 +71,11 @@ class UpdateListMutation(graphene.Mutation):
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.InactiveSpace as e:
+        except custom_exceptions.SpaceDeletedException as e:
             return InactiveSpaceType(space_id=e.space_id)
 
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.InactiveFolder as e:
+        except custom_exceptions.FolderDeletedException as e:
             return InactiveFolderType(folder_id=e.folder_id)

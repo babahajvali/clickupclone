@@ -45,7 +45,7 @@ class RemoveListViewMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-        except custom_exceptions.InactiveList as e:
+        except custom_exceptions.ListDeletedException as e:
             return InactiveListType(list_id=e.list_id)
         except custom_exceptions.ListViewNotFound as e:
             return ListViewNotFound(list_id=e.list_id, view_id=e.view_id)

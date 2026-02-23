@@ -191,7 +191,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_active_folder_lists(folder_ids=folder_ids)
+        result = storage.get_folder_lists(folder_ids=folder_ids)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -207,7 +207,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_active_folder_lists(folder_ids=folder_ids)
+        result = storage.get_folder_lists(folder_ids=folder_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_folder_lists_empty.txt")
@@ -234,7 +234,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_active_space_lists(space_ids=space_ids)
+        result = storage.get_space_lists(space_ids=space_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_space_lists_success.txt")
@@ -248,7 +248,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.get_active_space_lists(space_ids=space_ids)
+        result = storage.get_space_lists(space_ids=space_ids)
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_space_lists_empty.txt")
@@ -337,7 +337,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.make_list_public(list_id=str(list_id))
+        result = storage.update_list_visibility(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -360,8 +360,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_folder(folder_id=str(folder_id),
-                                                list_id=str(list_id), order=3)
+        result = storage.update_list_order_in_folder(folder_id=str(folder_id),
+                                                     list_id=str(list_id), order=3)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -384,8 +384,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_folder(folder_id=str(folder_id),
-                                                list_id=str(list_id), order=1)
+        result = storage.update_list_order_in_folder(folder_id=str(folder_id),
+                                                     list_id=str(list_id), order=1)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -406,8 +406,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_folder(folder_id=str(folder_id),
-                                                list_id=str(list_id), order=2)
+        result = storage.update_list_order_in_folder(folder_id=str(folder_id),
+                                                     list_id=str(list_id), order=2)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -428,8 +428,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_space(space_id=str(space_id),
-                                               list_id=str(list_id), order=3)
+        result = storage.update_list_order_in_space(space_id=str(space_id),
+                                                    list_id=str(list_id), order=3)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -450,8 +450,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_space(space_id=str(space_id),
-                                               list_id=str(list_id), order=1)
+        result = storage.update_list_order_in_space(space_id=str(space_id),
+                                                    list_id=str(list_id), order=1)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -470,8 +470,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.reorder_list_in_space(space_id=str(space_id),
-                                               list_id=str(list_id), order=2)
+        result = storage.update_list_order_in_space(space_id=str(space_id),
+                                                    list_id=str(list_id), order=2)
 
         # Assert
         snapshot.assert_match(repr(result),

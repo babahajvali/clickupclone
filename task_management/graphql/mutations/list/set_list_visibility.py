@@ -56,7 +56,7 @@ class SetListVisibilityMutation(graphene.Mutation):
                 name=result.name,
                 description=result.description,
                 space_id=result.space_id,
-                is_active=result.is_active,
+                is_active=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
@@ -66,7 +66,7 @@ class SetListVisibilityMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.InactiveList as e:
+        except custom_exceptions.ListDeletedException as e:
             return InactiveListType(list_id=e.list_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

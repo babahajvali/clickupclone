@@ -46,7 +46,7 @@ class FieldValueInteractor:
         field_data = self.field_storage.get_field_by_id(
             field_id=set_value_data.field_id
         )
-        self.field_value_validator.validate_field_value(
+        self.field_value_validator.check_field_value(
             config=field_data.config,
             value=set_value_data.value,
             field_type=field_data.field_type.value
@@ -63,6 +63,6 @@ class FieldValueInteractor:
         workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=field_id)
 
-        self.workspace_mixin.check_user_has_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )

@@ -7,6 +7,10 @@ class EmptyName(Exception):
     def __init__(self, name: str):
         self.name = name
 
+class EmptySpaceName(Exception):
+    def __init__(self, space_name: str):
+        self.space_name = space_name
+
 
 class EmptyAccountName(Exception):
     def __init__(self, account_name: str):
@@ -138,7 +142,7 @@ class DeletedTaskFound(Exception):
         self.task_id = task_id
 
 
-class InactiveList(Exception):
+class ListDeletedException(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -148,7 +152,7 @@ class SpaceNotFound(Exception):
         self.space_id = space_id
 
 
-class InactiveSpace(Exception):
+class SpaceDeletedException(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
@@ -158,7 +162,7 @@ class FolderNotFound(Exception):
         self.folder_id = folder_id
 
 
-class InactiveFolder(Exception):
+class FolderDeletedException(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 

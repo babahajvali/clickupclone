@@ -136,5 +136,5 @@ class WorkspaceInteractor:
 
         self.account_mixin.check_account_is_active(account_id=account_id)
 
-        return self.workspace_storage.get_active_account_workspaces(
+        return self.workspace_storage.get_account_workspaces(
             account_id=account_id)

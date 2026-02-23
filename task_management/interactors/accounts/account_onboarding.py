@@ -90,7 +90,7 @@ class AccountOnboardingHandler:
 
         workspace_input_data = CreateWorkspaceDTO(
             name=f"{name}'s Workspace",
-            description=f"Default workspaces",
+            description=None,
             user_id=owner_id,
             account_id=account_id
         )

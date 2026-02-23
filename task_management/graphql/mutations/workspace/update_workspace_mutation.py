@@ -51,7 +51,7 @@ class UpdateWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_active
+                is_active=result.is_deleted
             )
 
         except custom_exceptions.WorkspaceNotFound as e:

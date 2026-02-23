@@ -10,7 +10,7 @@ from task_management.interactors.fields.validators.text_validator import \
 class FieldValueValidator:
 
     @staticmethod
-    def validate_field_value(field_type: str, value: str, config: dict):
+    def check_field_value(field_type: str, value: str, config: dict):
         validation_handlers = {
             FieldType.TEXT.value: TextField.check_text_field_value,
             FieldType.NUMBER.value: NumberField.check_number_field_value,

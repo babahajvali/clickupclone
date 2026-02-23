@@ -16,7 +16,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             description=data.description,
             user_id=data.created_by.user_id,
             account_id=data.account.account_id,
-            is_active=data.is_active,
+            is_deleted=data.is_deleted,
         )
 
     @staticmethod
@@ -39,8 +39,8 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         except Workspace.DoesNotExist:
             return None
 
-    def create_workspace(self,
-                         workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
+    def create_workspace(
+            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
 
         workspace_data = Workspace.objects.create(
             name=workspace_data.name, description=workspace_data.description,
@@ -61,14 +61,14 @@ class WorkspaceStorage(WorkspaceStorageInterface):
     def validate_user_is_workspace_owner(
             self, user_id: str, workspace_id: str) -> bool:
 
-        workspace_data = Workspace.objects.filter(workspace_id=workspace_id,
-                                                  created_by_id=user_id).exists()
-        return workspace_data
+        return Workspace.objects.filter(
+            workspace_id=workspace_id, created_by_id=user_id).exists()
 
     def delete_workspace(self, workspace_id: str) -> WorkspaceDTO:
+
         workspace_data = Workspace.objects.get(workspace_id=workspace_id)
-        workspace_data.is_delete = False
-        workspace_data.save(update_fields=["is_active"])
+        workspace_data.is_deleted = True
+        workspace_data.save(update_fields=["is_deleted"])
 
         return self._workspace_dto(data=workspace_data)
 
@@ -76,16 +76,16 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             self, workspace_id: str, new_user_id: str) -> WorkspaceDTO:
 
         workspace_data = Workspace.objects.get(workspace_id=workspace_id)
-        workspace_data.created_by = new_user_id
-        workspace_data.save(update_fields=["created_by"])
+        workspace_data.created_by_id = new_user_id
+        workspace_data.save(update_fields=["created_by_id"])
 
         return self._workspace_dto(data=workspace_data)
 
-    def get_active_account_workspaces(
+    def get_account_workspaces(
             self, account_id: str) -> list[WorkspaceDTO]:
 
-        account_workspaces = Workspace.objects.filter(account_id=account_id,
-                                                      is_active=True)
+        account_workspaces = Workspace.objects.filter(
+            account_id=account_id, is_deleted=False)
 
         return [self._workspace_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
@@ -94,7 +94,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
 
         workspaces_data = Workspace.objects.filter(
-            workspace_id__in=workspace_ids, is_active=True)
+            workspace_id__in=workspace_ids, is_deleted=False)
 
         return [self._workspace_dto(data=each) for each in workspaces_data]
 
@@ -132,7 +132,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         workspace_member_data = WorkspaceMember.objects.get(
             pk=workspace_member_id)
-        workspace_member_data.is_delete = False
+        workspace_member_data.is_active = False
         workspace_member_data.save(update_fields=["is_active"])
 
         return self._workspace_member_dto(data=workspace_member_data)
@@ -174,7 +174,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             workspace_id=workspace_member_data.workspace_id,
             user_id=workspace_member_data.user_id)
 
-        workspace_member.is_delete = True
+        workspace_member.is_active = True
         workspace_member.added_by = workspace_member_data.added_by
         workspace_member.save(update_fields=["is_active", "added_by"])
 
@@ -193,6 +193,6 @@ class WorkspaceStorage(WorkspaceStorageInterface):
     def get_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
 
         workspaces_data = Workspace.objects.filter(
-            workspace_id__in=workspace_ids)
+            workspace_id__in=workspace_ids, is_deleted=False)
 
         return [self._workspace_dto(data=each) for each in workspaces_data]

@@ -23,7 +23,7 @@ def get_space_lists_resolver(root, info, params):
         workspace_storage=workspace_storage)
 
     try:
-        lists_data = interactor.get_active_space_lists(space_id=space_id)
+        lists_data = interactor.get_space_lists(space_id=space_id)
 
         lists_output = [
             ListType(
@@ -31,7 +31,7 @@ def get_space_lists_resolver(root, info, params):
                 name=list_item.name,
                 description=list_item.description,
                 space_id=list_item.space_id,
-                is_active=list_item.is_delete,
+                is_active=list_item.is_deleted,
                 order=list_item.order,
                 is_private=list_item.is_private,
                 created_by=list_item.created_by_user_id,
@@ -44,5 +44,5 @@ def get_space_lists_resolver(root, info, params):
     except custom_exceptions.SpaceNotFound as e:
         return SpaceNotFoundType(space_id=e.space_id)
 
-    except custom_exceptions.InactiveSpace as e:
+    except custom_exceptions.SpaceDeletedException as e:
         return InactiveSpaceType(space_id=e.space_id)

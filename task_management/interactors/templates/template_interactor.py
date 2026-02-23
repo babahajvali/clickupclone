@@ -90,7 +90,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        self.check_user_has_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod

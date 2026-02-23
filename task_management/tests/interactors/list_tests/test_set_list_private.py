@@ -38,7 +38,7 @@ class TestSetListPrivate:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=is_private,
             created_by="user_id",
@@ -56,7 +56,7 @@ class TestSetListPrivate:
 
         list_storage.get_list.return_value = list_data
         list_storage.get_list_space_id.return_value = "space_1"
-        list_storage.make_list_private.return_value = list_data
+        list_storage.update_list_visibility.return_value = list_data
 
         space_storage.get_space_workspace_id.return_value = "workspace_id1"
         workspace_storage.get_workspace_member.return_value = make_permission(
@@ -70,7 +70,7 @@ class TestSetListPrivate:
             workspace_storage=workspace_storage,
         )
 
-    def test_set_list_private_success(self, snapshot):
+    def test_set_list_private_success(self):
         interactor = self._get_interactor()
 
         result = interactor.set_list_visibility(
@@ -79,12 +79,12 @@ class TestSetListPrivate:
             user_id="user_id",
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "test_set_list_private_success.txt",
+        assert result.list_id == "list_1"
+        interactor.list_storage.update_list_visibility.assert_called_once_with(
+            list_id="list_1", visibility=Visibility.PRIVATE.value
         )
 
-    def test_set_list_private_invalid_visibility(self, snapshot):
+    def test_set_list_private_invalid_visibility(self):
         interactor = self._get_interactor()
 
         with pytest.raises(UnsupportedVisibilityType) as exc:
@@ -94,7 +94,4 @@ class TestSetListPrivate:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.visibility_type),
-            "test_set_list_private_invalid_visibility.txt",
-        )
+        assert exc.value.visibility_type == InvalidVisibility.value

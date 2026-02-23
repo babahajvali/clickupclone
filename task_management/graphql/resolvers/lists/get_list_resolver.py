@@ -22,14 +22,14 @@ def get_list_resolver(root, info, params):
     )
 
     try:
-        list_data = interactor.get_active_list(list_id=params.list_id)
+        list_data = interactor.get_list(list_id=params.list_id)
 
         list_output = ListType(
             list_id=list_data.list_id,
             name=list_data.name,
             description=list_data.description,
             space_id=list_data.space_id,
-            is_active=list_data.is_active,
+            is_active=list_data.is_deleted,
             order=list_data.order,
             is_private=list_data.is_private,
             created_by=list_data.created_by,
@@ -40,5 +40,5 @@ def get_list_resolver(root, info, params):
 
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
-    except custom_exceptions.InactiveList as e:
+    except custom_exceptions.ListDeletedException as e:
         return InactiveListType(list_id=e.list_id)

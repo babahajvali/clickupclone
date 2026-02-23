@@ -120,7 +120,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.reorder_folder(folder_id=str(folder_id), new_order=3)
+        result = storage.update_folder_order(folder_id=str(folder_id), new_order=3)
 
         # Assert
         snapshot.assert_match(repr(result), "test_reorder_folder_move_down_success.txt")
@@ -139,7 +139,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.reorder_folder(folder_id=str(folder_id), new_order=1)
+        result = storage.update_folder_order(folder_id=str(folder_id), new_order=1)
 
         # Assert
         snapshot.assert_match(repr(result), "test_reorder_folder_move_up_success.txt")
@@ -156,7 +156,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.reorder_folder(folder_id=str(folder_id), new_order=2)
+        result = storage.update_folder_order(folder_id=str(folder_id), new_order=2)
 
         # Assert
         snapshot.assert_match(repr(result), "test_reorder_folder_same_position.txt")
@@ -246,7 +246,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.set_folder_public(folder_id=str(folder_id))
+        result = storage.update_folder_visibility(folder_id=str(folder_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_set_folder_public_success.txt")

@@ -22,7 +22,7 @@ def get_space_folders_resolver(root, info, params):
     )
 
     try:
-        folders_data = interactor.get_active_space_folders(space_id=space_id)
+        folders_data = interactor.get_space_folders(space_id=space_id)
 
         folders_output = [
             FolderType(
@@ -31,7 +31,7 @@ def get_space_folders_resolver(root, info, params):
                 description=folder.description,
                 space_id=folder.space_id,
                 order=folder.order,
-                is_active=folder.is_active,
+                is_active=folder.is_deleted,
                 created_by=folder.created_by,
                 is_private=folder.is_private
             ) for folder in folders_data
@@ -42,5 +42,5 @@ def get_space_folders_resolver(root, info, params):
     except custom_exceptions.SpaceNotFound as e:
         return SpaceNotFoundType(space_id=e.space_id)
 
-    except custom_exceptions.InactiveSpace as e:
+    except custom_exceptions.SpaceDeletedException as e:
         return InactiveSpaceType(space_id=e.space_id)

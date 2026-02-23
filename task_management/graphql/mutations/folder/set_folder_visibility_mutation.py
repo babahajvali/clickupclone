@@ -51,7 +51,7 @@ class SetFolderVisibilityMutation(graphene.Mutation):
                 description=result.description,
                 space_id=result.space_id,
                 order=result.order,
-                is_active=result.is_active,
+                is_active=result.is_deleted,
                 created_by=result.created_by,
                 is_private=result.is_private
             )
@@ -59,7 +59,7 @@ class SetFolderVisibilityMutation(graphene.Mutation):
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.InactiveFolder as e:
+        except custom_exceptions.FolderDeletedException as e:
             return InactiveFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

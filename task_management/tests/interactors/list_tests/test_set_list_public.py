@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    InactiveList,
+    ListDeletedException,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -36,7 +36,7 @@ class TestSetListPublic:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=is_private,
             created_by="user_id",
@@ -54,7 +54,7 @@ class TestSetListPublic:
 
         list_storage.get_list.return_value = list_data
         list_storage.get_list_space_id.return_value = "space_1"
-        list_storage.make_list_public.return_value = list_data
+        list_storage.update_list_visibility.return_value = list_data
 
         space_storage.get_space_workspace_id.return_value = "workspace_id1"
         workspace_storage.get_workspace_member.return_value = make_permission(
@@ -68,7 +68,7 @@ class TestSetListPublic:
             workspace_storage=workspace_storage,
         )
 
-    def test_set_list_public_success(self, snapshot):
+    def test_set_list_public_success(self):
         interactor = self._get_interactor()
 
         result = interactor.set_list_visibility(
@@ -77,12 +77,12 @@ class TestSetListPublic:
             user_id="user_id",
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "test_set_list_public_success.txt",
+        assert result.list_id == "list_1"
+        interactor.list_storage.update_list_visibility.assert_called_once_with(
+            list_id="list_1", visibility=Visibility.PUBLIC.value
         )
 
-    def test_set_list_public_not_found(self, snapshot):
+    def test_set_list_public_not_found(self):
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
@@ -93,29 +93,23 @@ class TestSetListPublic:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_set_list_public_not_found.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_set_list_public_inactive(self, snapshot):
+    def test_set_list_public_inactive(self):
         list_data = self._get_list_dto()
-        list_data.is_active = False
+        list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             interactor.set_list_visibility(
                 list_id="list_1",
                 visibility=Visibility.PUBLIC,
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_set_list_public_inactive.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_set_list_public_permission_denied(self, snapshot):
+    def test_set_list_public_permission_denied(self):
         interactor = self._get_interactor(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
@@ -125,7 +119,4 @@ class TestSetListPublic:
                 user_id="user_id",
             )
 
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_set_list_public_permission_denied.txt",
-        )
+        assert exc.value.user_id == "user_id"

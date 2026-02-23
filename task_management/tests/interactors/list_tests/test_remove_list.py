@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    InactiveList,
+    ListDeletedException,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -36,7 +36,7 @@ class TestRemoveList:
             name="List name",
             description="List description",
             space_id="space_1",
-            is_active=True,
+            is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
@@ -68,48 +68,37 @@ class TestRemoveList:
             workspace_storage=workspace_storage,
         )
 
-    def test_remove_list_success(self, snapshot):
+    def test_remove_list_success(self):
         interactor = self._get_interactor()
 
         result = interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(
-            repr(result),
-            "test_remove_list_success.txt",
-        )
+        assert result.list_id == "list_1"
+        interactor.list_storage.delete_list.assert_called_once_with(list_id="list_1")
 
-    def test_remove_list_not_found(self, snapshot):
+    def test_remove_list_not_found(self):
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
             interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_remove_list_not_found.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_remove_list_inactive(self, snapshot):
+    def test_remove_list_inactive(self):
         list_data = self._get_list_dto()
-        list_data.is_active = False
+        list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(InactiveList) as exc:
+        with pytest.raises(ListDeletedException) as exc:
             interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(
-            repr(exc.value.list_id),
-            "test_remove_list_inactive.txt",
-        )
+        assert exc.value.list_id == "list_1"
 
-    def test_remove_list_permission_denied(self, snapshot):
+    def test_remove_list_permission_denied(self):
         interactor = self._get_interactor(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
             interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_remove_list_permission_denied.txt",
-        )
+        assert exc.value.user_id == "user_id"

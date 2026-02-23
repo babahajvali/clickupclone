@@ -27,7 +27,7 @@ def get_space_resolver(root, info, params):
             description=space_data.description,
             workspace_id=space_data.workspace_id,
             order=space_data.order,
-            is_active=space_data.is_active,
+            is_active=space_data.is_deleted,
             is_private=space_data.is_private,
             created_by=space_data.created_by
         )
@@ -37,5 +37,5 @@ def get_space_resolver(root, info, params):
     except custom_exceptions.SpaceNotFound as e:
         return SpaceNotFoundType(space_id=e.space_id)
 
-    except custom_exceptions.InactiveSpace as e:
+    except custom_exceptions.SpaceDeletedException as e:
         return InactiveSpaceType(space_id=e.space_id)

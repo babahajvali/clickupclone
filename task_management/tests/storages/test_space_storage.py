@@ -163,7 +163,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.set_space_public(space_id=str(space_id))
+        result = storage.update_space_visibility(space_id=str(space_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -188,7 +188,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.get_active_workspace_spaces(
+        result = storage.get_workspace_spaces(
             workspace_id=str(workspace_id))
 
         # Assert
@@ -203,7 +203,7 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.get_active_workspace_spaces(
+        result = storage.get_workspace_spaces(
             workspace_id=str(workspace_id))
 
         # Assert
@@ -260,8 +260,8 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.reorder_space(workspace_id=str(workspace_id),
-                                       space_id=str(space_id), new_order=3)
+        result = storage.update_space_order(workspace_id=str(workspace_id),
+                                            space_id=str(space_id), new_order=3)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -282,8 +282,8 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.reorder_space(workspace_id=str(workspace_id),
-                                       space_id=str(space_id), new_order=1)
+        result = storage.update_space_order(workspace_id=str(workspace_id),
+                                            space_id=str(space_id), new_order=1)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -302,8 +302,8 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.reorder_space(workspace_id=str(workspace_id),
-                                       space_id=str(space_id), new_order=2)
+        result = storage.update_space_order(workspace_id=str(workspace_id),
+                                            space_id=str(space_id), new_order=2)
 
         # Assert
         snapshot.assert_match(repr(result),

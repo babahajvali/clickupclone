@@ -50,5 +50,5 @@ class ApplyListViewMutation(graphene.Mutation):
             return ListNotFoundType(list_id=e.list_id)
         except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
-        except custom_exceptions.InactiveList as e:
+        except custom_exceptions.ListDeletedException as e:
             return InactiveListType(list_id=e.list_id)

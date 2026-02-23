@@ -73,22 +73,21 @@ class ListInteractor:
             self, list_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> ListDTO:
 
-        field_properties_to_update = (
-            self.list_validator.check_update_field_properties(
-                list_id=list_id, name=name, description=description
-            ))
-
         self.list_mixin.check_list_is_active(list_id=list_id)
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self.check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id)
 
+        self.list_validator.check_update_field_properties(
+            list_id=list_id, name=name, description=description
+        )
+
         return self.list_storage.update_list(
-            list_id=list_id, field_properties=field_properties_to_update)
+            list_id=list_id, name=name, description=description)
 
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(
-            self, folder_id: str, list_id: str, order: int, user_id: str)\
+            self, folder_id: str, list_id: str, order: int, user_id: str) \
             -> ListDTO:
 
         self.list_validator.check_list_order_in_folder(
@@ -96,28 +95,48 @@ class ListInteractor:
         self.list_mixin.check_list_is_active(list_id=list_id)
         self.folder_mixin.check_folder_is_active(folder_id=folder_id)
 
-        space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
+        list_data = self.list_storage.get_list(list_id=list_id)
         self.check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=user_id
+            space_id=list_data.space_id, user_id=user_id
         )
 
-        return self.list_storage.reorder_list_in_folder(
+        old_order = list_data.order
+
+        if old_order == order:
+            return list_data
+
+        self.list_validator.reorder_list_positions_in_folder(
+            folder_id=folder_id, old_order=old_order, new_order=order
+        )
+
+        return self.list_storage.update_list_order_in_folder(
             folder_id=folder_id, list_id=list_id, order=order)
 
     @invalidate_interactor_cache(cache_name="space_lists")
     def reorder_list_in_space(
-            self, list_id: str, space_id: str, order: int, user_id: str)\
+            self, list_id: str, space_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self.list_validator.check_list_order_in_space(
-            space_id=space_id, order=order
-        )
+
         self.list_mixin.check_list_is_active(list_id=list_id)
         self.space_mixin.check_space_is_active(space_id=space_id)
         self.check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
         )
+        self.list_validator.check_list_order_in_space(
+            space_id=space_id, order=order
+        )
 
-        return self.list_storage.reorder_list_in_space(
+        list_data = self.list_storage.get_list(list_id=list_id)
+
+        old_order = list_data.order
+        if old_order == order:
+            return list_data
+
+        self.list_validator.reorder_list_positions_in_space(
+            space_id=space_id, old_order=old_order, new_order=order
+        )
+
+        return self.list_storage.update_list_order_in_space(
             space_id=space_id, list_id=list_id, order=order)
 
     @invalidate_interactor_cache(cache_name="space_lists")
@@ -125,6 +144,7 @@ class ListInteractor:
     def delete_list(self, list_id: str, user_id: str):
 
         self.list_mixin.check_list_is_active(list_id=list_id)
+
         space_id = self.list_storage.get_list_space_id(list_id=list_id)
         self.check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
@@ -146,31 +166,29 @@ class ListInteractor:
             space_id=space_id, user_id=user_id
         )
 
-        if visibility == Visibility.PUBLIC:
-            return self.list_storage.make_list_public(list_id=list_id)
+        return self.list_storage.update_list_visibility(
+            list_id=list_id, visibility=visibility.value)
 
-        return self.list_storage.make_list_private(list_id=list_id)
-
-    def get_active_list(self, list_id: str) -> ListDTO:
+    def get_list(self, list_id: str) -> ListDTO:
 
         self.list_mixin.check_list_is_active(list_id=list_id)
 
         return self.list_storage.get_list(list_id=list_id)
 
     @interactor_cache(timeout=5 * 60, cache_name="folder_lists")
-    def get_active_folder_lists(self, folder_id: str):
+    def get_folder_lists(self, folder_id: str):
 
         self.folder_mixin.check_folder_is_active(folder_id=folder_id)
 
-        return self.list_storage.get_active_folder_lists(
+        return self.list_storage.get_folder_lists(
             folder_ids=[folder_id])
 
     @interactor_cache(timeout=30 * 60, cache_name="space_lists")
-    def get_active_space_lists(self, space_id: str):
+    def get_space_lists(self, space_id: str):
 
         self.space_mixin.check_space_is_active(space_id=space_id)
 
-        return self.list_storage.get_active_space_lists(space_ids=[space_id])
+        return self.list_storage.get_space_lists(space_ids=[space_id])
 
     def add_user_in_list_permission(
             self, user_permission_data: CreateListPermissionDTO) \
@@ -199,5 +217,5 @@ class ListInteractor:
 
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.workspace_mixin.check_user_has_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
