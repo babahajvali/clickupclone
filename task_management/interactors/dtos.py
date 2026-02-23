@@ -68,7 +68,7 @@ class FieldDTO:
     description: str
     template_id: str
     field_name: str
-    is_delete: bool
+    is_deleted: bool
     order: int
     config: dict
     is_required: bool

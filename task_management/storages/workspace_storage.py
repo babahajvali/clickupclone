@@ -1,3 +1,5 @@
+from typing import Optional
+
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceDTO, CreateWorkspaceDTO, \
     WorkspaceMemberDTO, AddMemberToWorkspaceDTO
@@ -50,11 +52,20 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         return self._workspace_dto(data=workspace_data)
 
     def update_workspace(
-            self, workspace_id: str, field_properties: dict) -> WorkspaceDTO:
+            self, workspace_id: str, name: Optional[str],
+            description: Optional[str]) -> WorkspaceDTO:
 
-        Workspace.objects.filter(workspace_id=workspace_id).update(
-            **field_properties)
         workspace_obj = Workspace.objects.get(workspace_id=workspace_id)
+
+        is_name_provided = name is not None
+        if is_name_provided:
+            workspace_obj.name = name
+
+        is_descriptor_provided = description is not None
+        if is_descriptor_provided:
+            workspace_obj.description = description
+
+        workspace_obj.save()
 
         return self._workspace_dto(data=workspace_obj)
 

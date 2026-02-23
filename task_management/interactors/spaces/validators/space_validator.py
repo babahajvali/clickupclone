@@ -72,7 +72,7 @@ class SpaceValidator:
     def reorder_space_positions(self, workspace_id: str, current_order: int,
                                 new_order: int):
 
-        if current_order > new_order:
+        if new_order > current_order:
             self.space_storage.shift_spaces_down(
                 workspace_id=workspace_id, current_order=current_order,
                 new_order=new_order

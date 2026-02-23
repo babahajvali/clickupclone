@@ -52,20 +52,42 @@ class TaskInteractor:
             self, task_id: str, user_id: str, title: Optional[str],
             description: Optional[str]) -> TaskDTO:
         self.task_mixin.check_task_is_active(task_id=task_id)
-        field_properties_to_update = (
-            self.task_validator.check_task_update_field_properties(
-                task_id=task_id, title=title, description=description))
+        self.task_validator.check_task_update_field_properties(
+            task_id=task_id, title=title, description=description)
 
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        self.list_mixin.check_list_is_active(list_id=list_id)
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id)
 
         return self.task_storage.update_task(
-            task_id=task_id, field_properties=field_properties_to_update)
+            task_id=task_id, title=title, description=description)
+
+    @invalidate_interactor_cache(cache_name="tasks")
+    def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
+        self.task_mixin.check_task_is_active(task_id=task_id)
+        task_data = self.task_storage.get_task_by_id(task_id=task_id)
+        self.task_validator.check_task_order(
+            list_id=task_data.list_id, order=order
+        )
+        self._check_user_has_edit_access_for_list(
+            list_id=task_data.list_id, user_id=user_id)
+
+        current_order = task_data.order
+
+        if current_order == order:
+            return task_data
+
+        self.task_validator.reorder_task_positions(
+            list_id=task_data.list_id, current_order=current_order,
+            new_order=order
+        )
+
+        return self.task_storage.reorder_tasks(
+            task_id=task_id, new_order=order, list_id=task_data.list_id)
 
     @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
+        self.task_mixin.check_task_is_active(task_id=task_id)
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
         self._check_user_has_edit_access_for_list(list_id=list_id,
                                                   user_id=user_id)
@@ -73,10 +95,10 @@ class TaskInteractor:
         return self.task_storage.remove_task(task_id=task_id)
 
     @interactor_cache(cache_name="tasks", timeout=5 * 60)
-    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
+    def get_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         self.list_mixin.check_list_is_active(list_id=list_id)
 
-        return self.task_storage.get_active_tasks_for_list(list_id=list_id)
+        return self.task_storage.get_tasks_for_list(list_id=list_id)
 
     def get_task(self, task_id: str) -> TaskDTO:
         self.task_mixin.check_task_is_active(task_id=task_id)
@@ -88,23 +110,9 @@ class TaskInteractor:
             filter_data=task_filter_data)
         self.list_mixin.check_list_is_active(list_id=task_filter_data.list_id)
 
-
         return self.task_storage.task_filter_data(filter_data=task_filter_data)
 
-    @invalidate_interactor_cache(cache_name="tasks")
-    def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
-
-        self.task_mixin.check_task_is_active(task_id=task_id)
-        list_id = self.task_storage.get_task_list_id(task_id=task_id)
-        self.task_validator.check_task_order(list_id=list_id, order=order)
-        self._check_user_has_edit_access_for_list(
-            list_id=list_id, user_id=user_id)
-
-        return self.task_storage.reorder_tasks(
-            task_id=task_id, new_order=order, list_id=list_id)
-
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
-
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
 

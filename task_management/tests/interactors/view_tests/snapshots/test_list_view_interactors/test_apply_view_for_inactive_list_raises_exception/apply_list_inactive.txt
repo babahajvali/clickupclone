@@ -1,1 +1,1 @@
-InactiveListException()
+ListDeletedException()

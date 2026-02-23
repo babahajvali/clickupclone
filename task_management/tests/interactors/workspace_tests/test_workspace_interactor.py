@@ -47,7 +47,7 @@ class TestWorkspaceInteractor:
                 "workspace_id": "workspaces-123",
                 "user_id": owner_id,
                 "account_id": "accounts-123",
-                "is_active": True,
+                "is_deleted": False,
             }
         )()
 
@@ -72,16 +72,17 @@ class TestWorkspaceInteractor:
 
 
     def test_update_workspace_success(self, snapshot):
-        update_data = WorkspaceDTOFactory()
+        user_id = "user_id1"
+        workspace_id = 'workspaces-123'
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_active_workspaces.return_value = \
-            self._mock_active_workspace(update_data.user_id)
+        self.workspace_storage.get_workspace.return_value = \
+            self._mock_active_workspace(user_id)
         self.workspace_storage.update_workspace.return_value = expected
 
-        result = self.interactor.update_workspace(update_data,
-                                                  user_id="user_id")
+        result = self.interactor.update_workspace(name="sample_name",description='description',
+                                                  user_id=user_id, workspace_id=workspace_id)
 
         snapshot.assert_match(
             repr(result),
@@ -90,12 +91,17 @@ class TestWorkspaceInteractor:
 
     def test_update_workspace_not_found(self, snapshot):
         update_data = WorkspaceDTOFactory()
+        user_id = "user_id1"
+        workspace_id = 'workspaces-123'
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_active_workspaces.return_value = None
+        self.workspace_storage.get_workspace.return_value = None
 
         with pytest.raises(WorkspaceNotFound) as exc:
-            self.interactor.update_workspace(update_data, user_id="user_id")
+            self.interactor.update_workspace(name="sample_name",
+                                             description='description',
+                                             user_id=user_id,
+                                             workspace_id=workspace_id)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -108,7 +114,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_active_workspaces.return_value = \
+        self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.delete_workspace.return_value = expected
 
@@ -126,7 +132,7 @@ class TestWorkspaceInteractor:
         expected = WorkspaceDTOFactory()
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.workspace_storage.get_active_workspaces.return_value = \
+        self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
         self.workspace_storage.transfer_workspace.return_value = expected
 
@@ -147,7 +153,7 @@ class TestWorkspaceInteractor:
         new_user_id = "invalid-user"
 
         self.user_storage.get_user_data.side_effect = [None]
-        self.workspace_storage.get_active_workspaces.return_value = \
+        self.workspace_storage.get_workspace.return_value = \
             self._mock_active_workspace(user_id)
 
         with pytest.raises(UserNotFound) as exc:

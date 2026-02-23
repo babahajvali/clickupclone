@@ -77,11 +77,10 @@ class TestWorkspaceStorage:
         result = storage.create_workspace(workspace_data=dto)
 
         # Assert
-        # snapshot.assert_match(
-        #     repr(result),
-        #     "test_create_workspace.txt"
-        # )
-        assert result.name == dto.name
+        snapshot.assert_match(
+            repr(result),
+            "test_create_workspace.txt"
+        )
 
     @pytest.mark.django_db
     def test_update_workspace(self, snapshot):
@@ -97,15 +96,14 @@ class TestWorkspaceStorage:
             account=account
         )
 
-        name="Updated Workspace"
-        description="Updated description"
+        name = "Updated Workspace"
+        description = "Updated description"
 
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.update_workspace(workspace_id=workspace_id,
-                                          field_properties={"name": name,
-                                                         'description': description})
+        result = storage.update_workspace(
+            workspace_id=workspace_id, name=name, description=description)
 
         # Assert
         snapshot.assert_match(
@@ -125,7 +123,7 @@ class TestWorkspaceStorage:
             workspace_id=workspace_id,
             created_by=user,
             account=account,
-            is_active=True
+            is_deleted=False
         )
         storage = WorkspaceStorage()
 
@@ -182,11 +180,11 @@ class TestWorkspaceStorage:
         workspace_id3 = "12345678-1234-5678-1234-567812345681"
 
         WorkspaceFactory(workspace_id=workspace_id1, account=account,
-                         is_active=True, created_by=user)
+                         is_deleted=False, created_by=user)
         WorkspaceFactory(workspace_id=workspace_id2, account=account,
-                         is_active=True, created_by=user)
+                         is_deleted=False, created_by=user)
         WorkspaceFactory(workspace_id=workspace_id3, account=account,
-                         is_active=False, created_by=user)
+                         is_deleted=True, created_by=user)
 
         storage = WorkspaceStorage()
 

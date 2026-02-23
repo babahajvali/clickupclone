@@ -22,7 +22,7 @@ class FieldStorage(FieldStorageInterface):
             description=field_data.description,
             field_type=FieldType(field_data.field_type),
             template_id=field_data.template.template_id,
-            is_delete=field_data.is_delete,
+            is_deleted=field_data.is_deleted,
             order=field_data.order,
             config=field_data.config,
             is_required=field_data.is_required,
@@ -82,11 +82,11 @@ class FieldStorage(FieldStorageInterface):
         field_data = Field.objects.get(field_id=field_id)
         return self._field_dto(field_data=field_data)
 
-    def get_fields_for_template(self, template_id: str) ->\
+    def get_fields_for_template(self, template_id: str) -> \
             list[FieldDTO]:
 
         fields_data = Field.objects.filter(
-            template_id=template_id, is_delete=False
+            template_id=template_id, is_deleted=False
         )
         return [
             self._field_dto(field_data=field_data)
@@ -112,23 +112,25 @@ class FieldStorage(FieldStorageInterface):
         ).update(order=F("order") + 1)
 
     def update_field_order(self, field_id: str, new_order: int) -> FieldDTO:
+
         field_data = Field.objects.get(field_id=field_id)
         field_data.order = new_order
         field_data.save()
         return self._field_dto(field_data=field_data)
 
     def template_fields_count(self, template_id: str) -> int:
+
         return Field.objects.filter(
-            template_id=template_id, is_delete=False).count()
+            template_id=template_id, is_deleted=False).count()
 
     def delete_field(self, field_id: str):
         field_data = Field.objects.get(field_id=field_id)
-        field_data.is_delete = True
+        field_data.is_deleted = True
         field_data.save()
 
         Field.objects.filter(
             template_id=field_data.template.template_id,
-            is_delete=False,
+            is_deleted=False,
             order__gt=field_data.order
         ).update(order=F("order") - 1)
 
@@ -163,7 +165,7 @@ class FieldStorage(FieldStorageInterface):
             field_id=field_value_data.field_id,
             defaults={
                 'value': field_value_data.value,
-                'created_by': user_id
+                'created_by_id': user_id
             }
         )
 

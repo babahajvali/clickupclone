@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
@@ -15,7 +17,7 @@ class TemplateStorage(TemplateStorageInterface):
             name=data.name,
             description=data.description,
             list_id=data.list.list_id,
-            created_by=data.list.created_by_user_id.user_id,
+            created_by=data.list.created_by.user_id,
         )
 
     def get_template_by_id(self, template_id: str) -> TemplateDTO:
@@ -24,27 +26,31 @@ class TemplateStorage(TemplateStorageInterface):
         return self._template_dto(data=template_data)
 
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
-        list_obj = List.objects.get(list_id=template_data.list_id)
-        template_data = Template.objects.create(name=template_data.name,
-                                                description=template_data.description,
-                                                list=list_obj)
+
+        template_data = Template.objects.create(
+            name=template_data.name, description=template_data.description,
+            list_id=template_data.list_id)
 
         return self._template_dto(data=template_data)
 
     def validate_template_exists(self, template_id: str) -> bool:
         return Template.objects.filter(template_id=template_id).exists()
 
-    def check_template_name_exist_except_this_template(self,
-                                                       template_name: str,
-                                                       template_id: str) -> bool:
-        return Template.objects.filter(name=template_name).exclude(
-            template_id=template_id).exists()
+    def update_template(
+            self, template_id: str, name: Optional[str],
+            description: Optional[str]) -> TemplateDTO:
 
-    def update_template(self, template_id: str,
-                        field_properties: dict) -> TemplateDTO:
-        Template.objects.filter(template_id=template_id).update(
-            **field_properties)
         template_data = Template.objects.get(template_id=template_id)
+
+        is_name_provided = name is not None
+        if is_name_provided:
+            template_data.name = name
+
+        is_description_provided = description is not None
+        if is_description_provided:
+            template_data.description = description
+
+        template_data.save()
 
         return self._template_dto(data=template_data)
 

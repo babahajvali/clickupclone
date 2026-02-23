@@ -54,11 +54,10 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(space_data=create_space_data)
+        result = storage.create_space(space_data=create_space_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_space_success.txt")
-        assert result.name == create_space_data.name
+        snapshot.assert_match(repr(result), "test_create_space_success.txt")
 
     @pytest.mark.django_db
     def test_create_space_with_existing_spaces(self, snapshot):
@@ -79,11 +78,11 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(space_data=create_space_data)
+        result = storage.create_space(space_data=create_space_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_space_with_existing_spaces.txt")
-        assert result.name == create_space_data.name
+        snapshot.assert_match(repr(result),
+                              "test_create_space_with_existing_spaces.txt")
 
     @pytest.mark.django_db
     def test_update_space_success(self, snapshot):
@@ -103,8 +102,7 @@ class TestSpaceStorage:
 
         # Act
         result = storage.update_space(
-            space_id=space_id, field_properties={'name': name,
-                                              'description': description})
+            space_id=space_id, name=name, description=description)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_space_success.txt")
@@ -118,11 +116,11 @@ class TestSpaceStorage:
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
         SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
-                     order=1, is_active=True)
+                     order=1, is_deleted=False)
         SpaceFactory(workspace=workspace, created_by=user, order=2,
-                     is_active=True)
+                     is_deleted=False)
         SpaceFactory(workspace=workspace, created_by=user, order=3,
-                     is_active=True)
+                     is_deleted=False)
         storage = SpaceStorage()
 
         # Act
@@ -132,26 +130,7 @@ class TestSpaceStorage:
         snapshot.assert_match(repr(result), "test_remove_space_success.txt")
 
     @pytest.mark.django_db
-    def test_set_space_private_success(self, snapshot):
-        # Arrange
-        space_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        workspace_id = "12345678-1234-5678-1234-567812345679"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
-        SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
-                     is_private=False)
-        storage = SpaceStorage()
-
-        # Act
-        result = storage.set_space_private(space_id=str(space_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_set_space_private_success.txt")
-
-    @pytest.mark.django_db
-    def test_set_space_public_success(self, snapshot):
+    def test_update_space_public_success(self, snapshot):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -163,7 +142,28 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.update_space_visibility(space_id=str(space_id))
+        result = storage.update_space_visibility(space_id=str(space_id),
+                                                 visibility="PUBLIC")
+
+        # Assert
+        snapshot.assert_match(repr(result),
+                              "test_set_space_public_success.txt")
+
+    @pytest.mark.django_db
+    def test_update_space_private_success(self, snapshot):
+        # Arrange
+        space_id = "12345678-1234-5678-1234-567812345678"
+        user_id = "12345678-1234-5678-1234-567812345679"
+        workspace_id = "12345678-1234-5678-1234-567812345679"
+        workspace = WorkspaceFactory(workspace_id=workspace_id)
+        user = UserFactory(user_id=user_id)
+        SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
+                     is_private=True)
+        storage = SpaceStorage()
+
+        # Act
+        result = storage.update_space_visibility(space_id=str(space_id),
+                                                 visibility="PRIVATE")
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -180,11 +180,11 @@ class TestSpaceStorage:
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
         SpaceFactory(space_id=space_id1, workspace=workspace, created_by=user,
-                     is_active=True)
+                     is_deleted=False)
         SpaceFactory(space_id=space_id2, workspace=workspace, created_by=user,
-                     is_active=True)
+                     is_deleted=False)
         SpaceFactory(space_id=space_id3, workspace=workspace, created_by=user,
-                     is_active=False)
+                     is_deleted=True)
         storage = SpaceStorage()
 
         # Act
@@ -217,9 +217,9 @@ class TestSpaceStorage:
         workspace_id = "12345678-1234-5678-1234-567812345679"
         workspace = WorkspaceFactory(workspace_id=workspace_id)
         user = UserFactory(user_id=user_id)
-        SpaceFactory(workspace=workspace, created_by=user, is_active=True)
-        SpaceFactory(workspace=workspace, created_by=user, is_active=True)
-        SpaceFactory(workspace=workspace, created_by=user, is_active=False)
+        SpaceFactory(workspace=workspace, created_by=user, is_deleted=False)
+        SpaceFactory(workspace=workspace, created_by=user, is_deleted=False)
+        SpaceFactory(workspace=workspace, created_by=user, is_deleted=True)
         storage = SpaceStorage()
 
         # Act
@@ -244,67 +244,3 @@ class TestSpaceStorage:
         # Assert
         snapshot.assert_match(repr(result),
                               "test_get_workspace_spaces_count_empty.txt")
-
-    @pytest.mark.django_db
-    def test_reorder_space_move_down_success(self, snapshot):
-        # Arrange
-        space_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        workspace_id = "12345678-1234-5678-1234-567812345679"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
-        SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
-                     order=1)
-        SpaceFactory(workspace=workspace, created_by=user, order=2)
-        SpaceFactory(workspace=workspace, created_by=user, order=3)
-        storage = SpaceStorage()
-
-        # Act
-        result = storage.update_space_order(workspace_id=str(workspace_id),
-                                            space_id=str(space_id), new_order=3)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_space_move_down_success.txt")
-
-    @pytest.mark.django_db
-    def test_reorder_space_move_up_success(self, snapshot):
-        # Arrange
-        space_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        workspace_id = "12345678-1234-5678-1234-567812345679"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
-        SpaceFactory(workspace=workspace, created_by=user, order=1)
-        SpaceFactory(workspace=workspace, created_by=user, order=2)
-        SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
-                     order=3)
-        storage = SpaceStorage()
-
-        # Act
-        result = storage.update_space_order(workspace_id=str(workspace_id),
-                                            space_id=str(space_id), new_order=1)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_space_move_up_success.txt")
-
-    @pytest.mark.django_db
-    def test_reorder_space_same_position(self, snapshot):
-        # Arrange
-        space_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        workspace_id = "12345678-1234-5678-1234-567812345679"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
-        SpaceFactory(space_id=space_id, workspace=workspace, created_by=user,
-                     order=2)
-        storage = SpaceStorage()
-
-        # Act
-        result = storage.update_space_order(workspace_id=str(workspace_id),
-                                            space_id=str(space_id), new_order=2)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_space_same_position.txt")

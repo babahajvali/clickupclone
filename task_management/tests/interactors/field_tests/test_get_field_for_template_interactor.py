@@ -1,16 +1,17 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.custom_exceptions import \
-    TemplateNotFound
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
-from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.field_storage_interface import FieldStorageInterface
-from task_management.interactors.storage_interfaces.template_storage_interface import TemplateStorageInterface
-
-from task_management.tests.factories.interactor_factory import FieldDTOFactory
+from task_management.exceptions.custom_exceptions import TemplateNotFound
+from task_management.exceptions.enums import FieldType
+from task_management.interactors.dtos import FieldDTO
+from task_management.interactors.fields.field_interactor import FieldInteractor
+from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
+from task_management.interactors.storage_interfaces.field_storage_interface import (
+    FieldStorageInterface,
+)
+from task_management.interactors.storage_interfaces.template_storage_interface import (
+    TemplateStorageInterface,
+)
 
 
 class TestGetFieldForTemplateInteractor:
@@ -30,8 +31,30 @@ class TestGetFieldForTemplateInteractor:
         template_id = "templates-123"
 
         expected_fields = [
-            FieldDTOFactory(),
-            FieldDTOFactory()
+            FieldDTO(
+                field_id="field_1",
+                field_type=FieldType.TEXT,
+                description="Field 1",
+                template_id="tpl_1",
+                field_name="Priority",
+                is_deleted=False,
+                order=1,
+                config={},
+                is_required=True,
+                created_by="user_1",
+            ),
+            FieldDTO(
+                field_id="field_2",
+                field_type=FieldType.NUMBER,
+                description="Field 2",
+                template_id="tpl_1",
+                field_name="Estimate",
+                is_deleted=False,
+                order=2,
+                config={},
+                is_required=False,
+                created_by="user_1",
+            ),
         ]
 
         self.template_storage.validate_template_exists.return_value = True

@@ -187,7 +187,7 @@ class InvalidWorkspaceIdsFound(Exception):
         self.workspace_ids = workspace_ids
 
 
-class InactiveWorkspace(Exception):
+class WorkspaceDeletedException(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 

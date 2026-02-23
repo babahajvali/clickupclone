@@ -10,7 +10,7 @@ class Task(models.Model):
     list = models.ForeignKey(
         'List',
         on_delete=models.CASCADE,
-        related_name='list_tasks'
+        related_name='tasks'
     )
     order = models.PositiveIntegerField()
     is_deleted = models.BooleanField(default=False, db_index=True)
@@ -18,7 +18,7 @@ class Task(models.Model):
         'User',
         on_delete=models.SET_NULL,
         null=True, blank=True,
-        related_name='tasks_created'
+        related_name='created_tasks'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

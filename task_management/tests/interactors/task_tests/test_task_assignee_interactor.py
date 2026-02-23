@@ -2,7 +2,8 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
+from task_management.interactors.dtos import WorkspaceMemberDTO, \
+    TaskAssigneeDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
@@ -43,15 +44,11 @@ class TestTaskAssigneeInteractor:
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = TaskAssigneeInteractor(
             task_storage=self.task_storage,
             user_storage=self.user_storage,
-            list_storage=self.list_storage,
-            space_storage=self.space_storage,
             workspace_storage=self.workspace_storage
         )
 
@@ -77,6 +74,7 @@ class TestTaskAssigneeInteractor:
         )()
 
     def test_assign_task_assignee_success(self, snapshot):
+
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.workspace_storage.get_workspace_member.return_value = (
@@ -116,8 +114,16 @@ class TestTaskAssigneeInteractor:
         )
 
     def test_assign_task_assignee_user_not_found(self, snapshot):
-        self.user_storage.get_user_data.return_value = None
+        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
         self.task_storage.get_user_task_assignee.return_value = None
+        self.user_storage.get_user_data.return_value = None
+        self.task_storage.get_task_assignee.return_value = TaskAssigneeDTO(
+            assign_id="assign123",
+            user_id="user_1",
+            task_id="task_1",
+            assigned_by="admin",
+            is_active=True
+        )
 
         with pytest.raises(UserNotFound) as exc:
             self.interactor.add_task_assignee(
@@ -149,8 +155,13 @@ class TestTaskAssigneeInteractor:
         )
 
     def test_remove_task_assignee_success(self, snapshot):
-        self.task_storage.get_task_assignee.return_value = type(
-            "TaskAssigneeDTO", (), {"task_id": "task_1"})()
+        self.task_storage.get_task_assignee.return_value = TaskAssigneeDTO(
+            assign_id="assign123",
+            user_id="user_1",
+            task_id="task_1",
+            assigned_by="admin",
+            is_active=True
+        )
 
         expected = TaskAssigneeDTOFactory()
         self.task_storage.get_task_by_id.return_value = self._mock_active_task()

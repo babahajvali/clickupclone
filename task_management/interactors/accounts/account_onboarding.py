@@ -4,15 +4,12 @@ from django.db import transaction
 
 from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
-from task_management.interactors.dtos import CreateWorkspaceDTO, AccountDTO
+from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     ViewStorageInterface
-
-from task_management.interactors.workspaces.workspace_interactor import \
-    WorkspaceInteractor
 
 
 class AccountOnboardingHandler:
@@ -43,14 +40,15 @@ class AccountOnboardingHandler:
 
     @transaction.atomic
     def handle_account_onboarding(
-            self, name: str, created_by: str, description: Optional[str])\
+            self, name: str, created_by: str, description: Optional[str]) \
             -> AccountDTO:
+        account_data = self._create_account(
+            name=name, created_by=created_by, description=description)
 
-        account_data = self._create_account(name=name, created_by=created_by,
-                                            description=description)
-
-        return self._create_default_workspace(
+        self._create_default_workspace(
             account_id=account_data.account_id, owner_id=created_by, name=name)
+
+        return account_data
 
     def _create_account(self, name: str, created_by: str,
                         description: Optional[str]):
@@ -82,21 +80,7 @@ class AccountOnboardingHandler:
             account_storage=self.account_storage,
             view_storage=self.view_storage
         )
-        workspace_interactor = WorkspaceInteractor(
-            workspace_storage=self.workspace_storage,
-            account_storage=self.account_storage,
-            user_storage=self.user_storage
-        )
-
-        workspace_input_data = CreateWorkspaceDTO(
-            name=f"{name}'s Workspace",
-            description=None,
-            user_id=owner_id,
-            account_id=account_id
-        )
-        workspace_data = workspace_interactor.create_workspace(
-            workspace_input_data)
 
         return workspace_onboarding.handle_workspace(
-            workspace_id=workspace_data.workspace_id,
-            user_id=workspace_data.user_id)
+            workspace_id=account_id,
+            user_id=owner_id, name=name, description=None)

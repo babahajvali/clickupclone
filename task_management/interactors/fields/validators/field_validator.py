@@ -23,7 +23,7 @@ class FieldValidator:
         if is_field_not_found:
             raise FieldNotFound(field_id=field_id)
 
-        is_field_deleted = field_data.is_delete
+        is_field_deleted = field_data.is_deleted
         if is_field_deleted:
             raise InactiveField(field_id=field_id)
 

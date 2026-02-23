@@ -1,1 +1,1 @@
-ViewDTO(view_id=UUID('12345678-1234-5678-1234-567812345678'), name='Table View', description='Tough condition something measure to international sometimes financial.', view_type=<ViewTypes.LIST: 'LIST'>, created_by=UUID('12345678-1234-5678-1234-567812345678'))
+ViewDTO(view_id=UUID('12345678-1234-5678-1234-567812345678'), name='Table View', description='Consumer pressure source prevent.', view_type=<ViewTypes.LIST: 'LIST'>, created_by=UUID('12345678-1234-5678-1234-567812345678'))

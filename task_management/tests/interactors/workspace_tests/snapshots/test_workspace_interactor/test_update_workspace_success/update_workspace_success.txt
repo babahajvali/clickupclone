@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='f978cec1-2ac1-4a6b-bfad-3fd77ab7313c', name='Sloan Group', description='Bar six power present adult pattern song management.', user_id='92c17ec9-2796-402a-a466-fc2a974181d4', account_id='d15872ca-f0a0-4721-8e6e-594cdab04cbf', is_active=True)
+WorkspaceDTO(workspace_id='52b1b981-aef7-47b5-a35f-a10e8c42c37f', name='Kelly Group', description='Peace she often modern fund second rate.', user_id='8f75031b-9ffd-47f9-9cf3-49d2b0da0874', account_id='c51f3104-af28-4a0a-852d-5cd4aa76bd45', is_deleted=False)

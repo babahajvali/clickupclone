@@ -19,7 +19,7 @@ class AccountStorage(AccountStorageInterface):
                 name=account_data.name,
                 description=account_data.description,
                 owner_id=account_data.owner.user_id,
-                is_active=account_data.is_delete,
+                is_active=account_data.is_active,
             )
         except ObjectDoesNotExist:
             return None
@@ -35,7 +35,7 @@ class AccountStorage(AccountStorageInterface):
             name=account_data.name,
             description=account_data.description,
             owner_id=account_data.owner.user_id,
-            is_active=account_data.is_delete,
+            is_active=account_data.is_active,
         )
 
     def deactivate_account(self, account_id: str) -> AccountDTO:
@@ -48,7 +48,7 @@ class AccountStorage(AccountStorageInterface):
             name=account_data.name,
             description=account_data.description,
             owner_id=account_data.owner.user_id,
-            is_active=account_data.is_delete,
+            is_active=account_data.is_active,
         )
 
     def delete_account(self, account_id: str):
@@ -62,7 +62,7 @@ class AccountStorage(AccountStorageInterface):
             name=account_data.name,
             description=account_data.description,
             owner_id=account_data.owner.user_id,
-            is_active=account_data.is_delete,
+            is_active=account_data.is_active,
         ) for account_data in accounts_data]
 
     def get_existing_account_ids(self, account_ids: List[str]) -> List[str]:
@@ -80,7 +80,7 @@ class AccountStorage(AccountStorageInterface):
             name=account_data.name,
             description=account_data.description,
             owner_id=account_data.owner.user_id,
-            is_active=account_data.is_delete,
+            is_active=account_data.is_active,
         ) for account_data in accounts_data]
 
     def update_account(
@@ -105,7 +105,7 @@ class AccountStorage(AccountStorageInterface):
             name=account_data.name,
             description=account_data.description,
             owner_id=account_data.owner.user_id,
-            is_active=account_data.is_delete,
+            is_active=account_data.is_active,
         )
 
     def is_account_name_exists(

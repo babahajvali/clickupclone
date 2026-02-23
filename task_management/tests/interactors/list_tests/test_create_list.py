@@ -3,10 +3,10 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     EmptyName,
-    FolderNotFound,
     FolderDeletedException,
-    SpaceDeletedException,
+    FolderNotFound,
     ModificationNotAllowed,
+    SpaceDeletedException,
     SpaceNotFound,
 )
 from task_management.exceptions.enums import Role
@@ -47,7 +47,20 @@ class TestCreateList:
             folder_id=folder_id,
         )
 
-    def _get_interactor(
+    def setup_method(self):
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+
+        self.interactor = ListInteractor(
+            list_storage=self.list_storage,
+            folder_storage=self.folder_storage,
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_create_list_dependencies(
             self,
             *,
             space_exists=True,
@@ -56,40 +69,29 @@ class TestCreateList:
             folder_exists=True,
             role: Role = Role.MEMBER,
     ):
-        list_storage = create_autospec(ListStorageInterface)
-        folder_storage = create_autospec(FolderStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
-
-        space_storage.get_space.return_value = (
+        self.space_storage.get_space.return_value = (
             type("Space", (), {"is_deleted": not space_active})()
             if space_exists else None
         )
-        folder_storage.get_folder.return_value = (
+        self.folder_storage.get_folder.return_value = (
             type("Folder", (), {"is_deleted": not folder_active})()
             if folder_exists else None
         )
 
-        list_storage.get_active_lists_last_order_in_space.return_value = 1
-        list_storage.get_active_lists_last_order_in_folder.return_value = 1
-        list_storage.create_list.return_value = self._get_list_dto(
+        self.list_storage.get_active_lists_last_order_in_space.return_value = 1
+        self.list_storage.get_active_lists_last_order_in_folder.return_value = 1
+        self.list_storage.create_list.return_value = self._get_list_dto(
             folder_id="folder_1"
         )
 
-        space_storage.get_space_workspace_id.return_value = "workspace_id1"
-        workspace_storage.get_workspace_member.return_value = make_permission(
+        self.space_storage.get_space_workspace_id.return_value = "workspace_id1"
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
             role
         )
 
-        return ListInteractor(
-            list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage,
-        )
-
-    def test_create_list_success(self):
-        interactor = self._get_interactor()
+    def test_create_list_success(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies()
 
         dto = CreateListDTO(
             name="List name",
@@ -100,13 +102,16 @@ class TestCreateList:
             folder_id="folder_1",
         )
 
-        result = interactor.create_list(dto)
+        # Act
+        result = self.interactor.create_list(dto)
 
-        assert result.list_id == "list_1"
-        interactor.list_storage.create_list.assert_called_once()
+        # Assert
+        snapshot.assert_match(repr(result), "create_list_success.json")
+        self.list_storage.create_list.assert_called_once()
 
-    def test_create_list_empty_name(self):
-        interactor = self._get_interactor()
+    def test_create_list_empty_name(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies()
 
         dto = CreateListDTO(
             name=" ",
@@ -117,13 +122,16 @@ class TestCreateList:
             folder_id=None,
         )
 
+        # Act
         with pytest.raises(EmptyName) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.name == " "
+        # Assert
+        snapshot.assert_match(repr(exc.value), "test_create_list_empty_name.txt")
 
-    def test_create_list_space_not_found(self):
-        interactor = self._get_interactor(space_exists=False)
+    def test_create_list_space_not_found(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies(space_exists=False)
 
         dto = CreateListDTO(
             name="List name",
@@ -134,13 +142,16 @@ class TestCreateList:
             folder_id=None,
         )
 
+        # Act
         with pytest.raises(SpaceNotFound) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.space_id == "space_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
-    def test_create_list_space_inactive(self):
-        interactor = self._get_interactor(space_active=False)
+    def test_create_list_space_inactive(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies(space_active=False)
 
         dto = CreateListDTO(
             name="List name",
@@ -151,13 +162,16 @@ class TestCreateList:
             folder_id=None,
         )
 
+        # Act
         with pytest.raises(SpaceDeletedException) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.space_id == "space_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
 
-    def test_create_list_folder_not_found(self):
-        interactor = self._get_interactor(folder_exists=False)
+    def test_create_list_folder_not_found(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies(folder_exists=False)
 
         dto = CreateListDTO(
             name="List name",
@@ -168,13 +182,16 @@ class TestCreateList:
             folder_id="folder_1",
         )
 
+        # Act
         with pytest.raises(FolderNotFound) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.folder_id == "folder_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "folder_not_found.txt")
 
-    def test_create_list_folder_inactive(self):
-        interactor = self._get_interactor(folder_active=False)
+    def test_create_list_folder_inactive(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies(folder_active=False)
 
         dto = CreateListDTO(
             name="List name",
@@ -185,13 +202,16 @@ class TestCreateList:
             folder_id="folder_1",
         )
 
+        # Act
         with pytest.raises(FolderDeletedException) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.folder_id == "folder_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "folder_inactive.txt")
 
-    def test_create_list_permission_denied(self):
-        interactor = self._get_interactor(role=Role.GUEST)
+    def test_create_list_permission_denied(self, snapshot):
+        # Arrange
+        self._setup_create_list_dependencies(role=Role.GUEST)
 
         dto = CreateListDTO(
             name="List name",
@@ -202,7 +222,9 @@ class TestCreateList:
             folder_id=None,
         )
 
+        # Act
         with pytest.raises(ModificationNotAllowed) as exc:
-            interactor.create_list(dto)
+            self.interactor.create_list(dto)
 
-        assert exc.value.user_id == "user_id"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "permission_denied.txt")

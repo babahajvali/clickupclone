@@ -46,38 +46,39 @@ class TestUpdateFieldInteractor:
             template_id="tpl_1",
             field_name="Priority",
             order=1,
-            is_delete=True,
+            is_deleted=False,
             config={"max_length": 10},
             is_required=True,
             created_by="user_1",
         )
 
-    def _get_interactor(
+    def setup_method(self):
+        self.field_storage = create_autospec(FieldStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+
+        self.interactor = FieldInteractor(
+            field_storage=self.field_storage,
+            template_storage=self.template_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_update_field_dependencies(
             self,
             *,
             role: Role = Role.MEMBER,
             name_exists: bool = False,
     ):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
+        self.field_storage.is_field_name_exists.return_value = name_exists
+        self.field_storage.update_field.return_value = self._get_field_dto()
+        self.field_storage.get_field_by_id.return_value = self._get_field_dto()
 
-        field_storage.is_field_name_exists.return_value = name_exists
-        field_storage.update_field.return_value = self._get_field_dto()
-        field_storage.get_field_by_id.return_value = self._get_field_dto()
-
-        template_storage.get_workspace_id_from_template_id.return_value = (
+        self.template_storage.get_workspace_id_from_template_id.return_value = (
             "workspace_id"
         )
 
-        workspace_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             make_permission_dto(role)
-        )
-
-        return FieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            workspace_storage=workspace_storage
         )
 
     @staticmethod
@@ -92,10 +93,12 @@ class TestUpdateFieldInteractor:
         return replace(dto, **overrides)
 
     def test_update_field_successfully(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_update_field_dependencies()
         dto = self._get_update_dto()
 
-        result = interactor.update_field(dto, user_id="user_1")
+        # Act
+        result = self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(result),
@@ -103,13 +106,13 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_permission_denied(self, snapshot):
-        interactor = self._get_interactor(
-            role=Role.GUEST
-        )
+        # Arrange
+        self._setup_update_field_dependencies(role=Role.GUEST)
         dto = self._get_update_dto()
 
+        # Act
         with pytest.raises(ModificationNotAllowed) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.user_id),
@@ -117,11 +120,13 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_duplicate_name(self, snapshot):
-        interactor = self._get_interactor(name_exists=True)
+        # Arrange
+        self._setup_update_field_dependencies(name_exists=True)
         dto = self._get_update_dto(field_name="Priority")
 
+        # Act
         with pytest.raises(FieldNameAlreadyExists) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.field_name),
@@ -129,12 +134,14 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_not_found(self, snapshot):
-        interactor = self._get_interactor()
-        interactor.field_storage.get_field_by_id.return_value = None
+        # Arrange
+        self._setup_update_field_dependencies()
+        self.field_storage.get_field_by_id.return_value = None
         dto = self._get_update_dto()
 
+        # Act
         with pytest.raises(FieldNotFound) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.field_id),
@@ -142,7 +149,8 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_without_updates(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_update_field_dependencies()
         dto = self._get_update_dto(
             field_name=None,
             description=None,
@@ -150,8 +158,9 @@ class TestUpdateFieldInteractor:
             is_required=None,
         )
 
+        # Act
         with pytest.raises(NothingToUpdateField) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.field_id),
@@ -159,14 +168,16 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_inactive(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_update_field_dependencies()
         inactive_field = self._get_field_dto()
-        inactive_field.is_active = False
-        interactor.field_storage.get_field_by_id.return_value = inactive_field
+        inactive_field.is_deleted = True
+        self.field_storage.get_field_by_id.return_value = inactive_field
         dto = self._get_update_dto()
 
+        # Act
         with pytest.raises(InactiveField) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.field_id),
@@ -174,11 +185,13 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_empty_name(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_update_field_dependencies()
         dto = self._get_update_dto(field_name="   ")
 
+        # Act
         with pytest.raises(EmptyName) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.name),
@@ -186,11 +199,13 @@ class TestUpdateFieldInteractor:
         )
 
     def test_update_field_invalid_config_keys(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_update_field_dependencies()
         dto = self._get_update_dto(config={"bad_key": 1})
 
+        # Act
         with pytest.raises(InvalidFieldConfig) as exc:
-            interactor.update_field(dto, user_id="user_1")
+            self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
             repr(exc.value.invalid_keys),

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
 
@@ -18,13 +19,9 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_template_name_exist_except_this_template(
-            self, template_name: str, template_id: str) -> bool:
-        pass
-
-    @abstractmethod
-    def update_template(self, template_id: str,
-                        field_properties: dict) -> TemplateDTO:
+    def update_template(
+            self, template_id: str, name: Optional[str],
+            description: Optional[str]) -> TemplateDTO:
         pass
 
     @abstractmethod

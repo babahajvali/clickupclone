@@ -31,8 +31,8 @@ class AccountAdmin(admin.ModelAdmin):
 @admin.register(Workspace)
 class WorkspaceAdmin(admin.ModelAdmin):
     list_display = ('name', 'workspace_id', 'account', 'created_by',
-                    'is_active', 'created_at')
-    list_filter = ('is_active', 'created_at')
+                    'is_deleted', 'created_at')
+    list_filter = ('is_deleted', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('workspace_id', 'created_at', 'updated_at')
     raw_id_fields = ('account', 'created_by')
@@ -50,10 +50,10 @@ class WorkspaceMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Space)
 class SpaceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'space_id', 'workspace', 'order', 'is_active',
+    list_display = ('name', 'space_id', 'workspace', 'order', 'is_deleted',
                     'is_private',
                     'created_by', 'created_at')
-    list_filter = ('is_active', 'is_private', 'created_at')
+    list_filter = ('is_deleted', 'is_private', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('space_id', 'created_at', 'updated_at')
     raw_id_fields = ('workspace', 'created_by')
@@ -72,10 +72,10 @@ class SpacePermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Folder)
 class FolderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'folder_id', 'space', 'order', 'is_active',
+    list_display = ('name', 'folder_id', 'space', 'order', 'is_deleted',
                     'is_private',
                     'created_by', 'created_at')
-    list_filter = ('is_active', 'is_private', 'created_at')
+    list_filter = ('is_deleted', 'is_private', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('folder_id', 'created_at', 'updated_at')
     raw_id_fields = ('space', 'created_by')
@@ -94,9 +94,9 @@ class FolderPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'list_id', 'space', 'folder', 'order', 'is_active',
+    list_display = ('name', 'list_id', 'space', 'folder', 'order', 'is_deleted',
                     'is_private', 'created_by', 'created_at')
-    list_filter = ('is_active', 'is_private', 'created_at')
+    list_filter = ('is_deleted', 'is_private', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('list_id', 'created_at', 'updated_at')
     raw_id_fields = ('space', 'folder', 'created_by')
@@ -146,7 +146,7 @@ class TemplateAdmin(admin.ModelAdmin):
 
 @admin.register(Field)
 class FieldAdmin(admin.ModelAdmin):
-    list_display = ('field_name', 'field_id', 'field_type', "is_active",
+    list_display = ('field_name', 'field_id', 'field_type', "is_deleted",
                     'template', 'order',
                     'is_required', 'created_by', 'created_at')
     list_filter = ('field_type', 'is_required', 'created_at')

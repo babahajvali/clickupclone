@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO, \
     UpdateViewDTO, ListViewDTO
@@ -19,7 +20,9 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_view(self, view_id: str, field_properties: dict) -> ViewDTO:
+    def update_view(
+            self, view_id: str, name: Optional[str],
+            description: Optional[str]) -> ViewDTO:
         pass
 
     @abstractmethod

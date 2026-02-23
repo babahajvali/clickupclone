@@ -23,8 +23,7 @@ class TestTaskAssigneeStorage:
         result = storage.add_task_assignee(task_id=str(task_id), user_id=str(user_id), assigned_by=str(assigned_by_id))
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_assign_task_assignee_success.txt")
-        assert str(result.task_id) == task_id
+        snapshot.assert_match(repr(result), "test_assign_task_assignee_success.txt")
 
     @pytest.mark.django_db
     def test_remove_task_assignee_success(self, snapshot):

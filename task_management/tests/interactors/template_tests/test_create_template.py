@@ -31,17 +31,13 @@ Faker.seed(0)
 class TestCreateTemplateInteractor:
 
     def setup_method(self):
-        self.field_storage = create_autospec(FieldStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.list_storage = create_autospec(ListStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = TemplateInteractor(
-            field_storage=self.field_storage,
             template_storage=self.template_storage,
             list_storage=self.list_storage,
-            space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )
 
@@ -55,7 +51,7 @@ class TestCreateTemplateInteractor:
         )
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
+            "List", (), {"is_deleted": False}
         )()
 
         self.template_storage.create_template.return_value = template_dto

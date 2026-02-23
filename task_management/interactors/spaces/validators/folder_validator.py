@@ -60,7 +60,7 @@ class FolderValidator:
             self, space_id: str, old_order: int, new_order: int):
 
 
-        if old_order > new_order:
+        if new_order > old_order:
             self.folder_storage.shift_folders_down(
                 space_id=space_id, old_order=old_order, new_order=new_order
             )

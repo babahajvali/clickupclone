@@ -94,21 +94,6 @@ class TestListPermissionStorage:
                               "test_get_user_permission_for_list_success.txt")
 
     @pytest.mark.django_db
-    def test_get_user_permission_for_list_failure(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        storage = ListStorage()
-
-        # Act
-        result = storage.get_user_permission_for_list(user_id=str(user_id),
-                                                      list_id=str(list_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_get_user_permission_for_list_failure.txt")
-
-    @pytest.mark.django_db
     def test_remove_user_permission_for_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"

@@ -55,16 +55,15 @@ class TestCreateTaskInteractor:
             task_storage=self.task_storage,
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,
-            space_storage=self.space_storage
         )
 
     def test_create_task_success(self, snapshot):
         task_data = CreateTaskDTOFactory()
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
+            "List", (), {"is_deleted": False}
         )()
-        self.workspace_member_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.MEMBER)
         )
         self.task_storage.create_task.return_value = TaskDTOFactory()
@@ -80,9 +79,9 @@ class TestCreateTaskInteractor:
         task_data = CreateTaskDTOFactory()
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
+            "List", (), {"is_deleted": False}
         )()
-        self.workspace_member_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.GUEST)
         )
 
@@ -111,7 +110,7 @@ class TestCreateTaskInteractor:
         task_data = CreateTaskDTOFactory()
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": False}
+            "List", (), {"is_deleted": True}
         )()
 
         with pytest.raises(ListDeletedException) as exc:
@@ -126,15 +125,14 @@ class TestCreateTaskInteractor:
         update_data = UpdateTaskDTOFactory()
 
         self.task_storage.get_task_by_id.return_value = TaskDTOFactory()
-        self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
-        )()
-        self.workspace_member_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.MEMBER)
         )
         self.task_storage.update_task.return_value = TaskDTOFactory()
 
-        result = self.interactor.update_task(update_data, user_id="user_id")
+        result = self.interactor.update_task(
+            task_id=update_data.task_id, title=update_data.title,
+            description=update_data.description, user_id="user_id")
 
         snapshot.assert_match(
             repr(result),
@@ -146,11 +144,11 @@ class TestCreateTaskInteractor:
         tasks = [TaskDTOFactory(), TaskDTOFactory()]
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
+            "List", (), {"is_deleted": False}
         )()
-        self.task_storage.get_active_tasks_for_list.return_value = tasks
+        self.task_storage.get_tasks_for_list.return_value = tasks
 
-        result = self.interactor.get_active_tasks_for_list(list_id)
+        result = self.interactor.get_tasks_for_list(list_id)
 
         snapshot.assert_match(
             repr(result),

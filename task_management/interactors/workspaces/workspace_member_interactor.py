@@ -36,6 +36,8 @@ class WorkspaceMemberInteractor:
     def add_member_to_workspace(
             self, workspace_member_data: AddMemberToWorkspaceDTO) \
             -> WorkspaceMemberDTO:
+        self.workspace_validator.check_role(
+            role=workspace_member_data.role.value)
         self.workspace_mixin.check_workspace_is_active(
             workspace_id=workspace_member_data.workspace_id)
         self.user_mixin.check_user_is_active(
@@ -43,8 +45,7 @@ class WorkspaceMemberInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
-        self.workspace_validator.check_role(
-            role=workspace_member_data.role.value)
+
 
         return self.workspace_storage.add_member_to_workspace(
             workspace_member_data=workspace_member_data)

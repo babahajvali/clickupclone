@@ -1,7 +1,10 @@
+from typing import Optional
+
 from django.db import transaction
 
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO
+from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO, \
+    CreateWorkspaceDTO, WorkspaceDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
 from task_management.interactors.spaces.space_interactor import \
@@ -36,12 +39,31 @@ class WorkspaceHandler:
         self.view_storage = view_storage
 
     @transaction.atomic
-    def handle_workspace(self, user_id: str, workspace_id: str):
-        space_data = self._create_space(workspace_id=workspace_id,
-                                        user_id=user_id)
+    def handle_workspace(
+            self, user_id: str, account_id: str, name: str,
+            description: Optional[str] = None) -> WorkspaceDTO:
+
+        workspace_interactor = WorkspaceInteractor(
+            workspace_storage=self.workspace_storage,
+            account_storage=self.account_storage,
+            user_storage=self.user_storage
+        )
+
+        workspace_input_data = CreateWorkspaceDTO(
+            name=f"{name}'s Workspace",
+            description=description,
+            user_id=user_id,
+            account_id=account_id
+        )
+        workspace_data = workspace_interactor.create_workspace(
+            workspace_input_data)
+
+        space_data = self._create_space(
+            workspace_id=workspace_data.workspace_id, user_id=user_id)
 
         self._create_list(space_id=space_data.space_id, user_id=user_id)
-        return space_data
+
+        return workspace_data
 
     def _create_space(self, user_id: str, workspace_id: str):
         space_interactor = SpaceInteractor(

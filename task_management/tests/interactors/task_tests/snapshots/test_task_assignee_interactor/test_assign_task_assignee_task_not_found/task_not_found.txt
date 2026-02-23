@@ -1,1 +1,1 @@
-TaskNotFoundException()
+TaskNotFound()

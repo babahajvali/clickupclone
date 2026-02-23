@@ -1,1 +1,1 @@
-RemoveListViewDTO(id=1, list_id='974b1874-54db-4cb4-8909-23f47a692395', view_id='03752b70-dfa1-4ab3-ac49-a4714a06177e', removed_by='04c792b3-51c8-4fdb-ae7c-5d52d742f982', is_active=False)
+RemoveListViewDTO(id=1, list_id='a52cae47-553b-4f7d-b7f5-8049a7a1a210', view_id='ce12b3a7-07a0-4446-8351-51431bd11940', removed_by='fae64267-b865-43fa-9684-597807a67d63', is_active=False)

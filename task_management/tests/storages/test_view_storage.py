@@ -17,8 +17,10 @@ class TestViewStorage:
         user = UserFactory(user_id=user_id)
         view_id = "12345678-1234-5678-1234-567812345678"
         view_id2 = "12345678-1234-5678-1234-567812345679"
-        ViewFactory(created_by=user, view_id=view_id)
-        ViewFactory(created_by=user, view_id=view_id2)
+        ViewFactory(created_by=user, view_id=view_id,
+                    view_type=ViewTypes.TABLE.value)
+        ViewFactory(created_by=user, view_id=view_id2,
+                    view_type=ViewTypes.LIST.value)
         storage = ViewStorage()
 
         # Act
@@ -70,11 +72,10 @@ class TestViewStorage:
         result = storage.create_view(create_view_data=dto)
 
         # Assert
-        # snapshot.assert_match(
-        #     repr(result),
-        #     "test_create_view.txt"
-        # )
-        assert result.name == dto.name
+        snapshot.assert_match(
+            repr(result),
+            "test_create_view.txt"
+        )
 
     @pytest.mark.django_db
     def test_update_view(self, snapshot):
@@ -89,15 +90,14 @@ class TestViewStorage:
             description="Old description"
         )
 
-        name = "Updated View",
+        name = "Updated View"
         description = "Updated description"
 
         storage = ViewStorage()
 
         # Act
-        result = storage.update_view(view_id=view_id,
-                                     field_properties={"name": name,
-                                                    'description': description})
+        result = storage.update_view(view_id=view_id, name=name,
+                                     description=description)
 
         # Assert
         snapshot.assert_match(

@@ -37,7 +37,7 @@ class FieldDTOFactory(factory.Factory):
     template_id = factory.Faker("uuid4")
     field_name = factory.Faker("name")
     description = factory.Faker("text")
-    is_active = factory.Faker("boolean")
+    is_delete = factory.Faker("boolean")
     field_type = factory.Iterator([x.value for x in FieldType])
     order = factory.sequence(lambda n: n + 1)
     config = factory.LazyFunction(dict)
@@ -262,7 +262,7 @@ class SpaceDTOFactory(factory.Factory):
     description = factory.Faker('sentence')
     workspace_id = factory.Faker('uuid4')
     order = factory.Sequence(lambda n: n + 1)
-    is_active = True
+    is_deleted = False
     is_private = False
     created_by = factory.Faker('uuid4')
 
@@ -286,7 +286,7 @@ class WorkspaceDTOFactory(factory.Factory):
     description = factory.Faker('sentence')
     user_id = factory.Faker('uuid4')
     account_id = factory.Faker('uuid4')
-    is_active = True
+    is_deleted = False
 
 
 # Aliases for backward compatibility

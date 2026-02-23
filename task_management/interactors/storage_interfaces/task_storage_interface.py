@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import CreateTaskDTO, UpdateTaskDTO, \
     TaskDTO, FilterDTO, TaskAssigneeDTO, UserTasksDTO
@@ -15,7 +16,9 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_task(self, task_id: str, field_properties: dict) -> TaskDTO:
+    def update_task(
+            self, task_id: str, title: Optional[str],
+            description: Optional[str]) -> TaskDTO:
         pass
 
     @abstractmethod
@@ -31,7 +34,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
+    def get_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         pass
 
     @abstractmethod
@@ -49,6 +52,16 @@ class TaskStorageInterface(ABC):
     @abstractmethod
     def reorder_tasks(self, list_id: str, new_order: int,
                       task_id: str) -> TaskDTO:
+        pass
+
+    @abstractmethod
+    def shift_tasks_down(
+            self, list_id: str, current_order: int, new_order: int):
+        pass
+
+    @abstractmethod
+    def shift_tasks_up(
+            self, list_id: str, current_order: int, new_order: int):
         pass
 
     @abstractmethod

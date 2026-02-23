@@ -28,10 +28,10 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
         if list_view_data:
             return list_view_data
 
-        self.validate_view_exist(view_id=view_id)
+        self.check_view_exist(view_id=view_id)
         self.check_list_is_active(list_id=list_id)
-        self._validate_user_has_access_to_list(user_id=user_id,
-                                               list_id=list_id)
+        self._check_user_has_edit_access_to_list(user_id=user_id,
+                                                 list_id=list_id)
 
         return self.view_storage.apply_view_for_list(view_id=view_id,
                                                      list_id=list_id,
@@ -39,9 +39,10 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
 
     def remove_view_for_list(self, view_id: str, list_id: str,
                              user_id: str) -> ListViewDTO:
+
         self._check_list_view_exist(list_id=list_id, view_id=view_id)
-        self._validate_user_has_access_to_list(user_id=user_id,
-                                               list_id=list_id)
+        self._check_user_has_edit_access_to_list(user_id=user_id,
+                                                 list_id=list_id)
 
         return self.view_storage.remove_list_view(view_id=view_id,
                                                   list_id=list_id)
@@ -60,7 +61,7 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
         if is_list_view_not_found:
             raise ListViewNotFound(view_id=view_id, list_id=list_id)
 
-    def _validate_user_has_access_to_list(self, list_id: str, user_id: str):
+    def _check_user_has_edit_access_to_list(self, list_id: str, user_id: str):
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
 

@@ -1,1 +1,1 @@
-ViewNotFoundException()
+ViewNotFound()

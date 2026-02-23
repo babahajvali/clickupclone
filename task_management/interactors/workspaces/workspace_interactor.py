@@ -65,13 +65,13 @@ class WorkspaceInteractor:
         return WorkspaceValidator(workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def create_workspace(self, workspace_data: CreateWorkspaceDTO) \
-            -> WorkspaceDTO:
+    def create_workspace(
+            self, workspace_data: CreateWorkspaceDTO)  -> WorkspaceDTO:
 
         self.account_mixin.check_account_is_active(workspace_data.account_id)
         self.account_mixin.check_user_is_account_owner(
-            workspace_data.user_id,
-            account_id=workspace_data.account_id)
+            workspace_data.user_id, account_id=workspace_data.account_id
+        )
         self.workspace_validator.check_workspace_name_not_empty(
             workspace_name=workspace_data.name)
 
@@ -85,16 +85,13 @@ class WorkspaceInteractor:
 
         self.workspace_mixin.check_workspace_is_active(
             workspace_id=workspace_id)
-        field_properties_to_update = (
-            self.workspace_validator.check_workspace_update_field_properties(
-            workspace_id=workspace_id, name=name, description=description))
-
         self.workspace_mixin.check_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)
+        self.workspace_validator.check_workspace_update_field_properties(
+            workspace_id=workspace_id, name=name, description=description)
 
         return self.workspace_storage.update_workspace(
-            workspace_id=workspace_id,
-            field_properties=field_properties_to_update)
+            workspace_id=workspace_id,name=name, description=description)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(
@@ -122,16 +119,16 @@ class WorkspaceInteractor:
         return self.workspace_storage.transfer_workspace(
             workspace_id=workspace_id, new_user_id=new_user_id)
 
-    def get_active_workspaces(
+    def get_workspaces(
             self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
 
         self.workspace_validator.check_workspace_ids(
             workspace_ids=workspace_ids)
 
-        return self.workspace_storage.get_active_workspaces(
+        return self.workspace_storage.get_workspaces(
             workspace_ids=workspace_ids)
 
-    def get_active_account_workspaces(
+    def get_account_workspaces(
             self, account_id: str) -> list[WorkspaceDTO]:
 
         self.account_mixin.check_account_is_active(account_id=account_id)

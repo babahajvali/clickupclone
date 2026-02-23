@@ -11,7 +11,7 @@ class ViewValidationMixin:
         super().__init__(**kwargs)
 
 
-    def validate_view_exist(self, view_id: str):
+    def check_view_exist(self, view_id: str):
         is_exists = self.view_storage.check_view_exists(view_id=view_id)
 
         if not is_exists:

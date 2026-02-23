@@ -40,31 +40,19 @@ class TestWorkspaceMemberInteractor:
             {
                 "workspace_id": "workspace123",
                 "user_id": owner_id,
-                "is_active": True
+                "is_deleted": False
             })()
 
     @staticmethod
     def _mock_active_user():
         return type("User", (), {"is_active": True})()
 
-    @staticmethod
-    def _mock_space(space_id="space123"):
-        return type("Space", (), {"space_id": space_id})()
-
-    @staticmethod
-    def _mock_folder(folder_id="folder123"):
-        return type("Folder", (), {"folder_id": folder_id})()
-
-    @staticmethod
-    def _mock_list(list_id="list123"):
-        return type("List", (), {"list_id": list_id})()
-
 
     def test_add_member_to_workspace_success(self):
         dto = AddMemberToWorkspaceDTOFactory()
         expected = WorkspaceMemberDTOFactory()
 
-        self.workspace_storage.get_active_workspaces.return_value = (
+        self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace(owner_id=dto.added_by)
         )
         self.workspace_storage.get_workspace_member.return_value = type("WorkspaceMember", (), {'role': Role.MEMBER, 'is_active': True})()
@@ -79,7 +67,7 @@ class TestWorkspaceMemberInteractor:
         dto = AddMemberToWorkspaceDTOFactory()
         dto.role = type("Role", (), {"value": "INVALID"})()
 
-        self.workspace_storage.get_active_workspaces.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.get_workspace_member.return_value = None
 
@@ -89,14 +77,14 @@ class TestWorkspaceMemberInteractor:
         snapshot.assert_match(repr(exc.value), "add_member_invalid_role.txt")
 
     def test_add_member_permission_denied(self, snapshot):
-        dto = AddMemberToWorkspaceDTOFactory()
+        dto = AddMemberToWorkspaceDTOFactory(role=Role.GUEST)
 
-        self.workspace_storage.get_active_workspaces.return_value = (
+        self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace(owner_id="someone_else")
         )
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
-        self.workspace_storage.get_workspace_member.return_value = None
+        self.workspace_storage.get_workspace_member.return_value = type("WorkspaceMember", (), {'role': Role.GUEST, 'is_active': True})()
 
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.add_member_to_workspace(dto)
@@ -110,7 +98,7 @@ class TestWorkspaceMemberInteractor:
     def test_remove_member_success(self):
         expected = WorkspaceMemberDTOFactory()
 
-        self.workspace_storage.get_active_workspaces.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.remove_member_from_workspace.return_value = expected
 
@@ -125,7 +113,7 @@ class TestWorkspaceMemberInteractor:
     def test_change_member_role_success(self):
         expected = WorkspaceMemberDTOFactory(role=Role.MEMBER)
 
-        self.workspace_storage.get_active_workspaces.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.update_the_member_role.return_value = expected
 
@@ -141,7 +129,7 @@ class TestWorkspaceMemberInteractor:
         # snapshot.assert_match(repr(result), "change_role_success.txt")
 
     def test_change_member_role_invalid(self, snapshot):
-        self.workspace_storage.get_active_workspaces.return_value = self._mock_active_workspace()
+        self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
 
         with pytest.raises(UnexpectedRole) as exc:

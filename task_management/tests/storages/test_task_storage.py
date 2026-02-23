@@ -25,11 +25,10 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.create_task(task_data=task_data)
+        result = storage.create_task(task_data=task_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_task_success.txt")
-        assert result.title == task_data.title
+        snapshot.assert_match(repr(result), "test_create_task_success.txt")
 
     @pytest.mark.django_db
     def test_create_task_with_existing_tasks(self, snapshot):
@@ -49,11 +48,11 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.create_task(task_data=task_data)
+        result = storage.create_task(task_data=task_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_task_with_existing_tasks.txt")
-        assert result.title == task_data.title
+        snapshot.assert_match(repr(result),
+                              "test_create_task_with_existing_tasks.txt")
 
     @pytest.mark.django_db
     def test_update_task_success(self, snapshot):
@@ -72,9 +71,8 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.update_task(task_id=task_id,
-                                     field_properties={"title": title,
-                                                   'description': description})
+        result = storage.update_task(task_id=task_id, title=title,
+                                     description=description)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_task_success.txt")
@@ -115,7 +113,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.get_active_tasks_for_list(list_id=str(list_id))
+        result = storage.get_tasks_for_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_list_tasks_success.txt")
@@ -128,7 +126,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.get_active_tasks_for_list(list_id=str(list_id))
+        result = storage.get_tasks_for_list(list_id=str(list_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_list_tasks_empty.txt")

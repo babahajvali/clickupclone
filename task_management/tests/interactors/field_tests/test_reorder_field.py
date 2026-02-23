@@ -1,14 +1,6 @@
+import pytest
 from unittest.mock import create_autospec
 
-import pytest
-
-from task_management.exceptions.custom_exceptions import (
-    TemplateNotFound,
-    InvalidOrder,
-    ModificationNotAllowed,
-    FieldNotFound,
-    InactiveField,
-)
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
 from task_management.interactors.fields.field_interactor import FieldInteractor
@@ -17,179 +9,206 @@ from task_management.interactors.storage_interfaces import (
     TemplateStorageInterface,
     WorkspaceStorageInterface,
 )
+from task_management.exceptions.custom_exceptions import (
+    TemplateNotFound,
+    FieldNotFound,
+    InactiveField,
+    ModificationNotAllowed,
+    InvalidOrder,
+)
 
 
-def make_permission_dto(role: Role):
+def make_field(order=1, is_deleted=False, template_id="template_1"):
+    return type(
+        "Field",
+        (),
+        {
+            "field_id": "field_1",
+            "order": order,
+            "is_deleted": is_deleted,
+            "template_id": template_id,
+        },
+    )()
+
+
+def make_permission(role: Role):
     return WorkspaceMemberDTO(
         id=1,
-        workspace_id="workspace_id",
+        workspace_id="workspace_1",
         role=role,
         user_id="user_1",
         is_active=True,
-        added_by="admin_1",
+        added_by="admin"
     )
 
 
 class TestReorderFieldInteractor:
-    @staticmethod
-    def _get_field_dto():
-        return FieldDTO(
+
+    def setup_method(self):
+        self.field_storage = create_autospec(FieldStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+
+        self.interactor = FieldInteractor(
+            field_storage=self.field_storage,
+            template_storage=self.template_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_dependencies(
+            self, template_exists=True, field_active=True,
+            role=Role.ADMIN, field_order=1, fields_count=5):
+
+        # template
+        self.template_storage.validate_template_exists.return_value = template_exists
+
+        # field
+        self.field_storage.get_field_by_id.return_value = (
+            make_field(order=field_order, is_deleted=False)
+            if field_active
+            else None
+        )
+
+        self.template_storage.get_workspace_id_from_template_id.return_value = (
+            "workspace_1"
+        )
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
+            role=role
+        )
+
+        self.field_storage.template_fields_count.return_value = fields_count
+
+        expected = FieldDTO(
             field_id="field_1",
             field_type=FieldType.TEXT,
-            description="Task priority",
-            template_id="tpl_1",
+            description="Reordered field",
+            template_id="template_1",
             field_name="Priority",
-            order=1,
-            is_active=True,
-            config={"max_length": 10},
+            is_deleted=False,
+            order=field_order,
+            config={},
             is_required=True,
             created_by="user_1",
         )
+        self.field_storage.update_field_order.return_value = expected
+        return expected
 
-    def _get_interactor(
-            self,
-            *,
-            template_exists: bool = True,
-            role: Role = Role.MEMBER,
-            field_data: FieldDTO | None = None,
-            fields_count: int = 3,
-    ):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
-
-        template_storage.validate_template_exists.return_value = template_exists
-        template_storage.get_workspace_id_from_template_id.return_value = (
-            "workspace_id"
-        )
-
-        if field_data is None:
-            field_data = self._get_field_dto()
-
-        field_storage.get_field_by_id.return_value = field_data
-        field_storage.template_fields_count.return_value = fields_count
-        field_storage.reorder_fields.return_value = field_data
-
-        workspace_storage.get_workspace_member.return_value = (
-            make_permission_dto(role)
-        )
-
-        return FieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            workspace_storage=workspace_storage,
-        )
 
     def test_reorder_field_success(self, snapshot):
-        interactor = self._get_interactor()
+        expected = self._setup_dependencies(field_order=1)
 
-        result = interactor.reorder_field(
+        result = self.interactor.reorder_field(
             field_id="field_1",
-            template_id="tpl_1",
-            new_order=1,
-            user_id="user_1",
+            template_id="template_1",
+            new_order=3,
+            user_id="user_1"
         )
 
-        snapshot.assert_match(
-            repr(result),
-            "test_reorder_field_success.txt",
+        assert result == expected
+        self.field_storage.update_field_order.assert_called_once_with(
+            field_id="field_1", new_order=3)
+        snapshot.assert_match(repr(result), "reorder_field_success.txt")
+
+    def test_reorder_field_same_order_returns_early(self):
+        self._setup_dependencies(field_order=2)
+
+        result = self.interactor.reorder_field(
+            field_id="field_1",
+            template_id="template_1",
+            new_order=2,
+            user_id="user_1"
         )
+
+        # should return early without calling update
+        self.field_storage.update_field_order.assert_not_called()
+
 
     def test_reorder_field_template_not_found(self, snapshot):
-        interactor = self._get_interactor(template_exists=False)
+        # Arrange
+        self.template_storage.validate_template_exists.return_value = False
 
+        # Act
         with pytest.raises(TemplateNotFound) as exc:
-            interactor.reorder_field(
+            self.interactor.reorder_field(
                 field_id="field_1",
-                template_id="tpl_1",
-                new_order=1,
-                user_id="user_1",
+                template_id="bad_template",
+                new_order=2,
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.template_id),
-            "test_reorder_field_template_not_found.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_template_not_found.txt")
+
 
     def test_reorder_field_not_found(self, snapshot):
-        interactor = self._get_interactor(field_data=None)
-        interactor.field_storage.get_field_by_id.return_value = None
+        # Arrange
+        self.template_storage.validate_template_exists.return_value = True
+        self.field_storage.get_field_by_id.return_value = None
 
+        # Act
         with pytest.raises(FieldNotFound) as exc:
-            interactor.reorder_field(
-                field_id="field_1",
-                template_id="tpl_1",
-                new_order=1,
-                user_id="user_1",
+            self.interactor.reorder_field(
+                field_id="bad_field",
+                template_id="template_1",
+                new_order=2,
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.field_id),
-            "test_reorder_field_not_found.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_not_found.txt")
+
 
     def test_reorder_field_inactive(self, snapshot):
-        field_data = self._get_field_dto()
-        field_data.is_active = False
-        interactor = self._get_interactor(field_data=field_data)
+        # Arrange
+        self.template_storage.validate_template_exists.return_value = True
+        self.field_storage.get_field_by_id.return_value = make_field(is_deleted=True)
 
+        # Act
         with pytest.raises(InactiveField) as exc:
-            interactor.reorder_field(
+            self.interactor.reorder_field(
                 field_id="field_1",
-                template_id="tpl_1",
-                new_order=1,
-                user_id="user_1",
+                template_id="template_1",
+                new_order=2,
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.field_id),
-            "test_reorder_field_inactive.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_inactive.txt")
+
 
     def test_reorder_field_invalid_order_low(self, snapshot):
-        interactor = self._get_interactor(fields_count=3)
+        self._setup_dependencies(fields_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
-            interactor.reorder_field(
+            self.interactor.reorder_field(
                 field_id="field_1",
-                template_id="tpl_1",
-                new_order=0,
-                user_id="user_1",
+                template_id="template_1",
+                new_order=0,  # below minimum
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_field_invalid_order_low.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_invalid_order_low.txt")
 
     def test_reorder_field_invalid_order_high(self, snapshot):
-        interactor = self._get_interactor(fields_count=3)
+        self._setup_dependencies(fields_count=3)
 
         with pytest.raises(InvalidOrder) as exc:
-            interactor.reorder_field(
+            self.interactor.reorder_field(
                 field_id="field_1",
-                template_id="tpl_1",
-                new_order=5,
-                user_id="user_1",
+                template_id="template_1",
+                new_order=99,  # above max
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.order),
-            "test_reorder_field_invalid_order_high.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_invalid_order_high.txt")
+
 
     def test_reorder_field_permission_denied(self, snapshot):
-        interactor = self._get_interactor(role=Role.GUEST)
+        self._setup_dependencies(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            interactor.reorder_field(
+            self.interactor.reorder_field(
                 field_id="field_1",
-                template_id="tpl_1",
-                new_order=1,
-                user_id="user_1",
+                template_id="template_1",
+                new_order=2,
+                user_id="user_1"
             )
 
-        snapshot.assert_match(
-            repr(exc.value.user_id),
-            "test_reorder_field_permission_denied.txt",
-        )
+        snapshot.assert_match(repr(exc.value), "reorder_field_permission_denied.txt")

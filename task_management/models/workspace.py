@@ -26,7 +26,7 @@ class Workspace(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["is_active"]),
+            models.Index(fields=["is_deleted"]),
             models.Index(fields=["created_at"]),
         ]
 

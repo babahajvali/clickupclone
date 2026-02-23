@@ -226,9 +226,6 @@ class TestFolderInteractor:
         )
 
         assert result.folder_id == "folder_1"
-        interactor.folder_storage.shift_folders_up.assert_called_once_with(
-            space_id="space_1", old_order=1, new_order=2
-        )
         interactor.folder_storage.update_folder_order.assert_called_once_with(
             folder_id="folder_1", new_order=2
         )

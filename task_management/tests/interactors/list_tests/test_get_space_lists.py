@@ -13,7 +13,11 @@ from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
+from django.core.cache import cache
 
+@pytest.fixture(autouse=True)
+def clear_cache_before_test():
+    cache.clear()
 
 class TestGetSpaceLists:
     @staticmethod
@@ -30,50 +34,59 @@ class TestGetSpaceLists:
             folder_id=None,
         )
 
-    def _get_interactor(self, *, space_exists=True, space_active=True):
-        list_storage = create_autospec(ListStorageInterface)
-        folder_storage = create_autospec(FolderStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def setup_method(self):
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        space_storage.get_space.return_value = (
+        self.interactor = ListInteractor(
+            list_storage=self.list_storage,
+            folder_storage=self.folder_storage,
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_space_lists_dependencies(self, *, space_exists=True, space_active=True):
+        self.space_storage.get_space.return_value = (
             type("Space", (), {"is_deleted": not space_active})()
             if space_exists else None
         )
-        list_storage.get_space_lists.return_value = [
+        self.list_storage.get_space_lists.return_value = [
             self._get_list_dto()
         ]
 
-        return ListInteractor(
-            list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage,
-        )
+    def test_get_space_lists_success(self, snapshot):
+        # Arrange
+        self._setup_space_lists_dependencies()
 
-    def test_get_space_lists_success(self):
-        interactor = self._get_interactor()
+        # Act
+        result = self.interactor.get_space_lists(space_id="space_1")
 
-        result = interactor.get_space_lists(space_id="space_1")
-
-        assert len(result) == 1
-        assert result[0].space_id == "space_1"
-        interactor.list_storage.get_space_lists.assert_called_once_with(
+        # Assert
+        snapshot.assert_match(repr(result), "get_space_lists_success.json")
+        self.list_storage.get_space_lists.assert_called_once_with(
             space_ids=["space_1"]
         )
 
-    def test_get_space_lists_not_found(self):
-        interactor = self._get_interactor(space_exists=False)
+    def test_get_space_lists_not_found(self, snapshot):
+        # Arrange
+        self._setup_space_lists_dependencies(space_exists=False)
 
+        # Act
         with pytest.raises(SpaceNotFound) as exc:
-            interactor.get_space_lists(space_id="space_1")
+            self.interactor.get_space_lists(space_id="space_1")
 
-        assert exc.value.space_id == "space_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
-    def test_get_space_lists_inactive(self):
-        interactor = self._get_interactor(space_active=False)
+    def test_get_space_lists_inactive(self, snapshot):
+        # Arrange
+        self._setup_space_lists_dependencies(space_active=False)
 
+        # Act
         with pytest.raises(SpaceDeletedException) as exc:
-            interactor.get_space_lists(space_id="space_1")
+            self.interactor.get_space_lists(space_id="space_1")
 
-        assert exc.value.space_id == "space_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "space_inactive.txt")

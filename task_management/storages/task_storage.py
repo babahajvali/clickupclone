@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 
@@ -48,10 +50,21 @@ class TaskStorage(TaskStorageInterface):
 
         return next_order
 
-    def update_task(self, task_id: str, field_properties: dict) -> TaskDTO:
-        Task.objects.filter(task_id=task_id).update(**field_properties)
+    def update_task(
+            self, task_id: str, title: Optional[str],
+            description: Optional[str]) -> TaskDTO:
 
         task_data = Task.objects.get(task_id=task_id)
+
+        is_title_provided = title is not None
+        if is_title_provided:
+            task_data.title = title
+
+        is_description_provided = description is not None
+        if is_description_provided:
+            task_data.description = description
+
+        task_data.save()
 
         return self._task_dto(task_data=task_data)
 
@@ -73,7 +86,7 @@ class TaskStorage(TaskStorageInterface):
         except ObjectDoesNotExist:
             return None
 
-    def get_active_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
+    def get_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
         list_tasks = Task.objects.filter(list_id=list_id, is_deleted=False)
 
         return [self._task_dto(task_data=task_data) for task_data in
@@ -141,6 +154,25 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
+    def shift_tasks_down(
+            self, list_id: str, current_order: int, new_order: int):
+
+        Task.objects.filter(
+            list_id=list_id,
+            is_deleted=False,
+            order__gt=current_order,
+            order__lte=new_order
+        ).update(order=F("order") - 1)
+
+    def shift_tasks_up(
+            self, list_id: str, current_order: int, new_order: int):
+        Task.objects.filter(
+            list_id=list_id,
+            is_deleted=False,
+            order__gte=current_order,
+            order__lt=new_order
+        ).update(order=F("order") + 1)
+
     def add_task_assignee(self, task_id: str, user_id: str,
                           assigned_by: str) -> TaskAssigneeDTO:
 
@@ -180,7 +212,7 @@ class TaskStorage(TaskStorageInterface):
                 description=assignee.task.description,
                 list_id=str(assignee.task.list.list_id),
                 order=assignee.task.order,
-                created_by=str(assignee.task.created_by_user_id.user_id),
+                created_by=str(assignee.task.created_by),
                 is_deleted=assignee.task.is_deleted
             ))
 

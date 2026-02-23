@@ -214,9 +214,9 @@ class SpaceStorage(SpaceStorageInterface):
             permissions_to_create.append(
                 SpacePermission(
                     space_id=perm_data.space_id,
-                    user=perm_data.user_id,
+                    user_id=perm_data.user_id,
                     permission_type=perm_data.permission_type.value,
-                    added_by=perm_data.added_by,
+                    added_by_id=perm_data.added_by,
                     is_active=True
                 )
             )

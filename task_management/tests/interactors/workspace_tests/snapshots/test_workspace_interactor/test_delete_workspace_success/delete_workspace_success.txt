@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='717cd2c5-d57a-4851-9f41-9e31df17e79d', name='Gonzalez LLC', description='Sea law model should bank.', user_id='48f131c6-8d20-4f6f-a9a0-c826a388913e', account_id='17090f49-93de-408c-adb6-f8901c430612', is_active=True)
+WorkspaceDTO(workspace_id='71c5b936-e1e3-4011-a8b7-7a475687ee55', name='Munoz, George and Olsen', description='Sort sign today there see kid.', user_id='9d7aafed-fb1c-4622-a661-3f70cff36072', account_id='31f74321-6d3b-4e8c-8f26-6e6cf0417f80', is_deleted=False)

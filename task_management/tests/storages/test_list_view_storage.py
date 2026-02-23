@@ -1,5 +1,6 @@
 import pytest
 
+from task_management.exceptions.enums import ViewTypes
 from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import ListViewFactory, ListFactory, ViewFactory, UserFactory
 
@@ -50,8 +51,8 @@ class TestListViewStorage:
         view_id3 = "12345678-1234-5678-1234-567812345681"
         user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
-        view1 = ViewFactory(view_id=view_id1)
-        view2 = ViewFactory(view_id=view_id2)
+        view1 = ViewFactory(view_id=view_id1, view_type=ViewTypes.TABLE.value)
+        view2 = ViewFactory(view_id=view_id2, view_type=ViewTypes.GANTT.value)
         view3 = ViewFactory(view_id=view_id3)
         user = UserFactory(user_id=user_id)
         ListViewFactory(list=list_obj, view=view1, applied_by=user, is_active=True)

@@ -13,7 +13,7 @@ def get_all_views_resolver(root, info):
         list_storage=list_storage
     )
 
-    views_data = interactor.get_views()
+    views_data = interactor.get_all_views()
 
     views_output = [
         ViewType(

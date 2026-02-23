@@ -1,1 +1,1 @@
-'LIST_DTO'
+ListDTO(list_id='list_1', name='List name', description='List description', space_id='space_1', is_deleted=False, order=1, is_private=False, created_by='user_id', folder_id='folder_1')

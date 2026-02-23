@@ -54,7 +54,7 @@ class UpdateFieldMutation(graphene.Mutation):
                 field_name=result.field_name,
                 order=result.order,
                 config=result.config,
-                is_active=result.is_delete,
+                is_active=result.is_deleted,
                 is_required=result.is_required,
                 created_by=result.created_by
             )

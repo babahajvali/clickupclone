@@ -1,1 +1,1 @@
-InactiveWorkspaceException()
+WorkspaceDeletedException()

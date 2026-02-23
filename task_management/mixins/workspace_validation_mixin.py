@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    InactiveWorkspace, ModificationNotAllowed, \
+    WorkspaceDeletedException, ModificationNotAllowed, \
     UserNotWorkspaceOwner, WorkspaceNotFound, \
     InactiveWorkspaceMember, UserNotWorkspaceMember, \
     WorkspaceMemberIdNotFound
@@ -23,7 +23,7 @@ class WorkspaceValidationMixin:
 
         is_workspace_delete = workspace_data.is_deleted
         if is_workspace_delete:
-            raise InactiveWorkspace(workspace_id=workspace_id)
+            raise WorkspaceDeletedException(workspace_id=workspace_id)
 
     def check_user_is_workspace_owner(self, user_id: str,
                                       workspace_id: str):

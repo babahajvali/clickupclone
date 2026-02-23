@@ -49,7 +49,7 @@ class WorkspaceFactory(DjangoModelFactory):
     description = factory.Faker("paragraph")
     account = factory.SubFactory(AccountFactory)
     created_by = factory.SubFactory(UserFactory)
-    is_active = True
+    is_deleted = False
 
 
 class WorkspaceMemberFactory(DjangoModelFactory):
@@ -72,7 +72,7 @@ class SpaceFactory(DjangoModelFactory):
     description = factory.Faker("sentence")
     workspace = factory.SubFactory(WorkspaceFactory)
     order = factory.Sequence(lambda n: n + 1)
-    is_active = True
+    is_deleted = False
     is_private = False
     created_by = factory.SubFactory(UserFactory)
 
@@ -86,7 +86,7 @@ class FolderFactory(DjangoModelFactory):
     description = factory.Faker("sentence")
     space = factory.SubFactory(SpaceFactory)
     order = factory.Sequence(lambda n: n + 1)
-    is_active = True
+    is_deleted = True
     is_private = False
     created_by = factory.SubFactory(UserFactory)
 
@@ -101,7 +101,7 @@ class ListFactory(DjangoModelFactory):
     space = factory.SubFactory(SpaceFactory)
     folder = factory.SubFactory(FolderFactory)
     order = factory.Sequence(lambda n: n + 1)
-    is_active = True
+    is_deleted = False
     is_private = False
     created_by = factory.SubFactory(UserFactory)
 
@@ -173,7 +173,7 @@ class FieldFactory(DjangoModelFactory):
     order = factory.Sequence(lambda n: n + 1)
     config = {}
     is_required = False
-    is_active = True
+    is_deleted = False
     created_by = factory.SubFactory(UserFactory)
 
 

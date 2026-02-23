@@ -23,7 +23,7 @@ def get_list_tasks_resolver(root, info, params):
     )
 
     try:
-        tasks_data = task_interactor.get_active_tasks_for_list(list_id=list_id)
+        tasks_data = task_interactor.get_tasks_for_list(list_id=list_id)
         task_ids = [task.task_id for task in tasks_data]
 
         assignees_data = task_storage.get_assignees_for_list_tasks(

@@ -116,7 +116,7 @@ class ListStorage(ListStorageInterface):
 
         list_data = List.objects.get(list_id=list_id)
         list_data.is_deleted = True
-        list_data.save(update_fields=["is_active"])
+        list_data.save(update_fields=["is_deleted"])
 
         current_order = list_data.order
         if list_data.folder:
@@ -131,13 +131,6 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def make_list_private(self, list_id: str) -> ListDTO:
-
-        list_data = List.objects.get(list_id=list_id)
-        list_data.is_private = True
-        list_data.save(update_fields=["is_private"])
-
-        return self._list_dto(list_data=list_data)
 
     def update_list_visibility(self, list_id: str, visibility: str) -> ListDTO:
         # set is_private false

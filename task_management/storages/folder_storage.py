@@ -109,7 +109,7 @@ class FolderStorage(FolderStorageInterface):
 
         current_order = folder_data.order
         Folder.objects.filter(
-            space_id=folder_data.space.space_id, is_delete=False,
+            space_id=folder_data.space.space_id, is_deleted=False,
             order__gt=current_order).update(order=F('order') - 1)
 
         return self._folder_dto(folder_data)
@@ -118,7 +118,7 @@ class FolderStorage(FolderStorageInterface):
             self, space_ids: list[str]) -> list[FolderDTO]:
 
         folders_data = Folder.objects.filter(
-            space_id__in=space_ids, is_delete=False)
+            space_id__in=space_ids, is_deleted=False)
 
         return [self._folder_dto(data=data) for data in folders_data]
 
@@ -139,7 +139,7 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def get_space_folder_count(self, space_id: str) -> int:
-        return Folder.objects.filter(space_id=space_id, is_delete=False).count()
+        return Folder.objects.filter(space_id=space_id, is_deleted=False).count()
 
     def get_folder_space_id(self, folder_id: str) -> str:
         folder_data = Folder.objects.filter(folder_id=folder_id).\

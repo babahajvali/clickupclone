@@ -51,7 +51,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
         except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.InactiveWorkspace as e:
+        except custom_exceptions.WorkspaceDeletedException as e:
             return InactiveWorkspaceType(workspace_id=e.workspace_id)
 
         except custom_exceptions.UserNotFound as e:

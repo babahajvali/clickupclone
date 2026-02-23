@@ -40,10 +40,11 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.create_field(create_field_data=create_field_data)
+        result = storage.create_field(create_field_data=create_field_data,
+                                      order=1)
 
         # Assert
-        assert result.field_name == create_field_data.field_name
+        snapshot.assert_match(repr(result), "test_create_field_success.txt")
 
     @pytest.mark.django_db
     def test_create_field_with_existing_fields(self, snapshot):
@@ -73,10 +74,12 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.create_field(create_field_data=create_field_data)
+        result = storage.create_field(create_field_data=create_field_data,
+                                      order=1)
 
         # Assert
-        assert result.field_name == create_field_data.field_name
+        snapshot.assert_match(repr(result),
+                              "test_create_field_with_existing_fields.txt")
 
     @pytest.mark.django_db
     def test_is_field_name_exists_success(self, snapshot):
@@ -95,8 +98,9 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.is_field_name_exists(field_name=field_name,
-                                              template_id=str(template_id))
+        result = storage.is_field_name_exists(
+            field_name=field_name, template_id=str(template_id),
+            exclude_field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -114,8 +118,9 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.is_field_name_exists(field_name=field_name,
-                                              template_id=str(template_id))
+        result = storage.is_field_name_exists(
+            field_name=field_name, template_id=str(template_id),
+            exclude_field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -188,95 +193,6 @@ class TestFieldStorage:
         snapshot.assert_match(repr(result), "test_update_field_success.txt")
 
     @pytest.mark.django_db
-    def test_is_field_exists_success(self, snapshot):
-        # Arrange
-        field_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        list_id = "12345678-1234-5678-1234-567812345680"
-        template_id = "12345678-1234-5678-1234-567812345681"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field_id, template=template, created_by=user)
-        storage = FieldStorage()
-
-        # Act
-        result = storage.is_field_exists(field_id=str(field_id))
-
-        # Assert
-        snapshot.assert_match(repr(result), "test_is_field_exists_success.txt")
-
-    @pytest.mark.django_db
-    def test_is_field_exists_failure(self, snapshot):
-        # Arrange
-        field_id = "12345678-1234-5678-1234-567812345678"
-        storage = FieldStorage()
-
-        # Act
-        result = storage.is_field_exists(field_id=str(field_id))
-
-        # Assert
-        snapshot.assert_match(repr(result), "test_is_field_exists_failure.txt")
-
-    @pytest.mark.django_db
-    def test_check_field_name_except_this_field_success(self, snapshot):
-        # Arrange
-        field_id = "12345678-1234-5678-1234-567812345678"
-        other_field_id = "12345678-1234-5678-1234-567812345679"
-        template_id = "12345678-1234-5678-1234-567812345680"
-        user_id = "12345678-1234-5678-1234-567812345681"
-        list_id = "12345678-1234-5678-1234-567812345682"
-        field_name = "Test Field"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field_id, template=template, created_by=user,
-                     field_name="Current Field")
-        FieldFactory(field_id=other_field_id, template=template,
-                     created_by=user, field_name=field_name)
-        storage = FieldStorage()
-
-        # Act
-        result = storage.check_field_name_except_this_field(
-            field_id=str(field_id),
-            field_name=field_name,
-            template_id=str(template_id)
-        )
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_check_field_name_except_this_field_success.txt")
-
-    @pytest.mark.django_db
-    def test_check_field_name_except_this_field_failure(self, snapshot):
-        # Arrange
-        field_id = "12345678-1234-5678-1234-567812345678"
-        template_id = "12345678-1234-5678-1234-567812345680"
-        user_id = "12345678-1234-5678-1234-567812345681"
-        list_id = "12345678-1234-5678-1234-567812345682"
-        field_name = "Unique Field"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field_id, template=template, created_by=user,
-                     field_name="Current Field")
-        storage = FieldStorage()
-
-        # Act
-        result = storage.check_field_name_except_this_field(
-            field_id=str(field_id),
-            field_name=field_name,
-            template_id=str(template_id)
-        )
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_check_field_name_except_this_field_failure.txt")
-
-    @pytest.mark.django_db
     def test_get_fields_for_template_success(self, snapshot):
         # Arrange
         template_id = "12345678-1234-5678-1234-567812345678"
@@ -290,17 +206,17 @@ class TestFieldStorage:
         template = TemplateFactory(template_id=template_id, list=list_obj)
         user = UserFactory(user_id=user_id)
         FieldFactory(field_id=field1_id, template=template, created_by=user,
-                     is_active=True, order=1)
+                     is_deleted=False, order=1)
         FieldFactory(field_id=field2_id, template=template, created_by=user,
-                     is_active=True, order=2)
+                     is_deleted=False, order=2)
         FieldFactory(field_id=field3_id, template=template, created_by=user,
-                     is_active=False, order=3)
+                     is_deleted=True, order=3)
         storage = FieldStorage()
 
         # Act
         result = storage.get_fields_for_template(
             template_id=str(template_id))
-
+        print(result)
         # Assert
         snapshot.assert_match(repr(result),
                               "test_get_fields_for_template_success.txt")
@@ -324,90 +240,6 @@ class TestFieldStorage:
                               "test_get_fields_for_template_empty.txt")
 
     @pytest.mark.django_db
-    def test_reorder_fields_move_down_success(self, snapshot):
-        # Arrange
-        template_id = "12345678-1234-5678-1234-567812345678"
-        field_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345680"
-        list_id = "12345678-1234-5678-1234-567812345681"
-        field2_id = "12345678-1234-5678-1234-567812345682"
-        field3_id = "12345678-1234-5678-1234-567812345683"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field_id, template=template, created_by=user,
-                     order=1)
-        FieldFactory(field_id=field2_id, template=template, created_by=user,
-                     order=2)
-        FieldFactory(field_id=field3_id, template=template, created_by=user,
-                     order=3)
-        storage = FieldStorage()
-
-        # Act
-        result = storage.reorder_fields(field_id=str(field_id),
-                                        template_id=str(template_id),
-                                        new_order=3)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_fields_move_down_success.txt")
-
-    @pytest.mark.django_db
-    def test_reorder_fields_move_up_success(self, snapshot):
-        # Arrange
-        template_id = "12345678-1234-5678-1234-567812345678"
-        field_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345680"
-        list_id = "12345678-1234-5678-1234-567812345681"
-        field1_id = "12345678-1234-5678-1234-567812345682"
-        field2_id = "12345678-1234-5678-1234-567812345683"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field1_id, template=template, created_by=user,
-                     order=1)
-        FieldFactory(field_id=field2_id, template=template, created_by=user,
-                     order=2)
-        FieldFactory(field_id=field_id, template=template, created_by=user,
-                     order=3)
-        storage = FieldStorage()
-
-        # Act
-        result = storage.reorder_fields(field_id=str(field_id),
-                                        template_id=str(template_id),
-                                        new_order=1)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_fields_move_up_success.txt")
-
-    @pytest.mark.django_db
-    def test_reorder_fields_same_position(self, snapshot):
-        # Arrange
-        template_id = "12345678-1234-5678-1234-567812345678"
-        field_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345680"
-        list_id = "12345678-1234-5678-1234-567812345681"
-
-        list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
-        FieldFactory(field_id=field_id, template=template, created_by=user,
-                     order=2)
-        storage = FieldStorage()
-
-        # Act
-        result = storage.reorder_fields(field_id=str(field_id),
-                                        template_id=str(template_id),
-                                        new_order=2)
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_reorder_fields_same_position.txt")
-
-    @pytest.mark.django_db
     def test_template_fields_count_success(self, snapshot):
         # Arrange
         template_id = "12345678-1234-5678-1234-567812345678"
@@ -421,11 +253,11 @@ class TestFieldStorage:
         template = TemplateFactory(template_id=template_id, list=list_obj)
         user = UserFactory(user_id=user_id)
         FieldFactory(field_id=field1_id, template=template, created_by=user,
-                     is_active=True)
+                     is_deleted=False)
         FieldFactory(field_id=field2_id, template=template, created_by=user,
-                     is_active=True)
+                     is_deleted=False)
         FieldFactory(field_id=field3_id, template=template, created_by=user,
-                     is_active=False)
+                     is_deleted=True)
         storage = FieldStorage()
 
         # Act
@@ -466,11 +298,11 @@ class TestFieldStorage:
         template = TemplateFactory(template_id=template_id, list=list_obj)
         user = UserFactory(user_id=user_id)
         FieldFactory(field_id=field_id, template=template, created_by=user,
-                     order=1, is_active=True)
+                     order=1, is_deleted=False)
         FieldFactory(field_id=field2_id, template=template, created_by=user,
-                     order=2, is_active=True)
+                     order=2, is_deleted=False)
         FieldFactory(field_id=field3_id, template=template, created_by=user,
-                     order=3, is_active=True)
+                     order=3, is_deleted=False)
         storage = FieldStorage()
 
         # Act

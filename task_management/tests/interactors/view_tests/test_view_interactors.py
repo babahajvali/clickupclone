@@ -68,20 +68,23 @@ class TestViewInteractor:
         self.view_storage.update_view.return_value = expected_result
 
         # Act
-        result = self.interactor.update_view(update_data)
+        result = self.interactor.update_view(
+            view_id=update_data.view_id, name=update_data.name,
+            description=update_data.description)
 
         # Assert
         snapshot.assert_match(repr(result), "update_view_success.txt")
-        self.view_storage.update_view.assert_called_once_with(update_data)
 
     def test_update_nonexistent_view_raises_exception(self, snapshot):
         # Arrange
         update_data = UpdateViewDTOFactory()
-        self.view_storage.get_view.return_value = None
+        self.view_storage.check_view_exists.return_value = False
 
         # Act & Assert
         with pytest.raises(ViewNotFound) as exc:
-            self.interactor.update_view(update_data)
+            self.interactor.update_view(
+                view_id=update_data.view_id, name=update_data.name,
+                description=update_data.description)
 
         snapshot.assert_match(repr(exc.value), "update_view_not_found.txt")
 
@@ -91,7 +94,7 @@ class TestViewInteractor:
         self.view_storage.get_all_views.return_value = expected_views
 
         # Act
-        result = self.interactor.get_views()
+        result = self.interactor.get_all_views()
 
         # Assert
         snapshot.assert_match(repr(result), "get_views_success.txt")

@@ -14,18 +14,18 @@ from task_management.exceptions.custom_exceptions import (
     InvalidFieldConfig,
 )
 from task_management.exceptions.enums import FieldType, Role
-from task_management.interactors.fields.field_interactor import (
-    FieldInteractor
+from task_management.interactors.fields.field_interactor import FieldInteractor
+from task_management.interactors.dtos import (
+    CreateFieldDTO,
+    FieldDTO,
+    WorkspaceMemberDTO,
 )
-from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    WorkspaceMemberDTO
-from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface
+from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import (
-    FieldStorageInterface
+    FieldStorageInterface,
 )
 from task_management.interactors.storage_interfaces.template_storage_interface import (
-    TemplateStorageInterface
+    TemplateStorageInterface,
 )
 
 
@@ -54,45 +54,49 @@ class TestCreateFieldInteractor:
             description="Task priority",
             template_id="tpl_1",
             field_name="Priority",
-            is_delete=True,
+            is_deleted=True,
             order=1,
             config={"max_length": 10},
             is_required=True,
             created_by="user_1",
         )
 
-    def _get_interactor(
+    def setup_method(self):
+        self.field_storage = create_autospec(FieldStorageInterface)
+        self.template_storage = create_autospec(TemplateStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+
+        self.interactor = FieldInteractor(
+            field_storage=self.field_storage,
+            template_storage=self.template_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_create_field_dependencies(
             self,
             *,
-            template_exists=True,
+            template_exists: bool = True,
             role: Role = Role.MEMBER,
-            name_exists=False,
+            name_exists: bool = False,
     ):
-        field_storage = create_autospec(FieldStorageInterface)
-        template_storage = create_autospec(TemplateStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
-
-        template_storage.validate_template_exists.return_value = template_exists
-        template_storage.get_workspace_id_from_template_id.return_value = (
+        self.template_storage.validate_template_exists.return_value = (
+            template_exists
+        )
+        self.template_storage.get_workspace_id_from_template_id.return_value = (
             "workspace_id1"
         )
 
-        workspace_storage.get_workspace_member.return_value = (
+        self.workspace_storage.get_workspace_member.return_value = (
             make_permission_dto(role)
         )
 
-        field_storage.is_field_name_exists.return_value = name_exists
-        field_storage.get_next_field_order_in_template.return_value = 1
-        field_storage.create_field.return_value = self._get_field_dto()
-
-        return FieldInteractor(
-            field_storage=field_storage,
-            template_storage=template_storage,
-            workspace_storage=workspace_storage
-        )
+        self.field_storage.is_field_name_exists.return_value = name_exists
+        self.field_storage.get_next_field_order_in_template.return_value = 1
+        self.field_storage.create_field.return_value = self._get_field_dto()
 
     def test_create_field_success(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -104,7 +108,8 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
-        result = interactor.create_field(dto)
+        # Act
+        result = self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(result),
@@ -112,7 +117,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_template_not_found(self, snapshot):
-        interactor = self._get_interactor(template_exists=False)
+        # Arrange
+        self._setup_create_field_dependencies(template_exists=False)
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -124,8 +130,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(TemplateNotFound) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.template_id),
@@ -134,7 +141,8 @@ class TestCreateFieldInteractor:
 
     # ❌ INVALID FIELD TYPE
     def test_create_field_invalid_field_type(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=InvalidFieldEnum.INVALID,
@@ -146,8 +154,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(UnsupportedFieldType) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_type),
@@ -155,9 +164,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_permission_denied(self, snapshot):
-        interactor = self._get_interactor(
-            role=Role.GUEST
-        )
+        # Arrange
+        self._setup_create_field_dependencies(role=Role.GUEST)
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -169,8 +177,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(ModificationNotAllowed) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.user_id),
@@ -178,7 +187,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_duplicate_name(self, snapshot):
-        interactor = self._get_interactor(name_exists=True)
+        # Arrange
+        self._setup_create_field_dependencies(name_exists=True)
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -190,8 +200,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(FieldNameAlreadyExists) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_name),
@@ -199,7 +210,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_empty_name(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -211,8 +223,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(EmptyName) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.name),
@@ -220,7 +233,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_missing_config_for_dropdown(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=FieldType.DROPDOWN,
@@ -232,8 +246,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(MissingFieldConfig) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_type),
@@ -241,7 +256,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_dropdown_options_missing(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=FieldType.DROPDOWN,
@@ -253,8 +269,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(DropdownOptionsMissing) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.field_type),
@@ -262,7 +279,8 @@ class TestCreateFieldInteractor:
         )
 
     def test_create_field_invalid_config_keys(self, snapshot):
-        interactor = self._get_interactor()
+        # Arrange
+        self._setup_create_field_dependencies()
 
         dto = CreateFieldDTO(
             field_type=FieldType.TEXT,
@@ -274,8 +292,9 @@ class TestCreateFieldInteractor:
             created_by_user_id="user_1",
         )
 
+        # Act
         with pytest.raises(InvalidFieldConfig) as exc:
-            interactor.create_field(dto)
+            self.interactor.create_field(dto)
 
         snapshot.assert_match(
             repr(exc.value.invalid_keys),

@@ -43,62 +43,77 @@ class TestRemoveList:
             folder_id=None,
         )
 
-    def _get_interactor(self, *, role: Role = Role.MEMBER, list_data=None):
-        list_storage = create_autospec(ListStorageInterface)
-        folder_storage = create_autospec(FolderStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def setup_method(self):
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
+        self.interactor = ListInteractor(
+            list_storage=self.list_storage,
+            folder_storage=self.folder_storage,
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_remove_list_dependencies(
+            self, *, role: Role = Role.MEMBER, list_data=None
+    ):
         if list_data is None:
             list_data = self._get_list_dto()
 
-        list_storage.get_list.return_value = list_data
-        list_storage.get_list_space_id.return_value = "space_1"
-        list_storage.delete_list.return_value = list_data
+        self.list_storage.get_list.return_value = list_data
+        self.list_storage.get_list_space_id.return_value = "space_1"
+        self.list_storage.delete_list.return_value = list_data
 
-        space_storage.get_space_workspace_id.return_value = "workspace_id1"
-        workspace_storage.get_workspace_member.return_value = make_permission(
+        self.space_storage.get_space_workspace_id.return_value = "workspace_id1"
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
             role
         )
 
-        return ListInteractor(
-            list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage,
-        )
+    def test_remove_list_success(self, snapshot):
+        # Arrange
+        self._setup_remove_list_dependencies()
 
-    def test_remove_list_success(self):
-        interactor = self._get_interactor()
+        # Act
+        result = self.interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        result = interactor.delete_list(list_id="list_1", user_id="user_id")
+        # Assert
+        snapshot.assert_match(repr(result), "remove_list_success.json")
+        self.list_storage.delete_list.assert_called_once_with(list_id="list_1")
 
-        assert result.list_id == "list_1"
-        interactor.list_storage.delete_list.assert_called_once_with(list_id="list_1")
+    def test_remove_list_not_found(self, snapshot):
+        # Arrange
+        self._setup_remove_list_dependencies(list_data=None)
+        self.list_storage.get_list.return_value = None
 
-    def test_remove_list_not_found(self):
-        interactor = self._get_interactor(list_data=None)
-        interactor.list_storage.get_list.return_value = None
-
+        # Act
         with pytest.raises(ListNotFound) as exc:
-            interactor.delete_list(list_id="list_1", user_id="user_id")
+            self.interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        assert exc.value.list_id == "list_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
-    def test_remove_list_inactive(self):
+    def test_remove_list_inactive(self, snapshot):
+        # Arrange
         list_data = self._get_list_dto()
         list_data.is_deleted = True
-        interactor = self._get_interactor(list_data=list_data)
+        self._setup_remove_list_dependencies(list_data=list_data)
 
+        # Act
         with pytest.raises(ListDeletedException) as exc:
-            interactor.delete_list(list_id="list_1", user_id="user_id")
+            self.interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        assert exc.value.list_id == "list_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
 
-    def test_remove_list_permission_denied(self):
-        interactor = self._get_interactor(role=Role.GUEST)
+    def test_remove_list_permission_denied(self, snapshot):
+        # Arrange
+        self._setup_remove_list_dependencies(role=Role.GUEST)
 
+        # Act
         with pytest.raises(ModificationNotAllowed) as exc:
-            interactor.delete_list(list_id="list_1", user_id="user_id")
+            self.interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        assert exc.value.user_id == "user_id"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "permission_denied.txt")

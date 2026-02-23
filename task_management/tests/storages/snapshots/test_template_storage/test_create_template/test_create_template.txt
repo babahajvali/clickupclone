@@ -1,0 +1,1 @@
+TemplateDTO(template_id=UUID('b9a04c52-6370-497a-8d21-819154fd05e8'), name='Bug Template', list_id=UUID('12345678-1234-5678-1234-567812345682'), description='Bug tasks templates', created_by=UUID('12345678-1234-5678-1234-567812345678'))

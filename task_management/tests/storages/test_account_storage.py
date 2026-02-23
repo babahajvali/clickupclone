@@ -51,7 +51,7 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.validate_account_name_exists(name=name)
+        result = storage.is_account_name_exists(account_name=name, account_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -64,14 +64,14 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.validate_account_name_exists(name=name)
+        result = storage.is_account_name_exists(account_name=name, account_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
                               "test_validate_account_name_exists_failure.txt")
 
     @pytest.mark.django_db
-    def test_create_account_success(self):  # No snapshot, no mock
+    def test_create_account_success(self, snapshot):
         # Arrange
         owner_id = "12345678-1234-5678-1234-567812345678"
         owner = UserFactory(user_id=owner_id)
@@ -85,10 +85,8 @@ class TestAccountStorage:
         result = storage.create_account(name=name, description=description,
                                         created_by=owner_id)
 
-        # Assert - Test what matters
-        assert result.name == "New Account"
-        assert result.description == "New accounts description"
-        assert str(result.owner_id) == owner_id
+        # Assert
+        snapshot.assert_match(repr(result), "test_create_account_success.txt")
 
     @pytest.mark.django_db
     def test_delete_account_success(self, snapshot):

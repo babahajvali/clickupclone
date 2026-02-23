@@ -1,7 +1,10 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.custom_exceptions import ListDeletedException, ListNotFound
+from task_management.exceptions.custom_exceptions import (
+    ListDeletedException,
+    ListNotFound,
+)
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.lists.list_interactor import ListInteractor
 from task_management.interactors.storage_interfaces import (
@@ -27,47 +30,57 @@ class TestGetActiveList:
             folder_id=None,
         )
 
-    def _get_interactor(self, *, list_data=None):
-        list_storage = create_autospec(ListStorageInterface)
-        folder_storage = create_autospec(FolderStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
-        workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def setup_method(self):
+        self.list_storage = create_autospec(ListStorageInterface)
+        self.folder_storage = create_autospec(FolderStorageInterface)
+        self.space_storage = create_autospec(SpaceStorageInterface)
+        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
+        self.interactor = ListInteractor(
+            list_storage=self.list_storage,
+            folder_storage=self.folder_storage,
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage,
+        )
+
+    def _setup_get_list_dependencies(self, *, list_data=None):
         if list_data is None:
             list_data = self._get_list_dto()
 
-        list_storage.get_list.return_value = list_data
+        self.list_storage.get_list.return_value = list_data
 
-        return ListInteractor(
-            list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage,
-        )
+    def test_get_active_list_success(self, snapshot):
+        # Arrange
+        self._setup_get_list_dependencies()
 
-    def test_get_active_list_success(self):
-        interactor = self._get_interactor()
+        # Act
+        result = self.interactor.get_list(list_id="list_1")
 
-        result = interactor.get_list(list_id="list_1")
+        # Assert
+        snapshot.assert_match(repr(result), "test_get_active_list_success.txt")
+        self.list_storage.get_list.assert_called_with(list_id="list_1")
 
-        assert result.list_id == "list_1"
-        interactor.list_storage.get_list.assert_called_with(list_id="list_1")
+    def test_get_active_list_not_found(self, snapshot):
+        # Arrange
+        self._setup_get_list_dependencies(list_data=None)
+        self.list_storage.get_list.return_value = None
 
-    def test_get_active_list_not_found(self):
-        interactor = self._get_interactor(list_data=None)
-        interactor.list_storage.get_list.return_value = None
-
+        # Act
         with pytest.raises(ListNotFound) as exc:
-            interactor.get_list(list_id="list_1")
+            self.interactor.get_list(list_id="list_1")
 
-        assert exc.value.list_id == "list_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "test_get_active_list_not_found.txt")
 
-    def test_get_active_list_inactive(self):
+    def test_get_active_list_inactive(self, snapshot):
+        # Arrange
         list_data = self._get_list_dto()
         list_data.is_deleted = True
-        interactor = self._get_interactor(list_data=list_data)
+        self._setup_get_list_dependencies(list_data=list_data)
 
+        # Act
         with pytest.raises(ListDeletedException) as exc:
-            interactor.get_list(list_id="list_1")
+            self.interactor.get_list(list_id="list_1")
 
-        assert exc.value.list_id == "list_1"
+        # Assert
+        snapshot.assert_match(repr(exc.value), "test_get_active_list_inactive.txt")

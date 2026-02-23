@@ -76,12 +76,10 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data,order= 1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
-        assert result.name == create_list_data.name
-        assert result.description == create_list_data.description
+        snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
 
     @pytest.mark.django_db
     def test_create_list_without_folder_success(self, snapshot):
@@ -101,13 +99,10 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
-        assert result.folder_id == create_list_data.folder_id
-        assert result.name == create_list_data.name
-        assert result.description == create_list_data.description
+        snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
 
     @pytest.mark.django_db
     def test_create_list_with_existing_lists_in_folder(self, snapshot):
@@ -131,11 +126,10 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(list_data=create_list_data)
+        result = storage.create_list(list_data=create_list_data, order=1)
 
         # Assert
-        # snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
-        assert result.name == create_list_data.name
+        snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
 
     @pytest.mark.django_db
     def test_update_list_success(self, snapshot):
@@ -158,8 +152,7 @@ class TestListStorage:
 
         # Act
         result = storage.update_list(
-            list_id=list_id, field_properties={"name": name,
-                                                      "description": description})
+            list_id=list_id, name=name, description=description)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_list_success.txt")
@@ -177,16 +170,16 @@ class TestListStorage:
         user = UserFactory(user_id=user_id)
         ListFactory(list_id="12345678-1234-5678-1234-567812345681",
                     space=space, folder=folder1, created_by=user,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345682",
                     space=space, folder=folder1, created_by=user,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345683",
                     space=space, folder=folder2, created_by=user,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345684",
                     space=space, folder=folder1, created_by=user,
-                    is_active=False)
+                    is_deleted=True)
         folder_ids = [str(folder_id_1), str(folder_id_2)]
         storage = ListStorage()
 
@@ -222,14 +215,14 @@ class TestListStorage:
         space2 = SpaceFactory(space_id=space_id_2)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id="12345678-1234-5678-1234-567812345681",
-                    space=space1, folder=None, created_by=user, is_active=True)
+                    space=space1, folder=None, created_by=user, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345682",
-                    space=space1, folder=None, created_by=user, is_active=True)
+                    space=space1, folder=None, created_by=user, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345683",
-                    space=space2, folder=None, created_by=user, is_active=True)
+                    space=space2, folder=None, created_by=user, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345684",
                     space=space1, folder=None, created_by=user,
-                    is_active=False)
+                    is_deleted=True)
         space_ids = [str(space_id_1), str(space_id_2)]
         storage = ListStorage()
 
@@ -264,11 +257,11 @@ class TestListStorage:
         folder = FolderFactory(folder_id=folder_id, space=space)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user, order=1, is_active=True)
+                    created_by=user, order=1, is_deleted=False)
         ListFactory(space=space, folder=folder, created_by=user, order=2,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(space=space, folder=folder, created_by=user, order=3,
-                    is_active=True)
+                    is_deleted=False)
         storage = ListStorage()
 
         # Act
@@ -287,11 +280,11 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id=list_id, space=space, folder=None, created_by=user,
-                    order=1, is_active=True)
+                    order=1, is_deleted=False)
         ListFactory(space=space, folder=None, created_by=user, order=2,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(space=space, folder=None, created_by=user, order=3,
-                    is_active=True)
+                    is_deleted=False)
         storage = ListStorage()
 
         # Act
@@ -301,29 +294,9 @@ class TestListStorage:
         snapshot.assert_match(repr(result),
                               "test_remove_list_without_folder_success.txt")
 
-    @pytest.mark.django_db
-    def test_make_list_private_success(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        folder_id = "12345678-1234-5678-1234-567812345679"
-        space_id = "12345678-1234-5678-1234-567812345679"
-        user_id = "12345678-1234-5678-1234-567812345681"
-        space = SpaceFactory(space_id=space_id)
-        folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, created_by=user,
-                    is_private=False, folder=folder)
-        storage = ListStorage()
-
-        # Act
-        result = storage.make_list_private(list_id=str(list_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_make_list_private_success.txt")
 
     @pytest.mark.django_db
-    def test_make_list_public_success(self, snapshot):
+    def test_update_list_public_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         folder_id = "12345678-1234-5678-1234-567812345679"
@@ -337,7 +310,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.update_list_visibility(list_id=str(list_id))
+        result = storage.update_list_visibility(list_id=str(list_id), visibility="PRIVATE")
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -487,11 +460,11 @@ class TestListStorage:
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
         ListFactory(space=space, folder=folder, created_by=user,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(space=space, folder=folder, created_by=user,
-                    is_active=True)
+                    is_deleted=False)
         ListFactory(space=space, folder=folder, created_by=user,
-                    is_active=False)
+                    is_deleted=True)
         storage = ListStorage()
 
         # Act
@@ -524,9 +497,9 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(space=space, folder=None, created_by=user, is_active=True)
-        ListFactory(space=space, folder=None, created_by=user, is_active=True)
-        ListFactory(space=space, folder=None, created_by=user, is_active=False)
+        ListFactory(space=space, folder=None, created_by=user, is_deleted=False)
+        ListFactory(space=space, folder=None, created_by=user, is_deleted=False)
+        ListFactory(space=space, folder=None, created_by=user, is_deleted=True)
         storage = ListStorage()
 
         # Act

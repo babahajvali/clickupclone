@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
     AddMemberToWorkspaceDTO, WorkspaceMemberDTO
@@ -16,8 +17,9 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_workspace(self, workspace_id: str,
-                         field_properties: dict) -> WorkspaceDTO:
+    def update_workspace(
+            self, workspace_id: str, name: Optional[str],
+            description: Optional[str]) -> WorkspaceDTO:
         pass
 
     @abstractmethod

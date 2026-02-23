@@ -48,11 +48,10 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
 
-        self._validate_template_name_not_empty(
-            template_name=template_data.name)
+        self._check_template_name_not_empty(template_name=template_data.name)
         self.check_list_is_active(list_id=template_data.list_id)
-        self._validate_user_access_for_list(list_id=template_data.list_id,
-                                            user_id=template_data.created_by)
+        self._check_user_has_edit_access_for_list(
+            list_id=template_data.list_id, user_id=template_data.created_by)
 
         result = self.template_storage.create_template(template_data)
 
@@ -65,28 +64,16 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
         self.check_template_exists(template_id=template_id)
         template_data = self.template_storage.get_template_by_id(
             template_id=template_id)
-        self._validate_user_access_for_list(list_id=template_data.list_id,
-                                            user_id=user_id)
+        self._check_user_has_edit_access_for_list(list_id=template_data.list_id,
+                                                  user_id=user_id)
 
-        is_name_provided = name is not None
-        is_description_provided = description is not None
-
-        field_properties_to_update = {}
-
-        if is_name_provided:
-            self._validate_template_name_not_empty(template_name=name)
-            field_properties_to_update["name"] = name
-
-        if is_description_provided:
-            field_properties_to_update["description"] = description
-
-        if not field_properties_to_update:
-            raise NothingToUpdateTemplate(template_id=template_id)
+        self._check_template_update_field_properties(
+            template_id=template_id, name=name, description=description)
 
         return self.template_storage.update_template(
-            template_id=template_id, field_properties=field_properties_to_update)
+            template_id=template_id, name=name, description=description)
 
-    def _validate_user_access_for_list(self, list_id: str, user_id: str):
+    def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
@@ -94,7 +81,25 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
-    def _validate_template_name_not_empty(template_name: str):
+    def _check_template_name_not_empty(template_name: str):
         is_name_empty = not template_name or not template_name.strip()
         if is_name_empty:
             raise EmptyName(name=template_name)
+
+    def _check_template_update_field_properties(
+           self, template_id: str, name: Optional[str],
+            description: Optional[str]):
+
+        field_properties_to_update = {}
+
+        is_name_provided = name is not None
+        if is_name_provided:
+            self._check_template_name_not_empty(template_name=name)
+            field_properties_to_update["name"] = name
+
+        is_description_provided = description is not None
+        if is_description_provided:
+            field_properties_to_update["description"] = description
+
+        if not field_properties_to_update:
+            raise NothingToUpdateTemplate(template_id=template_id)
