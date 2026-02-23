@@ -18,6 +18,6 @@ class FieldValidationMixin:
         if is_field_not_found:
             raise FieldNotFound(field_id=field_id)
 
-        is_field_inactive = not field_data.is_active
-        if is_field_inactive:
+        is_field_deleted = field_data.is_delete
+        if is_field_deleted:
             raise InactiveField(field_id=field_id)

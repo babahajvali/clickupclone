@@ -28,7 +28,7 @@ def get_list_task_assignees_resolver(root,info, params):
             assign_id=each.assign_id,
             user_id=each.user_id,
             task_id=each.task_id,
-            is_active=each.is_active,
+            is_active=each.is_delete,
             assigned_by=each.assigned_by
         ) for each in assignees_data]
 

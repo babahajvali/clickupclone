@@ -40,7 +40,7 @@ class DeleteAccountMutation(graphene.Mutation):
                 name=result.name,
                 description=result.description,
                 owner_id=result.owner_id,
-                is_active=result.is_active,
+                is_active=result.is_delete,
             )
 
         except custom_exceptions.AccountNotFound as e:

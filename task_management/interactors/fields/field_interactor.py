@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from task_management.exceptions.custom_exceptions import \
     NothingToUpdateField
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
@@ -9,8 +11,8 @@ from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.fields.validators.field_validator import \
     FieldValidator
-from task_management.interactors.fields.validators.field_config_validator import \
-    FieldConfigValidator
+from task_management.interactors.fields.validators.field_config_validator \
+    import FieldConfigValidator
 from task_management.mixins import TemplateValidationMixin, \
     WorkspaceValidationMixin, FieldValidationMixin
 
@@ -18,11 +20,11 @@ from task_management.mixins import TemplateValidationMixin, \
 class FieldInteractor:
     """Field Management Business Logic Interactor.
     
-    Handles all fields-related operations including creation, updating, deletion,
-    reordering, and retrieval of fields within templates. This interactor
-    enforces business rules and validates user permissions before performing
-    any fields operations.
-    
+    Handles all fields-related operations including creation, updating,
+     deletion, reordering, and retrieval of fields within templates.
+    This interactor enforces business rules and validates user permissions
+     before performing any fields operations.
+
     Key Responsibilities:
         - Create new fields with validation
         - Update existing fields properties
@@ -38,8 +40,10 @@ class FieldInteractor:
 
     Attributes:
         field_storage (FieldStorageInterface): Storage for fields operations
-        template_storage (TemplateStorageInterface): Storage for templates operations
-        workspace_storage (WorkspaceStorageInterface): validate the user permissions
+        template_storage (TemplateStorageInterface): Storage for template
+         operations
+        workspace_storage (WorkspaceStorageInterface): validate the user
+         permissions
     """
 
     def __init__(self, field_storage: FieldStorageInterface,
@@ -73,16 +77,17 @@ class FieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
 
-        self._create_field_input_validation(field_data=field_data)
         self.template_mixin.check_template_exists(
             template_id=field_data.template_id)
-        self.field_validator.check_field_name_not_exist_in_template(
-            field_name=field_data.field_name,
-            template_id=field_data.template_id
-        )
         self.check_user_has_edit_access_to_template(
             template_id=field_data.template_id,
             user_id=field_data.created_by_user_id
+        )
+        self._create_field_input_validation(field_data=field_data)
+        self.field_validator.check_field_name_not_exist_in_template(
+            field_name=field_data.field_name,
+            template_id=field_data.template_id,
+            field_id=None
         )
 
         last_field_order_in_template = (
@@ -100,7 +105,7 @@ class FieldInteractor:
             field_id=update_field_data.field_id)
         field_data = self.field_storage.get_field_by_id(
             field_id=update_field_data.field_id)
-        self._update_field_properties_validation(
+        self._check_update_field_properties(
             update_field_data=update_field_data, field_data=field_data
         )
         self.check_user_has_edit_access_to_template(
@@ -111,19 +116,30 @@ class FieldInteractor:
             field_id=update_field_data.field_id,
             update_field_data=update_field_data)
 
+    @transaction.atomic
     @invalidate_interactor_cache(cache_name="fields")
     def reorder_field(self, field_id: str, template_id: str, new_order: int,
                       user_id: str) -> FieldDTO:
 
         self.template_mixin.check_template_exists(template_id=template_id)
         self.field_mixin.check_field_is_active(field_id=field_id)
+        self.check_user_has_edit_access_to_template(
+            template_id=template_id, user_id=user_id)
         self.field_validator.check_field_order(
             template_id=template_id, order=new_order)
-        self.check_user_has_edit_access_to_template(template_id=template_id,
-                                                    user_id=user_id)
 
-        return self.field_storage.reorder_fields(
-            field_id=field_id, template_id=template_id, new_order=new_order)
+        field_dto = self.field_storage.get_field_by_id(field_id=field_id)
+        old_order = field_dto.order
+
+        if old_order == new_order:
+            return field_dto
+
+        self.field_validator.reorder_field_positions(
+            template_id=template_id, new_order=new_order, old_order=old_order
+        )
+
+        return self.field_storage.update_field_order(
+            field_id=field_id, new_order=new_order)
 
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
@@ -142,10 +158,10 @@ class FieldInteractor:
 
         self.template_mixin.check_template_exists(template_id=template_id)
 
-        return self.field_storage.get_active_fields_for_template(
+        return self.field_storage.get_fields_for_template(
             template_id=template_id)
 
-    def get_active_field(self, field_id: str) -> FieldDTO:
+    def get_field(self, field_id: str) -> FieldDTO:
 
         self.field_mixin.check_field_is_active(field_id=field_id)
 
@@ -171,17 +187,18 @@ class FieldInteractor:
         self.field_config_validator.check_config(
             config=field_data.config, field_type=field_data.field_type)
 
-    def _update_field_properties_validation(
+    def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
 
-        if not self._is_fields_not_empty(update_field_data=update_field_data):
+        if not self.field_validator.is_field_properties_not_empty(
+                update_field_data=update_field_data):
             raise NothingToUpdateField(field_id=field_data.field_id)
 
         is_field_name_provided = update_field_data.field_name is not None
         if is_field_name_provided:
             self.field_validator.check_field_name_not_empty(
                 field_name=update_field_data.field_name)
-            self.field_validator.check_field_name_in_db_except_current_field(
+            self.field_validator.check_field_name_not_exist_in_template(
                 field_id=update_field_data.field_id,
                 field_name=update_field_data.field_name,
                 template_id=field_data.template_id)
@@ -191,11 +208,3 @@ class FieldInteractor:
             self.field_config_validator.check_config(
                 field_type=field_data.field_type,
                 config=update_field_data.config)
-
-    @staticmethod
-    def _is_fields_not_empty(update_field_data: UpdateFieldDTO) -> bool:
-        return any([
-            update_field_data.field_name is not None,
-            update_field_data.config is not None,
-            update_field_data.description is not None,
-            update_field_data.is_required is not None])

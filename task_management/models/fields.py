@@ -9,7 +9,7 @@ class Field(models.Model):
     field_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                                 editable=False)
     field_name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
     field_type = models.CharField(max_length=50,
                                   choices=FieldType.get_list_of_tuples())
@@ -32,10 +32,8 @@ class Field(models.Model):
 
     class Meta:
         ordering = ['order']
-        unique_together = ('template', 'field_name')
         indexes = [
-            models.Index(fields=['template', 'is_active']),
-        ]
+            models.Index(fields=['template', 'is_active']), ]
 
     def __str__(self):
         return self.field_name
@@ -64,8 +62,7 @@ class FieldValue(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['task']),
-        ]
+            models.Index(fields=['task'])]
 
     def __str__(self):
         return self.field.field_name

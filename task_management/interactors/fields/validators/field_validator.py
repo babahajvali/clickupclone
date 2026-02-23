@@ -1,7 +1,10 @@
+from typing import Optional
+
 from task_management.exceptions.custom_exceptions import \
     FieldNameAlreadyExists, InvalidOrder, EmptyName, \
     UnsupportedFieldType, FieldNotFound, InactiveField
 from task_management.exceptions.enums import FieldType
+from task_management.interactors.dtos import UpdateFieldDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
 
@@ -20,19 +23,9 @@ class FieldValidator:
         if is_field_not_found:
             raise FieldNotFound(field_id=field_id)
 
-        is_field_inactive = not field_data.is_active
-        if is_field_inactive:
+        is_field_deleted = field_data.is_delete
+        if is_field_deleted:
             raise InactiveField(field_id=field_id)
-
-    def check_field_name_in_db_except_current_field(
-            self, field_id: str, field_name: str, template_id: str):
-
-        is_name_exists = self.field_storage.is_field_name_exists(
-            field_name=field_name, template_id=template_id,
-            exclude_field_id=field_id)
-
-        if is_name_exists:
-            raise FieldNameAlreadyExists(field_name=field_name)
 
     def check_field_order(self, template_id: str, order: int):
 
@@ -46,11 +39,11 @@ class FieldValidator:
             raise InvalidOrder(order=order)
 
     def check_field_name_not_exist_in_template(
-            self, field_name: str, template_id: str):
+            self, field_name: str, template_id: str, field_id: Optional[str]):
 
         is_exists = self.field_storage.is_field_name_exists(
             field_name=field_name, template_id=template_id,
-            exclude_field_id=None)
+            exclude_field_id=field_id)
 
         if is_exists:
             raise FieldNameAlreadyExists(field_name=field_name)
@@ -70,3 +63,26 @@ class FieldValidator:
 
         if is_field_type_invalid:
             raise UnsupportedFieldType(field_type=field_type)
+
+    def reorder_field_positions(
+            self, template_id: str, new_order: int, old_order: int):
+
+        if new_order > old_order:
+            self.field_storage.shift_fields_down(
+                template_id=template_id,
+                old_order=old_order,
+                new_order=new_order)
+        else:
+            self.field_storage.shift_fields_up(
+                template_id=template_id,
+                new_order=new_order,
+                old_order=old_order)
+
+    @staticmethod
+    def is_field_properties_not_empty(update_field_data: UpdateFieldDTO) \
+            -> bool:
+        return any([
+            update_field_data.field_name is not None,
+            update_field_data.config is not None,
+            update_field_data.description is not None,
+            update_field_data.is_required is not None])

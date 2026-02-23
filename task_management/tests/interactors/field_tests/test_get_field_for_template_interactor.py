@@ -36,7 +36,7 @@ class TestGetFieldForTemplateInteractor:
 
         self.template_storage.validate_template_exists.return_value = True
 
-        self.field_storage.get_active_fields_for_template.return_value = expected_fields
+        self.field_storage.get_fields_for_template.return_value = expected_fields
 
         result = self.interactor.get_active_fields_for_template(template_id)
 

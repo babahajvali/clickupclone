@@ -98,7 +98,7 @@ class ResetPasswordMutation(graphene.Mutation):
                 username=result.username,
                 email=result.email,
                 phone_number=result.phone_number,
-                is_active=result.is_active,
+                is_active=result.is_delete,
                 image_url=result.image_url
             )
 

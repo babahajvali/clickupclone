@@ -18,7 +18,6 @@ class DropdownField:
                 field_type=FieldType.DROPDOWN.value,
                 invalid_keys=list(invalid_keys))
 
-
         options = config.get(FieldConfig.OPTIONS.value)
 
         is_options_empty = not options
@@ -38,7 +37,7 @@ class DropdownField:
                 message="Default value must be one of dropdown options")
 
     @staticmethod
-    def validate_dropdown_field(value: str, config: dict):
+    def check_dropdown_field_value(value: str, config: dict):
 
         options = config.get(FieldConfig.OPTIONS.value, [])
 

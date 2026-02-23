@@ -44,7 +44,7 @@ class Folder(models.Model):
         related_name='space_folder'
     )
     order = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",
@@ -80,7 +80,7 @@ class List(models.Model):
         related_name='folder_list'
     )
     order = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    is_delete = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         "User",

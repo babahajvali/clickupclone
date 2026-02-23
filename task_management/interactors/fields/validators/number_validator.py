@@ -3,12 +3,13 @@ from task_management.exceptions.custom_exceptions import \
     InvalidFieldConfig, InvalidFieldDefaultValue, \
     InvalidFieldValue
 from task_management.exceptions.enums import FieldConfig, FieldType
+from typing import Dict
 
 
 class NumberField:
 
     @staticmethod
-    def check_number_config(config: dict):
+    def check_number_config(config: Dict):
 
         allowed_keys = FIELD_TYPE_KEYS[FieldType.NUMBER.value][
             FieldConfig.CONFIG_KEYS.value]
@@ -49,7 +50,7 @@ class NumberField:
                 message=f"Default value {default_value} is greater than maximum {max_val}")
 
     @staticmethod
-    def validate_number_field(value, config: dict):
+    def check_number_field_value(value: str, config: Dict):
         try:
             numeric_value = float(value)
         except (ValueError, TypeError):
