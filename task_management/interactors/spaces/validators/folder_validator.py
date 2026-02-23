@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOrder, \
-    EmptyName, UnsupportedVisibilityType, NothingToUpdateFolderException
+    EmptyFolderName, UnsupportedVisibilityType, NothingToUpdateFolderException
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface
@@ -27,7 +27,7 @@ class FolderValidator:
         is_name_empty = name is None or not name.strip()
 
         if is_name_empty:
-            raise EmptyName(name=name)
+            raise EmptyFolderName(name=name)
 
     @staticmethod
     def check_visibility_type(visibility: str):

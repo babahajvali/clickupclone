@@ -84,11 +84,6 @@ class FieldInteractor:
             user_id=field_data.created_by_user_id
         )
         self._create_field_input_validation(field_data=field_data)
-        self.field_validator.check_field_name_not_exist_in_template(
-            field_name=field_data.field_name,
-            template_id=field_data.template_id,
-            field_id=None
-        )
 
         last_field_order_in_template = (
             self.field_storage.get_next_field_order_in_template(
@@ -103,6 +98,7 @@ class FieldInteractor:
 
         self.field_mixin.check_field_is_active(
             field_id=update_field_data.field_id)
+
         field_data = self.field_storage.get_field_by_id(
             field_id=update_field_data.field_id)
         self._check_update_field_properties(
@@ -185,6 +181,11 @@ class FieldInteractor:
             field_type=field_data.field_type.value)
         self.field_config_validator.check_config(
             config=field_data.config, field_type=field_data.field_type)
+        self.field_validator.check_field_name_not_exist_in_template(
+            field_name=field_data.field_name,
+            template_id=field_data.template_id,
+            field_id=None
+        )
 
     def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):

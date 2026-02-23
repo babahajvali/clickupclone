@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    FieldNameAlreadyExists, InvalidOrder, EmptyName, \
+    FieldNameAlreadyExists, InvalidOrder, EmptyFieldName, \
     UnsupportedFieldType, FieldNotFound, InactiveField
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import UpdateFieldDTO
@@ -54,7 +54,7 @@ class FieldValidator:
         is_name_empty = not field_name or not field_name.strip()
 
         if is_name_empty:
-            raise EmptyName(name=field_name)
+            raise EmptyFieldName(field_name=field_name)
 
     @staticmethod
     def check_field_type(field_type: str):

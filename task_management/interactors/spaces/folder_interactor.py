@@ -97,8 +97,8 @@ class FolderInteractor:
             space_id=space_id, old_order=old_order, new_order=order
         )
 
-        return self.folder_storage.update_folder_order(folder_id=folder_id,
-                                                       new_order=order)
+        return self.folder_storage.update_folder_order(
+            folder_id=folder_id, new_order=order)
 
     @invalidate_interactor_cache(cache_name="folders")
     def delete_folder(self, folder_id: str, user_id: str) -> FolderDTO:
@@ -124,7 +124,6 @@ class FolderInteractor:
 
         return self.folder_storage.update_folder_visibility(
             folder_id=folder_id, visibility=visibility.value)
-
 
     @interactor_cache(cache_name="folders", timeout=5 * 60)
     def get_space_folders(self, space_id: str) -> list[FolderDTO]:

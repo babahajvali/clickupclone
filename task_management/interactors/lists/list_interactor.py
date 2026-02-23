@@ -52,6 +52,9 @@ class ListInteractor:
 
         self.list_validator.check_list_name_not_empty(list_name=list_data.name)
         self.space_mixin.check_space_is_active(space_id=list_data.space_id)
+        self.check_user_has_edit_access_for_space(
+            space_id=list_data.space_id, user_id=list_data.created_by
+        )
         is_folder_provided = list_data.folder_id is not None
         if is_folder_provided:
             self.folder_mixin.check_folder_is_active(
@@ -59,10 +62,6 @@ class ListInteractor:
 
         order = self.list_validator.get_list_order(
             folder_id=list_data.folder_id, space_id=list_data.space_id
-        )
-
-        self.check_user_has_edit_access_for_space(
-            space_id=list_data.space_id, user_id=list_data.created_by
         )
 
         return self.list_storage.create_list(list_data=list_data, order=order)

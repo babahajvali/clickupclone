@@ -18,8 +18,8 @@ class SpaceValidationMixin:
         if is_space_not_found:
             raise SpaceNotFound(space_id=space_id)
 
-        is_space_not_delete = space_data.is_deleted
-        if is_space_not_delete:
+        is_space_delete = space_data.is_deleted
+        if is_space_delete:
             raise SpaceDeletedException(space_id=space_id)
 
     def check_space_exists(self, space_id: str):
