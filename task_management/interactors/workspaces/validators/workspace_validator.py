@@ -58,9 +58,9 @@ class WorkspaceValidator:
         workspaces_data = self.workspace_storage.get_workspaces(
             workspace_ids=workspace_ids)
 
-        existed_workspace_ids = [obj.workspace_id for obj in workspaces_data]
+        existed_workspace_ids = [str(obj.workspace_id) for obj in workspaces_data]
         invalid_workspace_ids = [workspace_id for workspace_id in workspace_ids
-                                 if workspace_id not in existed_workspace_ids]
+                                 if str(workspace_id) not in existed_workspace_ids]
 
         if invalid_workspace_ids:
             raise InvalidWorkspaceIdsFound(

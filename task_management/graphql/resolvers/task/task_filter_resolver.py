@@ -42,7 +42,7 @@ def task_filter_resolver(root, info, params):
                 list_id=task.list_id,
                 order=task.order,
                 created_by=task.created_by_user_id,
-                is_delete=task.is_deleted
+                is_deleted=task.is_deleted
             ) for task in tasks_data
         ]
 

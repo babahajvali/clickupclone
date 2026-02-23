@@ -82,5 +82,5 @@ class AccountOnboardingHandler:
         )
 
         return workspace_onboarding.handle_workspace(
-            workspace_id=account_id,
-            user_id=owner_id, name=name, description=None)
+            account_id=account_id, user_id=owner_id, name=name,
+            description=None)

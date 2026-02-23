@@ -1,1 +1,1 @@
-AccountDTO(account_id='85edeec8-163b-45dd-9e59-d345f2d5a52d', name='Ramirez, Baker and Gardner', description='Represent star letter.', owner_id='8c3e4685-4b89-490f-9fdd-85186b8c4005', is_active=True)
+AccountDTO(account_id='9ccf39c1-1b5e-4b58-b689-0b1600c13372', name='Dorsey-Christian', description='Official cost development six season century once truth.', owner_id='f4d7baf9-6051-434b-a1d6-0de95c337fe9', is_active=True)

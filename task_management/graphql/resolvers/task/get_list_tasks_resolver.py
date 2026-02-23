@@ -68,7 +68,7 @@ def get_list_tasks_resolver(root, info, params):
                 list_id=task.list_id,
                 order=task.order,
                 created_by=task.created_by,
-                is_delete=task.is_deleted,
+                is_deleted=task.is_deleted,
                 assignees=assignees_by_task.get(task.task_id, []),
                 field_values=field_values_by_task.get(str(task.task_id), [])
             )

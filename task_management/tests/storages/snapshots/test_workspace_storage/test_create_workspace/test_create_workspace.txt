@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id=UUID('0deee312-7c25-401b-92ca-d43effed34c5'), name='My Workspace', description='Workspace description', user_id=UUID('12345678-1234-5678-1234-567812345679'), account_id=UUID('12345678-1234-5678-1234-567812345680'), is_deleted=False)
+WorkspaceDTO(workspace_id=UUID('218a68fa-0e51-4e6f-8dce-f78a32815dc3'), name='My Workspace', description='Workspace description', user_id=UUID('12345678-1234-5678-1234-567812345679'), account_id=UUID('12345678-1234-5678-1234-567812345680'), is_deleted=False)

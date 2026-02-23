@@ -5,7 +5,8 @@ from django.db.models import F
 
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    UpdateFieldDTO, UpdateFieldValueDTO, TaskFieldValueDTO, CreateFieldValueDTO
+    UpdateFieldDTO, UpdateFieldValueDTO, TaskFieldValueDTO, \
+    CreateFieldValueDTO, TaskFieldValuesDTO, FieldValueDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
 
@@ -92,6 +93,36 @@ class FieldStorage(FieldStorageInterface):
             self._field_dto(field_data=field_data)
             for field_data in fields_data
         ]
+
+    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
+        TaskFieldValuesDTO]:
+        field_values = FieldValue.objects.filter(
+            task_id__in=task_ids
+        ).select_related('field', 'task')
+
+        task_values_map = {}
+        for fv in field_values:
+            if fv.value is None:
+                continue
+            task_id = str(fv.task.task_id)
+            if task_id not in task_values_map:
+                task_values_map[task_id] = []
+
+            task_values_map[str(task_id)].append(
+                FieldValueDTO(
+                    field_id=str(fv.field.field_id),
+                    value=fv.value
+                )
+            )
+        result = []
+        for task_id in task_ids:
+            result.append(
+                TaskFieldValuesDTO(
+                    task_id=str(task_id),
+                    values=task_values_map.get(str(task_id), [])
+                )
+            )
+        return result
 
     def shift_fields_down(self, template_id: str, old_order: int,
                           new_order: int):

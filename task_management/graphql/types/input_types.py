@@ -70,7 +70,7 @@ class TransferWorkspaceInputParams(graphene.InputObjectType):
 
 
 class GetWorkspaceInputParams(graphene.InputObjectType):
-    workspace_ids = graphene.String(required=True)
+    workspace_ids = graphene.List(graphene.String,required=True)
 
 
 class DeleteAccountInputParams(graphene.InputObjectType):

@@ -4,7 +4,7 @@ from django.db import transaction
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO, \
-    CreateWorkspaceDTO, WorkspaceDTO
+    CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
 from task_management.interactors.spaces.space_interactor import \
@@ -57,6 +57,16 @@ class WorkspaceHandler:
         )
         workspace_data = workspace_interactor.create_workspace(
             workspace_input_data)
+
+        workspace_member_input = AddMemberToWorkspaceDTO(
+            workspace_id=workspace_data.workspace_id,
+            user_id=user_id,
+            role=Role.ADMIN,
+            added_by=user_id
+        )
+
+        self.workspace_storage.add_member_to_workspace(
+            workspace_member_data=workspace_member_input)
 
         space_data = self._create_space(
             workspace_id=workspace_data.workspace_id, user_id=user_id)

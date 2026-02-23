@@ -28,10 +28,13 @@ class UserType(graphene.ObjectType):
 class WorkspaceType(graphene.ObjectType):
     workspace_id = graphene.String(required=True)
     name = graphene.String(required=True)
-    description = graphene.String(required=True)
+    description = graphene.String()
     user_id = graphene.String(required=True)
     account_id = graphene.String(required=True)
-    is_active = graphene.Boolean(required=True)
+    is_deleted = graphene.Boolean(required=True)
+
+class WorkspacesType(graphene.ObjectType):
+    workspaces = graphene.List(WorkspaceType)
 
 
 class WorkspaceMemberType(graphene.ObjectType):
@@ -53,7 +56,7 @@ class SpaceType(graphene.ObjectType):
     description = graphene.String(required=True)
     workspace_id = graphene.String(required=True)
     order = graphene.Int(required=True)
-    is_active = graphene.Boolean(required=True)
+    is_deleted = graphene.Boolean(required=True)
     is_private = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
@@ -68,7 +71,7 @@ class FolderType(graphene.ObjectType):
     description = graphene.String(required=True)
     space_id = graphene.String(required=True)
     order = graphene.Int(required=True)
-    is_active = graphene.Boolean(required=True)
+    is_deleted = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
     is_private = graphene.Boolean(required=True)
 
@@ -82,7 +85,7 @@ class ListType(graphene.ObjectType):
     name = graphene.String(required=True)
     description = graphene.String(required=True)
     space_id = graphene.String(required=True)
-    is_active = graphene.Boolean(required=True)
+    is_deleted = graphene.Boolean(required=True)
     order = graphene.Int(required=True)
     is_private = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
@@ -113,7 +116,7 @@ class TaskType(graphene.ObjectType):
     list_id = graphene.String(required=True)
     order = graphene.Int(required=True)
     created_by = graphene.String(required=True)
-    is_delete = graphene.Boolean(required=True)
+    is_deleted = graphene.Boolean(required=True)
     assignees = graphene.List(TaskAssigneeType)
     field_values = graphene.List(FieldValuesType)
 
@@ -140,7 +143,7 @@ class FieldType(graphene.ObjectType):
     description = graphene.String(required=True)
     template_id = graphene.String(required=True)
     field_name = graphene.String(required=True)
-    is_active = graphene.String(required=True)
+    is_deleted = graphene.String(required=True)
     order = graphene.Int(required=True)
     config = graphene.JSONString(required=True)
     is_required = graphene.Boolean(required=True)

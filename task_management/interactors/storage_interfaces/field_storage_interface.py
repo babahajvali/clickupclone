@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
-    UpdateFieldValueDTO, TaskFieldValueDTO, CreateFieldValueDTO, UpdateFieldDTO
+    UpdateFieldValueDTO, TaskFieldValueDTO, CreateFieldValueDTO, \
+    UpdateFieldDTO, TaskFieldValuesDTO
 
 
 class FieldStorageInterface(ABC):
@@ -32,14 +33,22 @@ class FieldStorageInterface(ABC):
     def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
         pass
 
+    @abstractmethod
+    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
+        TaskFieldValuesDTO]:
+        pass
+
+    @abstractmethod
     def shift_fields_up(self, template_id: str, new_order: int,
                         old_order: int):
         pass
 
+    @abstractmethod
     def shift_fields_down(self, template_id: str, old_order: int,
                           new_order: int):
         pass
 
+    @abstractmethod
     def update_field_order(self, field_id: str, new_order: int) -> FieldDTO:
         pass
 

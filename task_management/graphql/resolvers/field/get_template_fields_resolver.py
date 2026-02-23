@@ -35,7 +35,7 @@ def get_fields_for_template_resolver(root, info, params):
                 field_name=field.field_name,
                 order=field.order,
                 config=field.config,
-                is_active=field.is_deleted,
+                is_deleted=field.is_deleted,
                 is_required=field.is_required,
                 created_by=field.created_by
             ) for field in fields_data

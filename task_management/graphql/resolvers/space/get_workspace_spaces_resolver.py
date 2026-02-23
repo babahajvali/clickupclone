@@ -28,7 +28,7 @@ def get_workspace_spaces_resolver(root, info, params):
                 description=space.description,
                 workspace_id=space.workspace_id,
                 order=space.order,
-                is_active=space.is_deleted,
+                is_deleted=space.is_deleted,
                 is_private=space.is_private,
                 created_by=space.created_by
             ) for space in spaces_data

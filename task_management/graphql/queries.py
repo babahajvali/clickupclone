@@ -80,7 +80,7 @@ class GetUser(graphene.ObjectType):
 
 
 class GetWorkspace(graphene.ObjectType):
-    get_workspace = graphene.Field(
+    get_workspaces = graphene.Field(
         GetWorkspaceResponse,
         params=GetWorkspaceInputParams(required=True),
         resolver=get_workspace_resolver
