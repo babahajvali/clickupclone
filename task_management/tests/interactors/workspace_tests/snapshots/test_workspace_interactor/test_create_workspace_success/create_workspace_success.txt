@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='c43cf774-c30a-4ce7-9c44-120e28afa072', name='Brooks-Mcconnell', description='Human everybody training dream administration.', user_id='b9371b5e-2495-478f-a1b5-f43c543f93f5', account_id='8c48713e-9264-4afd-8c39-5b9f3159824d', is_active=True)

@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import create_autospec, Mock
+from unittest.mock import create_autospec
 
 from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
@@ -30,27 +30,25 @@ class TestAccountInteractor:
             user_storage=self.user_storage,
         )
 
-    def _mock_active_user(self):
+    @staticmethod
+    def _mock_active_user():
         return type("User", (), {"is_active": True})()
 
-    def _mock_account(self, owner_id, is_active=True):
+    @staticmethod
+    def _mock_account(owner_id, is_active=True):
         return type(
             "Account",
             (),
             {"owner_id": owner_id, "is_active": is_active}
         )()
 
-    # ------------------------------------------------------------------ #
-    #  create_account
-    # ------------------------------------------------------------------ #
-
     def test_create_account_success(self, snapshot):
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.account_storage.is_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
-        self.interactor._create_workspace = Mock()
 
         result = self.interactor.create_account(
             name="Sample Account", description="Sample Account description",
@@ -65,6 +63,7 @@ class TestAccountInteractor:
     def test_create_account_name_already_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.account_storage.is_name_exists.return_value = type(
             "Account", (), {"is_active": True, "owner_id": owner_id})
 
@@ -81,6 +80,7 @@ class TestAccountInteractor:
 
     def test_empty_account_name_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.account_storage.is_name_exists.return_value = None
         account_name = ""
 
@@ -96,6 +96,8 @@ class TestAccountInteractor:
 
     def test_create_account_whitespace_name(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
+
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
 
         with pytest.raises(EmptyName) as exc:
             self.interactor.create_account(
@@ -142,6 +144,7 @@ class TestAccountInteractor:
         expected = AccountDTOFactory()
         owner_id = "12345678-1234-5678-1234-567812345678"
 
+        self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.account_storage.is_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
 
@@ -154,19 +157,14 @@ class TestAccountInteractor:
         snapshot.assert_match(repr(result),
                               "create_account_no_description.txt")
 
-    # ------------------------------------------------------------------ #
-    #  update_account
-    # ------------------------------------------------------------------ #
-
     def test_update_account_name_success(self, snapshot):
-        from django.core.exceptions import ObjectDoesNotExist
-
         account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
+        # Name is unique for this accounts
+        self.account_storage.is_name_exists.return_value = False
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -199,14 +197,12 @@ class TestAccountInteractor:
                               "update_account_description_success.txt")
 
     def test_update_account_both_fields_success(self, snapshot):
-        from django.core.exceptions import ObjectDoesNotExist
-
         account_id = "accounts-123"
         owner_id = "user-123"
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        self.account_storage.is_name_exists.side_effect = ObjectDoesNotExist
+        self.account_storage.is_name_exists.return_value = False
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
 
@@ -244,7 +240,6 @@ class TestAccountInteractor:
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
-        # Returns a *different* accounts with the same name
         self.account_storage.is_name_exists.return_value = "different-accounts-id"
 
         with pytest.raises(AccountNameAlreadyExists) as exc:
@@ -265,6 +260,7 @@ class TestAccountInteractor:
 
         self.account_storage.get_account_by_id.return_value = self._mock_account(
             owner_id)
+        self.account_storage.is_name_exists.return_value = False
 
         with pytest.raises(UserNotAccountOwner) as exc:
             self.interactor.update_account(
@@ -311,10 +307,6 @@ class TestAccountInteractor:
 
         snapshot.assert_match(repr(exc.value),
                               "update_account_inactive.txt")
-
-    # ------------------------------------------------------------------ #
-    #  delete_account
-    # ------------------------------------------------------------------ #
 
     def test_delete_account_success(self, snapshot):
         account_id = "accounts-123"
@@ -374,10 +366,6 @@ class TestAccountInteractor:
             repr(exc.value),
             "delete_account_non_owner.txt"
         )
-
-    # ------------------------------------------------------------------ #
-    #  deactivate_account
-    # ------------------------------------------------------------------ #
 
     def test_deactivate_account_success(self, snapshot):
         account_id = "accounts-123"
@@ -441,10 +429,6 @@ class TestAccountInteractor:
         snapshot.assert_match(repr(exc.value),
                               "deactivate_account_non_owner.txt")
 
-    # ------------------------------------------------------------------ #
-    #  get_accounts
-    # ------------------------------------------------------------------ #
-
     def test_get_accounts_success(self, snapshot):
         account_id1 = "12345678-1234-5678-1234-567812345678"
         account_id2 = "12345678-1234-5678-1234-567812345679"
@@ -465,7 +449,6 @@ class TestAccountInteractor:
         valid_id = "12345678-1234-5678-1234-567812345678"
         invalid_id = "invalid-id-999"
 
-        # Storage returns only the valid accounts
         mock_account = type("Account", (), {
             "account_id": valid_id, "is_active": True})()
         self.account_storage.get_accounts.return_value = [mock_account]

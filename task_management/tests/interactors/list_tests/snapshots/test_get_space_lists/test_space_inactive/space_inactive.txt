@@ -1,1 +1,1 @@
-InactiveSpaceException()
+InactiveSpace()

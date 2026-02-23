@@ -26,7 +26,7 @@ class Space(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["workspaces"]),
+            models.Index(fields=["workspace"]),
             models.Index(fields=["is_active"]),
         ]
 
@@ -57,7 +57,7 @@ class Folder(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["spaces"]),
+            models.Index(fields=["space"]),
         ]
 
     def __str__(self):
@@ -93,7 +93,7 @@ class List(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["spaces"]),
+            models.Index(fields=["space"]),
             models.Index(fields=["folder"]),
         ]
 

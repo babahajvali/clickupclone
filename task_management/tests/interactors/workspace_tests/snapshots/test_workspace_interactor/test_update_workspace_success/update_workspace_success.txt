@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='f978cec1-2ac1-4a6b-bfad-3fd77ab7313c', name='Sloan Group', description='Bar six power present adult pattern song management.', user_id='92c17ec9-2796-402a-a466-fc2a974181d4', account_id='d15872ca-f0a0-4721-8e6e-594cdab04cbf', is_active=True)

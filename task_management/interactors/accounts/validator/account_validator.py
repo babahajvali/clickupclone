@@ -19,8 +19,9 @@ class AccountValidator:
         if is_account_name_exist:
             raise AccountNameAlreadyExists(name=account_name)
 
-    def check_name_in_db_except_current_account(self, name: str,
-                                                account_id: str):
+    def check_name_in_db_except_current_account(
+            self, name: str, account_id: str):
+
         is_account_name_exist = self.account_storage.is_name_exists(
             account_name=name, account_id=account_id)
 
@@ -28,6 +29,7 @@ class AccountValidator:
             raise AccountNameAlreadyExists(name=name)
 
     def check_account_ids(self, account_ids: list[str]):
+
         accounts_data = self.account_storage.get_accounts(
             account_ids=account_ids)
 
@@ -43,6 +45,7 @@ class AccountValidator:
 
     @staticmethod
     def check_account_name_is_not_empty(account_name: str):
+
         is_name_empty = not account_name or not account_name.strip()
 
         if is_name_empty:

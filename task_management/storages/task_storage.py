@@ -5,7 +5,7 @@ from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     FilterDTO, TaskAssigneeDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces.task_storage_interface import \
     TaskStorageInterface
-from task_management.models import User, List, Task, TaskAssignee
+from task_management.models import Task, TaskAssignee
 
 
 class TaskStorage(TaskStorageInterface):
@@ -31,19 +31,22 @@ class TaskStorage(TaskStorageInterface):
             assigned_by=assignee_data.assigned_by.user_id,
         )
 
-    def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
-        user = User.objects.get(user_id=task_data.created_by)
-        list_obj = List.objects.get(list_id=task_data.list_id)
-        last_task = Task.objects.filter(
-            list_id=task_data.list_id, is_deleted=False).order_by(
-            '-order').first()
-        next_order = (last_task.order + 1) if last_task else 1
+    def create_task(self, task_data: CreateTaskDTO, order: int) -> TaskDTO:
 
         task_data = Task.objects.create(
             title=task_data.title, description=task_data.description,
-            list=list_obj, created_by=user, order=next_order)
+            list_id=task_data.list_id, created_by_id=task_data.created_by,
+            order=order)
 
         return self._task_dto(task_data=task_data)
+
+    def get_next_task_order_in_list(self, list_id: str) -> int:
+        last_task = Task.objects.filter(
+            list_id=list_id, is_deleted=False).order_by('-order').first()
+
+        next_order = last_task.order + 1 if last_task else 1
+
+        return next_order
 
     def update_task(self, task_id: str, field_properties: dict) -> TaskDTO:
         Task.objects.filter(task_id=task_id).update(**field_properties)
@@ -138,21 +141,18 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
-    def assign_task_assignee(self, task_id: str, user_id: str,
-                             assigned_by: str) -> TaskAssigneeDTO:
-        user = User.objects.get(user_id=user_id)
-        task = Task.objects.get(task_id=task_id)
-        assigned_by = User.objects.get(user_id=assigned_by)
+    def add_task_assignee(self, task_id: str, user_id: str,
+                          assigned_by: str) -> TaskAssigneeDTO:
 
-        assignment_data = TaskAssignee.objects.create(assigned_by=assigned_by,
-                                                      task=task, user=user)
+        assignment_data = TaskAssignee.objects.create(
+            assigned_by_id=assigned_by, task_id=task_id, user_id=user_id)
 
         return self._assignee_dto(assignee_data=assignment_data)
 
     def remove_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
         assignee_data.is_active = False
-        assignee_data.save()
+        assignee_data.save(update_fields=["is_active"])
 
         return self._assignee_dto(assignee_data=assignee_data)
 
@@ -162,8 +162,8 @@ class TaskStorage(TaskStorageInterface):
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
-        task_assignees = TaskAssignee.objects.filter(task_id=task_id,
-                                                     is_active=True)
+        task_assignees = TaskAssignee.objects.filter(
+            task_id=task_id, is_active=True)
 
         return [self._assignee_dto(assignee_data=data) for data in
                 task_assignees]
@@ -203,12 +203,13 @@ class TaskStorage(TaskStorageInterface):
     def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
         assignee_data.is_active = True
-        assignee_data.save()
+        assignee_data.save(update_fields=["is_active"])
 
         return self._assignee_dto(assignee_data=assignee_data)
 
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[
-        TaskAssigneeDTO]:
+    def get_assignees_for_list_tasks(
+            self, list_id: str) -> list[TaskAssigneeDTO]:
+
         task_ids = (Task.objects.filter(list_id=list_id, is_deleted=False).
                     values_list('task_id', flat=True))
         task_assignees = TaskAssignee.objects.filter(task_id__in=task_ids,

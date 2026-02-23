@@ -1,1 +1,1 @@
-ListNotFoundException()
+ListNotFound()

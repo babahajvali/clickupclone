@@ -1,19 +1,22 @@
 import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    ListNotFound, InactiveList, SpaceNotFound,
+    EmptyName,
+    InactiveList,
+    ListNotFound,
     ModificationNotAllowed,
+    NothingToUpdateList,
 )
-from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
-    WorkspaceStorageInterface
-from task_management.tests.factories.interactor_factory import \
-    UpdateListDTOFactory
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
+from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.storage_interfaces import (
+    ListStorageInterface,
+    FolderStorageInterface,
+    SpaceStorageInterface,
+    WorkspaceStorageInterface,
+)
 
 
 def make_permission(role: Role):
@@ -23,97 +26,144 @@ def make_permission(role: Role):
         role=role,
         user_id="user_id",
         is_active=True,
-        added_by="admin"
+        added_by="admin",
     )
 
 
 class TestUpdateList:
+    @staticmethod
+    def _get_list_dto():
+        return ListDTO(
+            list_id="list_1",
+            name="List name",
+            description="List description",
+            space_id="space_1",
+            is_active=True,
+            order=1,
+            is_private=False,
+            created_by="user_id",
+            folder_id=None,
+        )
 
-    def setup_method(self):
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def _get_interactor(self, *, role: Role = Role.MEMBER, list_data=None):
+        list_storage = create_autospec(ListStorageInterface)
+        folder_storage = create_autospec(FolderStorageInterface)
+        space_storage = create_autospec(SpaceStorageInterface)
+        workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
-            list_storage=self.list_storage,
-            folder_storage=self.folder_storage,
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage
+        if list_data is None:
+            list_data = self._get_list_dto()
+
+        list_storage.get_list.return_value = list_data
+        list_storage.get_list_space_id.return_value = "space_1"
+        list_storage.update_list.return_value = list_data
+
+        space_storage.get_space_workspace_id.return_value = "workspace_id1"
+        workspace_storage.get_workspace_member.return_value = make_permission(
+            role
+        )
+
+        return ListInteractor(
+            list_storage=list_storage,
+            folder_storage=folder_storage,
+            space_storage=space_storage,
+            workspace_storage=workspace_storage,
         )
 
     def test_update_list_success(self, snapshot):
-        dto = UpdateListDTOFactory()
+        interactor = self._get_interactor()
 
-        self.interactor.list_storage.get_list.return_value = type("List", (), {
-            "is_active": True,
-            "folder_id": None,
-            "space_id": "space_1", }, )()
-        self.workspace_member_storage.get_workspace_member.return_value = (
-            make_permission(Role.MEMBER)
+        result = interactor.update_list(
+            list_id="list_1",
+            user_id="user_id",
+            name="Updated name",
+            description="Updated description",
         )
-
-        self.interactor.space_storage.get_space.return_value = type("Space",
-                                                                    (), {
-                                                                        "is_active": True, }, )()
-        self.interactor.list_storage.get_folder_lists_count.return_value = 100
-        self.interactor.list_storage.update_list.return_value = "UPDATED_LIST_DTO"
-
-        result = self.interactor.update_list(dto, user_id="user_id1")
 
         snapshot.assert_match(
             repr(result),
-            "update_list_success.json"
+            "test_update_list_success.txt",
         )
 
-    def test_list_not_found(self, snapshot):
-        dto = UpdateListDTOFactory()
-        self.interactor.list_storage.get_list.return_value = None
+    def test_update_list_nothing_to_update(self, snapshot):
+        interactor = self._get_interactor()
+
+        with pytest.raises(NothingToUpdateList) as exc:
+            interactor.update_list(
+                list_id="list_1",
+                user_id="user_id",
+                name=None,
+                description=None,
+            )
+
+        snapshot.assert_match(
+            repr(exc.value.list_id),
+            "test_update_list_nothing_to_update.txt",
+        )
+
+    def test_update_list_empty_name(self, snapshot):
+        interactor = self._get_interactor()
+
+        with pytest.raises(EmptyName) as exc:
+            interactor.update_list(
+                list_id="list_1",
+                user_id="user_id",
+                name=" ",
+                description=None,
+            )
+
+        snapshot.assert_match(
+            repr(exc.value.name),
+            "test_update_list_empty_name.txt",
+        )
+
+    def test_update_list_not_found(self, snapshot):
+        interactor = self._get_interactor(list_data=None)
+        interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
-            self.interactor.update_list(dto, user_id="user_id")
+            interactor.update_list(
+                list_id="list_1",
+                user_id="user_id",
+                name="Updated name",
+                description=None,
+            )
 
-        snapshot.assert_match(repr(exc.value), "list_not_found.txt")
+        snapshot.assert_match(
+            repr(exc.value.list_id),
+            "test_update_list_not_found.txt",
+        )
 
-    def test_list_inactive(self, snapshot):
-        dto = UpdateListDTOFactory()
-        self.interactor.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": False}
-        )()
+    def test_update_list_inactive(self, snapshot):
+        list_data = self._get_list_dto()
+        list_data.is_active = False
+        interactor = self._get_interactor(list_data=list_data)
 
         with pytest.raises(InactiveList) as exc:
-            self.interactor.update_list(dto, user_id="user_id")
+            interactor.update_list(
+                list_id="list_1",
+                user_id="user_id",
+                name="Updated name",
+                description=None,
+            )
 
-        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
-
-    def test_permission_denied(self, snapshot):
-        dto = UpdateListDTOFactory()
-        folder_id = 'folder_id1'
-        self.interactor.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True,"folder_id":folder_id,"space_id": "space_1", },
-        )()
-        self.workspace_member_storage.get_workspace_member.return_value = (
-            make_permission(Role.GUEST)
+        snapshot.assert_match(
+            repr(exc.value.list_id),
+            "test_update_list_inactive.txt",
         )
+
+    def test_update_list_permission_denied(self, snapshot):
+        interactor = self._get_interactor(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.update_list(dto, user_id="user_id")
+            interactor.update_list(
+                list_id="list_1",
+                user_id="user_id",
+                name="Updated name",
+                description=None,
+            )
 
-        snapshot.assert_match(repr(exc.value), "permission_denied.txt")
-
-    def test_space_not_found(self, snapshot):
-        dto = UpdateListDTOFactory()
-        self.interactor.list_storage.get_list.return_value = type("List", (), {
-            "is_active": True,
-            "folder_id": None,
-            "space_id": "space_1", }, )()
-
-        self.workspace_member_storage.get_workspace_member.return_value = (
-            make_permission(Role.MEMBER)
+        snapshot.assert_match(
+            repr(exc.value.user_id),
+            "test_update_list_permission_denied.txt",
         )
-        self.interactor.space_storage.get_space.return_value = None
-
-        with pytest.raises(SpaceNotFound) as exc:
-            self.interactor.update_list(dto, user_id="user_id")
-
-        snapshot.assert_match(repr(exc.value), "space_not_found.txt")

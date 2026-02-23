@@ -1,0 +1,1 @@
+AccountDTO(account_id='60093091-9c9b-4da8-bfe8-2a892ea361aa', name='Atkins-Smith', description='Inside exist seven.', owner_id='2573915d-cbf5-4512-81c4-ae0f23dca8f6', is_active=True)

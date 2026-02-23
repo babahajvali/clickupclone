@@ -85,9 +85,9 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_user_task_assignee.return_value = None
         task_id = "task123"
         expected = TaskAssigneeDTOFactory(task_id=task_id)
-        self.task_storage.assign_task_assignee.return_value = expected
+        self.task_storage.add_task_assignee.return_value = expected
 
-        result = self.interactor.assign_task_assignee(
+        result = self.interactor.add_task_assignee(
             task_id=task_id,
             user_id="user123",
             assigned_by="admin123"
@@ -104,7 +104,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.assign_task_assignee(
+            self.interactor.add_task_assignee(
                 task_id="task123",
                 user_id="user123",
                 assigned_by="user456"
@@ -120,7 +120,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(UserNotFound) as exc:
-            self.interactor.assign_task_assignee(
+            self.interactor.add_task_assignee(
                 task_id="task123",
                 user_id="user123",
                 assigned_by="admin123"
@@ -137,7 +137,7 @@ class TestTaskAssigneeInteractor:
         self.task_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(TaskNotFound) as exc:
-            self.interactor.assign_task_assignee(
+            self.interactor.add_task_assignee(
                 task_id="task123",
                 user_id="user123",
                 assigned_by="admin123"

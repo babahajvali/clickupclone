@@ -1,0 +1,1 @@
+AccountDTO(account_id='8f42e2dc-ad14-46c5-9123-da1bf6d59913', name='Stevens Group', description='Manager record second old with growth.', owner_id='8614ab3d-c208-4433-8ade-d76716b084cc', is_active=True)

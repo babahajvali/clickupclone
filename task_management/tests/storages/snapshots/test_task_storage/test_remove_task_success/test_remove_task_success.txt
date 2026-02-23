@@ -1,0 +1,1 @@
+TaskDTO(task_id=UUID('12345678-1234-5678-1234-567812345678'), title='Generation pass opportunity benefit allow project not.', description='Across board into market. Soon teacher each professional under executive knowledge.', list_id=UUID('12345678-1234-5678-1234-567812345679'), order=1, created_by=UUID('12345678-1234-5678-1234-567812345680'), is_deleted=True)

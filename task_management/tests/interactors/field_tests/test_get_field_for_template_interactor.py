@@ -8,12 +8,7 @@ from task_management.interactors.fields.field_interactor import \
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import FieldStorageInterface
-from task_management.interactors.storage_interfaces.list_storage_interface import \
-    ListStorageInterface
-from task_management.interactors.storage_interfaces.space_storage_interface import \
-    SpaceStorageInterface
 from task_management.interactors.storage_interfaces.template_storage_interface import TemplateStorageInterface
-from task_management.storages import workspace_storage
 
 from task_management.tests.factories.interactor_factory import FieldDTOFactory
 
@@ -23,20 +18,15 @@ class TestGetFieldForTemplateInteractor:
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
         
         self.interactor = FieldInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
-            list_storage=self.list_storage,
-            space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )
 
     def test_get_fields_for_template_success(self, snapshot):
-        list_id = "lists-123"
         template_id = "templates-123"
 
         expected_fields = [
@@ -44,7 +34,7 @@ class TestGetFieldForTemplateInteractor:
             FieldDTOFactory()
         ]
 
-        self.template_storage.get_template_by_id.return_value = type("Template", (), {"list_id": "lists-123"})()
+        self.template_storage.validate_template_exists.return_value = True
 
         self.field_storage.get_active_fields_for_template.return_value = expected_fields
 
@@ -56,21 +46,13 @@ class TestGetFieldForTemplateInteractor:
         )
 
     def test_get_fields_for_template_not_found(self, snapshot):
-        template_id = "non-existent-templates"
-        list_id = "lists-123"
-
-        self.interactor.validate_list_is_active.return_value = True
-
-        self.list_storage.get_template_id_by_list_id.return_value = template_id
-
-        self.template_storage.get_template_by_id.return_value = False
+        template_id = "non-existent-template"
+        self.template_storage.validate_template_exists.return_value = False
 
         with pytest.raises(TemplateNotFound) as exc:
-            self.interactor.get_active_fields_for_template(list_id=list_id)
+            self.interactor.get_active_fields_for_template(template_id)
 
         snapshot.assert_match(
             exc.value.template_id,
             "template_not_found.txt"
         )
-
-

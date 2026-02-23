@@ -1,59 +1,84 @@
 import pytest
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec
 
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    SpaceNotFound,
     InactiveSpace,
+    SpaceNotFound,
 )
-from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
-    WorkspaceStorageInterface
-
+from task_management.interactors.dtos import ListDTO
+from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.storage_interfaces import (
+    ListStorageInterface,
+    FolderStorageInterface,
+    SpaceStorageInterface,
+    WorkspaceStorageInterface,
+)
 
 
 class TestGetSpaceLists:
+    @staticmethod
+    def _get_list_dto():
+        return ListDTO(
+            list_id="list_1",
+            name="List name",
+            description="List description",
+            space_id="space_1",
+            is_active=True,
+            order=1,
+            is_private=False,
+            created_by="user_id",
+            folder_id=None,
+        )
 
-    def setup_method(self):
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def _get_interactor(self, *, space_exists=True, space_active=True):
+        list_storage = create_autospec(ListStorageInterface)
+        folder_storage = create_autospec(FolderStorageInterface)
+        space_storage = create_autospec(SpaceStorageInterface)
+        workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
-            list_storage=self.list_storage,
-            folder_storage=self.folder_storage,
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage
+        space_storage.get_space.return_value = (
+            type("Space", (), {"is_active": space_active})()
+            if space_exists else None
+        )
+        list_storage.get_active_space_lists.return_value = [
+            self._get_list_dto()
+        ]
+
+        return ListInteractor(
+            list_storage=list_storage,
+            folder_storage=folder_storage,
+            space_storage=space_storage,
+            workspace_storage=workspace_storage,
         )
 
     def test_get_space_lists_success(self, snapshot):
-        self.interactor.space_storage.get_space.return_value = type(
-            "Space", (), {"is_active": True}
-        )()
-        self.interactor.list_storage.get_active_space_lists.return_value = ["LIST1"]
+        interactor = self._get_interactor()
 
-        result = self.interactor.get_active_space_lists("space_1")
+        result = interactor.get_active_space_lists(space_id="space_1")
 
-        snapshot.assert_match(repr(result), "get_space_lists_success.json")
+        snapshot.assert_match(
+            repr(result),
+            "test_get_space_lists_success.txt",
+        )
 
-    def test_space_not_found(self, snapshot):
-        with patch("django.core.cache.cache.get", return_value=None):
-            self.interactor.space_storage.get_space.return_value = None
+    def test_get_space_lists_not_found(self, snapshot):
+        interactor = self._get_interactor(space_exists=False)
 
-            with pytest.raises(SpaceNotFound) as exc:
-                self.interactor.get_active_space_lists("space_1")
+        with pytest.raises(SpaceNotFound) as exc:
+            interactor.get_active_space_lists(space_id="space_1")
 
-        snapshot.assert_match(repr(exc.value), "space_not_found.txt")
+        snapshot.assert_match(
+            repr(exc.value.space_id),
+            "test_get_space_lists_not_found.txt",
+        )
 
-    def test_space_inactive(self, snapshot):
-        with patch("django.core.cache.cache.get", return_value=None):
-            self.interactor.space_storage.get_space.return_value = type(
-                "Space", (), {"is_active": False}
-            )()
+    def test_get_space_lists_inactive(self, snapshot):
+        interactor = self._get_interactor(space_active=False)
 
-            with pytest.raises(InactiveSpace) as exc:
-                self.interactor.get_active_space_lists("space_1")
+        with pytest.raises(InactiveSpace) as exc:
+            interactor.get_active_space_lists(space_id="space_1")
 
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
+        snapshot.assert_match(
+            repr(exc.value.space_id),
+            "test_get_space_lists_inactive.txt",
+        )

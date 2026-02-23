@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='717cd2c5-d57a-4851-9f41-9e31df17e79d', name='Gonzalez LLC', description='Sea law model should bank.', user_id='48f131c6-8d20-4f6f-a9a0-c826a388913e', account_id='17090f49-93de-408c-adb6-f8901c430612', is_active=True)

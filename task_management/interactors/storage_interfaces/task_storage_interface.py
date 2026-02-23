@@ -7,7 +7,11 @@ from task_management.interactors.dtos import CreateTaskDTO, UpdateTaskDTO, \
 class TaskStorageInterface(ABC):
 
     @abstractmethod
-    def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
+    def create_task(self, task_data: CreateTaskDTO, order: int) -> TaskDTO:
+        pass
+
+    @abstractmethod
+    def get_next_task_order_in_list(self, list_id: str) -> int:
         pass
 
     @abstractmethod
@@ -48,8 +52,8 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def assign_task_assignee(self, task_id: str, user_id: str,
-                             assigned_by: str) -> TaskAssigneeDTO:
+    def add_task_assignee(self, task_id: str, user_id: str,
+                          assigned_by: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod

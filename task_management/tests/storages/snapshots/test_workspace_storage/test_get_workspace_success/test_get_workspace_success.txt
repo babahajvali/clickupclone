@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id=UUID('12345678-1234-5678-1234-567812345678'), name='hit', description='Total he report she certain small all. Government later drop win environment not necessary.', user_id=UUID('12345678-1234-5678-1234-567812345679'), account_id=UUID('12345678-1234-5678-1234-567812345679'), is_active=True)

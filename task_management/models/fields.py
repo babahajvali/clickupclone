@@ -32,8 +32,10 @@ class Field(models.Model):
 
     class Meta:
         ordering = ['order']
+        unique_together = ('template', 'field_name')
         indexes = [
-            models.Index(fields=['templates', 'is_active']), ]
+            models.Index(fields=['template', 'is_active']),
+        ]
 
     def __str__(self):
         return self.field_name
@@ -62,7 +64,8 @@ class FieldValue(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['tasks'])]
+            models.Index(fields=['task']),
+        ]
 
     def __str__(self):
         return self.field.field_name

@@ -1,0 +1,1 @@
+RemoveListViewDTO(id=1, list_id='974b1874-54db-4cb4-8909-23f47a692395', view_id='03752b70-dfa1-4ab3-ac49-a4714a06177e', removed_by='04c792b3-51c8-4fdb-ae7c-5d52d742f982', is_active=False)

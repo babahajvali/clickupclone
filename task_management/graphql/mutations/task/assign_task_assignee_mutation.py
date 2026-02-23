@@ -33,7 +33,7 @@ class AssignTaskAssigneeMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.assign_task_assignee(
+            result = interactor.add_task_assignee(
                 task_id=params.task_id, user_id=params.user_id,
                 assigned_by=info.context.user_id)
 

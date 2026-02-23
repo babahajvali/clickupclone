@@ -1,0 +1,1 @@
+FolderDTO(folder_id=UUID('12345678-1234-5678-1234-567812345678'), name='bag', description='Peace little career free pattern.', space_id=UUID('12345678-1234-5678-1234-567812345680'), order=49, is_active=True, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_private=True)

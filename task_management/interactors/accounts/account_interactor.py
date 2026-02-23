@@ -118,7 +118,8 @@ class AccountInteractor:
 
         return self.account_storage.delete_account(account_id=account_id)
 
-    def deactivate_account(self, account_id: str, deactivated_by: str):
+    def deactivate_account(
+            self, account_id: str, deactivated_by: str) -> AccountDTO:
         """ Deactivate accounts after validation
             Validations:
                 1. validate accounts

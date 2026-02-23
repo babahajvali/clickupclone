@@ -1,33 +1,27 @@
-from dataclasses import dataclass, replace
-from enum import Enum
-from typing import Optional
+from dataclasses import replace
 from unittest.mock import create_autospec
 
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    TemplateNotFound,
     FieldNameAlreadyExists,
     ModificationNotAllowed,
+    NothingToUpdateField,
+    FieldNotFound,
+    InactiveField,
+    EmptyName,
+    InvalidFieldConfig,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import (
     FieldDTO,
+    UpdateFieldDTO,
     WorkspaceMemberDTO,
 )
 from task_management.interactors.fields.field_interactor import FieldInteractor
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, TemplateStorageInterface, ListStorageInterface, \
-    SpaceStorageInterface, WorkspaceStorageInterface
-
-
-@dataclass
-class UpdateFieldDTO:
-    field_id: str
-    description: Optional[str]
-    field_name: Optional[str]
-    config: Optional[dict]
-    is_required: Optional[bool]
+    FieldStorageInterface, TemplateStorageInterface, \
+    WorkspaceStorageInterface
 
 
 def make_permission_dto(role: Role):
@@ -39,15 +33,6 @@ def make_permission_dto(role: Role):
         is_active=True,
         added_by="admin_1",
     )
-
-
-class DummyTemplate:
-    def __init__(self, list_id: str):
-        self.list_id = list_id
-
-
-class FieldEnum(Enum):
-    INVALID = "invalid"
 
 
 class TestUpdateFieldInteractor:
@@ -70,27 +55,20 @@ class TestUpdateFieldInteractor:
     def _get_interactor(
             self,
             *,
-            template_exists: bool = True,
             role: Role = Role.MEMBER,
             name_exists: bool = False,
     ):
         field_storage = create_autospec(FieldStorageInterface)
         template_storage = create_autospec(TemplateStorageInterface)
-        list_storage = create_autospec(ListStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
         workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        field_storage.is_field_exists.return_value = True
-        field_storage.check_field_name_except_this_field.return_value = name_exists
+        field_storage.is_field_name_exists.return_value = name_exists
         field_storage.update_field.return_value = self._get_field_dto()
         field_storage.get_field_by_id.return_value = self._get_field_dto()
 
-        if template_exists:
-            template_storage.get_template_by_id.return_value = DummyTemplate(
-                list_id="list_1"
-            )
-        else:
-            template_storage.get_template_by_id.return_value = None
+        template_storage.get_workspace_id_from_template_id.return_value = (
+            "workspace_id"
+        )
 
         workspace_storage.get_workspace_member.return_value = (
             make_permission_dto(role)
@@ -99,8 +77,6 @@ class TestUpdateFieldInteractor:
         return FieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            list_storage=list_storage,
-            space_storage=space_storage,
             workspace_storage=workspace_storage
         )
 
@@ -152,9 +128,71 @@ class TestUpdateFieldInteractor:
             "test_update_field_duplicate_name.txt",
         )
 
-    def test_update_field_template_not_found(self):
-        interactor = self._get_interactor(template_exists=False)
+    def test_update_field_not_found(self, snapshot):
+        interactor = self._get_interactor()
+        interactor.field_storage.get_field_by_id.return_value = None
         dto = self._get_update_dto()
 
-        with pytest.raises(TemplateNotFound):
+        with pytest.raises(FieldNotFound) as exc:
             interactor.update_field(dto, user_id="user_1")
+
+        snapshot.assert_match(
+            repr(exc.value.field_id),
+            "test_update_field_not_found.txt",
+        )
+
+    def test_update_field_without_updates(self, snapshot):
+        interactor = self._get_interactor()
+        dto = self._get_update_dto(
+            field_name=None,
+            description=None,
+            config=None,
+            is_required=None,
+        )
+
+        with pytest.raises(NothingToUpdateField) as exc:
+            interactor.update_field(dto, user_id="user_1")
+
+        snapshot.assert_match(
+            repr(exc.value.field_id),
+            "test_update_field_without_updates.txt",
+        )
+
+    def test_update_field_inactive(self, snapshot):
+        interactor = self._get_interactor()
+        inactive_field = self._get_field_dto()
+        inactive_field.is_active = False
+        interactor.field_storage.get_field_by_id.return_value = inactive_field
+        dto = self._get_update_dto()
+
+        with pytest.raises(InactiveField) as exc:
+            interactor.update_field(dto, user_id="user_1")
+
+        snapshot.assert_match(
+            repr(exc.value.field_id),
+            "test_update_field_inactive.txt",
+        )
+
+    def test_update_field_empty_name(self, snapshot):
+        interactor = self._get_interactor()
+        dto = self._get_update_dto(field_name="   ")
+
+        with pytest.raises(EmptyName) as exc:
+            interactor.update_field(dto, user_id="user_1")
+
+        snapshot.assert_match(
+            repr(exc.value.name),
+            "test_update_field_empty_name.txt",
+        )
+
+    def test_update_field_invalid_config_keys(self, snapshot):
+        interactor = self._get_interactor()
+        dto = self._get_update_dto(config={"bad_key": 1})
+
+        with pytest.raises(InvalidFieldConfig) as exc:
+            interactor.update_field(dto, user_id="user_1")
+
+        snapshot.assert_match(
+            repr(exc.value.invalid_keys),
+            "test_update_field_invalid_config_keys.txt",
+        )

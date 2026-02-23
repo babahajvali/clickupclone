@@ -1,1 +1,1 @@
-ViewDTO(view_id='665b5059-b692-46ae-9116-32a23cdf4051', name='feeling', description='Coach mind executive.', view_type='list', created_by='156ee146-beb4-4372-92ff-8fdbcbd73f7c')
+ViewDTO(view_id='37ae218d-e4c6-4b8d-bebb-fea4137e8afd', name='when', description='Course page understand stand soldier.', view_type='lists', created_by='961283a6-eaec-49ea-9107-b318d507e8b3')

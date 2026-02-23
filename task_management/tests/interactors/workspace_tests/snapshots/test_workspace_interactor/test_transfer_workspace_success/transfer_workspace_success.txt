@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='eaf9c679-00c9-4387-837c-3c6c94ce63ac', name='Edwards, Moore and Maddox', description='East mission particular sea.', user_id='0c9ec0ea-85dc-4201-b311-2f01b0220c64', account_id='9b31a37e-3e30-4f93-906e-b1e94455ccfa', is_active=True)

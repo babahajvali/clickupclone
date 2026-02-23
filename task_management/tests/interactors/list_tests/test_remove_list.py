@@ -1,24 +1,20 @@
 import pytest
 from unittest.mock import create_autospec
 
-from faker import Faker
-
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
 from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowed,
-    ListNotFound,
     InactiveList,
+    ListNotFound,
+    ModificationNotAllowed,
 )
-from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, FolderStorageInterface, SpaceStorageInterface, \
-    WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.template_storage_interface import \
-    TemplateStorageInterface
-
-Faker.seed(0)
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
+from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.storage_interfaces import (
+    ListStorageInterface,
+    FolderStorageInterface,
+    SpaceStorageInterface,
+    WorkspaceStorageInterface,
+)
 
 
 def make_permission(role: Role):
@@ -28,68 +24,92 @@ def make_permission(role: Role):
         role=role,
         user_id="user_id",
         is_active=True,
-        added_by="admin"
+        added_by="admin",
     )
 
 
 class TestRemoveList:
+    @staticmethod
+    def _get_list_dto():
+        return ListDTO(
+            list_id="list_1",
+            name="List name",
+            description="List description",
+            space_id="space_1",
+            is_active=True,
+            order=1,
+            is_private=False,
+            created_by="user_id",
+            folder_id=None,
+        )
 
-    def setup_method(self):
-        self.list_storage = create_autospec(ListStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
+    def _get_interactor(self, *, role: Role = Role.MEMBER, list_data=None):
+        list_storage = create_autospec(ListStorageInterface)
+        folder_storage = create_autospec(FolderStorageInterface)
+        space_storage = create_autospec(SpaceStorageInterface)
+        workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
-            list_storage=self.list_storage,
-            folder_storage=self.folder_storage,
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage
+        if list_data is None:
+            list_data = self._get_list_dto()
+
+        list_storage.get_list.return_value = list_data
+        list_storage.get_list_space_id.return_value = "space_1"
+        list_storage.delete_list.return_value = list_data
+
+        space_storage.get_space_workspace_id.return_value = "workspace_id1"
+        workspace_storage.get_workspace_member.return_value = make_permission(
+            role
+        )
+
+        return ListInteractor(
+            list_storage=list_storage,
+            folder_storage=folder_storage,
+            space_storage=space_storage,
+            workspace_storage=workspace_storage,
         )
 
     def test_remove_list_success(self, snapshot):
-        self.workspace_storage.get_workspace_member.return_value = (
-            make_permission(Role.MEMBER)
-        )
-        self.interactor.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
-        )()
+        interactor = self._get_interactor()
 
-        result = self.interactor.delete_list("list_1", "user_1")
+        result = interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        self.interactor.list_storage.delete_list.assert_called_once_with(
-            list_id="list_1"
+        snapshot.assert_match(
+            repr(result),
+            "test_remove_list_success.txt",
         )
 
-    def test_permission_denied(self, snapshot):
-        self.workspace_storage.get_workspace_member.return_value = (
-            make_permission(Role.GUEST)
-        )
-
-        with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.delete_list("list_1", "user_1")
-
-        snapshot.assert_match(repr(exc.value), "permission_denied.txt")
-
-    def test_list_not_found(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Role.GUEST))
-        self.interactor.list_storage.get_list.return_value = None
+    def test_remove_list_not_found(self, snapshot):
+        interactor = self._get_interactor(list_data=None)
+        interactor.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
-            self.interactor.delete_list("list_1", "user_1")
+            interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(repr(exc.value), "list_not_found.txt")
-
-    def test_list_inactive(self, snapshot):
-        self.list_permission_storage.get_user_permission_for_list.return_value = (
-            make_permission(Role.MEMBER)
+        snapshot.assert_match(
+            repr(exc.value.list_id),
+            "test_remove_list_not_found.txt",
         )
-        self.interactor.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": False}
-        )()
+
+    def test_remove_list_inactive(self, snapshot):
+        list_data = self._get_list_dto()
+        list_data.is_active = False
+        interactor = self._get_interactor(list_data=list_data)
 
         with pytest.raises(InactiveList) as exc:
-            self.interactor.delete_list("list_1", "user_1")
+            interactor.delete_list(list_id="list_1", user_id="user_id")
 
-        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
+        snapshot.assert_match(
+            repr(exc.value.list_id),
+            "test_remove_list_inactive.txt",
+        )
+
+    def test_remove_list_permission_denied(self, snapshot):
+        interactor = self._get_interactor(role=Role.GUEST)
+
+        with pytest.raises(ModificationNotAllowed) as exc:
+            interactor.delete_list(list_id="list_1", user_id="user_id")
+
+        snapshot.assert_match(
+            repr(exc.value.user_id),
+            "test_remove_list_permission_denied.txt",
+        )

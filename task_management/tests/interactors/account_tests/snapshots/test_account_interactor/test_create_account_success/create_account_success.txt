@@ -1,0 +1,1 @@
+AccountDTO(account_id='74d7bdfd-654e-4874-ab98-156e47397fc8', name='Yu-Craig', description='Morning build heavy past section strong strategy.', owner_id='3c9b4bd7-da6a-40fb-a128-64cdb85f33c9', is_active=True)
