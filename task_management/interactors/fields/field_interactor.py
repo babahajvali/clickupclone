@@ -191,7 +191,7 @@ class FieldInteractor:
     def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
 
-        if not self.field_validator.is_field_properties_not_empty(
+        if not self.field_validator.is_field_p  roperties_not_empty(
                 update_field_data=update_field_data):
             raise NothingToUpdateField(field_id=field_data.field_id)
 

@@ -1,8 +1,10 @@
 import graphene
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import EmptyWorkspaceName
 from task_management.graphql.types.error_types import UserNotFoundType, \
     InactiveUserType, \
-    AccountNotFoundType, InactiveAccountType, ModificationNotAllowedType
+    AccountNotFoundType, InactiveAccountType, ModificationNotAllowedType, \
+    UserNotAccountOwnerType, EmptyWorkspaceNameType
 from task_management.graphql.types.input_types import \
     CreateWorkspaceInputParams
 from task_management.graphql.types.response_types import \
@@ -70,11 +72,8 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 is_active=result.is_deleted
             )
 
-        except custom_exceptions.UserNotFound as e:
-            return UserNotFoundType(user_id=e.user_id)
-
-        except custom_exceptions.InactiveUser as e:
-            return InactiveUserType(user_id=e.user_id)
+        except custom_exceptions.UserNotAccountOwner as e:
+            return UserNotAccountOwnerType(user_id=e.user_id)
 
         except custom_exceptions.AccountNotFound as e:
             return AccountNotFoundType(account_id=e.account_id)
@@ -84,3 +83,6 @@ class CreateWorkspaceMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.EmptyWorkspaceName as e:
+            return EmptyWorkspaceNameType(workspace_name=e.workspace_name)

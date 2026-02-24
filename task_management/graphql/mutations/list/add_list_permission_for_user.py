@@ -59,7 +59,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 permission_type=result.permission_type
             )
 
-        except custom_exceptions.DeletedListFount as e:
+        except custom_exceptions.DeletedListFound as e:
             return DeletedListType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

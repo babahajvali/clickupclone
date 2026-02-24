@@ -132,6 +132,7 @@ class EmptySpaceNameType(graphene.ObjectType):
 class NothingToUpdateSpaceType(graphene.ObjectType):
     space_id = graphene.String(required=True)
 
+
 class DeletedSpaceType(graphene.ObjectType):
     space_id = graphene.String(required=True)
 
@@ -156,12 +157,24 @@ class ViewTypeNotFoundType(graphene.ObjectType):
     view_type = graphene.String(required=True)
 
 
+class EmptyViewNameType(graphene.ObjectType):
+    view_name = graphene.String(required=True)
+
+
 class ViewNotFoundType(graphene.ObjectType):
+    view_id = graphene.String(required=True)
+
+
+class NothingToUpdateViewType(graphene.ObjectType):
     view_id = graphene.String(required=True)
 
 
 class WorkspaceNotFoundType(graphene.ObjectType):
     workspace_id = graphene.String(required=True)
+
+
+class EmptyWorkspaceNameType(graphene.ObjectType):
+    workspace_name = graphene.String(required=True)
 
 
 class DeletedWorkspaceType(graphene.ObjectType):
@@ -214,6 +227,14 @@ class InvalidOrderType(graphene.ObjectType):
 
 class InactiveWorkspaceMemberType(graphene.ObjectType):
     workspace_member_id = graphene.Int(required=True)
+
+
+class WorkspaceMemberIdNotFoundType(graphene.ObjectType):
+    workspace_member_id = graphene.String(required=True)
+
+
+class InvalidWorkspaceIdsFoundType(graphene.ObjectType):
+    workspace_ids = graphene.List(graphene.String, required=True)
 
 
 class AccountNameAlreadyExistsType(graphene.ObjectType):

@@ -1,5 +1,6 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import WorkspaceNotFoundType
+from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
+    InvalidWorkspaceIdsFoundType
 from task_management.graphql.types.types import WorkspaceType, WorkspacesType
 from task_management.interactors.workspaces.workspace_interactor import \
     WorkspaceInteractor
@@ -35,5 +36,5 @@ def get_workspace_resolver(root, info, params):
 
         return WorkspacesType(workspaces=workspace_output)
 
-    except custom_exceptions.WorkspaceNotFound as e:
-        return WorkspaceNotFoundType(workspace_id=e.workspace_id)
+    except custom_exceptions.InvalidWorkspaceIdsFound as e:
+        return InvalidWorkspaceIdsFoundType(workspace_ids=e.workspace_ids)

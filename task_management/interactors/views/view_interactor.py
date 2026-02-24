@@ -1,6 +1,6 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyName, \
+from task_management.exceptions.custom_exceptions import EmptyViewName, \
     NothingToUpdateView
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces import \
@@ -52,7 +52,7 @@ class ViewInteractor:
 
         is_name_empty = not name or not name.strip()
         if is_name_empty:
-            raise EmptyName(name=name)
+            raise EmptyViewName(name=name)
 
     def _check_update_view_field_properties(
             self, view_id: str, name: Optional[str],

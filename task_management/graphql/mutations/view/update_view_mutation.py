@@ -1,7 +1,9 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import ViewNotFoundType
+from task_management.exceptions.custom_exceptions import NothingToUpdateView
+from task_management.graphql.types.error_types import ViewNotFoundType, \
+    NothingToUpdateViewType
 from task_management.graphql.types.input_types import UpdateViewInputParams
 from task_management.graphql.types.response_types import UpdateViewResponse
 from task_management.graphql.types.types import ViewType
@@ -28,13 +30,14 @@ class UpdateViewMutation(graphene.Mutation):
         )
 
         try:
-            update_view_data = UpdateViewDTO(
-                view_id=params.view_id,
-                name=params.name if params.name else None,
-                description=params.description if params.description else None
-            )
 
-            result = interactor.update_view(update_view_data=update_view_data)
+            view_id=params.view_id
+            name=params.name
+            description=params.description
+
+
+            result = interactor.update_view(
+                view_id=view_id, name=name, description=description)
 
             return ViewType(
                 view_id=str(result.view_id),
@@ -46,3 +49,8 @@ class UpdateViewMutation(graphene.Mutation):
 
         except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
+
+        except custom_exceptions.NothingToUpdateView as e:
+            return NothingToUpdateViewType(view_id=e.view_id)
+
+

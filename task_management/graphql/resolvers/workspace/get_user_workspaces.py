@@ -1,5 +1,6 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import UserNotFoundType
+from task_management.graphql.types.error_types import UserNotFoundType, \
+    InactiveUserType
 from task_management.graphql.types.types import WorkspaceMemberType, \
     WorkspaceMembersType
 
@@ -35,3 +36,6 @@ def get_user_workspace_resolver(root, info, params):
 
     except custom_exceptions.UserNotFound as e:
         return UserNotFoundType(user_id=e.user_id)
+
+    except custom_exceptions.InactiveUser as e:
+        return InactiveUserType(user_id=e.user_id)

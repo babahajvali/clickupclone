@@ -18,7 +18,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     ViewNotFound,
     ListNotFound,
-    DeletedListFount
+    DeletedListFound
 )
 from task_management.tests.factories.interactor_factory import (
     ListViewDTOFactory,
@@ -145,7 +145,7 @@ class TestListViewInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFount) as exc:
+        with pytest.raises(DeletedListFound) as exc:
             self.interactor.apply_view_for_list(
                 "view_id", "list_id", "user_id"
             )
@@ -205,7 +205,7 @@ class TestListViewInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFount) as exc:
+        with pytest.raises(DeletedListFound) as exc:
             self.interactor.get_list_views("list_id")
 
         snapshot.assert_match(repr(exc.value), "get_list_inactive.txt")

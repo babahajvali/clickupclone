@@ -36,6 +36,7 @@ class WorkspaceMemberInteractor:
     def add_member_to_workspace(
             self, workspace_member_data: AddMemberToWorkspaceDTO) \
             -> WorkspaceMemberDTO:
+
         self.workspace_validator.check_role(
             role=workspace_member_data.role.value)
         self.workspace_mixin.check_workspace_is_active(
@@ -54,6 +55,7 @@ class WorkspaceMemberInteractor:
     def remove_member_from_workspace(
             self, workspace_member_id: int, removed_by: str) \
             -> WorkspaceMemberDTO:
+
         self.workspace_validator.check_workspace_member_is_active_by_id(
             workspace_member_id=workspace_member_id)
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(

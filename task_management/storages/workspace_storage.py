@@ -41,6 +41,9 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         except Workspace.DoesNotExist:
             return None
 
+    def is_workspace_exists(self, workspace_id: str) -> bool:
+        return Workspace.objects.filter(workspace_id=workspace_id).exists()
+
     def create_workspace(
             self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
 

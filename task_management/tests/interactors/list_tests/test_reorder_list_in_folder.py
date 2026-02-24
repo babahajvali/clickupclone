@@ -5,7 +5,7 @@ from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
     DeletedFolderException,
     InvalidOrder,
-    DeletedListFount,
+    DeletedListFound,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -163,7 +163,7 @@ class TestReorderListInFolder:
         list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(DeletedListFount) as exc:
+        with pytest.raises(DeletedListFound) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",

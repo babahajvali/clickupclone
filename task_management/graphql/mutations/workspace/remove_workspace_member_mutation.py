@@ -1,13 +1,15 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import \
+    WorkspaceMemberIdNotFound
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, WorkspaceNotFoundType, \
-    InactiveWorkspaceMemberType
+    InactiveWorkspaceMemberType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     RemoveWorkspaceMemberInputParams
 from task_management.graphql.types.response_types import \
-    AddMemberToWorkspaceResponse
+    AddMemberToWorkspaceResponse, RemoveWorkspaceMemberResponse
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.workspaces.workspace_member_interactor import \
     WorkspaceMemberInteractor
@@ -18,7 +20,7 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
     class Arguments:
         params = RemoveWorkspaceMemberInputParams(required=True)
 
-    Output = AddMemberToWorkspaceResponse  # Can reuse same response
+    Output = RemoveWorkspaceMemberResponse
 
     @staticmethod
     def mutate(root, info, params):
@@ -45,12 +47,16 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
                 added_by=result.added_by
             )
 
+        except custom_exceptions.WorkspaceMemberIdNotFound as e:
+            return WorkspaceMemberIdNotFound(
+                InactiveWorkspaceMember=e.workspace_member_id)
+
         except custom_exceptions.InactiveWorkspaceMember as e:
             return InactiveWorkspaceMemberType(
-                workspace_member_id=e.workspace_member_id)
-
-        except custom_exceptions.WorkspaceNotFound as e:
-            return WorkspaceNotFoundType(workspace_id=e.workspace_id)
+                InactiveWorkspaceMember=e.workspace_member_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

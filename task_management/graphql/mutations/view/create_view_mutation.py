@@ -2,7 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import ViewTypes
-from task_management.graphql.types.error_types import ViewTypeNotFoundType
+from task_management.graphql.types.error_types import ViewTypeNotFoundType, \
+    EmptyViewNameType
 from task_management.graphql.types.input_types import CreateViewInputParams
 from task_management.graphql.types.response_types import CreateViewResponse
 from task_management.graphql.types.types import ViewType
@@ -50,3 +51,6 @@ class CreateViewMutation(graphene.Mutation):
 
         except custom_exceptions.ViewTypeNotFound as e:
             return ViewTypeNotFoundType(view_type=e.view_type)
+
+        except custom_exceptions.EmptyViewName as e:
+            return EmptyViewNameType(view_name=e.view_name)

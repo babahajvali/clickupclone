@@ -3,7 +3,7 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, ListNotFoundType, ViewNotFoundType, \
-    DeletedListType
+    DeletedListType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import ApplyListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
@@ -23,7 +23,6 @@ class ApplyListViewMutation(graphene.Mutation):
         list_storage = ListStorage()
         view_storage = ViewStorage()
         workspace_storage = WorkspaceStorage()
-        
 
         interactor = ListViewInteractor(
             list_storage=list_storage,
@@ -33,9 +32,9 @@ class ApplyListViewMutation(graphene.Mutation):
 
         try:
 
-            result = interactor.apply_view_for_list(list_id=params.list_id,
-                                                    view_id=params.view_id,
-                                                    user_id=info.context.user_id)
+            result = interactor.apply_view_for_list(
+                list_id=params.list_id, view_id=params.view_id,
+                user_id=info.context.user_id)
 
             return ListViewType(
                 id=result.id,
@@ -46,9 +45,15 @@ class ApplyListViewMutation(graphene.Mutation):
             )
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
+
         except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
-        except custom_exceptions.DeletedListFount as e:
+
+        except custom_exceptions.DeletedListFound as e:
             return DeletedListType(list_id=e.list_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

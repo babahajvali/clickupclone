@@ -66,8 +66,5 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.DeletedWorkspaceFound as e:
-            return DeletedWorkspaceType(workspace_id=e.workspace_id)
-
         except custom_exceptions.UserNotWorkspaceOwner as e:
             return UserNotWorkspaceOwnerType(user_id=e.user_id)

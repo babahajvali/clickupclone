@@ -1,10 +1,12 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import \
+    ModificationNotAllowed, UserNotWorkspaceMember
 from task_management.exceptions.enums import Role
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
     DeletedWorkspaceType, UserNotFoundType, InactiveUserType, \
-    UnexpectedRoleType
+    UnexpectedRoleType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     AddMemberToWorkspaceInputParams
 from task_management.graphql.types.response_types import \
@@ -66,3 +68,9 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
 
         except custom_exceptions.UnexpectedRole as e:
             return UnexpectedRoleType(role=e.role)
+
+        except custom_exceptions.ModificationNotAllowed as e:
+            return ModificationNotAllowed(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

@@ -97,7 +97,7 @@ class WorkspaceInteractor:
     def delete_workspace(
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
 
-        self.workspace_mixin.check_workspace_is_active(
+        self.workspace_mixin.check_workspace_exists(
             workspace_id=workspace_id)
         self.workspace_mixin.check_user_is_workspace_owner(
             user_id=user_id, workspace_id=workspace_id)

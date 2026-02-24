@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.db import transaction
 
 from task_management.exceptions.enums import Role
@@ -40,38 +38,34 @@ class WorkspaceHandler:
 
     @transaction.atomic
     def handle_workspace(
-            self, user_id: str, account_id: str, name: str,
-            description: Optional[str] = None) -> WorkspaceDTO:
+            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
 
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
             user_storage=self.user_storage
         )
-
-        workspace_input_data = CreateWorkspaceDTO(
-            name=f"{name}'s Workspace",
-            description=description,
-            user_id=user_id,
-            account_id=account_id
-        )
         workspace_data = workspace_interactor.create_workspace(
-            workspace_input_data)
+            workspace_data)
 
         workspace_member_input = AddMemberToWorkspaceDTO(
             workspace_id=workspace_data.workspace_id,
-            user_id=user_id,
+            user_id=workspace_data.user_id,
             role=Role.ADMIN,
-            added_by=user_id
+            added_by=workspace_data.user_id
         )
 
         self.workspace_storage.add_member_to_workspace(
             workspace_member_data=workspace_member_input)
 
         space_data = self._create_space(
-            workspace_id=workspace_data.workspace_id, user_id=user_id)
+            workspace_id=workspace_data.workspace_id,
+            user_id=workspace_data.user_id
+        )
 
-        self._create_list(space_id=space_data.space_id, user_id=user_id)
+        self._create_list(
+            space_id=space_data.space_id, user_id=workspace_data.user_id
+        )
 
         return workspace_data
 

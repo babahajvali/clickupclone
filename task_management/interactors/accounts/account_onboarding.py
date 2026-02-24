@@ -4,7 +4,7 @@ from django.db import transaction
 
 from task_management.interactors.accounts.account_interactor import \
     AccountInteractor
-from task_management.interactors.dtos import AccountDTO
+from task_management.interactors.dtos import AccountDTO, CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, \
@@ -81,6 +81,11 @@ class AccountOnboardingHandler:
             view_storage=self.view_storage
         )
 
-        return workspace_onboarding.handle_workspace(
-            account_id=account_id, user_id=owner_id, name=name,
-            description=None)
+        workspace_input_data = CreateWorkspaceDTO(
+            name=f"{name}'s Workspace",
+            description=None,
+            user_id=owner_id,
+            account_id=account_id
+        )
+
+        return workspace_onboarding.handle_workspace(workspace_data=workspace_input_data)

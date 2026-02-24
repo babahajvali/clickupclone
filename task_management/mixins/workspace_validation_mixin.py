@@ -23,6 +23,14 @@ class WorkspaceValidationMixin:
         if is_workspace_delete:
             raise DeletedWorkspaceFound(workspace_id=workspace_id)
 
+    def check_workspace_exists(self, workspace_id: str):
+        is_workspace_exists = self.workspace_storage.is_workspace_exists(
+            workspace_id=workspace_id)
+
+        is_workspace_not_exists = not is_workspace_exists
+        if is_workspace_not_exists:
+            raise WorkspaceNotFound(workspace_id=workspace_id)
+
     def check_user_is_workspace_owner(self, user_id: str,
                                       workspace_id: str):
         is_owner = self.workspace_storage.validate_user_is_workspace_owner(

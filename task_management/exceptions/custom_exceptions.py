@@ -8,12 +8,29 @@ class EmptyName(Exception):
         self.name = name
 
 
+class EmptyWorkspaceName(Exception):
+    def __init__(self, workspace_name: str):
+        self.workspace_name = workspace_name
+
+    def __str__(self):
+        return f"Empty workspace name is found '{self.workspace_name}'"
+
+
+class EmptyViewName(Exception):
+    def __init__(self, view_name: str):
+        self.view_name = view_name
+
+    def __str__(self):
+        return f"Empty view name is found '{self.view_name}'"
+
+
 class EmptyTaskTitle(Exception):
     def __init__(self, title: str):
         self.title = title
 
     def __str__(self):
         return f"Empty title is found '{self.title}'"
+
 
 class EmptyListName(Exception):
     def __init__(self, list_name: str):
@@ -171,7 +188,7 @@ class DeletedTaskFound(Exception):
         self.task_id = task_id
 
 
-class DeletedListFount(Exception):
+class DeletedListFound(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -264,6 +281,11 @@ class EmailAlreadyExists(Exception):
 class PhoneNumberAlreadyExists(Exception):
     def __init__(self, phone_number: str):
         self.phone_number = phone_number
+
+
+class NothingToUpdateUser(Exception):
+    def __init__(self, user_id: str):
+        self.user_id = user_id
 
 
 class UsernameNotFound(Exception):

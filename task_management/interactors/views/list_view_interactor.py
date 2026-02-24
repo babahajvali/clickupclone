@@ -30,8 +30,9 @@ class ListViewInteractor:
     def view_mixin(self) -> ViewValidationMixin:
         return ViewValidationMixin(view_storage=self.view_storage)
 
-    def apply_view_for_list(self, view_id: str, list_id: str,
-                            user_id: str) -> ListViewDTO:
+    def apply_view_for_list(
+            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
+
         list_view_data = self.view_storage.get_list_view(list_id=list_id,
                                                          view_id=view_id)
         if list_view_data:

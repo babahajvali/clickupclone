@@ -53,7 +53,7 @@ class CreateTaskMutation(graphene.Mutation):
                 is_deleted=result.is_deleted,
                 created_by=result.created_by
             )
-        except custom_exceptions.DeletedListFount as e:
+        except custom_exceptions.DeletedListFound as e:
             return DeletedListType(list_id=e.list_id)
 
         except custom_exceptions.ListNotFound as e:

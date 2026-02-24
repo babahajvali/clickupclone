@@ -1,7 +1,7 @@
 from task_management.exceptions.custom_exceptions import \
     EmailNotFound, IncorrectPassword, \
     UsernameAlreadyExists, EmailAlreadyExists, \
-    PhoneNumberAlreadyExists, InactiveUser
+    PhoneNumberAlreadyExists, InactiveUser, NothingToUpdateUser
 from task_management.interactors.dtos import CreateUserDTO, UserDTO, \
     UpdateUserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import \
@@ -27,21 +27,8 @@ class UserInteractor:
 
     def update_user(self, user_update_data: UpdateUserDTO) -> UserDTO:
 
-        user_id = user_update_data.user_id
-        self.user_mixin.check_user_is_active(user_id=user_id)
-        is_username_provided = user_update_data.username is not None
-        is_email_provided = user_update_data.email is not None
-        is_phone_number_provided = user_update_data.phone_number is not None
-
-        if is_username_provided:
-            self._check_username_except_current_user(
-                username=user_update_data.username, user_id=user_id)
-        if is_email_provided:
-            self._check_email_except_current_user(email=user_update_data.email,
-                                                  user_id=user_id)
-        if is_phone_number_provided:
-            self._check_phone_number_except_current_user(
-                user_id=user_id, phone_number=user_update_data.phone_number)
+        self.user_mixin.check_user_is_active(user_id=user_update_data.user_id)
+        self._check_update_user_field_properties(user_data=user_update_data)
 
         return self.user_storage.update_user(user_data=user_update_data)
 
@@ -120,3 +107,35 @@ class UserInteractor:
 
         if is_user_exist_phone_number:
             raise PhoneNumberAlreadyExists(phone_number=phone_number)
+
+    def _check_update_user_field_properties(self, user_data: UpdateUserDTO):
+
+        if not self._has_at_least_one_field_to_update(user_data=user_data):
+            raise NothingToUpdateUser(user_id=user_data.user_id)
+
+        is_username_provided = user_data.username is not None
+        if is_username_provided:
+            self._check_username_except_current_user(
+                username=user_data.username, user_id=user_data.user_id)
+
+        is_email_provided = user_data.email is not None
+        if is_email_provided:
+            self._check_email_except_current_user(
+                email=user_data.email, user_id=user_data.user_id)
+
+        is_phone_number_provided = user_data.phone_number is not None
+        if is_phone_number_provided:
+            self._check_phone_number_except_current_user(
+                user_id=user_data.user_id, phone_number=user_data.phone_number)
+
+
+    @staticmethod
+    def _has_at_least_one_field_to_update(user_data: UpdateUserDTO) -> bool:
+        return any([
+            user_data.username is not None,
+            user_data.email is not None,
+            user_data.phone_number is not None,
+            user_data.full_name is not None,
+            user_data.gender is not None,
+            user_data.image_url is not None
+        ])

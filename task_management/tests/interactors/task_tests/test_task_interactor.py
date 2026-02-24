@@ -20,7 +20,7 @@ from task_management.interactors.storage_interfaces.task_storage_interface impor
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     ListNotFound,
-    DeletedListFount,
+    DeletedListFound,
     TaskNotFound
 )
 from task_management.tests.factories.interactor_factory import (
@@ -113,7 +113,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFount) as exc:
+        with pytest.raises(DeletedListFound) as exc:
             self.interactor.create_task(task_data)
 
         snapshot.assert_match(

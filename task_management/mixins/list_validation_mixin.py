@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import ListNotFound, \
-    DeletedListFount
+    DeletedListFound
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
 
@@ -17,7 +17,7 @@ class ListValidationMixin:
 
         is_list_delete = list_data.is_deleted
         if is_list_delete:
-            raise DeletedListFount(list_id=list_id)
+            raise DeletedListFound(list_id=list_id)
 
     def check_list_is_exists(self, list_id: str):
 

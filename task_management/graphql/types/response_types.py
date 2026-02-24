@@ -1,5 +1,7 @@
 import graphene
 
+from task_management.exceptions.custom_exceptions import \
+    WorkspaceMemberIdNotFound
 from task_management.graphql.types.error_types import \
     AccountNameAlreadyExistsType, UsernameAlreadyExists, \
     EmailAlreadyExists, PhoneNumberAlreadyExists, \
@@ -22,7 +24,9 @@ from task_management.graphql.types.error_types import \
     NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, UserNotWorkspaceMemberType, DeletedFieldType, \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
-    EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType
+    EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
+    EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
+    InvalidWorkspaceIdsFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -166,7 +170,8 @@ class CreateViewResponse(graphene.Union):
     class Meta:
         types = (
             ViewType,
-            ViewTypeNotFoundType
+            ViewTypeNotFoundType,
+            EmptyViewNameType
         )
 
 
@@ -174,7 +179,8 @@ class UpdateViewResponse(graphene.Union):
     class Meta:
         types = (
             ViewType,
-            ViewNotFoundType
+            ViewNotFoundType,
+            NothingToUpdateViewType
         )
 
 
@@ -226,8 +232,8 @@ class CreateWorkspaceResponse(graphene.Union):
             WorkspaceType,
             AccountNotFoundType,
             InactiveAccountType,
-            UserNotFoundType,
-            InactiveUserType,
+            UserNotAccountOwnerType,
+            EmptyWorkspaceNameType,
             ModificationNotAllowedType
         )
 
@@ -239,7 +245,6 @@ class UpdateWorkspaceResponse(graphene.Union):
             WorkspaceNotFoundType,
             DeletedWorkspaceType,
             UserNotWorkspaceOwnerType,
-            ModificationNotAllowedType
         )
 
 
@@ -248,7 +253,6 @@ class DeleteWorkspaceResponse(graphene.Union):
         types = (
             WorkspaceType,
             WorkspaceNotFoundType,
-            DeletedWorkspaceType,
             UserNotWorkspaceOwnerType
         )
 
@@ -260,7 +264,8 @@ class TransferWorkspaceResponse(graphene.Union):
             WorkspaceNotFoundType,
             UserNotWorkspaceOwnerType,
             UserNotFoundType,
-            InactiveUserType
+            InactiveUserType,
+            DeletedWorkspaceType
         )
 
 
@@ -268,7 +273,7 @@ class GetWorkspaceResponse(graphene.Union):
     class Meta:
         types = (
             WorkspacesType,
-            WorkspaceNotFoundType
+            InvalidWorkspaceIdsFoundType
         )
 
 
@@ -281,9 +286,34 @@ class AddMemberToWorkspaceResponse(graphene.Union):
             UserNotFoundType,
             InactiveUserType,
             UnexpectedRoleType,
-            ModificationNotAllowedType
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
         )
 
+
+class ChangeWorkspaceMemberRoleResponse(graphene.Union):
+    class Meta:
+        types = (
+            WorkspaceMemberType,
+            WorkspaceNotFoundType,
+            DeletedWorkspaceType,
+            UserNotFoundType,
+            InactiveUserType,
+            UnexpectedRoleType,
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
+        )
+
+
+class RemoveWorkspaceMemberResponse(graphene.Union):
+    class Meta:
+        types = (
+            WorkspaceMemberType,
+            UserNotWorkspaceMemberType,
+            WorkspaceMemberIdNotFound,
+            ModificationNotAllowedType,
+            InactiveWorkspaceMemberType,
+        )
 
 class CreateUserSpacePermissionResponse(graphene.Union):
     class Meta:
@@ -693,7 +723,8 @@ class ApplyListViewResponse(graphene.Union):
             ListNotFoundType,
             ViewNotFoundType,
             DeletedListType,
-            ModificationNotAllowedType
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -701,10 +732,9 @@ class RemoveListViewResponse(graphene.Union):
     class Meta:
         types = (
             ListViewType,
-            ListNotFoundType,
             ModificationNotAllowedType,
             ListViewNotFound,
-            DeletedListType
+            UserNotWorkspaceMemberType
         )
 
 
@@ -721,7 +751,8 @@ class GetUserWorkspacesResponse(graphene.Union):
     class Meta:
         types = (
             WorkspaceMembersType,
-            UserNotFoundType
+            UserNotFoundType,
+            InactiveUserType
         )
 
 

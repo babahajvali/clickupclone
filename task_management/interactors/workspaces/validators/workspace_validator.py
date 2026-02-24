@@ -2,7 +2,7 @@ from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
     WorkspaceMemberIdNotFound, UserNotWorkspaceMember, ModificationNotAllowed, \
-    InactiveWorkspaceMember, EmptyName, InvalidWorkspaceIdsFound, \
+    InactiveWorkspaceMember, EmptyWorkspaceName, InvalidWorkspaceIdsFound, \
     UnexpectedRole, WorkspaceMemberNotFound, NothingToUpdateWorkspace
 from task_management.exceptions.enums import Role, Permissions
 from task_management.interactors.storage_interfaces import \
@@ -51,7 +51,7 @@ class WorkspaceValidator:
         is_name_empty = not workspace_name or not workspace_name.strip()
 
         if is_name_empty:
-            raise EmptyName(name=workspace_name)
+            raise EmptyWorkspaceName(workspace_name=workspace_name)
 
     def check_workspace_ids(self, workspace_ids: list[str]):
 

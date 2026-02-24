@@ -3,11 +3,12 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, UnexpectedRoleType, InactiveUserType, \
-    UserNotFoundType, DeletedWorkspaceType, WorkspaceNotFoundType
+    UserNotFoundType, DeletedWorkspaceType, WorkspaceNotFoundType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     ChangeWorkspaceMemberRoleInputParams
 from task_management.graphql.types.response_types import \
-    AddMemberToWorkspaceResponse
+    AddMemberToWorkspaceResponse, ChangeWorkspaceMemberRoleResponse
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.workspaces.workspace_member_interactor import \
     WorkspaceMemberInteractor
@@ -18,7 +19,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
     class Arguments:
         params = ChangeWorkspaceMemberRoleInputParams(required=True)
 
-    Output = AddMemberToWorkspaceResponse
+    Output = ChangeWorkspaceMemberRoleResponse
 
     @staticmethod
     def mutate(root, info, params):
@@ -65,3 +66,6 @@ class ChangeMemberRoleMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

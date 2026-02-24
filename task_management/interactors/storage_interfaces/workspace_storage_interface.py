@@ -12,6 +12,10 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def is_workspace_exists(self, workspace_id: str) -> bool:
+        pass
+
+    @abstractmethod
     def create_workspace(self,
                          workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass

@@ -2,7 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType, DeletedListType, ListViewNotFound
+    ModificationNotAllowedType, DeletedListType, ListViewNotFound, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import RemoveListViewInputParams
 from task_management.graphql.types.response_types import RemoveListViewResponse
 from task_management.graphql.types.types import ListViewType
@@ -45,7 +46,9 @@ class RemoveListViewMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
-        except custom_exceptions.DeletedListFount as e:
-            return DeletedListType(list_id=e.list_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
+
         except custom_exceptions.ListViewNotFound as e:
             return ListViewNotFound(list_id=e.list_id, view_id=e.view_id)
