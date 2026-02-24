@@ -3,7 +3,7 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     DeletedSpaceType, ModificationNotAllowedType, WorkspaceNotFoundType, \
-    InactiveWorkspaceType
+    DeletedWorkspaceType, NothingToUpdateSpaceType
 from task_management.graphql.types.input_types import UpdateSpaceInputParams
 from task_management.graphql.types.response_types import UpdateSpaceResponse
 from task_management.graphql.types.types import SpaceType
@@ -31,14 +31,15 @@ class UpdateSpaceMutation(graphene.Mutation):
         )
 
         try:
-            update_space_data = UpdateSpaceDTO(
-                space_id=params.space_id,
-                name=params.name if params.name else None,
-                description=params.description if params.description else None
-            )
+            space_id=params.space_id
+            name=params.name
+            description=params.description
+
 
             result = interactor.update_space(
-                update_space_data=update_space_data,
+                space_id=space_id,
+                name=name,
+                description=description,
                 user_id=info.context.user_id
             )
 
@@ -62,8 +63,5 @@ class UpdateSpaceMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.WorkspaceNotFound as e:
-            return WorkspaceNotFoundType(workspace_id=e.workspace_id)
-
-        except custom_exceptions.WorkspaceDeletedException as e:
-            return InactiveWorkspaceType(workspace_id=e.workspace_id)
+        except custom_exceptions.NothingToUpdateSpace as e:
+            return NothingToUpdateSpaceType(space_id=e.space_id)

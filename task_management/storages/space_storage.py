@@ -60,15 +60,17 @@ class SpaceStorage(SpaceStorageInterface):
 
         return self._to_dto(space)
 
-    def get_next_space_order_in_workspace(self, workspace_id: str) -> int:
+    def get_last_space_order_in_workspace(self, workspace_id: str) -> int:
 
         last_space = Space.objects.filter(
             workspace_id=workspace_id, is_deleted=False).order_by(
             '-order').first()
 
-        next_order = (last_space.order + 1) if last_space else 1
+        order = 0
+        if last_space:
+            order = last_space.order
 
-        return next_order
+        return order
 
     def update_space(
             self, space_id: str, name: Optional[str],

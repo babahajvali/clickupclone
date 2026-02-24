@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
-    DeletedTaskType, ModificationNotAllowedType
+    DeletedTaskType, ModificationNotAllowedType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteTaskInputParams
 from task_management.graphql.types.response_types import DeleteTaskResponse
 from task_management.graphql.types.types import TaskType
@@ -49,8 +49,8 @@ class DeleteTaskMutation(graphene.Mutation):
         except custom_exceptions.TaskNotFound as e:
             return TaskNotFoundType(task_id=e.task_id)
 
-        except custom_exceptions.DeletedTaskFound as e:
-            return DeletedTaskType(task_id=e.task_id)
-
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

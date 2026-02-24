@@ -5,7 +5,8 @@ from task_management.exceptions.custom_exceptions import \
     UnsupportedVisibilityType
 from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    DeletedSpaceType, ModificationNotAllowedType, UnsupportedVisibilityType
+    DeletedSpaceType, ModificationNotAllowedType, UnsupportedVisibilityType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     SetSpaceVisibilityInputParams
 from task_management.graphql.types.response_types import \
@@ -66,3 +67,6 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
 
         except custom_exceptions.UnsupportedVisibilityType as e:
             return UnsupportedVisibilityType(visibility=e.visibility_type)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(uer_id=e.user_id)

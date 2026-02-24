@@ -42,13 +42,15 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
-    def get_next_task_order_in_list(self, list_id: str) -> int:
+    def get_last_task_order_in_list(self, list_id: str) -> int:
         last_task = Task.objects.filter(
             list_id=list_id, is_deleted=False).order_by('-order').first()
 
-        next_order = last_task.order + 1 if last_task else 1
+        order = 0
+        if last_task:
+            order = last_task.order
 
-        return next_order
+        return order
 
     def update_task(
             self, task_id: str, title: Optional[str],

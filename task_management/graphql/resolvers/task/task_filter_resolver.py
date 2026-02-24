@@ -48,9 +48,6 @@ def task_filter_resolver(root, info, params):
 
         return TasksType(tasks=tasks_output)
 
-    except ObjectDoesNotExist:
-        return ModificationNotAllowedType(user_id=params.user_id)
-
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
 

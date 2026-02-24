@@ -43,11 +43,11 @@ class SpaceInteractor:
             user_id=space_data.created_by,
             workspace_id=space_data.workspace_id)
 
-        order = self.space_storage.get_next_space_order_in_workspace(
+        order = self.space_storage.get_last_space_order_in_workspace(
             workspace_id=space_data.workspace_id)
 
         return self.space_storage.create_space(
-            space_data=space_data, order=order)
+            space_data=space_data, order=order + 1)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def update_space(
@@ -95,7 +95,7 @@ class SpaceInteractor:
     @invalidate_interactor_cache(cache_name="spaces")
     def delete_space(self, space_id: str, deleted_by: str) -> SpaceDTO:
 
-        self.space_mixin.check_space_is_active(space_id=space_id)
+        self.space_mixin.check_space_exists(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
         self.workspace_mixin.check_user_has_edit_access_to_workspace(

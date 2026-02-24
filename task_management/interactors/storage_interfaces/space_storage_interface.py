@@ -19,7 +19,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_next_space_order_in_workspace(self, workspace_id: str) -> int:
+    def get_last_space_order_in_workspace(self, workspace_id: str) -> int:
         pass
 
     @abstractmethod

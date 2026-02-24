@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOffset, \
-    InvalidLimit, InvalidOrder, EmptyName, NothingToUpdateTask
+    InvalidLimit, InvalidOrder, EmptyTaskTitle, NothingToUpdateTask
 from task_management.interactors.dtos import FilterDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 
@@ -37,7 +37,7 @@ class TaskValidator:
 
         is_title_empty = not title or not title.strip()
         if is_title_empty:
-            raise EmptyName(name=title)
+            raise EmptyTaskTitle(title=title)
 
     def check_task_update_field_properties(
             self, task_id: str, title: Optional[str],

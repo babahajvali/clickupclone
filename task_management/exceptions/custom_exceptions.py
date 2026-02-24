@@ -8,6 +8,13 @@ class EmptyName(Exception):
         self.name = name
 
 
+class EmptyTaskTitle(Exception):
+    def __init__(self, title: str):
+        self.title = title
+
+    def __str__(self):
+        return f"Empty title is found '{self.title}'"
+
 class EmptyListName(Exception):
     def __init__(self, list_name: str):
         self.list_name = list_name
@@ -209,7 +216,7 @@ class InvalidWorkspaceIdsFound(Exception):
         self.workspace_ids = workspace_ids
 
 
-class WorkspaceDeletedException(Exception):
+class DeletedWorkspaceFound(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 

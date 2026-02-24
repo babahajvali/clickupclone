@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces.workspace_storage_interface 
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     WorkspaceNotFound,
-    WorkspaceDeletedException,
+    DeletedWorkspaceFound,
     SpaceNotFound, DeletedSpaceFound,
 )
 from task_management.tests.factories.interactor_factory import (
@@ -55,7 +55,7 @@ class TestSpaceInteractor:
 
         self.workspace_storage.get_workspace.return_value = make_workspace(is_deleted=False)
         self.workspace_storage.get_workspace_member.return_value = make_permission(role=Role.ADMIN)
-        self.space_storage.get_next_space_order_in_workspace.return_value = 1
+        self.space_storage.get_last_space_order_in_workspace.return_value = 1
         self.space_storage.create_space.return_value = expected_result
 
         result = self.interactor.create_space(create_data)
@@ -76,7 +76,7 @@ class TestSpaceInteractor:
         create_data = CreateSpaceDTOFactory()
         self.workspace_storage.get_workspace.return_value = make_workspace(is_deleted=True)
 
-        with pytest.raises(WorkspaceDeletedException) as exc:
+        with pytest.raises(DeletedWorkspaceFound) as exc:
             self.interactor.create_space(create_data)
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")
@@ -209,7 +209,7 @@ class TestSpaceInteractor:
     def test_get_workspace_spaces_workspace_inactive(self, snapshot):
         self.workspace_storage.get_workspace.return_value = make_workspace(is_deleted=True)
 
-        with pytest.raises(WorkspaceDeletedException) as exc:
+        with pytest.raises(DeletedWorkspaceFound) as exc:
             self.interactor.get_workspace_spaces(workspace_id="inactive_id")
 
         snapshot.assert_match(repr(exc.value), "workspace_inactive.txt")

@@ -1,6 +1,6 @@
 from task_management.decorators.caching_decorators import interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    WorkspaceDeletedException, ModificationNotAllowed, \
+    DeletedWorkspaceFound, ModificationNotAllowed, \
     UserNotWorkspaceOwner, WorkspaceNotFound, UserNotWorkspaceMember
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
@@ -21,7 +21,7 @@ class WorkspaceValidationMixin:
 
         is_workspace_delete = workspace_data.is_deleted
         if is_workspace_delete:
-            raise WorkspaceDeletedException(workspace_id=workspace_id)
+            raise DeletedWorkspaceFound(workspace_id=workspace_id)
 
     def check_user_is_workspace_owner(self, user_id: str,
                                       workspace_id: str):

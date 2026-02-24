@@ -97,11 +97,19 @@ class TaskNotFoundType(graphene.ObjectType):
     task_id = graphene.String(required=True)
 
 
+class EmptyTaskTitleType(graphene.ObjectType):
+    title = graphene.String(required=True)
+
+
 class TaskAssigneeNotFoundType(graphene.ObjectType):
     assign_id = graphene.String(required=True)
 
 
 class DeletedTaskType(graphene.ObjectType):
+    task_id = graphene.String(required=True)
+
+
+class NothingToUpdateTaskType(graphene.ObjectType):
     task_id = graphene.String(required=True)
 
 
@@ -116,6 +124,13 @@ class NothingToUpdateListType(graphene.ObjectType):
 class SpaceNotFoundType(graphene.ObjectType):
     space_id = graphene.String(required=True)
 
+
+class EmptySpaceNameType(graphene.ObjectType):
+    space_name = graphene.String(required=True)
+
+
+class NothingToUpdateSpaceType(graphene.ObjectType):
+    space_id = graphene.String(required=True)
 
 class DeletedSpaceType(graphene.ObjectType):
     space_id = graphene.String(required=True)
@@ -149,7 +164,7 @@ class WorkspaceNotFoundType(graphene.ObjectType):
     workspace_id = graphene.String(required=True)
 
 
-class InactiveWorkspaceType(graphene.ObjectType):
+class DeletedWorkspaceType(graphene.ObjectType):
     workspace_id = graphene.String(required=True)
 
 

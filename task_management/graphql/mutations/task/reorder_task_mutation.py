@@ -2,7 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
-    DeletedTaskType, ModificationNotAllowedType, InvalidOrderType
+    DeletedTaskType, ModificationNotAllowedType, InvalidOrderType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import ReorderTaskInputParams
 from task_management.graphql.types.response_types import ReorderTaskResponse
 from task_management.graphql.types.types import TaskType
@@ -57,3 +58,6 @@ class ReorderTaskMutation(graphene.Mutation):
 
         except custom_exceptions.InvalidOrder as e:
             return InvalidOrderType(order=e.order)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

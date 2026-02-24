@@ -12,7 +12,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_next_task_order_in_list(self, list_id: str) -> int:
+    def get_last_task_order_in_list(self, list_id: str) -> int:
         pass
 
     @abstractmethod
