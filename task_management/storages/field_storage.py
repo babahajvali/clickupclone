@@ -1,6 +1,5 @@
 from typing import Optional
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 
 from task_management.exceptions.enums import FieldType
@@ -59,11 +58,13 @@ class FieldStorage(FieldStorageInterface):
         return field_data.exists()
 
     def get_field(self, field_id: str) -> FieldDTO | None:
-        try:
-            field_data = Field.objects.get(field_id=field_id)
-            return self._field_dto(field_data=field_data)
-        except ObjectDoesNotExist:
+
+        field_data = Field.objects.filter(field_id=field_id).first()
+        if field_data is None:
             return None
+
+        return self._field_dto(field_data=field_data)
+
 
     def update_field(self, field_id: str,
                      update_field_data: UpdateFieldDTO) -> FieldDTO:

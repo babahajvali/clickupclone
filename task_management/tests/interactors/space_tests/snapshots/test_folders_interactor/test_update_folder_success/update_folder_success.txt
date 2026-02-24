@@ -1,1 +1,1 @@
-FolderDTO(folder_id='f306d648-2965-4626-ac4c-504617189c76', name='music', description='Conference later quality bill.', space_id='9cebad6e-301a-4bd6-8c71-dbb0b8ea622f', order=2, is_active=True, created_by='93f78882-1d00-4f48-8ae9-c237ea0e1a6f', is_private=False)
+FolderDTO(folder_id='folder_1', name='Folder name', description='Folder description', space_id='space_1', order=1, is_deleted=False, created_by='user_1', is_private=False)

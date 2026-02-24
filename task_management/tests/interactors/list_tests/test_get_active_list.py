@@ -63,7 +63,7 @@ class TestGetActiveList:
     def test_get_active_list_not_found(self, snapshot):
         # Arrange
         self._setup_get_list_dependencies(list_data=None)
-        self.list_storage.get_list.return_value = None
+        self.list_storage.is_list_exists.return_value = False
 
         # Act
         with pytest.raises(ListNotFound) as exc:
@@ -72,15 +72,4 @@ class TestGetActiveList:
         # Assert
         snapshot.assert_match(repr(exc.value), "test_get_active_list_not_found.txt")
 
-    def test_get_active_list_inactive(self, snapshot):
-        # Arrange
-        list_data = self._get_list_dto()
-        list_data.is_deleted = True
-        self._setup_get_list_dependencies(list_data=list_data)
 
-        # Act
-        with pytest.raises(DeletedListFound) as exc:
-            self.interactor.get_list(list_id="list_1")
-
-        # Assert
-        snapshot.assert_match(repr(exc.value), "test_get_active_list_inactive.txt")

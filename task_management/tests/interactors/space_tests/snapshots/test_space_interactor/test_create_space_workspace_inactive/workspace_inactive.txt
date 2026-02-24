@@ -1,1 +1,1 @@
-WorkspaceDeletedException()
+DeletedWorkspaceFound()

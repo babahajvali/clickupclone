@@ -1,1 +1,1 @@
-ViewDTO(view_id=UUID('4b32774a-c69b-4444-8589-8c42d602193c'), name='Board View', description='Kanban board', view_type=<ViewTypes.TABLE: 'TABLE'>, created_by=UUID('12345678-1234-5678-1234-567812345679'))
+ViewDTO(view_id=UUID('6c86107a-ef45-4a9f-9075-b42782c0653d'), name='Board View', description='Kanban board', view_type=<ViewTypes.TABLE: 'TABLE'>, created_by=UUID('12345678-1234-5678-1234-567812345679'))

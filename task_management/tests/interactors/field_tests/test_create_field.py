@@ -11,7 +11,7 @@ from task_management.exceptions.custom_exceptions import (
     EmptyName,
     MissingFieldConfig,
     DropdownOptionsMissing,
-    InvalidFieldConfig,
+    InvalidFieldConfig, EmptyFieldName,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.fields.field_interactor import FieldInteractor
@@ -224,11 +224,11 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(EmptyName) as exc:
+        with pytest.raises(EmptyFieldName) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.name),
+            repr(exc.value.field_name),
             "test_create_field_empty_name.txt"
         )
 

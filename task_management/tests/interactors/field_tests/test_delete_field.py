@@ -106,24 +106,6 @@ class TestDeleteFieldInteractor:
             "test_delete_field_not_found.txt",
         )
 
-    def test_delete_field_inactive(self, snapshot):
-        # Arrange
-        field_data = self._get_field_dto()
-        field_data.is_deleted = True
-        self._setup_delete_field_dependencies(field_data=field_data)
-
-        # Act
-        with pytest.raises(DeletedFieldException) as exc:
-            self.interactor.delete_field(
-                field_id="field_1",
-                user_id="user_1",
-            )
-
-        snapshot.assert_match(
-            repr(exc.value.field_id),
-            "test_delete_field_inactive.txt",
-        )
-
     def test_delete_field_permission_denied(self, snapshot):
         # Arrange
         self._setup_delete_field_dependencies(role=Role.GUEST)

@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    EmptyName,
+    EmptyListName,
     DeletedFolderException,
     FolderNotFound,
     ModificationNotAllowed,
@@ -123,7 +123,7 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(EmptyName) as exc:
+        with pytest.raises(EmptyListName) as exc:
             self.interactor.create_list(dto)
 
         # Assert

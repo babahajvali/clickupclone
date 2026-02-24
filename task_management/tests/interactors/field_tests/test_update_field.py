@@ -9,7 +9,7 @@ from task_management.exceptions.custom_exceptions import (
     NothingToUpdateField,
     FieldNotFound,
     DeletedFieldException,
-    EmptyName,
+    EmptyFieldName,
     InvalidFieldConfig,
 )
 from task_management.exceptions.enums import FieldType, Role
@@ -190,11 +190,11 @@ class TestUpdateFieldInteractor:
         dto = self._get_update_dto(field_name="   ")
 
         # Act
-        with pytest.raises(EmptyName) as exc:
+        with pytest.raises(EmptyFieldName) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.name),
+            repr(exc.value.field_name),
             "test_update_field_empty_name.txt",
         )
 

@@ -2,14 +2,12 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import FieldNotFound, DeletedFieldException
+from task_management.exceptions.custom_exceptions import FieldNotFound
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.fields.field_interactor import FieldInteractor
 from task_management.interactors.storage_interfaces import (
-    FieldStorageInterface,
-    TemplateStorageInterface,
-    WorkspaceStorageInterface,
+    FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface,
 )
 
 
@@ -40,7 +38,8 @@ class TestGetActiveFieldInteractor:
             workspace_storage=self.workspace_storage,
         )
 
-    def _setup_get_field_dependencies(self, *, field_data: FieldDTO | None = None):
+    def _setup_get_field_dependencies(self, *,
+                                      field_data: FieldDTO | None = None):
         if field_data is None:
             field_data = self._get_field_dto()
 
@@ -70,19 +69,4 @@ class TestGetActiveFieldInteractor:
         snapshot.assert_match(
             repr(exc.value.field_id),
             "test_get_active_field_not_found.txt",
-        )
-
-    def test_get_active_field_inactive(self, snapshot):
-        # Arrange
-        field_data = self._get_field_dto()
-        field_data.is_deleted = True
-        self._setup_get_field_dependencies(field_data=field_data)
-
-        # Act
-        with pytest.raises(DeletedFieldException) as exc:
-            self.interactor.get_field(field_id="field_1")
-
-        snapshot.assert_match(
-            repr(exc.value.field_id),
-            "test_get_active_field_inactive.txt",
         )

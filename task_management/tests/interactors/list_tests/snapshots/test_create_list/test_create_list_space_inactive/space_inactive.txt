@@ -1,1 +1,1 @@
-SpaceDeletedException()
+DeletedSpaceFound()

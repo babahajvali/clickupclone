@@ -112,14 +112,13 @@ class TestReorderFieldInteractor:
     def test_reorder_field_same_order_returns_early(self):
         self._setup_dependencies(field_order=2)
 
-        result = self.interactor.reorder_field(
+        self.interactor.reorder_field(
             field_id="field_1",
             template_id="template_1",
             new_order=2,
             user_id="user_1"
         )
 
-        # should return early without calling update
         self.field_storage.update_field_order.assert_not_called()
 
 

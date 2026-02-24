@@ -1,1 +1,1 @@
-SpaceDTO(space_id='84fb6e1b-610c-4054-85e7-005cd8f84c51', name='New Space', description='New description', workspace_id='12345678-1234-5678-1234-567812345678', order=1, is_deleted=False, is_private=False, created_by='12345678-1234-5678-1234-567812345679')
+SpaceDTO(space_id='4b3d8492-d864-46d2-82d4-75a0606310e8', name='New Space', description='New description', workspace_id='12345678-1234-5678-1234-567812345678', order=1, is_deleted=False, is_private=False, created_by='12345678-1234-5678-1234-567812345679')

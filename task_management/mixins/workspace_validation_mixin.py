@@ -55,6 +55,6 @@ class WorkspaceValidationMixin:
             raise UserNotWorkspaceMember(user_id=user_id)
 
         has_write_permission = (
-                workspace_member_data.role not in Role.get_write_roles())
+                workspace_member_data.role in Role.get_write_roles())
         if not has_write_permission:
             raise ModificationNotAllowed(user_id=user_id)

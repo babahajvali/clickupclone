@@ -124,16 +124,17 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         return self._workspace_member_dto(data=workspace_member_data)
 
-    def get_workspace_member(self, workspace_id: str,
-                             user_id: str) -> WorkspaceMemberDTO | None:
-        try:
-            #use filter instead of get to avoid does not exist error
-            workspace_member_data = WorkspaceMember.objects.get(
-                workspace_id=workspace_id, user_id=user_id)
+    def get_workspace_member(
+            self, workspace_id: str, user_id: str) \
+            -> WorkspaceMemberDTO | None:
 
-            return self._workspace_member_dto(data=workspace_member_data)
-        except WorkspaceMember.DoesNotExist:
+        workspace_member_data = WorkspaceMember.objects.filter(
+            workspace_id=workspace_id, user_id=user_id).first()
+
+        if not workspace_member_data:
             return None
+
+        return self._workspace_member_dto(data=workspace_member_data)
 
     def get_workspace_member_by_id(self,
                                    workspace_member_id: int) -> WorkspaceMemberDTO:

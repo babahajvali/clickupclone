@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    EmptyName,
+    EmptyListName,
     DeletedListFound,
     ListNotFound,
     ModificationNotAllowed,
@@ -112,7 +112,7 @@ class TestUpdateList:
         self._setup_update_list_dependencies()
 
         # Act
-        with pytest.raises(EmptyName) as exc:
+        with pytest.raises(EmptyListName) as exc:
             self.interactor.update_list(
                 list_id="list_1",
                 user_id="user_id",
