@@ -124,7 +124,7 @@ class TestCreateTaskInteractor:
     def test_update_task_success(self, snapshot):
         update_data = UpdateTaskDTOFactory()
 
-        self.task_storage.get_task_by_id.return_value = TaskDTOFactory()
+        self.task_storage.get_task.return_value = TaskDTOFactory()
         self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.MEMBER)
         )
@@ -157,7 +157,7 @@ class TestCreateTaskInteractor:
 
     def test_get_task_success(self, snapshot):
         task = TaskDTOFactory()
-        self.task_storage.get_task_by_id.return_value = task
+        self.task_storage.get_task.return_value = task
 
         result = self.interactor.get_task(task.task_id)
 
@@ -167,7 +167,7 @@ class TestCreateTaskInteractor:
         )
 
     def test_get_task_not_found(self, snapshot):
-        self.task_storage.get_task_by_id.return_value = None
+        self.task_storage.get_task.return_value = None
 
         with pytest.raises(TaskNotFound) as exc:
             self.interactor.get_task("invalid_task")

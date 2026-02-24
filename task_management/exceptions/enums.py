@@ -36,6 +36,10 @@ class Role(Enum):
     def get_values(cls):
         return [member.value for member in cls]
 
+    @classmethod
+    def get_write_roles(cls):
+        return [cls.ADMIN, cls.MEMBER, cls.OWNER]
+
 
 class Permissions(Enum):
     FULL_EDIT = "FULL_EDIT"

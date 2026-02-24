@@ -43,15 +43,18 @@ class WorkspaceValidationMixin:
     def check_user_has_edit_access_to_workspace(
             self, user_id: str, workspace_id: str):
 
-        member_permission = self.workspace_storage.get_workspace_member(
+        # rename
+        workspace_member_data= self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id,
             user_id=user_id
         )
-        is_member_not_found = not member_permission
-        is_user_not_allowed = member_permission.role == Role.GUEST
+        # rename as user is not member of the workspace
+        is_user_not_workspace_member = not workspace_member_data
 
-        if is_member_not_found:
+        if is_user_not_workspace_member:
             raise UserNotWorkspaceMember(user_id=user_id)
 
-        if is_user_not_allowed:
+        has_write_permission = (
+                workspace_member_data.role not in Role.get_write_roles())
+        if not has_write_permission:
             raise ModificationNotAllowed(user_id=user_id)

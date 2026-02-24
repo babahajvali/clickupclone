@@ -127,6 +127,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
     def get_workspace_member(self, workspace_id: str,
                              user_id: str) -> WorkspaceMemberDTO | None:
         try:
+            #use filter instead of get to avoid does not exist error
             workspace_member_data = WorkspaceMember.objects.get(
                 workspace_id=workspace_id, user_id=user_id)
 

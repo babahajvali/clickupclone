@@ -44,7 +44,7 @@ class TestGetActiveFieldInteractor:
         if field_data is None:
             field_data = self._get_field_dto()
 
-        self.field_storage.get_field_by_id.return_value = field_data
+        self.field_storage.get_field.return_value = field_data
 
     def test_get_active_field_success(self, snapshot):
         # Arrange
@@ -61,7 +61,7 @@ class TestGetActiveFieldInteractor:
     def test_get_active_field_not_found(self, snapshot):
         # Arrange
         self._setup_get_field_dependencies(field_data=None)
-        self.field_storage.get_field_by_id.return_value = None
+        self.field_storage.get_field.return_value = None
 
         # Act
         with pytest.raises(FieldNotFound) as exc:

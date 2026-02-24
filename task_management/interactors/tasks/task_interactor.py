@@ -69,7 +69,7 @@ class TaskInteractor:
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
 
         self.task_mixin.check_task_is_active(task_id=task_id)
-        task_data = self.task_storage.get_task_by_id(task_id=task_id)
+        task_data = self.task_storage.get_task(task_id=task_id)
         self.task_validator.check_task_order(
             list_id=task_data.list_id, order=order
         )
@@ -92,7 +92,7 @@ class TaskInteractor:
     @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
 
-        self.task_mixin.check_task_exists(task_id=task_id)
+        self.task_mixin.get_task_if_exists(task_id=task_id)
         list_id = self.task_storage.get_task_list_id(task_id=task_id)
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id)
@@ -108,9 +108,9 @@ class TaskInteractor:
 
     def get_task(self, task_id: str) -> TaskDTO:
 
-        self.task_mixin.check_task_exists(task_id=task_id)
+        self.task_mixin.get_task_if_exists(task_id=task_id)
 
-        return self.task_storage.get_task_by_id(task_id=task_id)
+        return self.task_storage.get_task(task_id=task_id)
 
     def task_filter(self, task_filter_data: FilterDTO):
 

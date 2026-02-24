@@ -20,7 +20,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_field_by_id(self, field_id: str) -> FieldDTO:
+    def get_field(self, field_id: str) -> FieldDTO:
         pass
 
     @abstractmethod

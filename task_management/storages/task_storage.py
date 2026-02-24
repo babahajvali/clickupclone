@@ -70,7 +70,7 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
-    def get_task_by_id(self, task_id: str) -> TaskDTO:
+    def get_task(self, task_id: str) -> TaskDTO:
         task_data = Task.objects.get(task_id=task_id)
 
         return self._task_dto(task_data=task_data)

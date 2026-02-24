@@ -64,7 +64,7 @@ class TestDeleteFieldInteractor:
         if field_data is None:
             field_data = self._get_field_dto()
 
-        self.field_storage.get_field_by_id.return_value = field_data
+        self.field_storage.get_field.return_value = field_data
         self.field_storage.delete_field.return_value = field_data
 
         self.template_storage.get_workspace_id_from_template_id.return_value = (
@@ -92,7 +92,7 @@ class TestDeleteFieldInteractor:
     def test_delete_field_not_found(self, snapshot):
         # Arrange
         self._setup_delete_field_dependencies(field_data=None)
-        self.field_storage.get_field_by_id.return_value = None
+        self.field_storage.get_field.return_value = None
 
         # Act
         with pytest.raises(FieldNotFound) as exc:

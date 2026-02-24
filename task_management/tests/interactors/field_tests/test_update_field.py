@@ -71,7 +71,7 @@ class TestUpdateFieldInteractor:
     ):
         self.field_storage.is_field_name_exists.return_value = name_exists
         self.field_storage.update_field.return_value = self._get_field_dto()
-        self.field_storage.get_field_by_id.return_value = self._get_field_dto()
+        self.field_storage.get_field.return_value = self._get_field_dto()
 
         self.template_storage.get_workspace_id_from_template_id.return_value = (
             "workspace_id"
@@ -136,7 +136,7 @@ class TestUpdateFieldInteractor:
     def test_update_field_not_found(self, snapshot):
         # Arrange
         self._setup_update_field_dependencies()
-        self.field_storage.get_field_by_id.return_value = None
+        self.field_storage.get_field.return_value = None
         dto = self._get_update_dto()
 
         # Act
@@ -172,7 +172,7 @@ class TestUpdateFieldInteractor:
         self._setup_update_field_dependencies()
         inactive_field = self._get_field_dto()
         inactive_field.is_deleted = True
-        self.field_storage.get_field_by_id.return_value = inactive_field
+        self.field_storage.get_field.return_value = inactive_field
         dto = self._get_update_dto()
 
         # Act

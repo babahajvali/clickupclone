@@ -12,7 +12,7 @@ from task_management.graphql.types.response_types import \
 from task_management.graphql.types.types import FieldValueType
 from task_management.interactors.dtos import UpdateFieldValueDTO
 from task_management.interactors.fields.field_value_interactor import \
-    FieldValueInteractor
+    FieldResponseInteractor
 from task_management.storages import FieldStorage, TaskStorage, \
     WorkspaceStorage
 
@@ -29,7 +29,7 @@ class SetFieldValueMutation(graphene.Mutation):
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FieldValueInteractor(
+        interactor = FieldResponseInteractor(
             field_storage=field_storage,
             task_storage=task_storage,
             workspace_storage=workspace_storage
@@ -42,7 +42,7 @@ class SetFieldValueMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.set_task_field_value(
+            result = interactor.set_task_field_response(
                 set_value_data=update_data, user_id=info.context.user_id)
 
             return FieldValueType(

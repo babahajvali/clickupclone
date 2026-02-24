@@ -9,19 +9,20 @@ class TaskValidationMixin:
         self.task_storage = task_storage
 
     def check_task_is_active(self, task_id: str):
-        task_data = self.task_storage.get_task_by_id(task_id=task_id)
-
-        is_task_not_found = not task_data
-        if is_task_not_found:
-            raise TaskNotFound(task_id=task_id)
+        #rename as get_task
+        task_data = self.get_task_if_exists(task_id=task_id)
 
         is_task_deleted = task_data.is_deleted
         if is_task_deleted:
             raise DeletedTaskFound(task_id=task_id)
 
-    def check_task_exists(self, task_id: str):
-        is_task_exists = self.task_storage.is_task_exist(task_id=task_id)
+    #Maintain only unit operations in the storage method
+    #Check can we delete already deleted task
+    def get_task_if_exists(self, task_id: str):
+        task_data = self.task_storage.get_task(task_id=task_id)
 
-        is_task_not_found = not is_task_exists
+        is_task_not_found = not task_data
         if is_task_not_found:
             raise TaskNotFound(task_id=task_id)
+
+        return task_data

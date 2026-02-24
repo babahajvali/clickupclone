@@ -100,7 +100,7 @@ class FieldInteractor:
         self.field_mixin.check_field_is_active(
             field_id=update_field_data.field_id)
 
-        field_data = self.field_storage.get_field_by_id(
+        field_data = self.field_storage.get_field(
             field_id=update_field_data.field_id)
         self._check_update_field_properties(
             update_field_data=update_field_data, field_data=field_data
@@ -125,7 +125,7 @@ class FieldInteractor:
         self.field_validator.check_field_order(
             template_id=template_id, order=new_order)
 
-        field_dto = self.field_storage.get_field_by_id(field_id=field_id)
+        field_dto = self.field_storage.get_field(field_id=field_id)
         old_order = field_dto.order
 
         if old_order == new_order:
@@ -141,8 +141,8 @@ class FieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
 
-        self.field_mixin.check_field_is_exists(field_id=field_id)
-        field_data = self.field_storage.get_field_by_id(
+        self.field_mixin.get_field_if_exists(field_id=field_id)
+        field_data = self.field_storage.get_field(
             field_id=field_id)
         self.check_user_has_edit_access_to_template(
             template_id=field_data.template_id, user_id=user_id)
@@ -159,9 +159,9 @@ class FieldInteractor:
 
     def get_field(self, field_id: str) -> FieldDTO:
 
-        self.field_mixin.check_field_is_exists(field_id=field_id)
+        self.field_mixin.get_field_if_exists(field_id=field_id)
 
-        return self.field_storage.get_field_by_id(field_id=field_id)
+        return self.field_storage.get_field(field_id=field_id)
 
     def check_user_has_edit_access_to_template(
             self, template_id: str, user_id: str):
@@ -191,7 +191,7 @@ class FieldInteractor:
     def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
 
-        if not self.field_validator.is_field_p  roperties_not_empty(
+        if not self.field_validator.is_field_properties_not_empty(
                 update_field_data=update_field_data):
             raise NothingToUpdateField(field_id=field_data.field_id)
 

@@ -140,7 +140,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field_by_id(field_id=str(field_id))
+        result = storage.get_field(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_success.txt")
@@ -152,7 +152,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field_by_id(field_id=str(field_id))
+        result = storage.get_field(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_failure.txt")

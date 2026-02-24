@@ -89,7 +89,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.get_task_by_id(task_id=str(task_id))
+        result = storage.get_task(task_id=str(task_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_task_by_id_success.txt")

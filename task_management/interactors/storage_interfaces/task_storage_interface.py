@@ -22,7 +22,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_task_by_id(self, task_id: str) -> TaskDTO:
+    def get_task(self, task_id: str) -> TaskDTO:
         pass
 
     @abstractmethod

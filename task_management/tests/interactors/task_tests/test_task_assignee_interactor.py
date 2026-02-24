@@ -76,7 +76,7 @@ class TestTaskAssigneeInteractor:
     def test_assign_task_assignee_success(self, snapshot):
 
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
+        self.task_storage.get_task.return_value = self._mock_active_task()
         self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.MEMBER)
         )
@@ -95,7 +95,7 @@ class TestTaskAssigneeInteractor:
 
     def test_assign_task_assignee_permission_denied(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
+        self.task_storage.get_task.return_value = self._mock_active_task()
         self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.GUEST)
         )
@@ -114,7 +114,7 @@ class TestTaskAssigneeInteractor:
         )
 
     def test_assign_task_assignee_user_not_found(self, snapshot):
-        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
+        self.task_storage.get_task.return_value = self._mock_active_task()
         self.task_storage.get_user_task_assignee.return_value = None
         self.user_storage.get_user_data.return_value = None
         self.task_storage.get_task_assignee.return_value = TaskAssigneeDTO(
@@ -139,7 +139,7 @@ class TestTaskAssigneeInteractor:
 
     def test_assign_task_assignee_task_not_found(self, snapshot):
         self.user_storage.get_user_data.return_value = self._mock_active_user()
-        self.task_storage.get_task_by_id.return_value = None
+        self.task_storage.get_task.return_value = None
         self.task_storage.get_user_task_assignee.return_value = None
 
         with pytest.raises(TaskNotFound) as exc:
@@ -164,7 +164,7 @@ class TestTaskAssigneeInteractor:
         )
 
         expected = TaskAssigneeDTOFactory()
-        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
+        self.task_storage.get_task.return_value = self._mock_active_task()
         self.task_storage.remove_task_assignee.return_value = expected
         self.workspace_storage.get_workspace_member.return_value = (
             make_permission(Role.MEMBER)
@@ -181,7 +181,7 @@ class TestTaskAssigneeInteractor:
         )
 
     def test_get_task_assignee_success(self, snapshot):
-        self.task_storage.get_task_by_id.return_value = self._mock_active_task()
+        self.task_storage.get_task.return_value = self._mock_active_task()
 
         assignees = [TaskAssigneeDTOFactory(), TaskAssigneeDTOFactory()]
         self.task_storage.get_task_assignees.return_value = assignees

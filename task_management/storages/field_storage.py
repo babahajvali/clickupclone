@@ -58,7 +58,7 @@ class FieldStorage(FieldStorageInterface):
 
         return field_data.exists()
 
-    def get_field_by_id(self, field_id: str) -> FieldDTO | None:
+    def get_field(self, field_id: str) -> FieldDTO | None:
         try:
             field_data = Field.objects.get(field_id=field_id)
             return self._field_dto(field_data=field_data)
