@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import InvalidOrder, \
-    NothingToUpdateList, EmptyName, UserHaveAlreadyListPermission, \
+    NothingToUpdateList, EmptyListName, UserHaveAlreadyListPermission, \
     UnsupportedVisibilityType, UnexpectedPermission
 from task_management.exceptions.enums import Visibility, Permissions
 from task_management.interactors.storage_interfaces import ListStorageInterface
@@ -64,7 +64,7 @@ class ListValidator:
         is_name_empty = not list_name or not list_name.strip()
 
         if is_name_empty:
-            raise EmptyName(name=list_name)
+            raise EmptyListName(name=list_name)
 
     def get_list_order(self, folder_id: Optional[str], space_id: str) -> int:
 

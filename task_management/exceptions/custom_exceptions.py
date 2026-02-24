@@ -7,6 +7,28 @@ class EmptyName(Exception):
     def __init__(self, name: str):
         self.name = name
 
+
+class EmptyListName(Exception):
+    def __init__(self, list_name: str):
+        self.list_name = list_name
+
+    def __str__(self):
+        return f"Empty List name fount '{self.list_name}'"
+
+
+class EmptyFolderName(Exception):
+    def __init__(self, folder_name: str):
+        self.folder_name = folder_name
+
+    def __str__(self):
+        return f"Empty folder name found '{self.folder_name}'"
+
+
+class EmptyFieldName(Exception):
+    def __init__(self, field_name: str):
+        self.field_name = field_name
+
+
 class EmptySpaceName(Exception):
     def __init__(self, space_name: str):
         self.space_name = space_name

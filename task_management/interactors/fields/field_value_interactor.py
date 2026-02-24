@@ -42,7 +42,9 @@ class FieldValueInteractor:
         self.field_mixin.check_field_is_active(
             field_id=set_value_data.field_id
         )
-
+        self._check_user_has_edit_access_for_field(
+            field_id=set_value_data.field_id, user_id=user_id
+        )
         field_data = self.field_storage.get_field_by_id(
             field_id=set_value_data.field_id
         )
@@ -50,9 +52,6 @@ class FieldValueInteractor:
             config=field_data.config,
             value=set_value_data.value,
             field_type=field_data.field_type.value
-        )
-        self._check_user_has_edit_access_for_field(
-            field_id=set_value_data.field_id, user_id=user_id
         )
 
         return self.field_storage.update_or_create_task_field_value(
