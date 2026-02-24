@@ -91,11 +91,11 @@ class FieldInteractor:
         )
 
         last_field_order_in_template = (
-            self.field_storage.get_next_field_order_in_template(
+            self.field_storage.get_last_field_order_in_template(
                 template_id=field_data.template_id))
 
         return self.field_storage.create_field(
-            create_field_data=field_data, order=last_field_order_in_template)
+            create_field_data=field_data, order=last_field_order_in_template + 1)
 
     @invalidate_interactor_cache(cache_name="fields")
     def update_field(

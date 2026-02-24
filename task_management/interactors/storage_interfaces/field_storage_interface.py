@@ -81,5 +81,5 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_next_field_order_in_template(self, template_id: str) -> int:
+    def get_last_field_order_in_template(self, template_id: str) -> int:
         pass

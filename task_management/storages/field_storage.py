@@ -226,10 +226,13 @@ class FieldStorage(FieldStorageInterface):
             "template__list__space__workspace").get(field_id=field_id)
         return field_data.template.list.space.workspace.workspace_id
 
-    def get_next_field_order_in_template(self, template_id: str) -> int:
+    def get_last_field_order_in_template(self, template_id: str) -> int:
         last_field = Field.objects.filter(
             template_id=template_id,
             is_delete=False).order_by('-order').first()
-        next_order = (last_field.order + 1) if last_field else 1
 
-        return next_order
+        order = 0
+        if last_field:
+            order = last_field.order
+
+        return order

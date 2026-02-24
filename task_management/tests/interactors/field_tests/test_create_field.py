@@ -91,7 +91,7 @@ class TestCreateFieldInteractor:
         )
 
         self.field_storage.is_field_name_exists.return_value = name_exists
-        self.field_storage.get_next_field_order_in_template.return_value = 1
+        self.field_storage.get_last_field_order_in_template.return_value = 1
         self.field_storage.create_field.return_value = self._get_field_dto()
 
     def test_create_field_success(self, snapshot):
