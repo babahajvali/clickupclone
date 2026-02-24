@@ -3,10 +3,10 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     EmptyName,
-    FolderDeletedException,
+    DeletedFolderException,
     FolderNotFound,
     ModificationNotAllowed,
-    SpaceDeletedException,
+    DeletedSpaceFound,
     SpaceNotFound,
 )
 from task_management.exceptions.enums import Role
@@ -78,8 +78,8 @@ class TestCreateList:
             if folder_exists else None
         )
 
-        self.list_storage.get_active_lists_last_order_in_space.return_value = 1
-        self.list_storage.get_active_lists_last_order_in_folder.return_value = 1
+        self.list_storage.get_last_list_order_in_space.return_value = 1
+        self.list_storage.get_last_list_order_in_folder.return_value = 1
         self.list_storage.create_list.return_value = self._get_list_dto(
             folder_id="folder_1"
         )
@@ -163,7 +163,7 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(SpaceDeletedException) as exc:
+        with pytest.raises(DeletedSpaceFound) as exc:
             self.interactor.create_list(dto)
 
         # Assert
@@ -203,7 +203,7 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(FolderDeletedException) as exc:
+        with pytest.raises(DeletedFolderException) as exc:
             self.interactor.create_list(dto)
 
         # Assert

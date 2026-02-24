@@ -64,5 +64,5 @@ class CreateAccountMutation(graphene.Mutation):
             return UserNotFoundType(user_id=e.user_id)
         except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)
-        except custom_exceptions.EmptyName as e:
-            return EmptyAccountNameExistsType(name=e.name)
+        except custom_exceptions.EmptyAccountName as e:
+            return EmptyAccountNameExistsType(account_name=e.account_name)

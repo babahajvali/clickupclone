@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    ListDeletedException,
+    DeletedListFount,
     ListNotFound,
 )
 from task_management.interactors.dtos import ListDTO
@@ -79,7 +79,7 @@ class TestGetActiveList:
         self._setup_get_list_dependencies(list_data=list_data)
 
         # Act
-        with pytest.raises(ListDeletedException) as exc:
+        with pytest.raises(DeletedListFount) as exc:
             self.interactor.get_list(list_id="list_1")
 
         # Assert

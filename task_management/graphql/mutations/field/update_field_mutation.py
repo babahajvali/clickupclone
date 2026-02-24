@@ -1,10 +1,14 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import DeletedFieldException, \
+    UserNotWorkspaceMember
 from task_management.graphql.types.error_types import FieldNotFoundType, \
     TemplateNotFoundType, FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
-    InvalidFieldDefaultValueType, NothingToUpdateFieldType
+    InvalidFieldDefaultValueType, NothingToUpdateFieldType, DeletedFieldType, \
+    EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -62,8 +66,23 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.FieldNotFound as e:
             return FieldNotFoundType(field_id=e.field_id)
 
+        except custom_exceptions.DeletedFieldException as e:
+            return DeletedFieldType(field_id=e.field_id)
+
         except custom_exceptions.FieldNameAlreadyExists as e:
             return FieldNameAlreadyExistsType(field_name=e.field_name)
+
+        except custom_exceptions.EmptyFieldName as e:
+            return EmptyFieldNameType(field_name=e.field_name)
+
+        except custom_exceptions.MissingFieldConfig as e:
+            return MissingFieldConfigType(field_type=e.field_type)
+
+        except custom_exceptions.DropdownOptionsMissing as e:
+            return DropdownOptionsMissingType(field_type=e.field_type)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

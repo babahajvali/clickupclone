@@ -1,6 +1,6 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    InactiveSpaceType
+    DeletedSpaceType
 from task_management.graphql.types.types import SpaceType
 from task_management.interactors.spaces.space_interactor import \
     SpaceInteractor
@@ -37,5 +37,5 @@ def get_space_resolver(root, info, params):
     except custom_exceptions.SpaceNotFound as e:
         return SpaceNotFoundType(space_id=e.space_id)
 
-    except custom_exceptions.SpaceDeletedException as e:
-        return InactiveSpaceType(space_id=e.space_id)
+    except custom_exceptions.DeletedSpaceFound as e:
+        return DeletedSpaceType(space_id=e.space_id)

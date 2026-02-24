@@ -52,10 +52,10 @@ class FolderInteractor:
             space_id=folder_data.space_id,
             user_id=folder_data.created_by)
 
-        order = self.folder_storage.get_next_folder_order_in_space(
+        order = self.folder_storage.get_last_folder_order_in_space(
             space_id=folder_data.space_id)
 
-        return self.folder_storage.create_folder(folder_data, order=order)
+        return self.folder_storage.create_folder(folder_data, order=order + 1)
 
     @invalidate_interactor_cache(cache_name="folders")
     def update_folder(
@@ -103,7 +103,7 @@ class FolderInteractor:
     @invalidate_interactor_cache(cache_name="folders")
     def delete_folder(self, folder_id: str, user_id: str) -> FolderDTO:
 
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
+        self.folder_mixin.check_folder_is_exists(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id)
@@ -132,6 +132,12 @@ class FolderInteractor:
 
         return self.folder_storage.get_space_folders(
             space_ids=[space_id])
+
+
+    def get_folder(self, folder_id: str) -> FolderDTO:
+        self.folder_mixin.check_folder_is_exists(folder_id=folder_id)
+
+        return self.folder_storage.get_folder(folder_id=folder_id)
 
     def add_user_for_folder_permission(
             self, permission_data: CreateFolderPermissionDTO) \

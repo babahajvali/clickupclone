@@ -1,8 +1,11 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import DeletedFieldException
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType, InvalidFieldValue
+    ModificationNotAllowedType, InvalidFieldValue, TaskNotFoundType, \
+    DeletedTaskType, FieldNotFoundType, DeletedFieldType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import SetFieldValuesInputParams
 from task_management.graphql.types.response_types import \
     SetTaskFieldValueResponse
@@ -48,6 +51,21 @@ class SetFieldValueMutation(graphene.Mutation):
                 field_id=result.field_id,
                 value=result.value
             )
+
+        except custom_exceptions.TaskNotFound as e:
+            return TaskNotFoundType(task_id=e.task_id)
+
+        except custom_exceptions.DeletedTaskFound as e:
+            return DeletedTaskType(task_id=e.task_id)
+
+        except custom_exceptions.FieldNotFound as e:
+            return FieldNotFoundType(field_id=e.field_id)
+
+        except custom_exceptions.DeletedFieldException as e:
+            return DeletedFieldType(field_id=e.field_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
 
         except custom_exceptions.ModificationNotAllowed as exc:
             return ModificationNotAllowedType(user_id=exc.user_id)

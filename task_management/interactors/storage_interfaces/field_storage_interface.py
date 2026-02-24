@@ -83,3 +83,7 @@ class FieldStorageInterface(ABC):
     @abstractmethod
     def get_last_field_order_in_template(self, template_id: str) -> int:
         pass
+
+    @abstractmethod
+    def is_field_exists(self, field_id: str) -> bool:
+        pass

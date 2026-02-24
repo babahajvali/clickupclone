@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    SpaceNotFound, SpaceDeletedException
+    SpaceNotFound, DeletedSpaceFound
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface
 
@@ -20,7 +20,7 @@ class SpaceValidationMixin:
 
         is_space_delete = space_data.is_deleted
         if is_space_delete:
-            raise SpaceDeletedException(space_id=space_id)
+            raise DeletedSpaceFound(space_id=space_id)
 
     def check_space_exists(self, space_id: str):
         is_exist = self.space_storage.check_space_exists(space_id=space_id)

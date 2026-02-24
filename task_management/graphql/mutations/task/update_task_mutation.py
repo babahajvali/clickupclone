@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import InactiveListType, \
+from task_management.graphql.types.error_types import DeletedListType, \
     ListNotFoundType, ModificationNotAllowedType, TaskNotFoundType, \
     DeletedTaskType
 from task_management.graphql.types.input_types import UpdateTaskInputParams
@@ -42,8 +42,8 @@ class UpdateTaskMutation(graphene.Mutation):
                 is_delete=result.is_deleted,
                 created_by=result.created_by
             )
-        except custom_exceptions.ListDeletedException as e:
-            return InactiveListType(list_id=e.list_id)
+        except custom_exceptions.DeletedListFount as e:
+            return DeletedListType(list_id=e.list_id)
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowed as e:

@@ -3,12 +3,12 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     EmptyName,
-    FolderDeletedException,
+    DeletedFolderException,
     FolderNotFound,
     InvalidOrder,
     ModificationNotAllowed,
     NothingToUpdateFolderException,
-    SpaceDeletedException,
+    DeletedSpaceFound,
     SpaceNotFound,
     UnsupportedVisibilityType,
 )
@@ -85,7 +85,7 @@ class TestFolderInteractor:
         )
         folder_storage.get_folder.return_value = folder_data if folder_exists else None
         folder_storage.get_folder_space_id.return_value = "space_1"
-        folder_storage.get_next_folder_order_in_space.return_value = 2
+        folder_storage.get_last_folder_order_in_space.return_value = 2
         folder_storage.get_space_folder_count.return_value = space_folder_count
         folder_storage.create_folder.return_value = folder_data
         folder_storage.update_folder.return_value = folder_data
@@ -117,7 +117,7 @@ class TestFolderInteractor:
         result = interactor.create_folder(dto)
 
         assert result.folder_id == "folder_1"
-        interactor.folder_storage.get_next_folder_order_in_space.assert_called_once_with(
+        interactor.folder_storage.get_last_folder_order_in_space.assert_called_once_with(
             space_id="space_1"
         )
         interactor.folder_storage.create_folder.assert_called_once_with(dto, order=2)
@@ -159,7 +159,7 @@ class TestFolderInteractor:
         interactor = self._get_interactor(space_active=False)
         dto = self._get_create_folder_dto()
 
-        with pytest.raises(SpaceDeletedException) as exc:
+        with pytest.raises(DeletedSpaceFound) as exc:
             interactor.create_folder(dto)
 
         assert exc.value.space_id == "space_1"
@@ -195,7 +195,7 @@ class TestFolderInteractor:
     def test_update_folder_inactive(self):
         interactor = self._get_interactor(folder_active=False)
 
-        with pytest.raises(FolderDeletedException) as exc:
+        with pytest.raises(DeletedFolderException) as exc:
             interactor.update_folder(
                 folder_id="folder_1",
                 user_id="user_1",

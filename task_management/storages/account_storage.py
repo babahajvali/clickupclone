@@ -116,3 +116,6 @@ class AccountStorage(AccountStorageInterface):
             account_data = account_data.exclude(account_id=account_id)
 
         return account_data.exists()
+
+    def is_account_exists(self, account_id: str) -> bool:
+        return Account.objects.filter(account_id=account_id).exists()

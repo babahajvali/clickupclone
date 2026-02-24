@@ -1,8 +1,11 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.custom_exceptions import DeletedSpaceFound, \
+    UserNotWorkspaceMember
 from task_management.graphql.types.error_types import ListNotFoundType, \
-    InactiveListType, ModificationNotAllowedType, InvalidOrderType
+    DeletedListType, ModificationNotAllowedType, InvalidOrderType, \
+    SpaceNotFoundType, DeletedSpaceType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     ReorderListInSpaceInputParams
 from task_management.graphql.types.response_types import \
@@ -59,11 +62,20 @@ class ReorderListInSpaceMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.ListDeletedException as e:
-            return InactiveListType(list_id=e.list_id)
+        except custom_exceptions.DeletedListFount as e:
+            return DeletedListType(list_id=e.list_id)
+
+        except custom_exceptions.SpaceNotFound as e:
+            return SpaceNotFoundType(space_id=e.space_id)
+
+        except custom_exceptions.DeletedSpaceFound as e:
+            return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
 
         except custom_exceptions.InvalidOrder as e:
             return InvalidOrderType(order=e.order)

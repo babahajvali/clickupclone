@@ -2,7 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    InactiveSpaceType, ModificationNotAllowedType
+    DeletedSpaceType, ModificationNotAllowedType, EmptyFolderNameType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import CreateFolderInputParams
 from task_management.graphql.types.response_types import CreateFolderResponse
 from task_management.graphql.types.types import FolderType
@@ -55,11 +56,17 @@ class CreateFolderMutation(graphene.Mutation):
                 is_private=result.is_private
             )
 
+        except custom_exceptions.EmptyFolderName as e:
+            return EmptyFolderNameType(folder_name=e.folder_name)
+
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.SpaceDeletedException as e:
-            return InactiveSpaceType(space_id=e.space_id)
+        except custom_exceptions.DeletedSpaceFound as e:
+            return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

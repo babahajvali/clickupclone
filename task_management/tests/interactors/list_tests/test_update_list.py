@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     EmptyName,
-    ListDeletedException,
+    DeletedListFount,
     ListNotFound,
     ModificationNotAllowed,
     NothingToUpdateList,
@@ -147,7 +147,7 @@ class TestUpdateList:
         self._setup_update_list_dependencies(list_data=list_data)
 
         # Act
-        with pytest.raises(ListDeletedException) as exc:
+        with pytest.raises(DeletedListFount) as exc:
             self.interactor.update_list(
                 list_id="list_1",
                 user_id="user_id",

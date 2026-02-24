@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    InactiveSpaceType, ModificationNotAllowedType
+    DeletedSpaceType, ModificationNotAllowedType
 from task_management.graphql.types.input_types import DeleteSpaceInputParams
 from task_management.graphql.types.response_types import DeleteSpaceResponse
 from task_management.graphql.types.types import SpaceType
@@ -47,8 +47,8 @@ class DeleteSpaceMutation(graphene.Mutation):
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.SpaceDeletedException as e:
-            return InactiveSpaceType(space_id=e.space_id)
+        except custom_exceptions.DeletedSpaceFound as e:
+            return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

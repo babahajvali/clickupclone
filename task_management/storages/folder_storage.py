@@ -33,6 +33,9 @@ class FolderStorage(FolderStorageInterface):
         except Folder.DoesNotExist:
             return None
 
+    def is_folder_exists(self, folder_id: str) -> bool:
+        return Folder.objects.filter(folder_id=folder_id).exists()
+
     def create_folder(
             self, create_folder_data: CreateFolderDTO, order: int) \
             -> FolderDTO:
@@ -46,12 +49,14 @@ class FolderStorage(FolderStorageInterface):
 
         return self._folder_dto(folder_data)
 
-    def get_next_folder_order_in_space(self, space_id: str) -> int:
+    def get_last_folder_order_in_space(self, space_id: str) -> int:
         last_folder = Folder.objects.filter(
             space_id=space_id, is_deleet=False).order_by('-order').first()
-        next_order = (last_folder.order + 1) if last_folder else 1
+        order = 0
+        if last_folder:
+            order = last_folder.order
 
-        return next_order
+        return order
 
     def update_folder(
             self, folder_id: str, name: Optional[str],
@@ -153,7 +158,7 @@ class FolderStorage(FolderStorageInterface):
         return UserFolderPermissionDTO(
             id=data.pk,
             folder_id=data.folder.folder_id,
-            user_id=data.user_id,
+            user_id=data.user.user_id,
             permission_type=data.permission_type,
             is_active=data.is_active,
             added_by=data.added_by.user_id,

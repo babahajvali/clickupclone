@@ -18,16 +18,20 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def is_list_exists(self, list_id: str) -> bool:
+        pass
+
+    @abstractmethod
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
         # order is auto-increase in folder or spaces
         pass
 
     @abstractmethod
-    def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
+    def get_last_list_order_in_folder(self, folder_id: str) -> int:
         pass
 
     @abstractmethod
-    def get_active_lists_last_order_in_space(self, space_id: str) -> int:
+    def get_last_list_order_in_space(self, space_id: str) -> int:
         pass
 
     @abstractmethod

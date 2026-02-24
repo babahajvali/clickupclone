@@ -77,13 +77,14 @@ class FieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
 
+        self._create_field_input_validation(field_data=field_data)
         self.template_mixin.check_template_exists(
             template_id=field_data.template_id)
         self.check_user_has_edit_access_to_template(
             template_id=field_data.template_id,
             user_id=field_data.created_by_user_id
         )
-        self._create_field_input_validation(field_data=field_data)
+
 
         last_field_order_in_template = (
             self.field_storage.get_last_field_order_in_template(
@@ -140,7 +141,7 @@ class FieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
 
-        self.field_mixin.check_field_is_active(field_id=field_id)
+        self.field_mixin.check_field_is_exists(field_id=field_id)
         field_data = self.field_storage.get_field_by_id(
             field_id=field_id)
         self.check_user_has_edit_access_to_template(
@@ -158,7 +159,7 @@ class FieldInteractor:
 
     def get_field(self, field_id: str) -> FieldDTO:
 
-        self.field_mixin.check_field_is_active(field_id=field_id)
+        self.field_mixin.check_field_is_exists(field_id=field_id)
 
         return self.field_storage.get_field_by_id(field_id=field_id)
 

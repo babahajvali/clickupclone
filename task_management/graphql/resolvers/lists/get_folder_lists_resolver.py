@@ -1,6 +1,6 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
-    InactiveFolderType
+    DeletedFolderType
 from task_management.graphql.types.types import ListType, ListsType
 from task_management.interactors.lists.list_interactor import \
     ListInteractor
@@ -44,5 +44,5 @@ def get_folder_lists_resolver(root, info, params):
     except custom_exceptions.FolderNotFound as e:
         return FolderNotFoundType(folder_id=e.folder_id)
 
-    except custom_exceptions.FolderDeletedException as e:
-        return InactiveFolderType(folder_id=e.folder_id)
+    except custom_exceptions.DeletedFolderException as e:
+        return DeletedFolderType(folder_id=e.folder_id)

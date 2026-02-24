@@ -3,9 +3,9 @@ from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
-    FolderDeletedException,
+    DeletedFolderException,
     InvalidOrder,
-    ListDeletedException,
+    DeletedListFount,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -163,7 +163,7 @@ class TestReorderListInFolder:
         list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(ListDeletedException) as exc:
+        with pytest.raises(DeletedListFount) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",
@@ -189,7 +189,7 @@ class TestReorderListInFolder:
     def test_reorder_list_in_folder_folder_inactive(self):
         interactor = self._get_interactor(folder_active=False)
 
-        with pytest.raises(FolderDeletedException) as exc:
+        with pytest.raises(DeletedFolderException) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",

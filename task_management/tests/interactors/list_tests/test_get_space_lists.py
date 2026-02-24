@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    SpaceDeletedException,
+    DeletedSpaceFound,
     SpaceNotFound,
 )
 from task_management.interactors.dtos import ListDTO
@@ -85,7 +85,7 @@ class TestGetSpaceLists:
         self._setup_space_lists_dependencies(space_active=False)
 
         # Act
-        with pytest.raises(SpaceDeletedException) as exc:
+        with pytest.raises(DeletedSpaceFound) as exc:
             self.interactor.get_space_lists(space_id="space_1")
 
         # Assert

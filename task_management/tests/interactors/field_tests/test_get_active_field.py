@@ -2,7 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import FieldNotFound, InactiveField
+from task_management.exceptions.custom_exceptions import FieldNotFound, DeletedFieldException
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.fields.field_interactor import FieldInteractor
@@ -79,7 +79,7 @@ class TestGetActiveFieldInteractor:
         self._setup_get_field_dependencies(field_data=field_data)
 
         # Act
-        with pytest.raises(InactiveField) as exc:
+        with pytest.raises(DeletedFieldException) as exc:
             self.interactor.get_field(field_id="field_1")
 
         snapshot.assert_match(

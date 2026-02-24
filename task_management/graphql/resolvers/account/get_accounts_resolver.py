@@ -12,8 +12,8 @@ def get_accounts_resolver(root, info, params):
     account_storage = AccountStorage()
     user_storage = UserStorage()
 
-    account_interactor = AccountInteractor(account_storage=account_storage,
-                                           user_storage=user_storage)
+    account_interactor = AccountInteractor(
+        account_storage=account_storage, user_storage=user_storage)
 
     try:
         accounts_data = account_interactor.get_accounts(account_ids=account_ids)

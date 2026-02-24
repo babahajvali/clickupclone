@@ -3,7 +3,8 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
     AccountNameAlreadyExistsType, AccountNotFoundType, InactiveAccountType, \
-    UserNotAccountOwnerType, NothingToUpdateAccountType
+    UserNotAccountOwnerType, NothingToUpdateAccountType, \
+    EmptyAccountNameExistsType
 from task_management.graphql.types.input_types import UpdateAccountInputParams
 from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
@@ -53,3 +54,5 @@ class UpdateAccountMutation(graphene.Mutation):
             return UserNotAccountOwnerType(user_id=e.user_id)
         except custom_exceptions.NothingToUpdateAccount as e:
             return NothingToUpdateAccountType(account_id=e.account_id)
+        except custom_exceptions.EmptyAccountName as e:
+            return EmptyAccountNameExistsType(account_name=e.account_name)

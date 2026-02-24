@@ -229,10 +229,13 @@ class FieldStorage(FieldStorageInterface):
     def get_last_field_order_in_template(self, template_id: str) -> int:
         last_field = Field.objects.filter(
             template_id=template_id,
-            is_delete=False).order_by('-order').first()
+            is_deleted=False).order_by('-order').first()
 
         order = 0
         if last_field:
             order = last_field.order
 
         return order
+
+    def is_field_exists(self, field_id: str) -> bool:
+        return Field.objects.filter(field_id=field_id).exists()

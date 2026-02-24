@@ -38,6 +38,7 @@ class FieldValueInteractor:
     def set_task_field_value(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
+
         self.task_mixin.check_task_is_active(task_id=set_value_data.task_id)
         self.field_mixin.check_field_is_active(
             field_id=set_value_data.field_id

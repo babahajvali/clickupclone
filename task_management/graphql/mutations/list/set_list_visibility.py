@@ -2,10 +2,11 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.exceptions.custom_exceptions import \
-    UnsupportedVisibilityType
+    UnsupportedVisibilityType, UserNotWorkspaceMember
 from task_management.exceptions.enums import Visibility
 from task_management.graphql.types.error_types import ListNotFoundType, \
-    InactiveListType, ModificationNotAllowedType, UnsupportedVisibilityType
+    DeletedListType, ModificationNotAllowedType, UnsupportedVisibilityType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     SetListVisibilityInputParams
 from task_management.graphql.types.response_types import \
@@ -66,11 +67,14 @@ class SetListVisibilityMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.ListDeletedException as e:
-            return InactiveListType(list_id=e.list_id)
+        except custom_exceptions.DeletedListFount as e:
+            return DeletedListType(list_id=e.list_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
 
         except custom_exceptions.UnsupportedVisibilityType as e:
             return UnsupportedVisibilityType(visibility=e.visibility_type)

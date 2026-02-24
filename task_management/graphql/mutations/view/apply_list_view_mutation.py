@@ -3,7 +3,7 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, ListNotFoundType, ViewNotFoundType, \
-    InactiveListType
+    DeletedListType
 from task_management.graphql.types.input_types import ApplyListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
@@ -50,5 +50,5 @@ class ApplyListViewMutation(graphene.Mutation):
             return ListNotFoundType(list_id=e.list_id)
         except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
-        except custom_exceptions.ListDeletedException as e:
-            return InactiveListType(list_id=e.list_id)
+        except custom_exceptions.DeletedListFount as e:
+            return DeletedListType(list_id=e.list_id)

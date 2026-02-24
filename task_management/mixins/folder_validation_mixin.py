@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    FolderNotFound, FolderDeletedException
+    FolderNotFound, DeletedFolderException
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface
 
@@ -19,4 +19,13 @@ class FolderValidationMixin:
 
         is_folder_delete = folder_data.is_deleted
         if is_folder_delete:
-            raise FolderDeletedException(folder_id=folder_id)
+            raise DeletedFolderException(folder_id=folder_id)
+
+    def check_folder_is_exists(self, folder_id: str):
+
+        is_folder_exists = self.folder_storage.is_folder_exists(
+            folder_id=folder_id)
+
+        is_folder_not_exists = not is_folder_exists
+        if is_folder_not_exists:
+            raise FolderNotFound(folder_id=folder_id)

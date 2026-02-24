@@ -3,7 +3,7 @@ from typing import Optional
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import FolderDTO, CreateFolderDTO, \
-    UpdateFolderDTO, UserFolderPermissionDTO, CreateFolderPermissionDTO
+    UserFolderPermissionDTO, CreateFolderPermissionDTO
 
 
 class FolderStorageInterface(ABC):
@@ -13,12 +13,16 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def is_folder_exists(self, folder_id: str) -> bool:
+        pass
+
+    @abstractmethod
     def create_folder(self, create_folder_data: CreateFolderDTO, order: int) \
             -> FolderDTO:
         pass
 
     @abstractmethod
-    def get_next_folder_order_in_space(self, space_id: str) -> int:
+    def get_last_folder_order_in_space(self, space_id: str) -> int:
         pass
 
     @abstractmethod

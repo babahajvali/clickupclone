@@ -1,6 +1,6 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
-    InactiveListType
+    DeletedListType
 from task_management.graphql.types.types import ListType
 from task_management.interactors.lists.list_interactor import \
     ListInteractor
@@ -40,5 +40,4 @@ def get_list_resolver(root, info, params):
 
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
-    except custom_exceptions.ListDeletedException as e:
-        return InactiveListType(list_id=e.list_id)
+

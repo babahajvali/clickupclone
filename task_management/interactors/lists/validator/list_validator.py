@@ -64,19 +64,19 @@ class ListValidator:
         is_name_empty = not list_name or not list_name.strip()
 
         if is_name_empty:
-            raise EmptyListName(name=list_name)
+            raise EmptyListName(list_name=list_name)
 
     def get_list_order(self, folder_id: Optional[str], space_id: str) -> int:
 
         is_folder_provided = folder_id is not None
         if is_folder_provided:
-            order = self.list_storage.get_active_lists_last_order_in_folder(
+            order = self.list_storage.get_last_list_order_in_folder(
                 folder_id=folder_id)
         else:
-            order = self.list_storage.get_active_lists_last_order_in_space(
+            order = self.list_storage.get_last_list_order_in_space(
                 space_id=space_id)
 
-        return order
+        return order + 1
 
     def check_user_have_already_list_permission(self, list_id: str,
                                                 user_id: str):

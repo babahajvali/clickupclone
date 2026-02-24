@@ -2,9 +2,9 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    SpaceDeletedException,
+    DeletedSpaceFound,
     InvalidOrder,
-    ListDeletedException,
+    DeletedListFount,
     ListNotFound,
     ModificationNotAllowed,
     SpaceNotFound,
@@ -162,7 +162,7 @@ class TestReorderListInSpace:
         list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(ListDeletedException) as exc:
+        with pytest.raises(DeletedListFount) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -188,7 +188,7 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_space_inactive(self):
         interactor = self._get_interactor(space_active=False)
 
-        with pytest.raises(SpaceDeletedException) as exc:
+        with pytest.raises(DeletedSpaceFound) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",

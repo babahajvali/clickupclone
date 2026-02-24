@@ -27,7 +27,7 @@ class FolderValidator:
         is_name_empty = name is None or not name.strip()
 
         if is_name_empty:
-            raise EmptyFolderName(name=name)
+            raise EmptyFolderName(folder_name=name)
 
     @staticmethod
     def check_visibility_type(visibility: str):

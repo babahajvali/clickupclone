@@ -12,7 +12,7 @@ from task_management.interactors.storage_interfaces import (
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFound,
     FieldNotFound,
-    InactiveField,
+    DeletedFieldException,
     ModificationNotAllowed,
     InvalidOrder,
 )
@@ -162,7 +162,7 @@ class TestReorderFieldInteractor:
         self.field_storage.get_field_by_id.return_value = make_field(is_deleted=True)
 
         # Act
-        with pytest.raises(InactiveField) as exc:
+        with pytest.raises(DeletedFieldException) as exc:
             self.interactor.reorder_field(
                 field_id="field_1",
                 template_id="template_1",

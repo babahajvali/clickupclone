@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import Permissions
-from task_management.graphql.types.error_types import InactiveListType, \
+from task_management.graphql.types.error_types import DeletedListType, \
     ModificationNotAllowedType, UserHaveAlreadyListPermissionType
 from task_management.graphql.types.input_types import \
     AddListPermissionForUserInputParams
@@ -59,8 +59,8 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 permission_type=result.permission_type
             )
 
-        except custom_exceptions.ListDeletedException as e:
-            return InactiveListType(list_id=e.list_id)
+        except custom_exceptions.DeletedListFount as e:
+            return DeletedListType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
         except custom_exceptions.UserHaveAlreadyListPermission as e:

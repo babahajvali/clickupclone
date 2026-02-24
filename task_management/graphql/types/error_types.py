@@ -25,15 +25,33 @@ class FieldNameAlreadyExistsType(graphene.ObjectType):
     field_name = graphene.String(required=True)
 
 
+class EmptyFieldNameType(graphene.ObjectType):
+    field_name = graphene.String(required=True)
+
+
+class MissingFieldConfigType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+
+
+class DropdownOptionsMissingType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+
+
 class ModificationNotAllowedType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
+class UserNotWorkspaceMemberType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
 class NothingToUpdateFieldType(graphene.ObjectType):
     field_id = graphene.String(required=True)
 
+
 class UserHaveAlreadyListPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
+
 
 class InvalidFieldValue(graphene.ObjectType):
     message = graphene.String(required=True)
@@ -44,6 +62,10 @@ class UnsupportedVisibilityType(graphene.ObjectType):
 
 
 class FieldNotFoundType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+
+
+class DeletedFieldType(graphene.ObjectType):
     field_id = graphene.String(required=True)
 
 
@@ -67,6 +89,10 @@ class ListNotFoundType(graphene.ObjectType):
     list_id = graphene.String(required=True)
 
 
+class EmptyListNameType(graphene.ObjectType):
+    list_name = graphene.String(required=True)
+
+
 class TaskNotFoundType(graphene.ObjectType):
     task_id = graphene.String(required=True)
 
@@ -79,7 +105,11 @@ class DeletedTaskType(graphene.ObjectType):
     task_id = graphene.String(required=True)
 
 
-class InactiveListType(graphene.ObjectType):
+class DeletedListType(graphene.ObjectType):
+    list_id = graphene.String(required=True)
+
+
+class NothingToUpdateListType(graphene.ObjectType):
     list_id = graphene.String(required=True)
 
 
@@ -87,7 +117,7 @@ class SpaceNotFoundType(graphene.ObjectType):
     space_id = graphene.String(required=True)
 
 
-class InactiveSpaceType(graphene.ObjectType):
+class DeletedSpaceType(graphene.ObjectType):
     space_id = graphene.String(required=True)
 
 
@@ -95,8 +125,16 @@ class FolderNotFoundType(graphene.ObjectType):
     folder_id = graphene.String()
 
 
-class InactiveFolderType(graphene.ObjectType):
-    folder_id = graphene.String()
+class EmptyFolderNameType(graphene.ObjectType):
+    folder_name = graphene.String(required=True)
+
+
+class DeletedFolderType(graphene.ObjectType):
+    folder_id = graphene.String(required=True)
+
+
+class NothingToUpdateFolderType(graphene.ObjectType):
+    folder_id = graphene.String(required=True)
 
 
 class ViewTypeNotFoundType(graphene.ObjectType):
@@ -170,8 +208,10 @@ class AccountNameAlreadyExistsType(graphene.ObjectType):
 class NothingToUpdateAccountType(graphene.ObjectType):
     account_id = graphene.String(required=True)
 
+
 class EmptyAccountNameExistsType(graphene.ObjectType):
-    name = graphene.String(required=True)
+    account_name = graphene.String(required=True)
+
 
 class AccountNotFoundType(graphene.ObjectType):
     account_id = graphene.String(required=True)

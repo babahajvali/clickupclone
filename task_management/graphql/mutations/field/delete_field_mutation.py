@@ -2,7 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
-    TemplateNotFoundType, ModificationNotAllowedType
+    TemplateNotFoundType, ModificationNotAllowedType, \
+    UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteFieldInputParams
 from task_management.graphql.types.response_types import DeleteFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -52,8 +53,8 @@ class DeleteFieldMutation(graphene.Mutation):
         except custom_exceptions.FieldNotFound as e:
             return FieldNotFoundType(field_id=e.field_id)
 
-        except custom_exceptions.TemplateNotFound as e:
-            return TemplateNotFoundType(template_id=e.template_id)
-
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

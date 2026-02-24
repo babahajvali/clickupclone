@@ -1,8 +1,7 @@
+from task_management.decorators.caching_decorators import interactor_cache
 from task_management.exceptions.custom_exceptions import \
     WorkspaceDeletedException, ModificationNotAllowed, \
-    UserNotWorkspaceOwner, WorkspaceNotFound, \
-    InactiveWorkspaceMember, UserNotWorkspaceMember, \
-    WorkspaceMemberIdNotFound
+    UserNotWorkspaceOwner, WorkspaceNotFound, UserNotWorkspaceMember
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
@@ -33,6 +32,7 @@ class WorkspaceValidationMixin:
         if not is_owner:
             raise UserNotWorkspaceOwner(user_id=user_id)
 
+    @interactor_cache(cache_name='validate_permission', timeout=5 * 60)
     def check_user_has_edit_access_to_workspace(
             self, user_id: str, workspace_id: str):
 

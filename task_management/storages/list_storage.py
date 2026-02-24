@@ -48,6 +48,9 @@ class ListStorage(ListStorageInterface):
         except List.DoesNotExist:
             return None
 
+    def is_list_exists(self, list_id: str) -> bool:
+        return List.objects.filter(list_id=list_id).exists()
+
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
 
         list_data = List.objects.create(
@@ -62,20 +65,26 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def get_active_lists_last_order_in_folder(self, folder_id: str) -> int:
-        list_data = List.objects.filter(
+    def get_last_list_order_in_folder(self, folder_id: str) -> int:
+        last_list = List.objects.filter(
             folder_id=folder_id, is_deleted=False).order_by('-order').first()
-        last_order = list_data.order + 1 if list_data else 1
-        return last_order
+        order = 0
 
-    def get_active_lists_last_order_in_space(self, space_id: str) -> int:
+        if last_list:
+            order = last_list.order
+
+        return order
+
+    def get_last_list_order_in_space(self, space_id: str) -> int:
         list_data = List.objects.filter(
             space_id=space_id, folder__isnull=True, is_deleted=False).order_by(
             '-order').first()
 
-        last_order = list_data.order + 1 if list_data else 1
+        order = 0
+        if list_data:
+            order = list_data.order
 
-        return last_order
+        return order
 
     def get_workspace_id_by_list_id(self, list_id: str) -> str:
         list_data = List.objects.select_related("space__workspace").get(

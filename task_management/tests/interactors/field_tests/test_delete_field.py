@@ -5,7 +5,7 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     FieldNotFound,
-    InactiveField,
+    DeletedFieldException,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
@@ -113,7 +113,7 @@ class TestDeleteFieldInteractor:
         self._setup_delete_field_dependencies(field_data=field_data)
 
         # Act
-        with pytest.raises(InactiveField) as exc:
+        with pytest.raises(DeletedFieldException) as exc:
             self.interactor.delete_field(
                 field_id="field_1",
                 user_id="user_1",

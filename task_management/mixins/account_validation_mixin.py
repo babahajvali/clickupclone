@@ -33,3 +33,14 @@ class AccountValidationMixin:
         is_not_account_owner = str(account_data.owner_id) != user_id
         if is_not_account_owner:
             raise UserNotAccountOwner(user_id=user_id)
+
+    def check_account_is_exists(self, account_id: str):
+
+        is_account_exists = self.account_storage.is_account_exists(
+            account_id=account_id
+        )
+
+        is_account_not_exists = not is_account_exists
+
+        if is_account_not_exists:
+            raise AccountNotFound(account_id=account_id)

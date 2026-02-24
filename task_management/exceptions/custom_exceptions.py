@@ -59,7 +59,7 @@ class FieldNameAlreadyExists(Exception):
         self.field_name = field_name
 
 
-class InactiveField(Exception):
+class DeletedFieldException(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
 
@@ -164,7 +164,7 @@ class DeletedTaskFound(Exception):
         self.task_id = task_id
 
 
-class ListDeletedException(Exception):
+class DeletedListFount(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -174,7 +174,7 @@ class SpaceNotFound(Exception):
         self.space_id = space_id
 
 
-class SpaceDeletedException(Exception):
+class DeletedSpaceFound(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
@@ -184,7 +184,7 @@ class FolderNotFound(Exception):
         self.folder_id = folder_id
 
 
-class FolderDeletedException(Exception):
+class DeletedFolderException(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 

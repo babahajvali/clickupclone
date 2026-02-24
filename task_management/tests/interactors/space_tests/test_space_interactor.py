@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     WorkspaceNotFound,
     WorkspaceDeletedException,
-    SpaceNotFound, SpaceDeletedException,
+    SpaceNotFound, DeletedSpaceFound,
 )
 from task_management.tests.factories.interactor_factory import (
     CreateSpaceDTOFactory,
@@ -121,7 +121,7 @@ class TestSpaceInteractor:
     def test_update_space_inactive(self, snapshot):
         self.space_storage.get_space.return_value = make_space(is_deleted=True)
 
-        with pytest.raises(SpaceDeletedException) as exc:
+        with pytest.raises(DeletedSpaceFound) as exc:
             self.interactor.update_space(
                 space_id="space_id_1", user_id="user_id", name="x", description=None)
 

@@ -46,13 +46,14 @@ class WorkspaceMemberInteractor:
             user_id=workspace_member_data.added_by,
             workspace_id=workspace_member_data.workspace_id)
 
-
         return self.workspace_storage.add_member_to_workspace(
             workspace_member_data=workspace_member_data)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def remove_member_from_workspace(self, workspace_member_id: int,
-                                     removed_by: str) -> WorkspaceMemberDTO:
+    @invalidate_interactor_cache(cache_name='validate_permission')
+    def remove_member_from_workspace(
+            self, workspace_member_id: int, removed_by: str) \
+            -> WorkspaceMemberDTO:
         self.workspace_validator.check_workspace_member_is_active_by_id(
             workspace_member_id=workspace_member_id)
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
@@ -68,8 +69,10 @@ class WorkspaceMemberInteractor:
         return workspace_member
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
-    def change_member_role(self, workspace_id: str, user_id: str, role: str,
-                           changed_by: str) -> WorkspaceMemberDTO:
+    @invalidate_interactor_cache(cache_name='validate_permission')
+    def change_member_role(
+            self, workspace_id: str, user_id: str, role: str,
+            changed_by: str) -> WorkspaceMemberDTO:
         self.workspace_mixin.check_workspace_is_active(
             workspace_id=workspace_id)
         self.user_mixin.check_user_is_active(user_id=user_id)

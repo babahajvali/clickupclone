@@ -1,5 +1,5 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import InactiveListType, \
+from task_management.graphql.types.error_types import DeletedListType, \
     ListNotFoundType
 from task_management.graphql.types.types import TaskAssigneeType, \
     TaskAssigneesType
@@ -33,7 +33,7 @@ def get_list_task_assignees_resolver(root,info, params):
         ) for each in assignees_data]
 
         return TaskAssigneesType(assignees=result)
-    except custom_exceptions.ListDeletedException as e:
-        return InactiveListType(list_id=e.list_id)
+    except custom_exceptions.DeletedListFount as e:
+        return DeletedListType(list_id=e.list_id)
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)

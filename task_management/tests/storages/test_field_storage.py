@@ -7,7 +7,6 @@ from task_management.interactors.dtos import CreateFieldDTO, UpdateFieldDTO
 from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldFactory, \
     TemplateFactory, UserFactory, ListFactory
-from task_management.models import Field
 
 
 @freeze_time("2024-01-15 10:00:00")
@@ -26,8 +25,8 @@ class TestFieldStorage:
         list_id = "12345678-1234-5678-1234-567812345680"
 
         list_obj = ListFactory(list_id=list_id)
-        template = TemplateFactory(template_id=template_id, list=list_obj)
-        user = UserFactory(user_id=user_id)
+        TemplateFactory(template_id=template_id, list=list_obj)
+        UserFactory(user_id=user_id)
         create_field_data = CreateFieldDTO(
             field_name="Test Field",
             description="Test description",
@@ -310,3 +309,30 @@ class TestFieldStorage:
 
         # Assert
         snapshot.assert_match(repr(result), "test_delete_field_success.txt")
+
+    @pytest.mark.django_db
+    def test_get_last_field_order_in_template(self, snapshot):
+        # Arrange
+        template_id = "12345678-1234-5678-1234-567812345678"
+        user = UserFactory()
+        template = TemplateFactory(template_id=template_id, list=ListFactory())
+
+        FieldFactory(template=template, created_by=user, order=1,
+                     is_deleted=False)
+        FieldFactory(template=template, created_by=user, order=5,
+                     is_deleted=False)
+        FieldFactory(template=template, created_by=user, order=3,
+                     is_deleted=False)
+
+        storage = FieldStorage()
+
+        # Act
+        result = storage.get_last_field_order_in_template(
+            template_id=str(template_id))
+
+        # Assert
+        snapshot.assert_match(repr(result),
+                              "test_get_last_field_order_in_template.txt")
+
+
+

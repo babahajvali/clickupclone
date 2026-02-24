@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    FieldNotFound, InactiveField
+    FieldNotFound, DeletedFieldException
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
 
@@ -20,4 +20,11 @@ class FieldValidationMixin:
 
         is_field_deleted = field_data.is_deleted
         if is_field_deleted:
-            raise InactiveField(field_id=field_id)
+            raise DeletedFieldException(field_id=field_id)
+
+    def check_field_is_exists(self, field_id: str):
+        is_field_exists = self.field_storage.is_field_exists(field_id=field_id)
+        is_field_not_exists = not is_field_exists
+
+        if is_field_not_exists:
+            raise FieldNotFound(field_id=field_id)

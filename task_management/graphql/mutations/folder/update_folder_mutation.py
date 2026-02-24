@@ -2,8 +2,8 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
-    InactiveFolderType, ModificationNotAllowedType, SpaceNotFoundType, \
-    InactiveSpaceType
+    DeletedFolderType, ModificationNotAllowedType, SpaceNotFoundType, \
+    DeletedSpaceType, UserNotWorkspaceMemberType, NothingToUpdateFolderType
 from task_management.graphql.types.input_types import UpdateFolderInputParams
 from task_management.graphql.types.response_types import UpdateFolderResponse
 from task_management.graphql.types.types import FolderType
@@ -59,14 +59,14 @@ class UpdateFolderMutation(graphene.Mutation):
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.FolderDeletedException as e:
-            return InactiveFolderType(folder_id=e.folder_id)
+        except custom_exceptions.DeletedFolderException as e:
+            return DeletedFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.SpaceNotFound as e:
-            return SpaceNotFoundType(space_id=e.space_id)
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
 
-        except custom_exceptions.SpaceDeletedException as e:
-            return InactiveSpaceType(space_id=e.space_id)
+        except custom_exceptions.NothingToUpdateFolderException as e:
+            return NothingToUpdateFolderType(folder_id=e.folder_id)

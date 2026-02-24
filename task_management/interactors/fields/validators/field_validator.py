@@ -2,7 +2,7 @@ from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
     FieldNameAlreadyExists, InvalidOrder, EmptyFieldName, \
-    UnsupportedFieldType, FieldNotFound, InactiveField
+    UnsupportedFieldType, FieldNotFound, DeletedFieldException
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import UpdateFieldDTO
 from task_management.interactors.storage_interfaces import \
@@ -25,7 +25,7 @@ class FieldValidator:
 
         is_field_deleted = field_data.is_deleted
         if is_field_deleted:
-            raise InactiveField(field_id=field_id)
+            raise DeletedFieldException(field_id=field_id)
 
     def check_field_order(self, template_id: str, order: int):
 

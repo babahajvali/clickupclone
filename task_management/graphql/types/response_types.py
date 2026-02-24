@@ -10,25 +10,26 @@ from task_management.graphql.types.error_types import \
     WorkspaceNotFoundType, UnsupportedFieldTypeType, \
     FieldNameAlreadyExistsType, ModificationNotAllowedType, \
     InvalidFieldConfigType, InvalidFieldDefaultValueType, \
-    DeletedTaskType, InactiveListType, InactiveSpaceType, \
-    InactiveFolderType, ViewTypeNotFoundType, InactiveWorkspaceType, \
+    DeletedTaskType, DeletedListType, DeletedSpaceType, \
+    DeletedFolderType, ViewTypeNotFoundType, InactiveWorkspaceType, \
     UserNotWorkspaceOwnerType, UnexpectedRoleType, EmailNotFound, \
     IncorrectPassword, InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
-    InvalidResetToken, \
-    ResetTokenExpired, InvalidAccountIds, InvalidFieldValue, \
+    InvalidResetToken, ResetTokenExpired, InvalidFieldValue, \
     EmptyAccountNameExistsType, NothingToUpdateAccountType, \
     InvalidAccountIdsType, UserHaveAlreadyListPermissionType, \
-    NothingToUpdateFieldType
+    NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
+    DropdownOptionsMissingType, UserNotWorkspaceMemberType, DeletedFieldType, \
+    EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
     UserFolderPermissionType, UserListPermissionType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
     TaskAssigneeType, TaskAssigneesType, ViewsType, FieldsType, ListViewType, \
-    ListViewsType, WorkspaceMembersType, TasksValuesType, TaskFieldValuesType, \
-    FieldValueType, WorkspaceUsersType, GetUserTaskType, \
+    ListViewsType, WorkspaceMembersType, TasksValuesType, FieldValueType, \
+    WorkspaceUsersType, GetUserTaskType, \
     PasswordResetResponseType, AccountsType, ValidateResetTokenType, \
     WorkspacesType
 
@@ -52,7 +53,8 @@ class UpdateAccountResponse(graphene.Union):
             InactiveAccountType,
             UserNotAccountOwnerType,
             AccountNameAlreadyExistsType,
-            NothingToUpdateAccountType
+            NothingToUpdateAccountType,
+            EmptyAccountNameExistsType
         )
 
 
@@ -86,7 +88,11 @@ class CreateFieldResponse(graphene.Union):
             UnsupportedFieldTypeType,
             FieldNameAlreadyExistsType,
             InvalidFieldConfigType,
-            InvalidFieldDefaultValueType
+            InvalidFieldDefaultValueType,
+            ModificationNotAllowedType,
+            EmptyFieldNameType,
+            MissingFieldConfigType,
+            DropdownOptionsMissingType
         )
 
 
@@ -99,7 +105,12 @@ class UpdateFieldResponse(graphene.Union):
             InvalidFieldConfigType,
             InvalidFieldDefaultValueType,
             NothingToUpdateFieldType,
-            FieldNameAlreadyExistsType
+            FieldNameAlreadyExistsType,
+            DeletedFieldType,
+            EmptyFieldNameType,
+            MissingFieldConfigType,
+            DropdownOptionsMissingType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -108,7 +119,7 @@ class CreateTaskResponse(graphene.Union):
         types = (
             TaskType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             ModificationNotAllowedType
         )
 
@@ -119,7 +130,7 @@ class UpdateTaskResponse(graphene.Union):
             TaskType,
             TaskNotFoundType,
             DeletedTaskType,
-            InactiveListType,
+            DeletedListType,
             ListNotFoundType,
             ModificationNotAllowedType
         )
@@ -130,10 +141,12 @@ class CreateListResponse(graphene.Union):
         types = (
             ListType,
             SpaceNotFoundType,
-            InactiveSpaceType,
+            DeletedSpaceType,
             FolderNotFoundType,
-            InactiveFolderType,
-            ModificationNotAllowedType
+            DeletedFolderType,
+            ModificationNotAllowedType,
+            EmptyListNameType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -142,7 +155,7 @@ class UpdateListResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType
+            DeletedListType
         )
 
 
@@ -167,7 +180,9 @@ class CreateFolderResponse(graphene.Union):
         types = (
             FolderType,
             SpaceNotFoundType,
-            InactiveSpaceType
+            DeletedSpaceType,
+            UserNotWorkspaceMemberType,
+            EmptyFolderNameType
         )
 
 
@@ -176,7 +191,9 @@ class UpdateFolderResponse(graphene.Union):
         types = (
             FolderType,
             FolderNotFoundType,
-            InactiveFolderType
+            DeletedFolderType,
+            UserNotWorkspaceMemberType,
+            NothingToUpdateFolderType,
         )
 
 
@@ -194,7 +211,7 @@ class UpdateSpaceResponse(graphene.Union):
         types = (
             SpaceType,
             SpaceNotFoundType,
-            InactiveSpaceType
+            DeletedSpaceType
         )
 
 
@@ -268,7 +285,7 @@ class CreateUserSpacePermissionResponse(graphene.Union):
         types = (
             UserSpacePermissionType,
             SpaceNotFoundType,
-            InactiveSpaceType,
+            DeletedSpaceType,
             UserNotFoundType,
             InactiveUserType,
             InactiveWorkspaceMemberType
@@ -280,7 +297,7 @@ class CreateUserFolderPermissionResponse(graphene.Union):
         types = (
             UserFolderPermissionType,
             FolderNotFoundType,
-            InactiveFolderType,
+            DeletedFolderType,
             UserNotFoundType,
             InactiveUserType,
             InactiveWorkspaceMemberType
@@ -292,7 +309,7 @@ class CreateUserListPermissionResponse(graphene.Union):
         types = (
             UserListPermissionType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             UserNotFoundType,
             InactiveUserType,
             InactiveWorkspaceMemberType
@@ -335,8 +352,7 @@ class DeleteAccountResponse(graphene.Union):
         types = (
             AccountType,
             AccountNotFoundType,
-            InactiveAccountType,
-            ModificationNotAllowedType
+            UserNotAccountOwnerType
         )
 
 
@@ -354,7 +370,7 @@ class DeleteSpaceResponse(graphene.Union):
         types = (
             SpaceType,
             SpaceNotFoundType,
-            InactiveSpaceType,
+            DeletedSpaceType,
             ModificationNotAllowedType
         )
 
@@ -375,7 +391,7 @@ class SetSpaceVisibilityResponse(graphene.Union):
         types = (
             SpaceType,
             SpaceNotFoundType,
-            InactiveSpaceType,
+            DeletedSpaceType,
             ModificationNotAllowedType,
             UnsupportedVisibilityType
         )
@@ -386,9 +402,12 @@ class ReorderFolderResponse(graphene.Union):
         types = (
             FolderType,
             FolderNotFoundType,
-            InactiveFolderType,
+            DeletedFolderType,
             ModificationNotAllowedType,
-            InvalidOrderType
+            InvalidOrderType,
+            SpaceNotFoundType,
+            DeletedSpaceType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -397,9 +416,10 @@ class SetFolderVisibilityResponse(graphene.Union):
         types = (
             FolderType,
             FolderNotFoundType,
-            InactiveFolderType,
+            DeletedFolderType,
             ModificationNotAllowedType,
-            UnsupportedVisibilityType
+            UnsupportedVisibilityType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -408,7 +428,7 @@ class GetSpaceFoldersResponse(graphene.Union):
         types = (
             SpaceFoldersType,
             SpaceNotFoundType,
-            InactiveSpaceType
+            DeletedSpaceType
         )
 
 
@@ -417,7 +437,7 @@ class GetUserFolderPermissionResponse(graphene.Union):
         types = (
             UserFolderPermissionType,
             FolderNotFoundType,
-            InactiveFolderType,
+            DeletedFolderType,
             ModificationNotAllowedType
         )
 
@@ -435,8 +455,8 @@ class DeleteFolderResponse(graphene.Union):
         types = (
             FolderType,
             FolderNotFoundType,
-            InactiveFolderType,
-            ModificationNotAllowedType
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -462,8 +482,8 @@ class DeleteListResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType,
-            ModificationNotAllowedType
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -472,9 +492,12 @@ class ReorderListInFolderResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             ModificationNotAllowedType,
-            InvalidOrderType
+            InvalidOrderType,
+            UserNotWorkspaceMemberType,
+            FolderNotFoundType,
+            DeletedFolderType,
         )
 
 
@@ -483,9 +506,12 @@ class ReorderListInSpaceResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             ModificationNotAllowedType,
-            InvalidOrderType
+            InvalidOrderType,
+            SpaceNotFoundType,
+            DeletedSpaceType,
+            UserNotWorkspaceMemberType,
         )
 
 
@@ -494,9 +520,10 @@ class SetListVisibilityResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             ModificationNotAllowedType,
-            UnsupportedVisibilityType
+            UnsupportedVisibilityType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -505,7 +532,7 @@ class GetFolderListsResponse(graphene.Union):
         types = (
             ListsType,
             FolderNotFoundType,
-            InactiveFolderType
+            DeletedFolderType
         )
 
 
@@ -514,7 +541,7 @@ class GetSpaceListsResponse(graphene.Union):
         types = (
             ListsType,
             SpaceNotFoundType,
-            InactiveSpaceType
+            DeletedSpaceType
         )
 
 
@@ -523,7 +550,6 @@ class GetListResponse(graphene.Union):
         types = (
             ListType,
             ListNotFoundType,
-            InactiveListType
         )
 
 
@@ -553,7 +579,7 @@ class GetListTasksResponse(graphene.Union):
         types = (
             TasksType,
             ListNotFoundType,
-            InactiveListType
+            DeletedListType
         )
 
 
@@ -571,7 +597,7 @@ class TaskFilterResponse(graphene.Union):
         types = (
             TasksType,
             ListNotFoundType,
-            InactiveListType,
+            DeletedListType,
             InvalidOffset,
             InvalidLimitType
         )
@@ -592,7 +618,7 @@ class RemoveTaskAssigneeResponse(graphene.Union):
         types = (TaskAssigneeType,
                  TaskAssigneeNotFoundType,
                  ListNotFoundType,
-                 InactiveListType,
+                 DeletedListType,
                  ModificationNotAllowedType)
 
 
@@ -618,7 +644,9 @@ class ReorderFieldResponse(graphene.Union):
             FieldNotFoundType,
             TemplateNotFoundType,
             ModificationNotAllowedType,
-            InvalidOrderType
+            InvalidOrderType,
+            UserNotWorkspaceMemberType,
+            DeletedFieldType
         )
 
 
@@ -627,8 +655,8 @@ class DeleteFieldResponse(graphene.Union):
         types = (
             FieldType,
             FieldNotFoundType,
-            TemplateNotFoundType,
-            ModificationNotAllowedType
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType
         )
 
 
@@ -654,7 +682,7 @@ class ApplyListViewResponse(graphene.Union):
             ListViewType,
             ListNotFoundType,
             ViewNotFoundType,
-            InactiveListType,
+            DeletedListType,
             ModificationNotAllowedType
         )
 
@@ -666,7 +694,7 @@ class RemoveListViewResponse(graphene.Union):
             ListNotFoundType,
             ModificationNotAllowedType,
             ListViewNotFound,
-            InactiveListType
+            DeletedListType
         )
 
 
@@ -675,7 +703,7 @@ class GetListViewsResponse(graphene.Union):
         types = (
             ListViewsType,
             ListNotFoundType,
-            InactiveListType
+            DeletedListType
         )
 
 
@@ -696,6 +724,11 @@ class GetTaskFieldValuesResponse(graphene.Union):
 class SetTaskFieldValueResponse(graphene.Union):
     class Meta:
         types = (FieldValueType,
+                 TaskNotFoundType,
+                 DeletedTaskType,
+                 FieldNotFoundType,
+                 DeletedFieldType,
+                 UserNotWorkspaceMemberType,
                  ModificationNotAllowedType,
                  InvalidFieldValue)
 
@@ -762,6 +795,6 @@ class ValidateResetTokenResponse(graphene.Union):
 class AddListPermissionForUserResponse(graphene.Union):
     class Meta:
         types = (UserListPermissionType,
-                 InactiveListType,
+                 DeletedListType,
                  UserHaveAlreadyListPermissionType,
                  ModificationNotAllowedType)

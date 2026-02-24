@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
-    InactiveFolderType, ModificationNotAllowedType
+    DeletedFolderType, ModificationNotAllowedType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteFolderInputParams
 from task_management.graphql.types.response_types import DeleteFolderResponse
 from task_management.graphql.types.types import FolderType
@@ -50,8 +50,8 @@ class DeleteFolderMutation(graphene.Mutation):
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.FolderDeletedException as e:
-            return InactiveFolderType(folder_id=e.folder_id)
-
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.UserNotWorkspaceMember as e:
+            return UserNotWorkspaceMemberType(user_id=e.user_id)
