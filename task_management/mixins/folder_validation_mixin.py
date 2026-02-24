@@ -6,9 +6,8 @@ from task_management.interactors.storage_interfaces import \
 
 class FolderValidationMixin:
 
-    def __init__(self, folder_storage: FolderStorageInterface, **kwargs):
+    def __init__(self, folder_storage: FolderStorageInterface):
         self.folder_storage = folder_storage
-        super().__init__(**kwargs)
 
     def check_folder_is_active(self, folder_id: str):
         folder_data = self.folder_storage.get_folder(folder_id=folder_id)

@@ -6,9 +6,8 @@ from task_management.interactors.storage_interfaces import \
 
 class SpaceValidationMixin:
 
-    def __init__(self, space_storage: SpaceStorageInterface, **kwargs):
+    def __init__(self, space_storage: SpaceStorageInterface):
         self.space_storage = space_storage
-        super().__init__(**kwargs)
 
     def check_space_is_active(self, space_id: str):
 

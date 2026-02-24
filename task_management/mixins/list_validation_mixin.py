@@ -5,9 +5,8 @@ from task_management.interactors.storage_interfaces import ListStorageInterface
 
 class ListValidationMixin:
 
-    def __init__(self, list_storage: ListStorageInterface, **kwargs):
+    def __init__(self, list_storage: ListStorageInterface):
         self.list_storage = list_storage
-        super().__init__(**kwargs)
 
     def check_list_is_active(self, list_id: str):
         list_data = self.list_storage.get_list(list_id=list_id)

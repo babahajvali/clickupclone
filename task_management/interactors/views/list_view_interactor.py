@@ -3,23 +3,32 @@ from task_management.exceptions.custom_exceptions import \
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, ViewStorageInterface, \
-    WorkspaceStorageInterface, SpaceStorageInterface
+    WorkspaceStorageInterface
 
 from task_management.mixins import WorkspaceValidationMixin, \
     ListValidationMixin, ViewValidationMixin
 
 
-class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
-                         ViewValidationMixin):
+class ListViewInteractor:
 
     def __init__(self, list_storage: ListStorageInterface,
                  view_storage: ViewStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
-        super().__init__(workspace_storage=workspace_storage,
-                         view_storage=view_storage, list_storage=list_storage)
         self.list_storage = list_storage
         self.view_storage = view_storage
         self.workspace_storage = workspace_storage
+
+    @property
+    def list_mixin(self) -> ListValidationMixin:
+        return ListValidationMixin(list_storage=self.list_storage)
+
+    @property
+    def workspace_mixin(self) -> WorkspaceValidationMixin:
+        return WorkspaceValidationMixin(workspace_storage=self.workspace_storage)
+
+    @property
+    def view_mixin(self) -> ViewValidationMixin:
+        return ViewValidationMixin(view_storage=self.view_storage)
 
     def apply_view_for_list(self, view_id: str, list_id: str,
                             user_id: str) -> ListViewDTO:
@@ -28,34 +37,33 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
         if list_view_data:
             return list_view_data
 
-        self.check_view_exist(view_id=view_id)
-        self.check_list_is_active(list_id=list_id)
-        self._check_user_has_edit_access_to_list(user_id=user_id,
-                                                 list_id=list_id)
+        self.view_mixin.check_view_exist(view_id=view_id)
+        self.list_mixin.check_list_is_active(list_id=list_id)
+        self._check_user_has_edit_access_to_list(
+            user_id=user_id, list_id=list_id)
 
-        return self.view_storage.apply_view_for_list(view_id=view_id,
-                                                     list_id=list_id,
-                                                     user_id=user_id)
+        return self.view_storage.apply_view_for_list(
+            view_id=view_id, list_id=list_id, user_id=user_id)
 
     def remove_view_for_list(self, view_id: str, list_id: str,
                              user_id: str) -> ListViewDTO:
 
         self._check_list_view_exist(list_id=list_id, view_id=view_id)
-        self._check_user_has_edit_access_to_list(user_id=user_id,
-                                                 list_id=list_id)
+        self._check_user_has_edit_access_to_list(
+            user_id=user_id, list_id=list_id)
 
-        return self.view_storage.remove_list_view(view_id=view_id,
-                                                  list_id=list_id)
+        return self.view_storage.remove_list_view(
+            view_id=view_id, list_id=list_id)
 
     def get_list_views(self, list_id: str) -> list[ListViewDTO]:
-        self.check_list_is_active(list_id=list_id)
+        self.list_mixin.check_list_is_active(list_id=list_id)
 
         return self.view_storage.get_list_views(list_id=list_id)
 
     def _check_list_view_exist(self, list_id: str, view_id: str):
 
-        is_exist = self.view_storage.is_list_view_exist(list_id=list_id,
-                                                        view_id=view_id)
+        is_exist = self.view_storage.is_list_view_exist(
+            list_id=list_id, view_id=view_id)
 
         is_list_view_not_found = not is_exist
         if is_list_view_not_found:
@@ -65,5 +73,5 @@ class ListViewInteractor(WorkspaceValidationMixin, ListValidationMixin,
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
 
-        self.check_user_has_edit_access_to_workspace(workspace_id=workspace_id,
-                                                     user_id=user_id)
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+            workspace_id=workspace_id, user_id=user_id)

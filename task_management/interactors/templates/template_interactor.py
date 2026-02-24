@@ -9,8 +9,7 @@ from task_management.mixins import TemplateValidationMixin, \
     ListValidationMixin, WorkspaceValidationMixin
 
 
-class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
-                         WorkspaceValidationMixin):
+class TemplateInteractor:
     """Template Management Business Logic Interactor.
     
     Handles all templates-related operations including creation, updating, and
@@ -39,17 +38,28 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
                  template_storage: TemplateStorageInterface,
                  list_storage: ListStorageInterface):
-        super().__init__(template_storage=template_storage,
-                         list_storage=list_storage,
-                         workspace_storage=workspace_storage)
+
         self.workspace_storage = workspace_storage
         self.template_storage = template_storage
         self.list_storage = list_storage
 
+    @property
+    def template_mixin(self) -> TemplateValidationMixin:
+        return TemplateValidationMixin(template_storage=self.template_storage)
+
+    @property
+    def list_mixin(self) -> ListValidationMixin:
+        return ListValidationMixin(list_storage=self.list_storage)
+
+    @property
+    def workspace_mixin(self) -> WorkspaceValidationMixin:
+        return WorkspaceValidationMixin(
+            workspace_storage=self.workspace_storage)
+
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
 
         self._check_template_name_not_empty(template_name=template_data.name)
-        self.check_list_is_active(list_id=template_data.list_id)
+        self.list_mixin.check_list_is_active(list_id=template_data.list_id)
         self._check_user_has_edit_access_for_list(
             list_id=template_data.list_id, user_id=template_data.created_by)
 
@@ -61,11 +71,12 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
             self, template_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> TemplateDTO:
 
-        self.check_template_exists(template_id=template_id)
+        self.template_mixin.check_template_exists(template_id=template_id)
         template_data = self.template_storage.get_template_by_id(
             template_id=template_id)
-        self._check_user_has_edit_access_for_list(list_id=template_data.list_id,
-                                                  user_id=user_id)
+        self._check_user_has_edit_access_for_list(
+            list_id=template_data.list_id,
+            user_id=user_id)
 
         self._check_template_update_field_properties(
             template_id=template_id, name=name, description=description)
@@ -77,7 +88,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        self.check_user_has_edit_access_to_workspace(
+        self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
@@ -87,7 +98,7 @@ class TemplateInteractor(TemplateValidationMixin, ListValidationMixin,
             raise EmptyName(name=template_name)
 
     def _check_template_update_field_properties(
-           self, template_id: str, name: Optional[str],
+            self, template_id: str, name: Optional[str],
             description: Optional[str]):
 
         field_properties_to_update = {}

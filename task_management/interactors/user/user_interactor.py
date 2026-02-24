@@ -9,10 +9,13 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
 from task_management.mixins import UserValidationMixin
 
 
-class UserInteractor(UserValidationMixin):
+class UserInteractor:
     def __init__(self, user_storage: UserStorageInterface):
-        super().__init__(user_storage=user_storage)
         self.user_storage = user_storage
+
+    @property
+    def user_mixin(self) -> UserValidationMixin:
+        return UserValidationMixin(user_storage=self.user_storage)
 
     def create_user(self, user_details: CreateUserDTO) -> UserDTO:
 
@@ -25,7 +28,7 @@ class UserInteractor(UserValidationMixin):
     def update_user(self, user_update_data: UpdateUserDTO) -> UserDTO:
 
         user_id = user_update_data.user_id
-        self.check_user_is_active(user_id=user_id)
+        self.user_mixin.check_user_is_active(user_id=user_id)
         is_username_provided = user_update_data.username is not None
         is_email_provided = user_update_data.email is not None
         is_phone_number_provided = user_update_data.phone_number is not None
@@ -44,13 +47,13 @@ class UserInteractor(UserValidationMixin):
 
     def get_user_profile(self, user_id: str) -> UserDTO:
 
-        self.check_user_is_active(user_id=user_id)
+        self.user_mixin.check_user_is_active(user_id=user_id)
 
         return self.user_storage.get_user_data(user_id=user_id)
 
     def block_user(self, user_id: str) -> UserDTO:
 
-        self.check_user_is_active(user_id=user_id)
+        self.user_mixin.check_user_is_active(user_id=user_id)
 
         return self.user_storage.block_user(user_id=user_id)
 

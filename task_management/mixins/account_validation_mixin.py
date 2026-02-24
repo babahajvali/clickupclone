@@ -8,9 +8,8 @@ from task_management.interactors.storage_interfaces.account_storage_interface im
 
 
 class AccountValidationMixin:
-    def __init__(self, account_storage: AccountStorageInterface, **kwargs):
+    def __init__(self, account_storage: AccountStorageInterface):
         self.account_storage = account_storage
-        super().__init__(**kwargs)
 
     def check_account_is_active(self, account_id: str):
 

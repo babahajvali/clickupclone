@@ -9,25 +9,29 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import ViewValidationMixin
 
 
-class ViewInteractor(ViewValidationMixin):
+class ViewInteractor:
 
     def __init__(self, view_storage: ViewStorageInterface,
                  list_storage: ListStorageInterface):
-        super().__init__(view_storage=view_storage)
         self.view_storage = view_storage
         self.list_storage = list_storage
+
+    @property
+    def view_mixin(self) -> ViewValidationMixin:
+        return ViewValidationMixin(view_storage=self.view_storage, )
 
     def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
 
         self._check_view_name_not_empty(name=create_view_data.name)
-        self.check_view_type(view_type=create_view_data.view_type.value)
+        self.view_mixin.check_view_type(
+            view_type=create_view_data.view_type.value)
 
         return self.view_storage.create_view(create_view_data)
 
     def update_view(self, view_id: str, name: Optional[str],
                     description: Optional[str]) -> ViewDTO:
 
-        self.check_view_exist(view_id=view_id)
+        self.view_mixin.check_view_exist(view_id=view_id)
 
         self._check_update_view_field_properties(
             view_id=view_id, name=name, description=description)
@@ -39,7 +43,7 @@ class ViewInteractor(ViewValidationMixin):
         return self.view_storage.get_all_views()
 
     def get_view(self, view_id: str) -> ViewDTO:
-        self.check_view_exist(view_id=view_id)
+        self.view_mixin.check_view_exist(view_id=view_id)
 
         return self.view_storage.get_view(view_id)
 

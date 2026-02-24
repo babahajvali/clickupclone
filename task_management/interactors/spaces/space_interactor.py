@@ -56,7 +56,7 @@ class SpaceInteractor:
 
         self.space_mixin.check_space_is_active(space_id=space_id)
         self.space_validator.check_space_update_field_properties(
-                space_id=space_id, name=name, description=description)
+            space_id=space_id, name=name, description=description)
 
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)

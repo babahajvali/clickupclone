@@ -73,6 +73,9 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
+    def is_task_exist(self, task_id: str) -> bool:
+        return Task.objects.filter(task_id=task_id).exists()
+
     def get_task_list_id(self, task_id: str) -> str:
 
         task = Task.objects.select_related('lists').get(task_id=task_id)

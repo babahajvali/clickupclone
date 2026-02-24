@@ -6,9 +6,8 @@ from task_management.interactors.storage_interfaces import \
 
 class FieldValidationMixin:
 
-    def __init__(self, field_storage: FieldStorageInterface, **kwargs):
+    def __init__(self, field_storage: FieldStorageInterface):
         self.field_storage = field_storage
-        super().__init__(**kwargs)
 
     def check_field_is_active(self, field_id: str):
         field_data = self.field_storage.get_field_by_id(

@@ -8,9 +8,8 @@ from task_management.interactors.storage_interfaces.workspace_storage_interface 
 
 
 class WorkspaceValidationMixin:
-    def __init__(self, workspace_storage: WorkspaceStorageInterface, **kwargs):
+    def __init__(self, workspace_storage: WorkspaceStorageInterface):
         self.workspace_storage = workspace_storage
-        super().__init__(**kwargs)
 
     def check_workspace_is_active(self, workspace_id: str):
         workspace_data = self.workspace_storage.get_workspace(

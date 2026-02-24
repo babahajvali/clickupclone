@@ -6,9 +6,8 @@ from task_management.interactors.storage_interfaces.user_storage_interface impor
 
 class UserValidationMixin:
 
-    def __init__(self, user_storage: UserStorageInterface, **kwargs):
+    def __init__(self, user_storage: UserStorageInterface):
         self.user_storage = user_storage
-        super().__init__(**kwargs)
 
     def check_user_is_active(self, user_id: str):
 
