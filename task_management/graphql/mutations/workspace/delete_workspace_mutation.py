@@ -2,14 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
-    DeletedWorkspaceType, UserNotWorkspaceOwnerType
+    UserNotWorkspaceOwnerType
 from task_management.graphql.types.input_types import \
     DeleteWorkspaceInputParams
 from task_management.graphql.types.response_types import \
     DeleteWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceType
-from task_management.interactors.workspaces.workspace_interactor import \
-    WorkspaceInteractor
+
 from task_management.interactors.workspaces.workspace_handler import \
     WorkspaceHandler
 from task_management.storages import WorkspaceStorage, UserStorage, \
@@ -60,7 +59,7 @@ class DeleteWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_deleted
+                is_deleted=result.is_deleted
             )
 
         except custom_exceptions.WorkspaceNotFound as e:

@@ -59,7 +59,7 @@ class TransferWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_deleted
+                is_deleted=result.is_deleted
             )
 
         except custom_exceptions.WorkspaceNotFound as e:

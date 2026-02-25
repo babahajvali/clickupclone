@@ -51,7 +51,7 @@ class WorkspaceHandler:
         workspace_member_input = AddMemberToWorkspaceDTO(
             workspace_id=workspace_data.workspace_id,
             user_id=workspace_data.user_id,
-            role=Role.ADMIN,
+            role=Role.OWNER,
             added_by=workspace_data.user_id
         )
 
@@ -106,21 +106,25 @@ class WorkspaceHandler:
 
         return list_handler.handle_list_creation(list_input_data)
 
-    def transfer_the_workspace(self, workspace_id: str, current_user_id: str,
-                               new_user_id: str):
+    def transfer_the_workspace(
+            self, workspace_id: str, current_user_id: str, new_user_id: str) \
+            -> WorkspaceDTO:
+
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
             user_storage=self.user_storage
         )
 
-        workspace_interactor.transfer_workspace(
+        workspace_data = workspace_interactor.transfer_workspace(
             workspace_id=workspace_id, user_id=current_user_id,
             new_user_id=new_user_id)
 
-        return self.change_permissions_for_user_in_transfer(
+        self.change_permissions_for_user_in_transfer(
             workspace_id=workspace_id, user_id=current_user_id,
             new_user_id=new_user_id)
+
+        return workspace_data
 
     def change_permissions_for_user_in_transfer(
             self, workspace_id: str, user_id: str, new_user_id: str):

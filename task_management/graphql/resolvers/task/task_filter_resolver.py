@@ -1,7 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
-    DeletedListType, ModificationNotAllowedType, InvalidOffset, \
+    DeletedListType, InvalidOffset, \
     InvalidLimitType
 from task_management.graphql.types.types import TaskType, TasksType
 
@@ -25,10 +24,10 @@ def task_filter_resolver(root, info, params):
     try:
         filter_data = FilterDTO(
             list_id=params.list_id,
-            field_filters=params.field_filters if params.field_filters else None,
-            assignees=params.assignees if params.assignees else None,
-            offset=params.offset if params.offset else 1,
-            limit=params.limit if params.limit else 10
+            field_filters=params.field_filters,
+            assignees=params.assignees,
+            offset=params.offset,
+            limit=params.limit
         )
 
         tasks_data = interactor.task_filter(
@@ -41,7 +40,7 @@ def task_filter_resolver(root, info, params):
                 description=task.description,
                 list_id=task.list_id,
                 order=task.order,
-                created_by=task.created_by_user_id,
+                created_by=task.created_by,
                 is_deleted=task.is_deleted
             ) for task in tasks_data
         ]
