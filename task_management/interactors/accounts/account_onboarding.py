@@ -16,7 +16,6 @@ class AccountOnboardingHandler:
     """
     This Handler handle the create the accounts along with
         default workspaces and spaces, lists...
-
     """
 
     def __init__(self, workspace_storage: WorkspaceStorageInterface,
@@ -53,7 +52,8 @@ class AccountOnboardingHandler:
     def _create_account(self, name: str, created_by: str,
                         description: Optional[str]):
         """ First create the accounts interactor
-        and the create accounts based on input data"""
+        and the create accounts based on input data
+        """
         account_interactor = AccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
@@ -65,7 +65,8 @@ class AccountOnboardingHandler:
                                   name: str):
         """ Create default workspaces
         create the workspaces interactor
-        then create the workspaces"""
+        then create the workspaces
+        """
 
         from task_management.interactors.workspaces.workspace_handler import \
             WorkspaceHandler

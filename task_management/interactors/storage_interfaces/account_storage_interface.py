@@ -7,7 +7,7 @@ from task_management.interactors.dtos import AccountDTO
 class AccountStorageInterface(ABC):
 
     @abstractmethod
-    def get_account_by_id(self, account_id: str) -> AccountDTO:
+    def get_account(self, account_id: str) -> AccountDTO:
         pass
 
     @abstractmethod

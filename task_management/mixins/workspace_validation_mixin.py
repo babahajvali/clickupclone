@@ -3,7 +3,8 @@ from task_management.exceptions.custom_exceptions import \
     DeletedWorkspaceFound, ModificationNotAllowed, \
     UserNotWorkspaceOwner, WorkspaceNotFound, UserNotWorkspaceMember
 from task_management.exceptions.enums import Role
-from task_management.interactors.storage_interfaces.workspace_storage_interface import \
+from task_management.interactors.dtos import WorkspaceDTO
+from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 
 
@@ -12,6 +13,14 @@ class WorkspaceValidationMixin:
         self.workspace_storage = workspace_storage
 
     def check_workspace_is_active(self, workspace_id: str):
+        workspace_data = self.get_workspace_if_exists(
+            workspace_id=workspace_id)
+
+        is_workspace_delete = workspace_data.is_deleted
+        if is_workspace_delete:
+            raise DeletedWorkspaceFound(workspace_id=workspace_id)
+
+    def get_workspace_if_exists(self, workspace_id: str) -> WorkspaceDTO:
         workspace_data = self.workspace_storage.get_workspace(
             workspace_id=workspace_id)
 
@@ -19,20 +28,10 @@ class WorkspaceValidationMixin:
         if is_workspace_not_found:
             raise WorkspaceNotFound(workspace_id=workspace_id)
 
-        is_workspace_delete = workspace_data.is_deleted
-        if is_workspace_delete:
-            raise DeletedWorkspaceFound(workspace_id=workspace_id)
+        return workspace_data
 
-    def check_workspace_exists(self, workspace_id: str):
-        is_workspace_exists = self.workspace_storage.is_workspace_exists(
-            workspace_id=workspace_id)
-
-        is_workspace_not_exists = not is_workspace_exists
-        if is_workspace_not_exists:
-            raise WorkspaceNotFound(workspace_id=workspace_id)
-
-    def check_user_is_workspace_owner(self, user_id: str,
-                                      workspace_id: str):
+    def check_user_is_workspace_owner(
+            self, user_id: str, workspace_id: str):
         is_owner = self.workspace_storage.validate_user_is_workspace_owner(
             workspace_id=workspace_id, user_id=user_id)
 
@@ -43,14 +42,12 @@ class WorkspaceValidationMixin:
     def check_user_has_edit_access_to_workspace(
             self, user_id: str, workspace_id: str):
 
-        # rename
         workspace_member_data= self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id,
             user_id=user_id
         )
-        # rename as user is not member of the workspace
-        is_user_not_workspace_member = not workspace_member_data
 
+        is_user_not_workspace_member = not workspace_member_data
         if is_user_not_workspace_member:
             raise UserNotWorkspaceMember(user_id=user_id)
 

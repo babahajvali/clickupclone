@@ -161,7 +161,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
         # Name is unique for this accounts
         self.account_storage.is_account_name_exists.return_value = False
@@ -181,7 +181,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
         expected = AccountDTOFactory()
         self.account_storage.update_account.return_value = expected
@@ -200,7 +200,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
         self.account_storage.is_account_name_exists.return_value = False
         expected = AccountDTOFactory()
@@ -220,7 +220,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
 
         with pytest.raises(NothingToUpdateAccount) as exc:
@@ -238,7 +238,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
         self.account_storage.is_account_name_exists.return_value = "different-accounts-id"
 
@@ -258,7 +258,7 @@ class TestAccountInteractor:
         owner_id = "actual-owner"
         other_user = "intruder-user"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
         self.account_storage.is_account_name_exists.return_value = False
 
@@ -277,7 +277,7 @@ class TestAccountInteractor:
         account_id = "non-existent-accounts"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = None
+        self.account_storage.get_account.return_value = None
 
         with pytest.raises(AccountNotFound) as exc:
             self.interactor.update_account(
@@ -294,7 +294,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id, is_active=False)
 
         with pytest.raises(InactiveAccount) as exc:
@@ -312,7 +312,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
 
         result = self.interactor.delete_account(
@@ -340,7 +340,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         user_id = "user-999"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             "some-other-user")
 
         with pytest.raises(UserNotAccountOwner) as exc:
@@ -358,7 +358,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
 
         result = self.interactor.deactivate_account(
@@ -372,7 +372,7 @@ class TestAccountInteractor:
         account_id = "non-existent"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = None
+        self.account_storage.get_account.return_value = None
 
         with pytest.raises(AccountNotFound) as exc:
             self.interactor.deactivate_account(
@@ -387,7 +387,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id, is_active=False)
 
         with pytest.raises(InactiveAccount) as exc:
@@ -404,7 +404,7 @@ class TestAccountInteractor:
         owner_id = "actual-owner"
         other_user = "intruder"
 
-        self.account_storage.get_account_by_id.return_value = self._mock_account(
+        self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
 
         with pytest.raises(UserNotAccountOwner) as exc:

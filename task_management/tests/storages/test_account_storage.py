@@ -22,7 +22,7 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.get_account_by_id(account_id=str(account_id))
+        result = storage.get_account(account_id=str(account_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -35,7 +35,7 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.get_account_by_id(account_id=str(account_id))
+        result = storage.get_account(account_id=str(account_id))
 
         # Assert
         snapshot.assert_match(repr(result),

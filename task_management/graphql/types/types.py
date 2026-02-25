@@ -33,6 +33,7 @@ class WorkspaceType(graphene.ObjectType):
     account_id = graphene.String(required=True)
     is_deleted = graphene.Boolean(required=True)
 
+
 class WorkspacesType(graphene.ObjectType):
     workspaces = graphene.List(WorkspaceType)
 
@@ -119,7 +120,6 @@ class TaskType(graphene.ObjectType):
     is_deleted = graphene.Boolean(required=True)
 
 
-
 class TasksType(graphene.ObjectType):
     tasks = graphene.List(TaskType)
 
@@ -128,6 +128,7 @@ class TaskDetailType(graphene.ObjectType):
     task = graphene.Field(TaskType)
     assignees = graphene.List(TaskAssigneeType)
     field_values = graphene.List(FieldValuesType)
+
 
 class TaskDetailsType(graphene.ObjectType):
     tasks = graphene.List(TaskDetailType)

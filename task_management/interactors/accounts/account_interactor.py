@@ -113,7 +113,7 @@ class AccountInteractor:
             3.InactiveAccountException: If the accounts is not active.
         """
 
-        self.account_mixin.check_account_is_exists(account_id=account_id)
+        self.account_mixin.get_account_if_exists(account_id=account_id)
         self.account_mixin.check_user_is_account_owner(
             account_id=account_id, user_id=deleted_by)
 

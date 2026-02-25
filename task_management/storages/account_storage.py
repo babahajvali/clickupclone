@@ -11,7 +11,7 @@ from task_management.models import Account
 
 class AccountStorage(AccountStorageInterface):
 
-    def get_account_by_id(self, account_id: str) -> AccountDTO | None:
+    def get_account(self, account_id: str) -> AccountDTO | None:
         try:
             account_data = Account.objects.get(account_id=account_id)
             return AccountDTO(

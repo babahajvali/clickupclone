@@ -58,7 +58,7 @@ class TestWorkspaceInteractor:
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.workspace_storage.create_workspace.return_value = expected
 
-        self.account_storage.get_account_by_id.return_value = type(
+        self.account_storage.get_account.return_value = type(
             "Account",
             (),
             {"is_active": True,
