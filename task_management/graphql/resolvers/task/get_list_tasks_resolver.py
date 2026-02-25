@@ -1,8 +1,8 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
     DeletedListType
-from task_management.graphql.types.types import TaskType, TasksType, \
-    TaskAssigneeType, FieldValuesType
+from task_management.graphql.types.types import TaskAssigneeType, \
+    FieldValuesType, TaskDetailType, TaskDetailsType, TaskType
 from task_management.interactors.tasks.task_interactor import TaskInteractor
 from task_management.storages import ListStorage, TaskStorage, \
     WorkspaceStorage, FieldStorage
@@ -61,21 +61,23 @@ def get_list_tasks_resolver(root, info, params):
             ]
 
         tasks_output = [
-            TaskType(
-                task_id=task.task_id,
-                title=task.title,
-                description=task.description,
-                list_id=task.list_id,
-                order=task.order,
-                created_by=task.created_by,
-                is_deleted=task.is_deleted,
+            TaskDetailType(
+                task=TaskType(
+                    task_id=task.task_id,
+                    title=task.title,
+                    description=task.description,
+                    list_id=task.list_id,
+                    order=task.order,
+                    created_by=task.created_by,
+                    is_deleted=task.is_deleted,
+                ),
                 assignees=assignees_by_task.get(task.task_id, []),
                 field_values=field_values_by_task.get(str(task.task_id), [])
             )
             for task in tasks_data
         ]
 
-        return TasksType(tasks=tasks_output)
+        return TaskDetailsType(tasks=tasks_output)
 
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)

@@ -34,7 +34,7 @@ from task_management.graphql.types.types import AccountType, UserType, \
     ListViewsType, WorkspaceMembersType, TasksValuesType, FieldValueType, \
     WorkspaceUsersType, GetUserTaskType, \
     PasswordResetResponseType, AccountsType, ValidateResetTokenType, \
-    WorkspacesType
+    WorkspacesType, TaskDetailsType
 
 
 class CreateAccountResponse(graphene.Union):
@@ -615,7 +615,7 @@ class ReorderTaskResponse(graphene.Union):
 class GetListTasksResponse(graphene.Union):
     class Meta:
         types = (
-            TasksType,
+            TaskDetailsType,
             ListNotFoundType,
             DeletedListType
         )

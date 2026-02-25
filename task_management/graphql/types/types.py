@@ -117,12 +117,20 @@ class TaskType(graphene.ObjectType):
     order = graphene.Int(required=True)
     created_by = graphene.String(required=True)
     is_deleted = graphene.Boolean(required=True)
-    assignees = graphene.List(TaskAssigneeType)
-    field_values = graphene.List(FieldValuesType)
+
 
 
 class TasksType(graphene.ObjectType):
     tasks = graphene.List(TaskType)
+
+
+class TaskDetailType(graphene.ObjectType):
+    task = graphene.Field(TaskType)
+    assignees = graphene.List(TaskAssigneeType)
+    field_values = graphene.List(FieldValuesType)
+
+class TaskDetailsType(graphene.ObjectType):
+    tasks = graphene.List(TaskDetailType)
 
 
 class TaskAssigneesType(graphene.ObjectType):
