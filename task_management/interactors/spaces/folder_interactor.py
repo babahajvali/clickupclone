@@ -103,7 +103,7 @@ class FolderInteractor:
     @invalidate_interactor_cache(cache_name="folders")
     def delete_folder(self, folder_id: str, user_id: str) -> FolderDTO:
 
-        self.folder_mixin.check_folder_is_exists(folder_id=folder_id)
+        self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id)
@@ -135,7 +135,7 @@ class FolderInteractor:
 
 
     def get_folder(self, folder_id: str) -> FolderDTO:
-        self.folder_mixin.check_folder_is_exists(folder_id=folder_id)
+        self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
 
         return self.folder_storage.get_folder(folder_id=folder_id)
 

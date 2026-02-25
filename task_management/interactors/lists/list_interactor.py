@@ -170,7 +170,7 @@ class ListInteractor:
 
     def get_list(self, list_id: str) -> ListDTO:
 
-        self.list_mixin.check_list_is_exists(list_id=list_id)
+        self.list_mixin.get_list_if_exists(list_id=list_id)
 
         return self.list_storage.get_list(list_id=list_id)
 

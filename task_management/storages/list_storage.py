@@ -41,12 +41,9 @@ class ListStorage(ListStorageInterface):
         return Template.objects.get(list_id=list_id).template_id
 
     def get_list(self, list_id: str) -> ListDTO | None:
-        try:
-            list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.filter(list_id=list_id).first()
 
-            return self._list_dto(list_data=list_data)
-        except List.DoesNotExist:
-            return None
+        return self._list_dto(list_data=list_data)
 
     def is_list_exists(self, list_id: str) -> bool:
         return List.objects.filter(list_id=list_id).exists()

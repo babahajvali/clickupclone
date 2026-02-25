@@ -52,7 +52,7 @@ class ViewInteractor:
 
         is_name_empty = not name or not name.strip()
         if is_name_empty:
-            raise EmptyViewName(name=name)
+            raise EmptyViewName(view_name=name)
 
     def _check_update_view_field_properties(
             self, view_id: str, name: Optional[str],

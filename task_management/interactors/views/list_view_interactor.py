@@ -33,8 +33,8 @@ class ListViewInteractor:
     def apply_view_for_list(
             self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
 
-        list_view_data = self.view_storage.get_list_view(list_id=list_id,
-                                                         view_id=view_id)
+        list_view_data = self.view_storage.get_list_view(
+            list_id=list_id, view_id=view_id)
         if list_view_data:
             return list_view_data
 
@@ -46,8 +46,8 @@ class ListViewInteractor:
         return self.view_storage.apply_view_for_list(
             view_id=view_id, list_id=list_id, user_id=user_id)
 
-    def remove_view_for_list(self, view_id: str, list_id: str,
-                             user_id: str) -> ListViewDTO:
+    def remove_view_for_list(
+            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
 
         self._check_list_view_exist(list_id=list_id, view_id=view_id)
         self._check_user_has_edit_access_to_list(

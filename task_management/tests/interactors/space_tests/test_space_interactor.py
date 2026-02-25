@@ -145,7 +145,7 @@ class TestSpaceInteractor:
         self.space_storage.delete_space.assert_called_once_with(space_id=space_id)
 
     def test_delete_space_not_found(self, snapshot):
-        self.space_storage.check_space_exists.return_value = False
+        self.space_storage.get_space_if_exists.return_value = False
 
         with pytest.raises(SpaceNotFound) as exc:
             self.interactor.delete_space(space_id="bad_id", deleted_by="user_id")

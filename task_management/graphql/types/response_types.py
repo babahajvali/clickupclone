@@ -1,7 +1,5 @@
 import graphene
 
-from task_management.exceptions.custom_exceptions import \
-    WorkspaceMemberIdNotFound
 from task_management.graphql.types.error_types import \
     AccountNameAlreadyExistsType, UsernameAlreadyExists, \
     EmailAlreadyExists, PhoneNumberAlreadyExists, \
@@ -26,7 +24,7 @@ from task_management.graphql.types.error_types import \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
     EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
-    InvalidWorkspaceIdsFoundType
+    InvalidWorkspaceIdsFoundType, WorkspaceMemberIdNotFoundType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -310,7 +308,7 @@ class RemoveWorkspaceMemberResponse(graphene.Union):
         types = (
             WorkspaceMemberType,
             UserNotWorkspaceMemberType,
-            WorkspaceMemberIdNotFound,
+            WorkspaceMemberIdNotFoundType,
             ModificationNotAllowedType,
             InactiveWorkspaceMemberType,
         )

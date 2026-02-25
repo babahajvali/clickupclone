@@ -95,7 +95,7 @@ class SpaceInteractor:
     @invalidate_interactor_cache(cache_name="spaces")
     def delete_space(self, space_id: str, deleted_by: str) -> SpaceDTO:
 
-        self.space_mixin.check_space_exists(space_id=space_id)
+        self.space_mixin.get_space_if_exists(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
@@ -130,7 +130,7 @@ class SpaceInteractor:
 
     def get_space(self, space_id: str) -> SpaceDTO:
 
-        self.space_mixin.check_space_exists(space_id=space_id)
+        self.space_mixin.get_space_if_exists(space_id=space_id)
 
         return self.space_storage.get_space(space_id=space_id)
 
