@@ -14,19 +14,6 @@ class FieldValidator:
     def __init__(self, field_storage: FieldStorageInterface):
         self.field_storage = field_storage
 
-    def check_field_is_active(self, field_id: str):
-        """Validate that a fields exists and is active."""
-        field_data = self.field_storage.get_field(
-            field_id=field_id)
-
-        is_field_not_found = not field_data
-        if is_field_not_found:
-            raise FieldNotFound(field_id=field_id)
-
-        is_field_deleted = field_data.is_deleted
-        if is_field_deleted:
-            raise DeletedFieldException(field_id=field_id)
-
     def check_field_order(self, template_id: str, order: int):
 
         if order < 1:
@@ -58,10 +45,10 @@ class FieldValidator:
 
     @staticmethod
     def check_field_type(field_type: str):
-        field_types = FieldType.get_values()
-        is_field_type_invalid = field_type not in field_types
+        existed_field_types = FieldType.get_values()
+        is_invalid_field_type = field_type not in existed_field_types
 
-        if is_field_type_invalid:
+        if is_invalid_field_type:
             raise UnsupportedFieldType(field_type=field_type)
 
     def reorder_field_positions(
@@ -79,8 +66,9 @@ class FieldValidator:
                 old_order=old_order)
 
     @staticmethod
-    def is_field_properties_not_empty(update_field_data: UpdateFieldDTO) \
-            -> bool:
+    def is_field_properties_not_empty(
+            update_field_data: UpdateFieldDTO) -> bool:
+
         return any([
             update_field_data.field_name is not None,
             update_field_data.config is not None,

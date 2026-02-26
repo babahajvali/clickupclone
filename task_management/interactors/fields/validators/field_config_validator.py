@@ -45,5 +45,3 @@ class FieldConfigValidator:
         if is_empty_config:
             raise MissingFieldConfig(
                 field_type=field_type)
-
-
