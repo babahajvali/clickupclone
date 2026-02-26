@@ -17,8 +17,6 @@ class FieldValidationMixin:
         if is_field_deleted:
             raise DeletedFieldException(field_id=field_id)
 
-    # use this method in the check_field_is_active OCP
-
     def get_field_if_exists(self, field_id: str):
         field_data = self.field_storage.get_field(field_id=field_id)
         is_field_not_exists = not field_data

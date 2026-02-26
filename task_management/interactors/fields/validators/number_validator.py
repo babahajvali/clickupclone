@@ -41,13 +41,15 @@ class NumberField:
         if is_below_minimum:
             raise InvalidFieldDefaultValue(
                 field_type=FieldType.NUMBER.value,
-                message=f"Default value {default_value} is less than minimum {min_val}")
+                message=f"Default value {default_value} is less "
+                        f"than minimum {min_val}")
 
         is_above_maximum = max_val is not None and default_value > max_val
         if is_above_maximum:
             raise InvalidFieldDefaultValue(
                 field_type=FieldType.NUMBER.value,
-                message=f"Default value {default_value} is greater than maximum {max_val}")
+                message=f"Default value {default_value} is greater "
+                        f"than maximum {max_val}")
 
     @staticmethod
     def check_number_field_value(value: str, config: Dict):

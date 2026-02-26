@@ -43,4 +43,5 @@ class DropdownField:
 
         if value not in options:
             raise InvalidFieldValue(
-                message=f"Invalid option. Option must be one of: {', '.join(options)}")
+                message=f"Invalid option. "
+                        f"Option must be one of: {', '.join(options)}")

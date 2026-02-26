@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import TaskNotFound, \
     DeletedTaskFound
+from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 
 
@@ -9,16 +10,13 @@ class TaskValidationMixin:
         self.task_storage = task_storage
 
     def check_task_is_active(self, task_id: str):
-        #rename as get_task
         task_data = self.get_task_if_exists(task_id=task_id)
 
         is_task_deleted = task_data.is_deleted
         if is_task_deleted:
             raise DeletedTaskFound(task_id=task_id)
 
-    #Maintain only unit operations in the storage method
-    #Check can we delete already deleted task
-    def get_task_if_exists(self, task_id: str):
+    def get_task_if_exists(self, task_id: str) -> TaskDTO:
         task_data = self.task_storage.get_task(task_id=task_id)
 
         is_task_not_found = not task_data

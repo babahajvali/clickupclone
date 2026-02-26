@@ -8,7 +8,6 @@ from task_management.mixins import FieldValidationMixin, \
     WorkspaceValidationMixin, TaskValidationMixin
 
 
-#rename as field response
 class FieldResponseInteractor:
 
     def __init__(self,
@@ -39,13 +38,10 @@ class FieldResponseInteractor:
     def set_task_field_response(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
-
         self.task_mixin.check_task_is_active(task_id=set_value_data.task_id)
         self.field_mixin.check_field_is_active(
             field_id=set_value_data.field_id
         )
-
-        #can anyone in the workspace edit my task
         self._check_user_has_edit_access_for_field(
             field_id=set_value_data.field_id, user_id=user_id
         )
