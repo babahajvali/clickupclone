@@ -62,14 +62,16 @@ class FolderInteractor:
             self, folder_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> FolderDTO:
 
+        self.folder_validator.check_folder_update_field_properties(
+            folder_id=folder_id, name=name, description=description
+        )
         self.folder_mixin.check_folder_is_active(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(
-            folder_id=folder_id)
+            folder_id=folder_id
+        )
         self._check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=user_id)
-
-        self.folder_validator.check_folder_update_field_properties(
-            folder_id=folder_id, name=name, description=description)
+            space_id=space_id, user_id=user_id
+        )
 
         return self.folder_storage.update_folder(
             folder_id=folder_id, name=name, description=description)
@@ -79,13 +81,14 @@ class FolderInteractor:
     def reorder_folder(
             self, space_id: str, folder_id: str, user_id: str, order: int) \
             -> FolderDTO:
-
+        self.folder_validator.check_the_folder_order(
+            space_id=space_id, order=order
+        )
         self.folder_mixin.check_folder_is_active(folder_id=folder_id)
         self.space_mixin.check_space_is_active(space_id=space_id)
         self._check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=user_id)
-        self.folder_validator.check_the_folder_order(
-            space_id=space_id, order=order)
+            space_id=space_id, user_id=user_id
+        )
 
         folder_data = self.folder_storage.get_folder(folder_id=folder_id)
         old_order = folder_data.order
@@ -106,7 +109,8 @@ class FolderInteractor:
         self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=user_id)
+            space_id=space_id, user_id=user_id
+        )
 
         return self.folder_storage.delete_folder(folder_id)
 
@@ -115,12 +119,14 @@ class FolderInteractor:
             self, folder_id: str, user_id: str, visibility: Visibility) \
             -> FolderDTO:
 
+        self.folder_validator.check_visibility_type(
+            visibility=visibility.value
+        )
         self.folder_mixin.check_folder_is_active(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=user_id)
-        self.folder_validator.check_visibility_type(
-            visibility=visibility.value)
+            space_id=space_id, user_id=user_id
+        )
 
         return self.folder_storage.update_folder_visibility(
             folder_id=folder_id, visibility=visibility.value)
@@ -131,8 +137,8 @@ class FolderInteractor:
         self.space_mixin.check_space_is_active(space_id=space_id)
 
         return self.folder_storage.get_space_folders(
-            space_ids=[space_id])
-
+            space_ids=[space_id]
+        )
 
     def get_folder(self, folder_id: str) -> FolderDTO:
         self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
@@ -144,11 +150,14 @@ class FolderInteractor:
             -> UserFolderPermissionDTO:
 
         self.folder_mixin.check_folder_is_active(
-            folder_id=permission_data.folder_id)
+            folder_id=permission_data.folder_id
+        )
         space_id = self.folder_storage.get_folder_space_id(
-            folder_id=permission_data.folder_id)
+            folder_id=permission_data.folder_id
+        )
         self._check_user_has_edit_access_for_space(
-            space_id=space_id, user_id=permission_data.user_id)
+            space_id=space_id, user_id=permission_data.user_id
+        )
 
         return self.folder_storage.create_folder_users_permissions(
             users_permission_data=[permission_data])[0]
@@ -161,4 +170,5 @@ class FolderInteractor:
             space_id=space_id)
 
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id)
+            user_id=user_id, workspace_id=workspace_id
+        )

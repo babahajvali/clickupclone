@@ -22,7 +22,8 @@ class SpaceCreationHandler:
 
         if space_data.is_private:
             self._create_space_permission_for_user(
-                space_id=space_data.space_id, user_id=space_data.created_by)
+                space_id=space_data.space_id, user_id=space_data.created_by
+            )
 
         return space_data
 
@@ -40,8 +41,8 @@ class SpaceCreationHandler:
 
         return space_interactor.create_space(space_data=space_input)
 
-    def _create_space_permission_for_user(self, space_id: str, user_id: str)\
-            -> UserSpacePermissionDTO:
+    def _create_space_permission_for_user(
+            self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
 
         space_interactor = self._get_space_interactor()
 

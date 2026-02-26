@@ -38,13 +38,16 @@ class SpaceInteractor:
 
         self.space_validator.check_space_name_not_empty(name=space_data.name)
         self.workspace_mixin.check_workspace_is_active(
-            workspace_id=space_data.workspace_id)
+            workspace_id=space_data.workspace_id
+        )
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             user_id=space_data.created_by,
-            workspace_id=space_data.workspace_id)
+            workspace_id=space_data.workspace_id
+        )
 
         order = self.space_storage.get_last_space_order_in_workspace(
-            workspace_id=space_data.workspace_id)
+            workspace_id=space_data.workspace_id
+        )
 
         return self.space_storage.create_space(
             space_data=space_data, order=order + 1)
@@ -54,29 +57,36 @@ class SpaceInteractor:
             self, space_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> SpaceDTO:
 
-        self.space_mixin.check_space_is_active(space_id=space_id)
         self.space_validator.check_space_update_field_properties(
-            space_id=space_id, name=name, description=description)
-
+            space_id=space_id, name=name, description=description
+        )
+        self.space_mixin.check_space_is_active(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+            space_id=space_id
+        )
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id)
+            user_id=user_id, workspace_id=workspace_id
+        )
 
         return self.space_storage.update_space(
-            space_id=space_id, name=name, description=description)
+            space_id=space_id, name=name, description=description
+        )
 
     @invalidate_interactor_cache(cache_name="spaces")
     def reorder_space(
             self, workspace_id: str, space_id: str, order: int, user_id: str) \
             -> SpaceDTO:
+
+        self.space_validator.check_space_order(
+            workspace_id=workspace_id, order=order
+        )
         self.space_mixin.check_space_is_active(space_id=space_id)
         self.workspace_mixin.check_workspace_is_active(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id)
-        self.space_validator.check_space_order(
-            workspace_id=workspace_id, order=order)
+            user_id=user_id, workspace_id=workspace_id
+        )
 
         space_data = self.space_storage.get_space(space_id=space_id)
         current_order = space_data.order
@@ -90,16 +100,19 @@ class SpaceInteractor:
         )
 
         return self.space_storage.update_space_order(
-            space_id=space_id, new_order=order)
+            space_id=space_id, new_order=order
+        )
 
     @invalidate_interactor_cache(cache_name="spaces")
     def delete_space(self, space_id: str, deleted_by: str) -> SpaceDTO:
 
         self.space_mixin.get_space_if_exists(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+            space_id=space_id
+        )
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
-            user_id=deleted_by, workspace_id=workspace_id)
+            user_id=deleted_by, workspace_id=workspace_id
+        )
 
         return self.space_storage.delete_space(space_id=space_id)
 
@@ -110,20 +123,24 @@ class SpaceInteractor:
 
         self.space_mixin.check_space_is_active(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
+            space_id=space_id
+        )
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id)
+            user_id=user_id, workspace_id=workspace_id
+        )
 
         self.space_validator.check_visibility_type(visibility=visibility.value)
 
         return self.space_storage.update_space_visibility(
-            space_id=space_id, visibility=visibility.value)
+            space_id=space_id, visibility=visibility.value
+        )
 
     @interactor_cache(cache_name="spaces", timeout=30 * 60)
     def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
 
         self.workspace_mixin.check_workspace_is_active(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
 
         return self.space_storage.get_workspace_spaces(
             workspace_id=workspace_id)

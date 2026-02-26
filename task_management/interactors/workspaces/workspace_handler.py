@@ -56,7 +56,8 @@ class WorkspaceHandler:
         )
 
         self.workspace_storage.add_member_to_workspace(
-            workspace_member_data=workspace_member_input)
+            workspace_member_data=workspace_member_input
+        )
 
         space_data = self._create_space(
             workspace_id=workspace_data.workspace_id,

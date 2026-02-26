@@ -24,7 +24,8 @@ class FolderCreationHandler:
         folder_obj = self._create_folder(folder_data=folder_data)
 
         self._create_folder_permission_for_user(
-            folder_id=folder_obj.folder_id, user_id=folder_data.created_by)
+            folder_id=folder_obj.folder_id, user_id=folder_data.created_by
+        )
 
         return folder_obj
 
@@ -51,4 +52,5 @@ class FolderCreationHandler:
             added_by=user_id)
 
         return folder_interactor.add_user_for_folder_permission(
-            permission_data=user_permission)
+            permission_data=user_permission
+        )

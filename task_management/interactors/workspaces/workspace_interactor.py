@@ -68,12 +68,13 @@ class WorkspaceInteractor:
     def create_workspace(
             self, workspace_data: CreateWorkspaceDTO)  -> WorkspaceDTO:
 
+        self.workspace_validator.check_workspace_name_not_empty(
+            workspace_name=workspace_data.name
+        )
         self.account_mixin.check_account_is_active(workspace_data.account_id)
         self.account_mixin.check_user_is_account_owner(
             workspace_data.user_id, account_id=workspace_data.account_id
         )
-        self.workspace_validator.check_workspace_name_not_empty(
-            workspace_name=workspace_data.name)
 
         return self.workspace_storage.create_workspace(
             workspace_data=workspace_data)
@@ -83,12 +84,15 @@ class WorkspaceInteractor:
             self, workspace_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> WorkspaceDTO:
 
-        self.workspace_mixin.check_workspace_is_active(
-            workspace_id=workspace_id)
-        self.workspace_mixin.check_user_is_workspace_owner(
-            user_id=user_id, workspace_id=workspace_id)
         self.workspace_validator.check_workspace_update_field_properties(
-            workspace_id=workspace_id, name=name, description=description)
+            workspace_id=workspace_id, name=name, description=description
+        )
+        self.workspace_mixin.check_workspace_is_active(
+            workspace_id=workspace_id
+        )
+        self.workspace_mixin.check_user_is_workspace_owner(
+            user_id=user_id, workspace_id=workspace_id
+        )
 
         return self.workspace_storage.update_workspace(
             workspace_id=workspace_id,name=name, description=description)
@@ -98,12 +102,15 @@ class WorkspaceInteractor:
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
 
         self.workspace_mixin.get_workspace_if_exists(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
         self.workspace_mixin.check_user_is_workspace_owner(
-            user_id=user_id, workspace_id=workspace_id)
+            user_id=user_id, workspace_id=workspace_id
+        )
 
         return self.workspace_storage.delete_workspace(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def transfer_workspace(
@@ -111,9 +118,11 @@ class WorkspaceInteractor:
             -> WorkspaceDTO:
 
         self.workspace_mixin.check_workspace_is_active(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
         self.workspace_mixin.check_user_is_workspace_owner(
-            user_id=user_id, workspace_id=workspace_id)
+            user_id=user_id, workspace_id=workspace_id
+        )
         self.user_mixin.check_user_is_active(user_id=new_user_id)
 
         return self.workspace_storage.transfer_workspace(
@@ -123,10 +132,12 @@ class WorkspaceInteractor:
             self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
 
         self.workspace_validator.check_workspace_ids(
-            workspace_ids=workspace_ids)
+            workspace_ids=workspace_ids
+        )
 
         return self.workspace_storage.get_workspaces(
-            workspace_ids=workspace_ids)
+            workspace_ids=workspace_ids
+        )
 
     def get_account_workspaces(
             self, account_id: str) -> list[WorkspaceDTO]:
@@ -134,4 +145,5 @@ class WorkspaceInteractor:
         self.account_mixin.check_account_is_active(account_id=account_id)
 
         return self.workspace_storage.get_account_workspaces(
-            account_id=account_id)
+            account_id=account_id
+        )

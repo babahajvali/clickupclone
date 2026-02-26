@@ -14,7 +14,8 @@ class WorkspaceValidationMixin:
 
     def check_workspace_is_active(self, workspace_id: str):
         workspace_data = self.get_workspace_if_exists(
-            workspace_id=workspace_id)
+            workspace_id=workspace_id
+        )
 
         is_workspace_delete = workspace_data.is_deleted
         if is_workspace_delete:
