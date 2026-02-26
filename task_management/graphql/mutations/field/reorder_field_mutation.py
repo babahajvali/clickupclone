@@ -45,7 +45,7 @@ class ReorderFieldMutation(graphene.Mutation):
                 description=result.description,
                 template_id=result.template_id,
                 field_name=result.field_name,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 order=result.order,
                 config=result.config,
                 is_required=result.is_required,

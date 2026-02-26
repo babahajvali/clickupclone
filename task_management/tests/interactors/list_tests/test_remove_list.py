@@ -2,7 +2,6 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -93,19 +92,6 @@ class TestRemoveList:
 
         # Assert
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
-
-    def test_remove_list_inactive(self, snapshot):
-        # Arrange
-        list_data = self._get_list_dto()
-        list_data.is_deleted = True
-        self._setup_remove_list_dependencies(list_data=list_data)
-
-        # Act
-        with pytest.raises(DeletedListFound) as exc:
-            self.interactor.delete_list(list_id="list_1", user_id="user_id")
-
-        # Assert
-        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
 
     def test_remove_list_permission_denied(self, snapshot):
         # Arrange

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyName, \
+from task_management.exceptions.custom_exceptions import EmptyTemplateName, \
     NothingToUpdateTemplate
 from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
@@ -95,7 +95,7 @@ class TemplateInteractor:
     def _check_template_name_not_empty(template_name: str):
         is_name_empty = not template_name or not template_name.strip()
         if is_name_empty:
-            raise EmptyName(name=template_name)
+            raise EmptyTemplateName(name=template_name)
 
     def _check_template_update_field_properties(
             self, template_id: str, name: Optional[str],

@@ -3,9 +3,12 @@ class UserNotFound(Exception):
         self.user_id = user_id
 
 
-class EmptyName(Exception):
+class EmptyTemplateName(Exception):
     def __init__(self, name: str):
         self.name = name
+
+    def __str__(self):
+        return f"Empty template name is found '{self.name}'"
 
 
 class EmptyWorkspaceName(Exception):

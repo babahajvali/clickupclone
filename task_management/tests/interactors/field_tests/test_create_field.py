@@ -8,7 +8,6 @@ from task_management.exceptions.custom_exceptions import (
     UnsupportedFieldType,
     FieldNameAlreadyExists,
     ModificationNotAllowed,
-    EmptyName,
     MissingFieldConfig,
     DropdownOptionsMissing,
     InvalidFieldConfig, EmptyFieldName,
@@ -20,14 +19,8 @@ from task_management.interactors.dtos import (
     FieldDTO,
     WorkspaceMemberDTO,
 )
-from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.field_storage_interface import (
-    FieldStorageInterface,
-)
-from task_management.interactors.storage_interfaces.template_storage_interface import (
-    TemplateStorageInterface,
-)
-
+from task_management.interactors.storage_interfaces import \
+    FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 
 
 class InvalidFieldEnum(Enum):

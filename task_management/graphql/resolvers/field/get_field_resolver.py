@@ -30,6 +30,7 @@ def get_field_resolver(root, info, params):
             field_name=field_data.field_name,
             order=field_data.order,
             config=field_data.config,
+            is_deleted=field_data.is_deleted,
             is_required=field_data.is_required,
             created_by=field_data.created_by
         )
