@@ -66,8 +66,7 @@ class WorkspaceInteractor:
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def create_workspace(
-            self, workspace_data: CreateWorkspaceDTO)  -> WorkspaceDTO:
-
+            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
         self.workspace_validator.check_workspace_name_not_empty(
             workspace_name=workspace_data.name
         )
@@ -83,7 +82,6 @@ class WorkspaceInteractor:
     def update_workspace(
             self, workspace_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> WorkspaceDTO:
-
         self.workspace_validator.check_workspace_update_field_properties(
             workspace_id=workspace_id, name=name, description=description
         )
@@ -95,12 +93,11 @@ class WorkspaceInteractor:
         )
 
         return self.workspace_storage.update_workspace(
-            workspace_id=workspace_id,name=name, description=description)
+            workspace_id=workspace_id, name=name, description=description)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
-
         self.workspace_mixin.get_workspace_if_exists(
             workspace_id=workspace_id
         )
@@ -116,7 +113,6 @@ class WorkspaceInteractor:
     def transfer_workspace(
             self, workspace_id: str, user_id: str, new_user_id: str) \
             -> WorkspaceDTO:
-
         self.workspace_mixin.check_workspace_is_active(
             workspace_id=workspace_id
         )
@@ -130,7 +126,6 @@ class WorkspaceInteractor:
 
     def get_workspaces(
             self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
-
         self.workspace_validator.check_workspace_ids(
             workspace_ids=workspace_ids
         )
@@ -141,7 +136,6 @@ class WorkspaceInteractor:
 
     def get_account_workspaces(
             self, account_id: str) -> list[WorkspaceDTO]:
-
         self.account_mixin.check_account_is_active(account_id=account_id)
 
         return self.workspace_storage.get_account_workspaces(

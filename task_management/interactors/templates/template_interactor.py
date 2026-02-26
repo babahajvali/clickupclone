@@ -71,15 +71,14 @@ class TemplateInteractor:
             self, template_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> TemplateDTO:
 
+        self._check_template_update_field_properties(
+            template_id=template_id, name=name, description=description)
         self.template_mixin.check_template_exists(template_id=template_id)
         template_data = self.template_storage.get_template_by_id(
             template_id=template_id)
         self._check_user_has_edit_access_for_list(
             list_id=template_data.list_id,
             user_id=user_id)
-
-        self._check_template_update_field_properties(
-            template_id=template_id, name=name, description=description)
 
         return self.template_storage.update_template(
             template_id=template_id, name=name, description=description)

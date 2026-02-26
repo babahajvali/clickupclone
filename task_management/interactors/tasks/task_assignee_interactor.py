@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
@@ -63,7 +62,6 @@ class TaskAssigneeInteractor:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
 
-
     @invalidate_interactor_cache(cache_name="list_task_assignees")
     def add_task_assignee(
             self, task_id: str, user_id: str, assigned_by: str) \
@@ -78,8 +76,8 @@ class TaskAssigneeInteractor:
         self.task_mixin.check_task_is_active(task_id=task_id)
         self.user_mixin.check_user_is_active(user_id=user_id)
 
-        self._check_user_has_edit_access_for_list(task_id=task_id,
-                                                  user_id=assigned_by)
+        self._check_user_has_edit_access_for_list(
+            task_id=task_id, user_id=assigned_by)
 
         return self.task_storage.add_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)
@@ -88,10 +86,10 @@ class TaskAssigneeInteractor:
     def remove_task_assignee(
             self, assign_id: str, user_id: str) -> TaskAssigneeDTO:
 
-        assignee_data = self._check_task_assignee_exists(
+        assignee_data = self._check_and_get_task_assignee_exists(
             assign_id=assign_id)
-        self._check_user_has_edit_access_for_list(task_id=assignee_data.task_id,
-                                                  user_id=user_id)
+        self._check_user_has_edit_access_for_list(
+            task_id=assignee_data.task_id, user_id=user_id)
 
         return self.task_storage.remove_task_assignee(
             assign_id=assign_id)
@@ -106,15 +104,15 @@ class TaskAssigneeInteractor:
 
         self.user_mixin.check_user_is_active(user_id=user_id)
 
-        return self.task_storage.get_user_assigned_tasks(
-            user_id=user_id)
+        return self.task_storage.get_user_assigned_tasks(user_id=user_id)
 
-    def _check_task_assignee_exists(self, assign_id: str):
+    def _check_and_get_task_assignee_exists(self, assign_id: str):
 
-        try:
-            assignee_data = self.task_storage.get_task_assignee(
-                assign_id=assign_id)
-        except ObjectDoesNotExist:
+        assignee_data = self.task_storage.get_task_assignee(
+            assign_id=assign_id)
+
+        is_assignee_not_found = not assignee_data
+        if is_assignee_not_found:
             raise TaskAssigneeNotFound(assign_id=assign_id)
 
         if not assignee_data.is_active:

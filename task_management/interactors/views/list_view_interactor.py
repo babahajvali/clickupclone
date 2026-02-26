@@ -24,7 +24,8 @@ class ListViewInteractor:
 
     @property
     def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(workspace_storage=self.workspace_storage)
+        return WorkspaceValidationMixin(
+            workspace_storage=self.workspace_storage)
 
     @property
     def view_mixin(self) -> ViewValidationMixin:

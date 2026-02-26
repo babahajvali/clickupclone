@@ -39,7 +39,6 @@ class WorkspaceHandler:
     @transaction.atomic
     def handle_workspace(
             self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
-
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,
@@ -110,7 +109,6 @@ class WorkspaceHandler:
     def transfer_the_workspace(
             self, workspace_id: str, current_user_id: str, new_user_id: str) \
             -> WorkspaceDTO:
-
         workspace_interactor = WorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage,

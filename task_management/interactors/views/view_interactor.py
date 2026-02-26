@@ -31,10 +31,9 @@ class ViewInteractor:
     def update_view(self, view_id: str, name: Optional[str],
                     description: Optional[str]) -> ViewDTO:
 
-        self.view_mixin.check_view_exist(view_id=view_id)
-
         self._check_update_view_field_properties(
             view_id=view_id, name=name, description=description)
+        self.view_mixin.check_view_exist(view_id=view_id)
 
         return self.view_storage.update_view(
             view_id=view_id, name=name, description=description)

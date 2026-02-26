@@ -194,7 +194,7 @@ class TaskStorage(TaskStorageInterface):
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
+        assignee_data = TaskAssignee.objects.filter(assign_id=assign_id).first()
 
         return self._assignee_dto(assignee_data=assignee_data)
 
