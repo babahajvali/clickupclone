@@ -1,1 +1,1 @@
-AccountDTO(account_id='a58241b0-6916-4f49-812e-03fb594f0ca2', name='Lawrence-Alexander', description='Make card rate now television southern.', owner_id='d68f3270-9ba6-434f-bf77-e4471296c62b', is_active=True)
+AccountDTO(account_id='9ccf39c1-1b5e-4b58-b689-0b1600c13372', name='Dorsey-Christian', description='Official cost development six season century once truth.', owner_id='f4d7baf9-6051-434b-a1d6-0de95c337fe9', is_active=True)

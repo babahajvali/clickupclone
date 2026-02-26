@@ -1,0 +1,1 @@
+FolderDTO(folder_id='folder_1', name='Folder name', description='Folder description', space_id='space_1', order=2, is_deleted=False, created_by='user_1', is_private=False)

@@ -1,1 +1,1 @@
-ListDTO(list_id=UUID('dd0bc556-b66f-4b48-92e1-8a5393a68968'), name='Test List', description='Test description', space_id=UUID('12345678-1234-5678-1234-567812345678'), is_deleted=False, order=1, is_private=False, created_by=UUID('12345678-1234-5678-1234-567812345680'), folder_id=None)
+ListDTO(list_id=UUID('0f1906ff-8471-4db5-9c84-97a1fcc18288'), name='Test List', description='Test description', space_id=UUID('12345678-1234-5678-1234-567812345678'), is_deleted=False, order=1, is_private=False, created_by=UUID('12345678-1234-5678-1234-567812345680'), folder_id=None)

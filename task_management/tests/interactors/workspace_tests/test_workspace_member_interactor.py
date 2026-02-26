@@ -100,11 +100,12 @@ class TestWorkspaceMemberInteractor:
 
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.workspace_storage.get_workspace_member.return_value = expected
         self.workspace_storage.remove_member_from_workspace.return_value = expected
 
         result = self.interactor.remove_member_from_workspace(
-            removed_by="user123",
-            workspace_member_id=1)
+            removed_by=expected.user_id,
+            workspace_member_id=expected.id)
         assert result == expected
 
         # snapshot.assert_match(repr(result), "remove_member_success.txt")

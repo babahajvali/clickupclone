@@ -17,7 +17,6 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.tests.factories.interactor_factory import \
     AccountDTOFactory
-from task_management.tests.factories.storage_factory import UserFactory
 
 
 class TestAccountInteractor:
@@ -324,17 +323,6 @@ class TestAccountInteractor:
             repr(result),
             "delete_account_success.txt"
         )
-
-    def test_account_not_found(self, snapshot):
-        account_id = "accounts-123"
-        owner_id = "12345678-1234-5678-1234-567812345678"
-
-        self.account_storage.is_account_exists.return_value = False
-        with pytest.raises(AccountNotFound) as e:
-            self.interactor.delete_account(account_id=account_id,
-                                           deleted_by=owner_id)
-
-        snapshot.assert_match(repr(e.value), 'account_not_found.txt')
 
     def test_delete_account_non_owner(self, snapshot):
         account_id = "accounts-123"

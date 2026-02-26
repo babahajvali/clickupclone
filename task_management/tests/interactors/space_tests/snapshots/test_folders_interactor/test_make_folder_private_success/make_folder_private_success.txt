@@ -1,1 +1,0 @@
-FolderDTO(folder_id='2cba3149-ddbc-49e4-8f7f-77841b9b5a94', name='fish', description='Free draw phone interest where.', space_id='0175d109-c44c-4867-adc3-afab37030030', order=4, is_active=True, created_by='17212e7f-123e-4e4d-9b4e-01e551059dec', is_private=True)

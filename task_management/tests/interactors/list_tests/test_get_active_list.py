@@ -63,7 +63,7 @@ class TestGetActiveList:
     def test_get_active_list_not_found(self, snapshot):
         # Arrange
         self._setup_get_list_dependencies(list_data=None)
-        self.list_storage.is_list_exists.return_value = False
+        self.list_storage.get_list.return_value = None
 
         # Act
         with pytest.raises(ListNotFound) as exc:

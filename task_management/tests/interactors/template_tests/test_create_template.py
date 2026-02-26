@@ -1,22 +1,11 @@
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec
 
 import pytest
 from faker import Faker
 
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.field_storage_interface import (
-    FieldStorageInterface
-)
-from task_management.interactors.storage_interfaces.list_storage_interface import (
-    ListStorageInterface
-)
-from task_management.interactors.storage_interfaces.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.storage_interfaces.template_storage_interface import (
-    TemplateStorageInterface
-)
+    TemplateStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.template_interactor import (
     TemplateInteractor
 )
@@ -55,6 +44,9 @@ class TestCreateTemplateInteractor:
         )()
 
         self.template_storage.create_template.return_value = template_dto
+        self.workspace_storage.get_workspace_member.return_value = type(
+            "WorkspaceMember", (), {"is_active": True, "role": Role.MEMBER}
+        )()
 
         result = self.interactor.create_template(create_template_dto)
 

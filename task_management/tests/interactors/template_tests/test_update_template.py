@@ -3,13 +3,11 @@ import pytest
 from faker import Faker
 
 from task_management.exceptions.custom_exceptions import \
-    ModificationNotAllowed, ListNotFound
-from task_management.exceptions.enums import Permissions, Role
-from task_management.interactors.dtos import UserListPermissionDTO, \
-    WorkspaceMemberDTO
+    ModificationNotAllowed
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, TemplateStorageInterface,  \
-    SpaceStorageInterface, WorkspaceStorageInterface
+    ListStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.template_interactor import \
     TemplateInteractor
 from task_management.tests.factories.interactor_factory import (
@@ -42,6 +40,7 @@ class TestUpdateTemplateInteractor:
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,
         )
+
     @staticmethod
     def _mock_active_list():
         return type("List", (), {"is_deleted": False})()
@@ -101,7 +100,8 @@ class TestUpdateTemplateInteractor:
         description = "description"
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role=Role.GUEST)
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
+            role=Role.GUEST)
         self.list_storage.get_list.return_value = self._mock_active_list()
         with pytest.raises(ModificationNotAllowed):
             self.interactor.update_template(template_id=template_id,

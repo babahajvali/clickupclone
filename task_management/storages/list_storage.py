@@ -43,6 +43,9 @@ class ListStorage(ListStorageInterface):
     def get_list(self, list_id: str) -> ListDTO | None:
         list_data = List.objects.filter(list_id=list_id).first()
 
+        if list_data is None:
+            return None
+
         return self._list_dto(list_data=list_data)
 
     def is_list_exists(self, list_id: str) -> bool:

@@ -19,7 +19,7 @@ class FolderValidationMixin:
 
     def get_folder_if_exists(self, folder_id: str) -> FolderDTO:
 
-        folder_data = self.folder_storage.is_folder_exists(
+        folder_data = self.folder_storage.get_folder(
             folder_id=folder_id)
 
         is_folder_not_found = not folder_data
