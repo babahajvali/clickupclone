@@ -18,7 +18,8 @@ from task_management.interactors.user.user_interactor import (
 
 class TestCreateUser:
 
-    def _mock_storage_defaults(self, user_storage):
+    @staticmethod
+    def _mock_storage_defaults(user_storage):
         user_storage.check_username_exists.return_value = False
         user_storage.check_email_exists.return_value = False
         user_storage.check_phone_number_exists.return_value = False
