@@ -2,7 +2,7 @@ from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
     FieldNameAlreadyExists, InvalidOrder, EmptyFieldName, \
-    UnsupportedFieldType, FieldNotFound, DeletedFieldException
+    UnsupportedFieldType
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import UpdateFieldDTO
 from task_management.interactors.storage_interfaces import \
