@@ -59,9 +59,9 @@ class AccountInteractor:
             AccountNameAlreadyExistsException: If the accounts name is already taken.
         """
 
-        self.user_mixin.check_user_is_active(user_id=created_by)
         self.account_validator.check_account_name_is_not_empty(
             account_name=name)
+        self.user_mixin.check_user_is_active(user_id=created_by)
         self.account_validator.check_account_name_in_db(
             account_name=name, account_id=None)
 
@@ -84,13 +84,12 @@ class AccountInteractor:
             3.description: accounts description optional
         """
 
+        self.account_validator.check_update_account_field_properties(
+            account_id=account_id, name=name, description=description)
         self.account_mixin.check_account_is_active(account_id=account_id)
         self.account_mixin.check_user_is_account_owner(
             user_id=user_id, account_id=account_id
         )
-
-        self.account_validator.check_update_account_field_properties(
-            account_id=account_id, name=name, description=description)
 
         return self.account_storage.update_account(
             account_id=account_id, name=name, description=description
