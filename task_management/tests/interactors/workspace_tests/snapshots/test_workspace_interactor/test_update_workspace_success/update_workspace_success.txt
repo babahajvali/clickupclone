@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='52b1b981-aef7-47b5-a35f-a10e8c42c37f', name='Kelly Group', description='Peace she often modern fund second rate.', user_id='8f75031b-9ffd-47f9-9cf3-49d2b0da0874', account_id='c51f3104-af28-4a0a-852d-5cd4aa76bd45', is_deleted=False)
+WorkspaceDTO(workspace_id='f924e06a-aef5-4aef-9903-b45fd01cf935', name='Hernandez PLC', description='Plant wonder thing blood single recently other owner.', user_id='b0445ebb-4445-47ef-9c76-9e1f83719849', account_id='603803f3-2b2b-4fda-9d43-19b5bb5f15c1', is_deleted=False)

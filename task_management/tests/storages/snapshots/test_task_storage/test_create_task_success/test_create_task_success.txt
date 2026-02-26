@@ -1,1 +1,1 @@
-TaskDTO(task_id=UUID('be5ebe6f-58b1-4c84-8ce6-3ccf4682de7b'), title='Test Task', description='Test description', list_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_deleted=False)
+TaskDTO(task_id=UUID('3906937e-7b7d-4562-96d1-f1dd011f8002'), title='Test Task', description='Test description', list_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_deleted=False)

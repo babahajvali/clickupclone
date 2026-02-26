@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='71c5b936-e1e3-4011-a8b7-7a475687ee55', name='Munoz, George and Olsen', description='Sort sign today there see kid.', user_id='9d7aafed-fb1c-4622-a661-3f70cff36072', account_id='31f74321-6d3b-4e8c-8f26-6e6cf0417f80', is_deleted=False)
+WorkspaceDTO(workspace_id='2b02237e-e2cd-459a-abba-80d2820bc51d', name='Carey and Sons', description='Important produce just raise enough onto try.', user_id='90a00ee1-70e2-4e61-a29b-24d72bdc9c10', account_id='edf2a720-6003-4713-aa8f-d23d0dbc321b', is_deleted=False)

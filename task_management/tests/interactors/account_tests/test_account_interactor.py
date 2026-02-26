@@ -276,6 +276,7 @@ class TestAccountInteractor:
         account_id = "non-existent-accounts"
         owner_id = "user-123"
 
+        self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.get_account.return_value = None
 
         with pytest.raises(AccountNotFound) as exc:
@@ -293,6 +294,7 @@ class TestAccountInteractor:
         account_id = "accounts-123"
         owner_id = "user-123"
 
+        self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.get_account.return_value = self._mock_account(
             owner_id, is_active=False)
 

@@ -4,12 +4,12 @@ from task_management.exceptions import custom_exceptions
 from task_management.exceptions.custom_exceptions import \
     WorkspaceMemberIdNotFound
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType, WorkspaceNotFoundType, \
+    ModificationNotAllowedType, \
     InactiveWorkspaceMemberType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     RemoveWorkspaceMemberInputParams
 from task_management.graphql.types.response_types import \
-    AddMemberToWorkspaceResponse, RemoveWorkspaceMemberResponse
+    RemoveWorkspaceMemberResponse
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.workspaces.workspace_member_interactor import \
     WorkspaceMemberInteractor

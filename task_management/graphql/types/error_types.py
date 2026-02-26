@@ -230,7 +230,7 @@ class InactiveWorkspaceMemberType(graphene.ObjectType):
 
 
 class WorkspaceMemberIdNotFoundType(graphene.ObjectType):
-    workspace_member_id = graphene.String(required=True)
+    workspace_member_id = graphene.Int(required=True)
 
 
 class InvalidWorkspaceIdsFoundType(graphene.ObjectType):
