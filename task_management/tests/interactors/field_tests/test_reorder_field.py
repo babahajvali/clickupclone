@@ -1,20 +1,22 @@
-import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import FieldType, Role
-from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.interactors.fields.field_interactor import FieldInteractor
-from task_management.interactors.storage_interfaces import (
-    FieldStorageInterface,
-    TemplateStorageInterface,
-    WorkspaceStorageInterface,
-)
+import pytest
+
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFound,
     FieldNotFound,
     DeletedFieldException,
     ModificationNotAllowed,
     InvalidOrder,
+)
+from task_management.exceptions.enums import FieldType, Role
+from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
+from task_management.interactors.fields.reorder_field_interactor import \
+    ReorderFieldInteractor
+from task_management.interactors.storage_interfaces import (
+    FieldStorageInterface,
+    TemplateStorageInterface,
+    WorkspaceStorageInterface,
 )
 
 
@@ -49,7 +51,7 @@ class TestReorderFieldInteractor:
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = FieldInteractor(
+        self.interactor = ReorderFieldInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,
@@ -58,7 +60,6 @@ class TestReorderFieldInteractor:
     def _setup_dependencies(
             self, template_exists=True, field_active=True,
             role=Role.ADMIN, field_order=1, fields_count=5):
-
         # template
         self.template_storage.validate_template_exists.return_value = template_exists
 
@@ -93,7 +94,6 @@ class TestReorderFieldInteractor:
         self.field_storage.update_field_order.return_value = expected
         return expected
 
-
     def test_reorder_field_success(self, snapshot):
         expected = self._setup_dependencies(field_order=1)
 
@@ -121,7 +121,6 @@ class TestReorderFieldInteractor:
 
         self.field_storage.update_field_order.assert_not_called()
 
-
     def test_reorder_field_template_not_found(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = False
@@ -135,8 +134,8 @@ class TestReorderFieldInteractor:
                 user_id="user_1"
             )
 
-        snapshot.assert_match(repr(exc.value), "reorder_field_template_not_found.txt")
-
+        snapshot.assert_match(repr(exc.value),
+                              "reorder_field_template_not_found.txt")
 
     def test_reorder_field_not_found(self, snapshot):
         # Arrange
@@ -154,7 +153,6 @@ class TestReorderFieldInteractor:
 
         snapshot.assert_match(repr(exc.value), "reorder_field_not_found.txt")
 
-
     def test_reorder_field_inactive(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True
@@ -171,7 +169,6 @@ class TestReorderFieldInteractor:
 
         snapshot.assert_match(repr(exc.value), "reorder_field_inactive.txt")
 
-
     def test_reorder_field_invalid_order_low(self, snapshot):
         self._setup_dependencies(fields_count=3)
 
@@ -183,7 +180,8 @@ class TestReorderFieldInteractor:
                 user_id="user_1"
             )
 
-        snapshot.assert_match(repr(exc.value), "reorder_field_invalid_order_low.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "reorder_field_invalid_order_low.txt")
 
     def test_reorder_field_invalid_order_high(self, snapshot):
         self._setup_dependencies(fields_count=3)
@@ -196,8 +194,8 @@ class TestReorderFieldInteractor:
                 user_id="user_1"
             )
 
-        snapshot.assert_match(repr(exc.value), "reorder_field_invalid_order_high.txt")
-
+        snapshot.assert_match(repr(exc.value),
+                              "reorder_field_invalid_order_high.txt")
 
     def test_reorder_field_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
@@ -210,4 +208,5 @@ class TestReorderFieldInteractor:
                 user_id="user_1"
             )
 
-        snapshot.assert_match(repr(exc.value), "reorder_field_permission_denied.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "reorder_field_permission_denied.txt")

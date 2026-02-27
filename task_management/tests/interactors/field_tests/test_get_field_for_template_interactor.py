@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
 
 from task_management.exceptions.custom_exceptions import TemplateNotFound
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.interactors.fields.field_interactor import FieldInteractor
-from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
+from task_management.interactors.fields.get_template_fields_interactor import \
+    GetTemplateFieldsInteractor
 from task_management.interactors.storage_interfaces.field_storage_interface import (
     FieldStorageInterface,
 )
@@ -19,12 +20,10 @@ class TestGetFieldForTemplateInteractor:
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
-        
-        self.interactor = FieldInteractor(
+
+        self.interactor = GetTemplateFieldsInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
-            workspace_storage=self.workspace_storage,
         )
 
     def test_get_fields_for_template_success(self, snapshot):

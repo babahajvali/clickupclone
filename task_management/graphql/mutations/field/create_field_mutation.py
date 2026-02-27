@@ -10,9 +10,9 @@ from task_management.graphql.types.error_types import TemplateNotFoundType, \
 from task_management.graphql.types.input_types import CreateFieldInputParams
 from task_management.graphql.types.response_types import CreateFieldResponse
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
 from task_management.interactors.dtos import CreateFieldDTO
+from task_management.interactors.fields.create_field_interactor import \
+    CreateFieldInteractor
 from task_management.storages import FieldStorage, TemplateStorage, \
     WorkspaceStorage
 
@@ -29,7 +29,7 @@ class CreateFieldMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FieldInteractor(
+        interactor = CreateFieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
             workspace_storage=workspace_storage,

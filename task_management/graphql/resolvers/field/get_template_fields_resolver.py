@@ -1,10 +1,11 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TemplateNotFoundType
 from task_management.graphql.types.types import FieldType, FieldsType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
+
+from task_management.interactors.fields.get_template_fields_interactor import \
+    GetTemplateFieldsInteractor
 from task_management.storages import FieldStorage, TemplateStorage, \
-    WorkspaceStorage, ListStorage
+    ListStorage
 
 
 def get_fields_for_template_resolver(root, info, params):
@@ -12,13 +13,11 @@ def get_fields_for_template_resolver(root, info, params):
 
     field_storage = FieldStorage()
     template_storage = TemplateStorage()
-    workspace_storage = WorkspaceStorage()
     list_storage = ListStorage()
 
-    interactor = FieldInteractor(
+    interactor = GetTemplateFieldsInteractor(
         field_storage=field_storage,
         template_storage=template_storage,
-        workspace_storage=workspace_storage,
     )
 
     try:

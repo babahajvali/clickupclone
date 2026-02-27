@@ -5,14 +5,13 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     FieldNotFound,
-    DeletedFieldException,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.interactors.fields.field_interactor import FieldInteractor
+from task_management.interactors.fields.delete_field_interactor import \
+    DeleteFieldInteractor
 from task_management.interactors.storage_interfaces import (
     FieldStorageInterface,
-    TemplateStorageInterface,
     WorkspaceStorageInterface,
 )
 
@@ -46,12 +45,10 @@ class TestDeleteFieldInteractor:
 
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = FieldInteractor(
+        self.interactor = DeleteFieldInteractor(
             field_storage=self.field_storage,
-            template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,
         )
 
@@ -67,7 +64,7 @@ class TestDeleteFieldInteractor:
         self.field_storage.get_field.return_value = field_data
         self.field_storage.delete_field.return_value = field_data
 
-        self.template_storage.get_workspace_id_from_template_id.return_value = (
+        self.field_storage.get_workspace_id_from_field_id.return_value = (
             "workspace_id"
         )
         self.workspace_storage.get_workspace_member.return_value = (

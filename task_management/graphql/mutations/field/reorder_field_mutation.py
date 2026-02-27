@@ -7,8 +7,8 @@ from task_management.graphql.types.error_types import FieldNotFoundType, \
 from task_management.graphql.types.input_types import ReorderFieldInputParams
 from task_management.graphql.types.response_types import ReorderFieldResponse
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
+from task_management.interactors.fields.reorder_field_interactor import \
+    ReorderFieldInteractor
 from task_management.storages import FieldStorage, TemplateStorage, \
     WorkspaceStorage
 
@@ -25,10 +25,10 @@ class ReorderFieldMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FieldInteractor(
+        interactor = ReorderFieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
-            workspace_storage = workspace_storage,
+            workspace_storage=workspace_storage,
         )
 
         try:

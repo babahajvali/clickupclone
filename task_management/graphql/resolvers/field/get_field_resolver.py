@@ -1,23 +1,18 @@
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
-from task_management.storages import FieldStorage, TemplateStorage, \
-    WorkspaceStorage
+from task_management.interactors.fields.get_field_interactor import \
+    GetFieldInteractor
+from task_management.storages import FieldStorage
 
 
 def get_field_resolver(root, info, params):
     field_id = params.field_id
 
     field_storage = FieldStorage()
-    template_storage = TemplateStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = FieldInteractor(
+    interactor = GetFieldInteractor(
         field_storage=field_storage,
-        template_storage=template_storage,
-        workspace_storage=workspace_storage,
     )
     try:
         field_data = interactor.get_field(field_id=field_id)

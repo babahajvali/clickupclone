@@ -2,15 +2,14 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
-    TemplateNotFoundType, ModificationNotAllowedType, \
+    ModificationNotAllowedType, \
     UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteFieldInputParams
 from task_management.graphql.types.response_types import DeleteFieldResponse
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
-from task_management.storages import FieldStorage, TemplateStorage, \
-    WorkspaceStorage
+from task_management.interactors.fields.delete_field_interactor import \
+    DeleteFieldInteractor
+from task_management.storages import FieldStorage, WorkspaceStorage
 
 
 class DeleteFieldMutation(graphene.Mutation):
@@ -22,12 +21,10 @@ class DeleteFieldMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         field_storage = FieldStorage()
-        template_storage = TemplateStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FieldInteractor(
+        interactor = DeleteFieldInteractor(
             field_storage=field_storage,
-            template_storage=template_storage,
             workspace_storage=workspace_storage,
         )
 

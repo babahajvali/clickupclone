@@ -18,7 +18,8 @@ from task_management.interactors.dtos import (
     UpdateFieldDTO,
     WorkspaceMemberDTO,
 )
-from task_management.interactors.fields.field_interactor import FieldInteractor
+from task_management.interactors.fields.update_field_interactor import \
+    UpdateFieldInteractor
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, \
     WorkspaceStorageInterface
@@ -57,7 +58,7 @@ class TestUpdateFieldInteractor:
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = FieldInteractor(
+        self.interactor = UpdateFieldInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,

@@ -13,12 +13,13 @@ from task_management.exceptions.custom_exceptions import (
     InvalidFieldConfig, EmptyFieldName,
 )
 from task_management.exceptions.enums import FieldType, Role
-from task_management.interactors.fields.field_interactor import FieldInteractor
 from task_management.interactors.dtos import (
     CreateFieldDTO,
     FieldDTO,
     WorkspaceMemberDTO,
 )
+from task_management.interactors.fields.create_field_interactor import \
+    CreateFieldInteractor
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 
@@ -59,7 +60,7 @@ class TestCreateFieldInteractor:
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = FieldInteractor(
+        self.interactor = CreateFieldInteractor(
             field_storage=self.field_storage,
             template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,

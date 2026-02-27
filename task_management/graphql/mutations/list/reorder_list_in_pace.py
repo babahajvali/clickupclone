@@ -59,7 +59,7 @@ class ReorderListInSpaceMutation(graphene.Mutation):
                 name=result.name,
                 description=result.description,
                 space_id=result.space_id,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,

@@ -5,9 +5,10 @@ import pytest
 from task_management.exceptions.custom_exceptions import FieldNotFound
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.interactors.fields.field_interactor import FieldInteractor
+from task_management.interactors.fields.get_field_interactor import \
+    GetFieldInteractor
 from task_management.interactors.storage_interfaces import (
-    FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface,
+    FieldStorageInterface
 )
 
 
@@ -29,13 +30,9 @@ class TestGetActiveFieldInteractor:
 
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.template_storage = create_autospec(TemplateStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = FieldInteractor(
-            field_storage=self.field_storage,
-            template_storage=self.template_storage,
-            workspace_storage=self.workspace_storage,
+        self.interactor = GetFieldInteractor(
+            field_storage=self.field_storage
         )
 
     def _setup_get_field_dependencies(self, *,

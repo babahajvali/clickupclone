@@ -7,7 +7,6 @@ from task_management.graphql.types.error_types import SpaceNotFoundType, \
 from task_management.graphql.types.input_types import CreateListInputParams
 from task_management.graphql.types.response_types import CreateListResponse
 from task_management.graphql.types.types import ListType
-
 from task_management.interactors.dtos import CreateListDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
@@ -51,14 +50,15 @@ class CreateListMutation(graphene.Mutation):
                 folder_id=params.folder_id if params.folder_id else None
             )
 
-            result = interactor.handle_list_creation(list_data=create_list_data)
+            result = interactor.handle_list_creation(
+                list_data=create_list_data)
 
             return ListType(
                 list_id=result.list_id,
                 name=result.name,
                 description=result.description,
                 space_id=result.space_id,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,

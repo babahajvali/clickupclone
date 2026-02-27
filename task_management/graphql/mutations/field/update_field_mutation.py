@@ -1,10 +1,8 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import DeletedFieldException, \
-    UserNotWorkspaceMember
 from task_management.graphql.types.error_types import FieldNotFoundType, \
-    TemplateNotFoundType, FieldNameAlreadyExistsType, \
+    FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
     InvalidFieldDefaultValueType, NothingToUpdateFieldType, DeletedFieldType, \
     EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
@@ -12,11 +10,12 @@ from task_management.graphql.types.error_types import FieldNotFoundType, \
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
-from task_management.interactors.fields.field_interactor import \
-    FieldInteractor
 from task_management.interactors.dtos import UpdateFieldDTO
+from task_management.interactors.fields.update_field_interactor import \
+    UpdateFieldInteractor
 from task_management.storages import FieldStorage, TemplateStorage, \
     WorkspaceStorage
+
 
 class UpdateFieldMutation(graphene.Mutation):
     class Arguments:
@@ -30,7 +29,7 @@ class UpdateFieldMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FieldInteractor(
+        interactor = UpdateFieldInteractor(
             field_storage=field_storage,
             template_storage=template_storage,
             workspace_storage=workspace_storage,
