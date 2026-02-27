@@ -1,21 +1,28 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import \
-    UnsupportedVisibilityType, UserNotWorkspaceMember
+from task_management.exceptions.custom_exceptions import (
+    UnsupportedVisibilityType,
+)
 from task_management.exceptions.enums import Visibility
-from task_management.graphql.types.error_types import ListNotFoundType, \
-    DeletedListType, ModificationNotAllowedType, UnsupportedVisibilityType, \
-    UserNotWorkspaceMemberType
-from task_management.graphql.types.input_types import \
-    SetListVisibilityInputParams
-from task_management.graphql.types.response_types import \
-    SetListVisibilityResponse
+from task_management.graphql.types.error_types import (
+    ListNotFoundType,
+    DeletedListType,
+    ModificationNotAllowedType,
+    UnsupportedVisibilityType,
+    UserNotWorkspaceMemberType,
+)
+from task_management.graphql.types.input_types import (
+    SetListVisibilityInputParams,
+)
+from task_management.graphql.types.response_types import (
+    SetListVisibilityResponse,
+)
 from task_management.graphql.types.types import ListType
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.set_list_visibility_interactor import (
+    SetListVisibilityInteractor,
+)
+from task_management.storages import ListStorage, WorkspaceStorage
 
 
 class SetListVisibilityMutation(graphene.Mutation):
@@ -27,17 +34,10 @@ class SetListVisibilityMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        folder_storage = FolderStorage()
-        space_storage = SpaceStorage()
-        
         workspace_storage = WorkspaceStorage()
 
-        interactor = ListInteractor(
-            list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            
-            workspace_storage=workspace_storage
+        interactor = SetListVisibilityInteractor(
+            list_storage=list_storage, workspace_storage=workspace_storage
         )
 
         try:
@@ -49,7 +49,7 @@ class SetListVisibilityMutation(graphene.Mutation):
             result = interactor.set_list_visibility(
                 list_id=params.list_id,
                 visibility=visibility,
-                user_id=info.context.user_id
+                user_id=info.context.user_id,
             )
 
             return ListType(
@@ -61,7 +61,7 @@ class SetListVisibilityMutation(graphene.Mutation):
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
-                folder_id=result.folder_id if result.folder_id else None
+                folder_id=result.folder_id if result.folder_id else None,
             )
 
         except custom_exceptions.ListNotFound as e:

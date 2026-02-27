@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
 
 from task_management.exceptions.custom_exceptions import (
     DeletedSpaceFound,
@@ -11,7 +12,9 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.lists.reorder_list_in_space_interactor import (
+    ReorderListInSpaceInteractor,
+)
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     FolderStorageInterface,
@@ -47,13 +50,13 @@ class TestReorderListInSpace:
         )
 
     def _get_interactor(
-            self,
-            *,
-            role: Role = Role.MEMBER,
-            list_data=None,
-            space_exists=True,
-            space_active=True,
-            space_lists_count=3,
+        self,
+        *,
+        role: Role = Role.MEMBER,
+        list_data=None,
+        space_exists=True,
+        space_active=True,
+        space_lists_count=3,
     ):
         list_storage = create_autospec(ListStorageInterface)
         folder_storage = create_autospec(FolderStorageInterface)
@@ -69,7 +72,8 @@ class TestReorderListInSpace:
 
         space_storage.get_space.return_value = (
             type("Space", (), {"is_deleted": not space_active})()
-            if space_exists else None
+            if space_exists
+            else None
         )
         space_storage.get_space_workspace_id.return_value = "workspace_id1"
 
@@ -77,7 +81,7 @@ class TestReorderListInSpace:
             role
         )
 
-        return ListInteractor(
+        return ReorderListInSpaceInteractor(
             list_storage=list_storage,
             folder_storage=folder_storage,
             space_storage=space_storage,

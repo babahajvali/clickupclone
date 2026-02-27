@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
 
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
@@ -11,11 +12,12 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.lists.reorder_list_in_folder_interactor import (
+    ReorderListInFolderInteractor,
+)
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     FolderStorageInterface,
-    SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
 
@@ -47,17 +49,16 @@ class TestReorderListInFolder:
         )
 
     def _get_interactor(
-            self,
-            *,
-            role: Role = Role.MEMBER,
-            list_data=None,
-            folder_exists=True,
-            folder_active=True,
-            folder_lists_count=3,
+        self,
+        *,
+        role: Role = Role.MEMBER,
+        list_data=None,
+        folder_exists=True,
+        folder_active=True,
+        folder_lists_count=3,
     ):
         list_storage = create_autospec(ListStorageInterface)
         folder_storage = create_autospec(FolderStorageInterface)
-        space_storage = create_autospec(SpaceStorageInterface)
         workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         if list_data is None:
@@ -69,19 +70,18 @@ class TestReorderListInFolder:
 
         folder_storage.get_folder.return_value = (
             type("Folder", (), {"is_deleted": not folder_active})()
-            if folder_exists else None
+            if folder_exists
+            else None
         )
         folder_storage.get_folder_space_id.return_value = "space_1"
 
-        space_storage.get_space_workspace_id.return_value = "workspace_id1"
         workspace_storage.get_workspace_member.return_value = make_permission(
             role
         )
 
-        return ListInteractor(
+        return ReorderListInFolderInteractor(
             list_storage=list_storage,
             folder_storage=folder_storage,
-            space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
 

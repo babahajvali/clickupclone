@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
 
 from task_management.exceptions.custom_exceptions import (
     DeletedListFound,
@@ -9,11 +10,11 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import Role, Visibility
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.lists.set_list_visibility_interactor import (
+    SetListVisibilityInteractor,
+)
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
-    FolderStorageInterface,
-    SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
 
@@ -50,14 +51,10 @@ class TestSetListPrivate:
 
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
+        self.interactor = SetListVisibilityInteractor(
             list_storage=self.list_storage,
-            folder_storage=self.folder_storage,
-            space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )
 
@@ -71,10 +68,9 @@ class TestSetListPrivate:
         self.list_storage.get_list_space_id.return_value = "space_1"
         self.list_storage.update_list_visibility.return_value = list_data
 
-        self.space_storage.get_space_workspace_id.return_value = "workspace_id1"
+        self.list_storage.get_workspace_id_by_list_id.return_value = "workspace_id1"
         self.workspace_storage.get_workspace_member.return_value = make_permission(
-            role
-        )
+            role)
 
     def test_set_list_private_success(self, snapshot):
         # Arrange

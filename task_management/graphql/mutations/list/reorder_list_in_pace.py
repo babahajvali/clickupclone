@@ -1,20 +1,30 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import DeletedSpaceFound, \
-    UserNotWorkspaceMember
-from task_management.graphql.types.error_types import ListNotFoundType, \
-    DeletedListType, ModificationNotAllowedType, InvalidOrderType, \
-    SpaceNotFoundType, DeletedSpaceType, UserNotWorkspaceMemberType
-from task_management.graphql.types.input_types import \
-    ReorderListInSpaceInputParams
-from task_management.graphql.types.response_types import \
-    ReorderListInSpaceResponse
+from task_management.graphql.types.error_types import (
+    ListNotFoundType,
+    DeletedListType,
+    ModificationNotAllowedType,
+    InvalidOrderType,
+    SpaceNotFoundType,
+    DeletedSpaceType,
+    UserNotWorkspaceMemberType,
+)
+from task_management.graphql.types.input_types import (
+    ReorderListInSpaceInputParams,
+)
+from task_management.graphql.types.response_types import (
+    ReorderListInSpaceResponse,
+)
 from task_management.graphql.types.types import ListType
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.reorder_list_in_space_interactor import (
+    ReorderListInSpaceInteractor,
+)
+from task_management.storages import (
+    ListStorage,
+    SpaceStorage,
+    WorkspaceStorage,
+)
 
 
 class ReorderListInSpaceMutation(graphene.Mutation):
@@ -26,17 +36,14 @@ class ReorderListInSpaceMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        folder_storage = FolderStorage()
         space_storage = SpaceStorage()
-        
+
         workspace_storage = WorkspaceStorage()
 
-        interactor = ListInteractor(
+        interactor = ReorderListInSpaceInteractor(
             list_storage=list_storage,
-            folder_storage=folder_storage,
             space_storage=space_storage,
-            
-            workspace_storage=workspace_storage
+            workspace_storage=workspace_storage,
         )
 
         try:
@@ -44,7 +51,7 @@ class ReorderListInSpaceMutation(graphene.Mutation):
                 space_id=params.space_id,
                 list_id=params.list_id,
                 order=params.order,
-                user_id=info.context.user_id
+                user_id=info.context.user_id,
             )
 
             return ListType(
@@ -56,7 +63,7 @@ class ReorderListInSpaceMutation(graphene.Mutation):
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
-                folder_id=result.folder_id if result.folder_id else None
+                folder_id=result.folder_id if result.folder_id else None,
             )
 
         except custom_exceptions.ListNotFound as e:

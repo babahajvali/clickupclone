@@ -1,18 +1,15 @@
-import pytest
 from unittest.mock import create_autospec
 
+import pytest
+
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
     ListNotFound,
 )
 from task_management.interactors.dtos import ListDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
-from task_management.interactors.storage_interfaces import (
-    ListStorageInterface,
-    FolderStorageInterface,
-    SpaceStorageInterface,
-    WorkspaceStorageInterface,
+from task_management.interactors.lists.get_list_interactor import (
+    GetListInteractor,
 )
+from task_management.interactors.storage_interfaces import ListStorageInterface
 
 
 class TestGetActiveList:
@@ -32,15 +29,9 @@ class TestGetActiveList:
 
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.folder_storage = create_autospec(FolderStorageInterface)
-        self.space_storage = create_autospec(SpaceStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
+        self.interactor = GetListInteractor(
             list_storage=self.list_storage,
-            folder_storage=self.folder_storage,
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage,
         )
 
     def _setup_get_list_dependencies(self, *, list_data=None):
@@ -70,6 +61,6 @@ class TestGetActiveList:
             self.interactor.get_list(list_id="list_1")
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "test_get_active_list_not_found.txt")
-
-
+        snapshot.assert_match(
+            repr(exc.value), "test_get_active_list_not_found.txt"
+        )

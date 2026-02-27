@@ -21,6 +21,7 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     class Meta:
         indexes = [
             models.Index(fields=["is_active", "created_at"]),

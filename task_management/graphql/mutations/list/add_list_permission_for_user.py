@@ -2,17 +2,28 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import Permissions
-from task_management.graphql.types.error_types import DeletedListType, \
-    ModificationNotAllowedType, UserHaveAlreadyListPermissionType
-from task_management.graphql.types.input_types import \
-    AddListPermissionForUserInputParams
-from task_management.graphql.types.response_types import \
-    AddListPermissionForUserResponse
+from task_management.graphql.types.error_types import (
+    DeletedListType,
+    ModificationNotAllowedType,
+    UserHaveAlreadyListPermissionType,
+)
+from task_management.graphql.types.input_types import (
+    AddListPermissionForUserInputParams,
+)
+from task_management.graphql.types.response_types import (
+    AddListPermissionForUserResponse,
+)
 from task_management.graphql.types.types import UserListPermissionType
 from task_management.interactors.dtos import CreateListPermissionDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.add_list_permission_for_user_interactor import (
+    AddListPermissionForUserInteractor,
+)
+from task_management.storages import (
+    ListStorage,
+    FolderStorage,
+    SpaceStorage,
+    WorkspaceStorage,
+)
 
 
 class AddListPermissionForUserMutation(graphene.Mutation):
@@ -33,11 +44,11 @@ class AddListPermissionForUserMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = ListInteractor(
+        interactor = AddListPermissionForUserInteractor(
             list_storage=list_storage,
             folder_storage=folder_storage,
             space_storage=space_storage,
-            workspace_storage=workspace_storage
+            workspace_storage=workspace_storage,
         )
 
         try:
@@ -48,7 +59,8 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 added_by=added_by,
             )
             result = interactor.add_user_in_list_permission(
-                user_permission_data=input_data)
+                user_permission_data=input_data
+            )
 
             return UserListPermissionType(
                 id=result.id,
@@ -56,7 +68,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 user_id=result.user_id,
                 added_by=result.added_by,
                 is_active=result.is_active,
-                permission_type=result.permission_type
+                permission_type=result.permission_type,
             )
 
         except custom_exceptions.DeletedListFound as e:

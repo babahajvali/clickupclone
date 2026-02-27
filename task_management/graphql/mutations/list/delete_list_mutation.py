@@ -1,15 +1,21 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import ListNotFoundType, \
-    ModificationNotAllowedType, UserNotWorkspaceMemberType
+from task_management.graphql.types.error_types import (
+    ListNotFoundType,
+    ModificationNotAllowedType,
+    UserNotWorkspaceMemberType,
+)
 from task_management.graphql.types.input_types import DeleteListInputParams
 from task_management.graphql.types.response_types import DeleteListResponse
 from task_management.graphql.types.types import ListType
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.delete_list_interactor import (
+    DeleteListInteractor,
+)
+from task_management.storages import (
+    ListStorage,
+    WorkspaceStorage,
+)
 
 
 class DeleteListMutation(graphene.Mutation):
@@ -21,21 +27,16 @@ class DeleteListMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        folder_storage = FolderStorage()
-        space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = ListInteractor(
+        interactor = DeleteListInteractor(
             list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage
+            workspace_storage=workspace_storage,
         )
 
         try:
             result = interactor.delete_list(
-                list_id=params.list_id,
-                user_id=info.context.user_id
+                list_id=params.list_id, user_id=info.context.user_id
             )
 
             return ListType(
@@ -47,7 +48,7 @@ class DeleteListMutation(graphene.Mutation):
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by_user_id,
-                folder_id=result.folder_id if result.folder_id else None
+                folder_id=result.folder_id if result.folder_id else None,
             )
 
         except custom_exceptions.ListNotFound as e:

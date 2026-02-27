@@ -1,26 +1,26 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    DeletedSpaceType
+from task_management.graphql.types.error_types import (
+    SpaceNotFoundType,
+    DeletedSpaceType,
+)
 from task_management.graphql.types.types import ListType, ListsType
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.get_space_lists_interactor import (
+    GetSpaceListsInteractor,
+)
+
+from task_management.storages import ListStorage, SpaceStorage
 
 
 def get_space_lists_resolver(root, info, params):
     space_id = params.space_id
 
     list_storage = ListStorage()
-    folder_storage = FolderStorage()
     space_storage = SpaceStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = ListInteractor(
+    interactor = GetSpaceListsInteractor(
         list_storage=list_storage,
-        folder_storage=folder_storage,
         space_storage=space_storage,
-        workspace_storage=workspace_storage)
+    )
 
     try:
         lists_data = interactor.get_space_lists(space_id=space_id)
@@ -35,8 +35,9 @@ def get_space_lists_resolver(root, info, params):
                 order=list_item.order,
                 is_private=list_item.is_private,
                 created_by=list_item.created_by,
-                folder_id=list_item.folder_id if list_item.folder_id else None
-            ) for list_item in lists_data
+                folder_id=list_item.folder_id if list_item.folder_id else None,
+            )
+            for list_item in lists_data
         ]
 
         return ListsType(lists=lists_output)

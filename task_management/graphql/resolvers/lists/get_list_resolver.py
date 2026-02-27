@@ -1,24 +1,17 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import ListNotFoundType, \
-    DeletedListType
+from task_management.graphql.types.error_types import ListNotFoundType
 from task_management.graphql.types.types import ListType
-from task_management.interactors.lists.list_interactor import \
-    ListInteractor
-from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.lists.get_list_interactor import (
+    GetListInteractor,
+)
+from task_management.storages import ListStorage
 
 
 def get_list_resolver(root, info, params):
     list_storage = ListStorage()
-    folder_storage = FolderStorage()
-    space_storage = SpaceStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = ListInteractor(
+    interactor = GetListInteractor(
         list_storage=list_storage,
-        folder_storage=folder_storage,
-        space_storage=space_storage,
-        workspace_storage=workspace_storage
     )
 
     try:
@@ -33,11 +26,10 @@ def get_list_resolver(root, info, params):
             order=list_data.order,
             is_private=list_data.is_private,
             created_by=list_data.created_by,
-            folder_id=list_data.folder_id if list_data.folder_id else None
+            folder_id=list_data.folder_id if list_data.folder_id else None,
         )
 
         return list_output
 
     except custom_exceptions.ListNotFound as e:
         return ListNotFoundType(list_id=e.list_id)
-

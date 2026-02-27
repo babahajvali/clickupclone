@@ -12,7 +12,8 @@ from task_management.exceptions.custom_exceptions import (
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     WorkspaceMemberDTO
-from task_management.interactors.lists.list_interactor import ListInteractor
+from task_management.interactors.lists.create_list_interactor import \
+    CreateListInteractor
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     FolderStorageInterface,
@@ -53,7 +54,7 @@ class TestCreateList:
         self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = ListInteractor(
+        self.interactor = CreateListInteractor(
             list_storage=self.list_storage,
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
