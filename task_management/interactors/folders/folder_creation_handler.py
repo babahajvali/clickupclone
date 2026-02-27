@@ -3,8 +3,10 @@ from django.db import transaction
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     CreateFolderPermissionDTO
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
+from task_management.interactors.folders.add_folder_permission_for_user_interactor import \
+    AddFolderPermissionForUserInteractor
+from task_management.interactors.folders.create_folder_interactor import \
+    CreateFolderInteractor
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, SpaceStorageInterface, WorkspaceStorageInterface
 
@@ -29,21 +31,29 @@ class FolderCreationHandler:
 
         return folder_obj
 
-    def _get_folder_interactor(self):
-        folder_interactor = FolderInteractor(
+    def _get_create_folder_interactor(self):
+        folder_interactor = CreateFolderInteractor(
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
         return folder_interactor
 
+    def _get_permission_interactor(self):
+        permission_interactor = AddFolderPermissionForUserInteractor(
+            folder_storage=self.folder_storage,
+            workspace_storage=self.workspace_storage
+        )
+
+        return permission_interactor
+
     def _create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
-        folder_interactor = self._get_folder_interactor()
+        folder_interactor = self._get_create_folder_interactor()
 
         return folder_interactor.create_folder(folder_data=folder_data)
 
     def _create_folder_permission_for_user(self, folder_id: str, user_id: str):
-        folder_interactor = self._get_folder_interactor()
+        folder_interactor = self._get_permission_interactor()
 
         user_permission = CreateFolderPermissionDTO(
             folder_id=folder_id,

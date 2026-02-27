@@ -39,11 +39,11 @@ class ReorderFieldInteractor:
             user_id: str) -> FieldDTO:
 
         self.template_mixin.check_template_exists(template_id=template_id)
-        self.field_mixin.check_field_is_not_deleted(field_id=field_id)
+        self.field_mixin.check_field_not_deleted(field_id=field_id)
         self._check_user_has_edit_access_to_template(
             template_id=template_id, user_id=user_id
         )
-        self.check_field_order(
+        self._check_field_order(
             template_id=template_id, order=new_order
         )
 
@@ -66,7 +66,7 @@ class ReorderFieldInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    def check_field_order(self, template_id: str, order: int):
+    def _check_field_order(self, template_id: str, order: int):
 
         if order < 1:
             raise InvalidOrder(order=order)
@@ -80,7 +80,7 @@ class ReorderFieldInteractor:
     def _reorder_field_positions(self, template_id: str, new_order: int,
                                  old_order: int, field_id: str):
 
-        self.reorder_field_positions_except_current(
+        self._reorder_field_positions_except_current(
             template_id=template_id,
             new_order=new_order,
             old_order=old_order
@@ -91,7 +91,7 @@ class ReorderFieldInteractor:
             new_order=new_order
         )
 
-    def reorder_field_positions_except_current(
+    def _reorder_field_positions_except_current(
             self, template_id: str, new_order: int, old_order: int):
 
         if new_order > old_order:

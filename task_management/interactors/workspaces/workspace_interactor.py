@@ -85,7 +85,7 @@ class WorkspaceInteractor:
         self.workspace_validator.check_workspace_update_field_properties(
             workspace_id=workspace_id, name=name, description=description
         )
-        self.workspace_mixin.check_workspace_is_not_deleted(
+        self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_id
         )
         self.workspace_mixin.check_user_is_workspace_owner(
@@ -98,7 +98,7 @@ class WorkspaceInteractor:
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
-        self.workspace_mixin.validate_workspace_is_exists(
+        self.workspace_mixin.validate_workspace_exists(
             workspace_id=workspace_id
         )
         self.workspace_mixin.check_user_is_workspace_owner(
@@ -113,7 +113,7 @@ class WorkspaceInteractor:
     def transfer_workspace(
             self, workspace_id: str, user_id: str, new_user_id: str) \
             -> WorkspaceDTO:
-        self.workspace_mixin.check_workspace_is_not_deleted(
+        self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_id
         )
         self.workspace_mixin.check_user_is_workspace_owner(

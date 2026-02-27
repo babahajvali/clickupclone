@@ -10,8 +10,8 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetFolderVisibilityResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
+from task_management.interactors.folders.set_folder_visibility_interactor import \
+    SetFolderVisibilityInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage
 
@@ -28,10 +28,9 @@ class SetFolderVisibilityMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FolderInteractor(
+        interactor = SetFolderVisibilityInteractor(
             folder_storage=folder_storage,
-            workspace_storage=workspace_storage,
-            space_storage=space_storage
+            workspace_storage=workspace_storage
         )
 
         try:
@@ -71,4 +70,3 @@ class SetFolderVisibilityMutation(graphene.Mutation):
 
         except custom_exceptions.UserNotWorkspaceMember as e:
             return UserNotWorkspaceMemberType(user_id=e.user_id)
-

@@ -60,7 +60,7 @@ class TestGetFieldForTemplateInteractor:
 
         self.field_storage.get_fields_for_template.return_value = expected_fields
 
-        result = self.interactor.get_fields_for_template(template_id)
+        result = self.interactor.get_template_fields(template_id)
 
         snapshot.assert_match(
             repr(result),
@@ -72,7 +72,7 @@ class TestGetFieldForTemplateInteractor:
         self.template_storage.validate_template_exists.return_value = False
 
         with pytest.raises(TemplateNotFound) as exc:
-            self.interactor.get_fields_for_template(template_id)
+            self.interactor.get_template_fields(template_id)
 
         snapshot.assert_match(
             exc.value.template_id,

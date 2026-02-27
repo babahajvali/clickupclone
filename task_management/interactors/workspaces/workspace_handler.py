@@ -5,8 +5,8 @@ from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO, \
     CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
-from task_management.interactors.spaces.space_interactor import \
-    SpaceInteractor
+from task_management.interactors.spaces.create_space_interactor import \
+    CreateSpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \
     WorkspaceStorageInterface, ListStorageInterface, \
@@ -70,7 +70,7 @@ class WorkspaceHandler:
         return workspace_data
 
     def _create_space(self, user_id: str, workspace_id: str):
-        space_interactor = SpaceInteractor(
+        space_interactor = CreateSpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )

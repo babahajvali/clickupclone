@@ -1,8 +1,7 @@
-from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
-    WorkspaceMemberDTO
-
 from task_management.decorators.caching_decorators import interactor_cache, \
     invalidate_interactor_cache
+from task_management.interactors.dtos import AddMemberToWorkspaceDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface
 from task_management.interactors.workspaces.validators.workspace_validator import \
@@ -39,7 +38,7 @@ class WorkspaceMemberInteractor:
         self.workspace_validator.check_role(
             role=workspace_member_data.role.value
         )
-        self.workspace_mixin.check_workspace_is_not_deleted(
+        self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_member_data.workspace_id
         )
         self.user_mixin.check_user_is_active(
@@ -79,7 +78,7 @@ class WorkspaceMemberInteractor:
     def change_member_role(
             self, workspace_id: str, user_id: str, role: str,
             changed_by: str) -> WorkspaceMemberDTO:
-        self.workspace_mixin.check_workspace_is_not_deleted(
+        self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_id
         )
         self.user_mixin.check_user_is_active(user_id=user_id)

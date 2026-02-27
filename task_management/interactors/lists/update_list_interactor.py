@@ -69,7 +69,7 @@ class UpdateListInteractor:
         self._check_update_field_properties(
             list_id=list_id, name=name, description=description
         )
-        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
+        self.list_mixin.check_list_not_deleted(list_id=list_id)
         self._check_user_has_edit_access_for_list(list_id=list_id,
                                                   user_id=user_id)
 
@@ -83,14 +83,15 @@ class UpdateListInteractor:
 
         is_description_provided = description is not None
         is_name_provided = name is not None
-        if is_name_provided:
-            self.list_validator.check_list_name_not_empty(list_name=name)
 
         is_update_field_properties_provided = not (
                 is_description_provided or is_name_provided
         )
         if is_update_field_properties_provided:
             raise NothingToUpdateList(list_id=list_id)
+
+        if is_name_provided:
+            self.list_validator.check_list_name_not_empty(list_name=name)
 
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
 

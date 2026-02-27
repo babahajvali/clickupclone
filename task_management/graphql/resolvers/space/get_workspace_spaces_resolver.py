@@ -2,8 +2,8 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
     DeletedWorkspaceType
 from task_management.graphql.types.types import SpaceType, WorkspaceSpacesType
-from task_management.interactors.spaces.space_interactor import \
-    SpaceInteractor
+from task_management.interactors.spaces.get_workspace_spaces_interactor import \
+    GetWorkspaceSpacesInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
@@ -13,13 +13,14 @@ def get_workspace_spaces_resolver(root, info, params):
     space_storage = SpaceStorage()
     workspace_storage = WorkspaceStorage()
 
-    interactor = SpaceInteractor(
+    interactor = GetWorkspaceSpacesInteractor(
         space_storage=space_storage,
         workspace_storage=workspace_storage,
     )
 
     try:
-        spaces_data = interactor.get_workspace_spaces(workspace_id=workspace_id)
+        spaces_data = interactor.get_workspace_spaces(
+            workspace_id=workspace_id)
 
         spaces_output = [
             SpaceType(

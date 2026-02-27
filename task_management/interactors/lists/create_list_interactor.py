@@ -51,11 +51,11 @@ class CreateListInteractor:
         self._check_user_has_edit_access_for_space(
             space_id=list_data.space_id, user_id=list_data.created_by
         )
-        self.space_mixin.check_space_is_not_deleted(
+        self.space_mixin.check_space_not_deleted(
             space_id=list_data.space_id)
         is_folder_provided = list_data.folder_id is not None
         if is_folder_provided:
-            self.folder_mixin.check_folder_is_not_deleted(
+            self.folder_mixin.check_folder_not_deleted(
                 folder_id=list_data.folder_id)
 
         order = self._get_list_order(

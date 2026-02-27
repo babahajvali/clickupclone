@@ -8,7 +8,7 @@ from task_management.interactors.fields.validators.field_validator import \
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
-    WorkspaceValidationMixin, FieldValidationMixin
+    WorkspaceValidationMixin
 
 
 class CreateFieldInteractor:
@@ -28,10 +28,6 @@ class CreateFieldInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def field_mixin(self) -> FieldValidationMixin:
-        return FieldValidationMixin(field_storage=self.field_storage)
 
     @property
     def field_config_validator(self) -> FieldConfigValidator:

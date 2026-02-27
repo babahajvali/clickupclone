@@ -7,8 +7,8 @@ from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
 from task_management.graphql.types.input_types import ReorderSpaceInputParams
 from task_management.graphql.types.response_types import ReorderSpaceResponse
 from task_management.graphql.types.types import SpaceType
-from task_management.interactors.spaces.space_interactor import \
-    SpaceInteractor
+from task_management.interactors.spaces.reorder_space_interactor import \
+    ReorderSpaceInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
@@ -23,7 +23,7 @@ class ReorderSpaceMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = SpaceInteractor(
+        interactor = ReorderSpaceInteractor(
             space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
@@ -42,9 +42,9 @@ class ReorderSpaceMutation(graphene.Mutation):
                 description=result.description,
                 workspace_id=result.workspace_id,
                 order=result.order,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 is_private=result.is_private,
-                created_by=result.created_by_user_id
+                created_by=result.created_by
             )
 
         except custom_exceptions.SpaceNotFound as e:

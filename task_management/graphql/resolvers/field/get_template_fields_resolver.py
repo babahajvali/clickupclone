@@ -22,7 +22,7 @@ def get_fields_for_template_resolver(root, info, params):
 
     try:
         template_id = list_storage.get_template_id_by_list_id(list_id=list_id)
-        fields_data = interactor.get_fields_for_template(
+        fields_data = interactor.get_template_fields(
             template_id=template_id)
 
         fields_output = [

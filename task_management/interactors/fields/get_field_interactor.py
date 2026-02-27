@@ -13,7 +13,6 @@ class GetFieldInteractor:
 
     Key Responsibilities:
         - Get Field
-
     
     Dependencies:
         - FieldStorageInterface: Field data persistence
@@ -30,6 +29,6 @@ class GetFieldInteractor:
         return FieldValidationMixin(field_storage=self.field_storage)
 
     def get_field(self, field_id: str) -> FieldDTO:
-        self.field_mixin.validate_field_is_exists(field_id=field_id)
+        self.field_mixin.validate_field_exists(field_id=field_id)
 
         return self.field_storage.get_field(field_id=field_id)

@@ -2,15 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
-    DeletedFolderType, ModificationNotAllowedType, SpaceNotFoundType, \
-    DeletedSpaceType, UserNotWorkspaceMemberType, NothingToUpdateFolderType
+    DeletedFolderType, ModificationNotAllowedType, UserNotWorkspaceMemberType, \
+    NothingToUpdateFolderType
 from task_management.graphql.types.input_types import UpdateFolderInputParams
 from task_management.graphql.types.response_types import UpdateFolderResponse
 from task_management.graphql.types.types import FolderType
-
-from task_management.interactors.dtos import UpdateFolderDTO
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
+from task_management.interactors.folders.update_folder_interactor import \
+    UpdateFolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage
 
@@ -27,21 +25,21 @@ class UpdateFolderMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FolderInteractor(
+        interactor = UpdateFolderInteractor(
             folder_storage=folder_storage,
             workspace_storage=workspace_storage,
             space_storage=space_storage
         )
 
         try:
-            update_folder_data = UpdateFolderDTO(
-                folder_id=params.folder_id,
-                name=params.name if params.name else None,
-                description=params.description if params.description else None
-            )
+            folder_id = params.folder_id
+            name = params.name
+            description = params.description
 
             result = interactor.update_folder(
-                update_folder_data=update_folder_data,
+                folder_id=folder_id,
+                name=name,
+                description=description,
                 user_id=info.context.user_id
             )
 

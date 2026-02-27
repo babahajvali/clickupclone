@@ -3,7 +3,8 @@ from django.db import transaction
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     CreateUserSpacePermissionDTO, UserSpacePermissionDTO
-from task_management.interactors.spaces.space_interactor import SpaceInteractor
+from task_management.interactors.spaces.create_space_interactor import \
+    CreateSpaceInteractor
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 
@@ -17,7 +18,6 @@ class SpaceCreationHandler:
 
     @transaction.atomic
     def handle_space_creation(self, space_input: CreateSpaceDTO) -> SpaceDTO:
-
         space_data = self._create_space(space_input=space_input)
 
         if space_data.is_private:
@@ -27,24 +27,21 @@ class SpaceCreationHandler:
 
         return space_data
 
-    def _get_space_interactor(self):
-
-        space_interactor = SpaceInteractor(
+    def _get_create_space_interactor(self):
+        space_interactor = CreateSpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
         return space_interactor
 
     def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
-
-        space_interactor = self._get_space_interactor()
+        space_interactor = self._get_create_space_interactor()
 
         return space_interactor.create_space(space_data=space_input)
 
     def _create_space_permission_for_user(
             self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
-
-        space_interactor = self._get_space_interactor()
+        space_interactor = self._get_create_space_interactor()
 
         user_permission_data = CreateUserSpacePermissionDTO(
             space_id=space_id,

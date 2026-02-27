@@ -22,6 +22,6 @@ class GetSpaceListsInteractor:
 
     @interactor_cache(timeout=30 * 60, cache_name="space_lists")
     def get_space_lists(self, space_id: str):
-        self.space_mixin.check_space_is_not_deleted(space_id=space_id)
+        self.space_mixin.check_space_not_deleted(space_id=space_id)
 
         return self.list_storage.get_space_lists(space_ids=[space_id])

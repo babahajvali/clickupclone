@@ -2,15 +2,12 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    DeletedSpaceType, ModificationNotAllowedType, WorkspaceNotFoundType, \
-    DeletedWorkspaceType, NothingToUpdateSpaceType
+    DeletedSpaceType, ModificationNotAllowedType, NothingToUpdateSpaceType
 from task_management.graphql.types.input_types import UpdateSpaceInputParams
 from task_management.graphql.types.response_types import UpdateSpaceResponse
 from task_management.graphql.types.types import SpaceType
-
-from task_management.interactors.dtos import UpdateSpaceDTO
-from task_management.interactors.spaces.space_interactor import \
-    SpaceInteractor
+from task_management.interactors.spaces.update_space_interactor import \
+    UpdateSpaceInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
@@ -25,16 +22,15 @@ class UpdateSpaceMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = SpaceInteractor(
+        interactor = UpdateSpaceInteractor(
             space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
 
         try:
-            space_id=params.space_id
-            name=params.name
-            description=params.description
-
+            space_id = params.space_id
+            name = params.name
+            description = params.description
 
             result = interactor.update_space(
                 space_id=space_id,
@@ -49,7 +45,7 @@ class UpdateSpaceMutation(graphene.Mutation):
                 description=result.description,
                 workspace_id=result.workspace_id,
                 order=result.order,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 is_private=result.is_private,
                 created_by=result.created_by
             )

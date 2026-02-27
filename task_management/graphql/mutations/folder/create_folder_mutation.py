@@ -7,10 +7,9 @@ from task_management.graphql.types.error_types import SpaceNotFoundType, \
 from task_management.graphql.types.input_types import CreateFolderInputParams
 from task_management.graphql.types.response_types import CreateFolderResponse
 from task_management.graphql.types.types import FolderType
-
 from task_management.interactors.dtos import CreateFolderDTO
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
+from task_management.interactors.folders.create_folder_interactor import \
+    CreateFolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage
 
@@ -27,7 +26,7 @@ class CreateFolderMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FolderInteractor(
+        interactor = CreateFolderInteractor(
             folder_storage=folder_storage,
             space_storage=space_storage,
             workspace_storage=workspace_storage

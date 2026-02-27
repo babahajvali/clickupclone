@@ -2,10 +2,9 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     DeletedSpaceType
 from task_management.graphql.types.types import FolderType, SpaceFoldersType
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
-from task_management.storages import FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.folders.get_space_folders_interactor import \
+    GetSpaceFoldersInteractor
+from task_management.storages import FolderStorage, SpaceStorage
 
 
 def get_space_folders_resolver(root, info, params):
@@ -13,12 +12,10 @@ def get_space_folders_resolver(root, info, params):
 
     folder_storage = FolderStorage()
     space_storage = SpaceStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = FolderInteractor(
+    interactor = GetSpaceFoldersInteractor(
         folder_storage=folder_storage,
-        space_storage=space_storage,
-        workspace_storage=workspace_storage
+        space_storage=space_storage
     )
 
     try:

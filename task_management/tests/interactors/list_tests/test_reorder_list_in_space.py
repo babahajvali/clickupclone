@@ -17,7 +17,6 @@ from task_management.interactors.lists.reorder_list_in_space_interactor import (
 )
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
-    FolderStorageInterface,
     SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
@@ -59,7 +58,6 @@ class TestReorderListInSpace:
         space_lists_count=3,
     ):
         list_storage = create_autospec(ListStorageInterface)
-        folder_storage = create_autospec(FolderStorageInterface)
         space_storage = create_autospec(SpaceStorageInterface)
         workspace_storage = create_autospec(WorkspaceStorageInterface)
 
@@ -83,7 +81,6 @@ class TestReorderListInSpace:
 
         return ReorderListInSpaceInteractor(
             list_storage=list_storage,
-            folder_storage=folder_storage,
             space_storage=space_storage,
             workspace_storage=workspace_storage,
         )

@@ -73,7 +73,7 @@ class TaskAssigneeInteractor:
             return self.task_storage.reassign_task_assignee(
                 assign_id=is_existed_assignee.assign_id)
 
-        self.task_mixin.check_task_is_not_deleted(task_id=task_id)
+        self.task_mixin.check_task_not_deleted(task_id=task_id)
         self.user_mixin.check_user_is_active(user_id=user_id)
 
         self._check_user_has_edit_access_for_list(
@@ -96,7 +96,7 @@ class TaskAssigneeInteractor:
 
     def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
 
-        self.task_mixin.check_task_is_not_deleted(task_id=task_id)
+        self.task_mixin.check_task_not_deleted(task_id=task_id)
 
         return self.task_storage.get_task_assignees(task_id=task_id)
 

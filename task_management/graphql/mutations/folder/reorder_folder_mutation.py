@@ -7,8 +7,8 @@ from task_management.graphql.types.error_types import FolderNotFoundType, \
 from task_management.graphql.types.input_types import ReorderFolderInputParams
 from task_management.graphql.types.response_types import ReorderFolderResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
+from task_management.interactors.folders.reorder_folder_interactor import \
+    ReorderFolderInteractor
 from task_management.storages import FolderStorage, SpaceStorage, \
     WorkspaceStorage
 
@@ -25,7 +25,7 @@ class ReorderFolderMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FolderInteractor(
+        interactor = ReorderFolderInteractor(
             folder_storage=folder_storage,
             workspace_storage=workspace_storage,
             space_storage=space_storage
@@ -70,4 +70,3 @@ class ReorderFolderMutation(graphene.Mutation):
 
         except custom_exceptions.DeletedSpaceFound as e:
             return DeletedSpaceType(space_id=e.space_id)
-

@@ -1,7 +1,6 @@
 from unittest.mock import create_autospec
 
 import pytest
-from django.core.cache import cache
 
 from task_management.exceptions.custom_exceptions import (
     DeletedSpaceFound,
@@ -15,11 +14,6 @@ from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     SpaceStorageInterface,
 )
-
-
-@pytest.fixture(autouse=True)
-def clear_cache_before_test():
-    cache.clear()
 
 
 class TestGetSpaceLists:

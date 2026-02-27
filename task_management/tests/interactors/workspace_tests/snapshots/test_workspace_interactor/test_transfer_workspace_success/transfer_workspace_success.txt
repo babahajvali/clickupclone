@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='96954911-a4e0-4e5b-9638-325ccd6665d8', name='Cook-Hunter', description='Although per environmental medical nearly hour enter.', user_id='28d798b4-5d44-4821-8a7f-03ae3ad23fbf', account_id='d4e4004b-9bde-499d-9a28-6b7a4d6d99a6', is_deleted=False)
+WorkspaceDTO(workspace_id='c9a6e611-613f-418d-896e-f1a5ac707464', name='Barnes PLC', description='Represent two hair describe hundred candidate.', user_id='f74f1905-59c0-4423-a89f-591690ec8374', account_id='6fa00319-e54c-40de-ae79-7a9218b7f1a2', is_deleted=False)

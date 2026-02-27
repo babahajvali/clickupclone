@@ -50,6 +50,10 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
+    def get_workspace_id_from_folder_id(self, folder_id: str) -> str:
+        pass
+
+    @abstractmethod
     def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
         # get the spaces active folders
         pass

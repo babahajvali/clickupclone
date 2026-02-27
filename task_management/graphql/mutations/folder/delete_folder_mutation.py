@@ -2,14 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FolderNotFoundType, \
-    DeletedFolderType, ModificationNotAllowedType, UserNotWorkspaceMemberType
+    ModificationNotAllowedType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteFolderInputParams
 from task_management.graphql.types.response_types import DeleteFolderResponse
 from task_management.graphql.types.types import FolderType
-from task_management.interactors.spaces.folder_interactor import \
-    FolderInteractor
-from task_management.storages import FolderStorage, SpaceStorage, \
-    WorkspaceStorage
+from task_management.interactors.folders.delete_folder_interactor import \
+    DeleteFolderInteractor
+from task_management.storages import FolderStorage, WorkspaceStorage
 
 
 class DeleteFolderMutation(graphene.Mutation):
@@ -21,13 +20,11 @@ class DeleteFolderMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         folder_storage = FolderStorage()
-        space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = FolderInteractor(
+        interactor = DeleteFolderInteractor(
             folder_storage=folder_storage,
-            workspace_storage=workspace_storage,
-            space_storage=space_storage
+            workspace_storage=workspace_storage
         )
 
         try:

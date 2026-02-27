@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='f7f1bb27-8066-4563-a0c3-0ce957ac59f2', name='Patel-Thomas', description='Worker season figure they yeah get.', user_id='4e60678b-82f4-448a-b8a5-5d6bf2ded00f', account_id='68032f7e-fef0-4b04-a8fc-642af6f25926', is_deleted=False)
+WorkspaceDTO(workspace_id='befa9c47-8dd6-450f-8a6e-f7ce74db99f3', name='Crawford, Miller and Williams', description='So teach energy possible believe step.', user_id='19365f61-f484-478d-9bc9-e8895567a84c', account_id='277e5c18-0877-4fe6-b7d8-70b678ac8704', is_deleted=False)

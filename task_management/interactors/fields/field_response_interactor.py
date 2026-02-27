@@ -54,9 +54,9 @@ class FieldResponseInteractor:
     def set_task_field_response(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
-        self.task_mixin.check_task_is_not_deleted(
+        self.task_mixin.check_task_not_deleted(
             task_id=set_value_data.task_id)
-        self.field_mixin.check_field_is_not_deleted(
+        self.field_mixin.check_field_not_deleted(
             field_id=set_value_data.field_id
         )
         self._check_user_has_edit_access_for_field(

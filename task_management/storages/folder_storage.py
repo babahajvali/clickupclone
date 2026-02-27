@@ -64,7 +64,7 @@ class FolderStorage(FolderStorageInterface):
 
         is_name_provided = name is not None
         if is_name_provided:
-            folder_data.name= name
+            folder_data.name = name
 
         is_description_provided = description is not None
         if is_description_provided:
@@ -102,8 +102,6 @@ class FolderStorage(FolderStorageInterface):
             order__lt=new_order
         ).update(order=F('order') + 1)
 
-
-
     def delete_folder(self, folder_id: str) -> FolderDTO:
 
         folder_data = Folder.objects.get(folder_id=folder_id)
@@ -116,6 +114,12 @@ class FolderStorage(FolderStorageInterface):
             order__gt=current_order).update(order=F('order') - 1)
 
         return self._folder_dto(folder_data)
+
+    def get_workspace_id_from_folder_id(self, folder_id: str) -> str:
+        folder_data = Folder.objects.select_related("space__workspace").get(
+            folder_id=folder_id)
+
+        return folder_data.space.workspace.workspace_id
 
     def get_space_folders(
             self, space_ids: list[str]) -> list[FolderDTO]:
@@ -142,10 +146,11 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def get_space_folder_count(self, space_id: str) -> int:
-        return Folder.objects.filter(space_id=space_id, is_deleted=False).count()
+        return Folder.objects.filter(space_id=space_id,
+                                     is_deleted=False).count()
 
     def get_folder_space_id(self, folder_id: str) -> str:
-        folder_data = Folder.objects.filter(folder_id=folder_id).\
+        folder_data = Folder.objects.filter(folder_id=folder_id). \
             values('space_id')
 
         return folder_data[0]['space_id']

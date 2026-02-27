@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='f924e06a-aef5-4aef-9903-b45fd01cf935', name='Hernandez PLC', description='Plant wonder thing blood single recently other owner.', user_id='b0445ebb-4445-47ef-9c76-9e1f83719849', account_id='603803f3-2b2b-4fda-9d43-19b5bb5f15c1', is_deleted=False)
+WorkspaceDTO(workspace_id='ce03a34d-a022-4fee-843f-b606e8b7e2da', name='Moyer-Smith', description='Church nature chair company TV policy.', user_id='ef23d4af-e0ff-48a5-b172-840f3e19d0ba', account_id='061ae8d1-f212-4c6f-9409-88e79fed6060', is_deleted=False)

@@ -12,8 +12,8 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     SetSpaceVisibilityResponse
 from task_management.graphql.types.types import SpaceType
-from task_management.interactors.spaces.space_interactor import \
-    SpaceInteractor
+from task_management.interactors.spaces.set_space_visibility_interactor import \
+    SetSpaceVisibilityInteractor
 from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
@@ -28,7 +28,7 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = SpaceInteractor(
+        interactor = SetSpaceVisibilityInteractor(
             space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
@@ -51,7 +51,7 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
                 description=result.description,
                 workspace_id=result.workspace_id,
                 order=result.order,
-                is_active=result.is_deleted,
+                is_deleted=result.is_deleted,
                 is_private=result.is_private,
                 created_by=result.created_by_user_id
             )

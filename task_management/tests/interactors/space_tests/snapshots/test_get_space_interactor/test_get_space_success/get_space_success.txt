@@ -1,0 +1,1 @@
+SpaceDTO(space_id='space_1', name='Space', description='Desc', workspace_id='workspace_1', order=1, is_deleted=False, is_private=False, created_by='user_1')

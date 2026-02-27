@@ -10,9 +10,9 @@ from task_management.graphql.resolvers.field.get_task_field_values_resolver impo
     get_task_field_values_resolver
 from task_management.graphql.resolvers.field.get_template_fields_resolver import \
     get_fields_for_template_resolver
-from task_management.graphql.resolvers.folder.get_folder import \
+from task_management.graphql.resolvers.folder.get_folder_resolver import \
     get_folder_resolver
-from task_management.graphql.resolvers.folder.get_sapce_folders import \
+from task_management.graphql.resolvers.folder.get_space_folders_resolver import \
     get_space_folders_resolver
 from task_management.graphql.resolvers.lists.get_folder_lists_resolver import \
     get_folder_lists_resolver

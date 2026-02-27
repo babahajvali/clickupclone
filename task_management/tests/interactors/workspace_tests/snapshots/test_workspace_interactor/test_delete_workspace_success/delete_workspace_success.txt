@@ -1,1 +1,1 @@
-WorkspaceDTO(workspace_id='2b02237e-e2cd-459a-abba-80d2820bc51d', name='Carey and Sons', description='Important produce just raise enough onto try.', user_id='90a00ee1-70e2-4e61-a29b-24d72bdc9c10', account_id='edf2a720-6003-4713-aa8f-d23d0dbc321b', is_deleted=False)
+WorkspaceDTO(workspace_id='b7ed75b4-63d0-4ccd-afdb-4e0b01716f1d', name='Cooke Inc', description='Station member although.', user_id='92b035e0-1ca5-42f5-acf1-50e6c6f149c7', account_id='2734f9bb-c740-4255-a5cf-51c49c899296', is_deleted=False)
