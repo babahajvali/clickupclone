@@ -12,6 +12,8 @@ from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
     AccountStorageInterface, ViewStorageInterface
+from task_management.interactors.workspaces.create_workspace_interactor import \
+    CreateWorkspaceInteractor
 from task_management.interactors.workspaces.workspace_interactor import \
     WorkspaceInteractor
 
@@ -39,10 +41,9 @@ class WorkspaceHandler:
     @transaction.atomic
     def handle_workspace(
             self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
-        workspace_interactor = WorkspaceInteractor(
+        workspace_interactor = CreateWorkspaceInteractor(
             workspace_storage=self.workspace_storage,
-            account_storage=self.account_storage,
-            user_storage=self.user_storage
+            account_storage=self.account_storage
         )
         workspace_data = workspace_interactor.create_workspace(
             workspace_data)

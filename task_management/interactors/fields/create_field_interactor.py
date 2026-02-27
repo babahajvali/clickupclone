@@ -1,5 +1,7 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
+from task_management.exceptions.custom_exceptions import UnsupportedFieldType
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
 from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
@@ -58,8 +60,7 @@ class CreateFieldInteractor:
     def _create_field_input_validation(self, field_data: CreateFieldDTO):
         self.field_validator.check_field_name_not_empty(
             field_name=field_data.field_name)
-        self.field_validator.check_field_type(
-            field_type=field_data.field_type.value)
+        self._check_field_type(field_type=field_data.field_type.value)
         self.field_config_validator.check_config(
             config=field_data.config, field_type=field_data.field_type)
         self.field_validator.check_field_name_not_exist_in_template(
@@ -75,3 +76,11 @@ class CreateFieldInteractor:
 
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
+
+    @staticmethod
+    def _check_field_type(field_type: str):
+        existed_field_types = FieldType.get_values()
+        is_invalid_field_type = field_type not in existed_field_types
+
+        if is_invalid_field_type:
+            raise UnsupportedFieldType(field_type=field_type)

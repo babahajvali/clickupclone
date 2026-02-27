@@ -1,8 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    FieldNameAlreadyExists, EmptyFieldName, UnsupportedFieldType
-from task_management.exceptions.enums import FieldType
+    FieldNameAlreadyExists, EmptyFieldName
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
 
@@ -29,11 +28,3 @@ class FieldValidator:
 
         if is_name_empty:
             raise EmptyFieldName(field_name=field_name)
-
-    @staticmethod
-    def check_field_type(field_type: str):
-        existed_field_types = FieldType.get_values()
-        is_invalid_field_type = field_type not in existed_field_types
-
-        if is_invalid_field_type:
-            raise UnsupportedFieldType(field_type=field_type)

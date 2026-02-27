@@ -77,8 +77,9 @@ class ReorderFieldInteractor:
         if order > fields_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_field_positions(self, template_id: str, new_order: int,
-                                 old_order: int, field_id: str):
+    def _reorder_field_positions(
+            self, template_id: str, new_order: int, old_order: int,
+            field_id: str):
 
         self._reorder_field_positions_except_current(
             template_id=template_id,
