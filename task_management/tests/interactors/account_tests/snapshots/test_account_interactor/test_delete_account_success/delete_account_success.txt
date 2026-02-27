@@ -1,1 +1,1 @@
-<MagicMock name='mock.delete_account()' id='136698616344880'>
+AccountDTO(account_id='accounts-123', name='Sample Account', description='Sample Account description', owner_id='user-123', is_active=False)

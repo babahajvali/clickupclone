@@ -312,9 +312,17 @@ class TestAccountInteractor:
     def test_delete_account_success(self, snapshot):
         account_id = "accounts-123"
         owner_id = "user-123"
+        expected = AccountDTOFactory(
+            account_id=account_id,
+            owner_id=owner_id,
+            is_active=False,
+            name="Sample Account",
+            description="Sample Account description",
+        )
 
         self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
+        self.account_storage.delete_account.return_value = expected
 
         result = self.interactor.delete_account(
             account_id=account_id,
@@ -347,9 +355,17 @@ class TestAccountInteractor:
     def test_deactivate_account_success(self, snapshot):
         account_id = "accounts-123"
         owner_id = "user-123"
+        expected = AccountDTOFactory(
+            account_id=account_id,
+            owner_id=owner_id,
+            is_active=False,
+            name="Sample Account",
+            description="Sample Account description",
+        )
 
         self.account_storage.get_account.return_value = self._mock_account(
             owner_id)
+        self.account_storage.deactivate_account.return_value = expected
 
         result = self.interactor.deactivate_account(
             account_id=account_id,
