@@ -9,15 +9,15 @@ class FieldValidationMixin:
     def __init__(self, field_storage: FieldStorageInterface):
         self.field_storage = field_storage
 
-    def check_field_is_active(self, field_id: str):
-        field_data = self.get_field_if_exists(
+    def check_field_is_not_deleted(self, field_id: str):
+        field_data = self.validate_field_is_exists(
             field_id=field_id)
 
         is_field_deleted = field_data.is_deleted
         if is_field_deleted:
             raise DeletedFieldException(field_id=field_id)
 
-    def get_field_if_exists(self, field_id: str):
+    def validate_field_is_exists(self, field_id: str):
         field_data = self.field_storage.get_field(field_id=field_id)
         is_field_not_exists = not field_data
 

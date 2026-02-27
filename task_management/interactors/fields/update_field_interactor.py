@@ -46,7 +46,7 @@ class UpdateFieldInteractor:
     def update_field(
             self, update_field_data: UpdateFieldDTO, user_id: str) -> FieldDTO:
 
-        self.field_mixin.check_field_is_active(
+        self.field_mixin.check_field_is_not_deleted(
             field_id=update_field_data.field_id)
 
         field_data = self.field_storage.get_field(

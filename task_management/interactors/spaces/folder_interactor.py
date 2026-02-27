@@ -43,10 +43,9 @@ class FolderInteractor:
 
     @invalidate_interactor_cache(cache_name="folders")
     def create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
-
         self.folder_validator.check_folder_name_not_empty(
             name=folder_data.name)
-        self.space_mixin.check_space_is_active(
+        self.space_mixin.check_space_is_not_deleted(
             space_id=folder_data.space_id)
         self._check_user_has_edit_access_for_space(
             space_id=folder_data.space_id,
@@ -61,11 +60,10 @@ class FolderInteractor:
     def update_folder(
             self, folder_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> FolderDTO:
-
         self.folder_validator.check_folder_update_field_properties(
             folder_id=folder_id, name=name, description=description
         )
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
+        self.folder_mixin.check_folder_is_not_deleted(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(
             folder_id=folder_id
         )
@@ -84,8 +82,8 @@ class FolderInteractor:
         self.folder_validator.check_the_folder_order(
             space_id=space_id, order=order
         )
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
-        self.space_mixin.check_space_is_active(space_id=space_id)
+        self.folder_mixin.check_folder_is_not_deleted(folder_id=folder_id)
+        self.space_mixin.check_space_is_not_deleted(space_id=space_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
         )
@@ -105,8 +103,7 @@ class FolderInteractor:
 
     @invalidate_interactor_cache(cache_name="folders")
     def delete_folder(self, folder_id: str, user_id: str) -> FolderDTO:
-
-        self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
+        self.folder_mixin.validate_folder_is_exists(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
@@ -118,11 +115,10 @@ class FolderInteractor:
     def set_folder_visibility(
             self, folder_id: str, user_id: str, visibility: Visibility) \
             -> FolderDTO:
-
         self.folder_validator.check_visibility_type(
             visibility=visibility.value
         )
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
+        self.folder_mixin.check_folder_is_not_deleted(folder_id=folder_id)
         space_id = self.folder_storage.get_folder_space_id(folder_id=folder_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
@@ -133,23 +129,21 @@ class FolderInteractor:
 
     @interactor_cache(cache_name="folders", timeout=5 * 60)
     def get_space_folders(self, space_id: str) -> list[FolderDTO]:
-
-        self.space_mixin.check_space_is_active(space_id=space_id)
+        self.space_mixin.check_space_is_not_deleted(space_id=space_id)
 
         return self.folder_storage.get_space_folders(
             space_ids=[space_id]
         )
 
     def get_folder(self, folder_id: str) -> FolderDTO:
-        self.folder_mixin.get_folder_if_exists(folder_id=folder_id)
+        self.folder_mixin.validate_folder_is_exists(folder_id=folder_id)
 
         return self.folder_storage.get_folder(folder_id=folder_id)
 
     def add_user_for_folder_permission(
             self, permission_data: CreateFolderPermissionDTO) \
             -> UserFolderPermissionDTO:
-
-        self.folder_mixin.check_folder_is_active(
+        self.folder_mixin.check_folder_is_not_deleted(
             folder_id=permission_data.folder_id
         )
         space_id = self.folder_storage.get_folder_space_id(

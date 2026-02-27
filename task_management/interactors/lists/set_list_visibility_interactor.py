@@ -42,7 +42,7 @@ class SetListVisibilityInteractor:
     ) -> ListDTO:
         self._check_visibility_type(visibility=visibility.value)
 
-        self.list_mixin.check_list_is_active(list_id=list_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
         self._check_user_has_edit_access_for_list(list_id=list_id,
                                                   user_id=user_id)
 

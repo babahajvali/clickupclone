@@ -59,7 +59,8 @@ class TemplateInteractor:
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
 
         self._check_template_name_not_empty(template_name=template_data.name)
-        self.list_mixin.check_list_is_active(list_id=template_data.list_id)
+        self.list_mixin.check_list_is_not_deleted(
+            list_id=template_data.list_id)
         self._check_user_has_edit_access_for_list(
             list_id=template_data.list_id, user_id=template_data.created_by)
 

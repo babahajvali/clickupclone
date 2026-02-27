@@ -39,7 +39,7 @@ class ReorderFieldInteractor:
             user_id: str) -> FieldDTO:
 
         self.template_mixin.check_template_exists(template_id=template_id)
-        self.field_mixin.check_field_is_active(field_id=field_id)
+        self.field_mixin.check_field_is_not_deleted(field_id=field_id)
         self._check_user_has_edit_access_to_template(
             template_id=template_id, user_id=user_id
         )

@@ -47,8 +47,8 @@ class ReorderListInSpaceInteractor:
         self._check_list_order_in_space(space_id=space_id, order=order)
         self._check_user_has_edit_access_for_space(space_id=space_id,
                                                    user_id=user_id)
-        self.list_mixin.check_list_is_active(list_id=list_id)
-        self.space_mixin.check_space_is_active(space_id=space_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
+        self.space_mixin.check_space_is_not_deleted(space_id=space_id)
 
         list_data = self.list_storage.get_list(list_id=list_id)
 

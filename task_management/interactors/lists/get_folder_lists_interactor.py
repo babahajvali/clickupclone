@@ -22,6 +22,6 @@ class GetFolderListsInteractor:
 
     @interactor_cache(timeout=5 * 60, cache_name="folder_lists")
     def get_folder_lists(self, folder_id: str):
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
+        self.folder_mixin.check_folder_is_not_deleted(folder_id=folder_id)
 
         return self.list_storage.get_folder_lists(folder_ids=[folder_id])

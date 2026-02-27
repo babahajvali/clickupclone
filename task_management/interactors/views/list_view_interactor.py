@@ -40,7 +40,7 @@ class ListViewInteractor:
             return list_view_data
 
         self.view_mixin.check_view_exist(view_id=view_id)
-        self.list_mixin.check_list_is_active(list_id=list_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
         self._check_user_has_edit_access_to_list(
             user_id=user_id, list_id=list_id)
 
@@ -58,7 +58,7 @@ class ListViewInteractor:
             view_id=view_id, list_id=list_id)
 
     def get_list_views(self, list_id: str) -> list[ListViewDTO]:
-        self.list_mixin.check_list_is_active(list_id=list_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
 
         return self.view_storage.get_list_views(list_id=list_id)
 

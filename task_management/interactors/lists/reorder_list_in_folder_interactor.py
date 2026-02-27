@@ -46,8 +46,8 @@ class ReorderListInFolderInteractor:
             self, folder_id: str, list_id: str, order: int, user_id: str
     ) -> ListDTO:
         self.check_list_order_in_folder(folder_id=folder_id, order=order)
-        self.list_mixin.check_list_is_active(list_id=list_id)
-        self.folder_mixin.check_folder_is_active(folder_id=folder_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
+        self.folder_mixin.check_folder_is_not_deleted(folder_id=folder_id)
 
         list_data = self.list_storage.get_list(list_id=list_id)
         self._check_user_has_edit_access_for_list(list_id=list_id,

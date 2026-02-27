@@ -34,7 +34,7 @@ class DeleteListInteractor:
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def delete_list(self, list_id: str, user_id: str):
-        self.list_mixin.get_list_if_exists(list_id=list_id)
+        self.list_mixin.validate_list_is_exists(list_id=list_id)
 
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id

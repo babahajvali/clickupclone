@@ -69,7 +69,7 @@ class UpdateListInteractor:
         self._check_update_field_properties(
             list_id=list_id, name=name, description=description
         )
-        self.list_mixin.check_list_is_active(list_id=list_id)
+        self.list_mixin.check_list_is_not_deleted(list_id=list_id)
         self._check_user_has_edit_access_for_list(list_id=list_id,
                                                   user_id=user_id)
 

@@ -45,7 +45,7 @@ class AddListPermissionForUserInteractor:
             user_id=user_permission_data.user_id,
             list_id=user_permission_data.list_id,
         )
-        self.list_mixin.check_list_is_active(
+        self.list_mixin.check_list_is_not_deleted(
             list_id=user_permission_data.list_id)
         self._check_user_has_edit_access_for_list(
             list_id=user_permission_data.list_id,

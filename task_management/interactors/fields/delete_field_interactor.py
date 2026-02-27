@@ -25,7 +25,7 @@ class DeleteFieldInteractor:
 
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
-        self.field_mixin.get_field_if_exists(field_id=field_id)
+        self.field_mixin.validate_field_is_exists(field_id=field_id)
 
         self._check_user_has_edit_access_to_template(
             field_id=field_id, user_id=user_id)
