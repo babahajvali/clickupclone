@@ -95,8 +95,8 @@ class FieldStorage(FieldStorageInterface):
             for field_data in fields_data
         ]
 
-    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
-        TaskFieldValuesDTO]:
+    def get_field_values_by_task_ids(
+            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
         field_values = FieldValue.objects.filter(
             task_id__in=task_ids
         ).select_related('field', 'task')
@@ -125,8 +125,8 @@ class FieldStorage(FieldStorageInterface):
             )
         return result
 
-    def shift_fields_down(self, template_id: str, old_order: int,
-                          new_order: int):
+    def shift_fields_down(
+            self, template_id: str, old_order: int, new_order: int):
         Field.objects.filter(
             template_id=template_id,
             is_delete=False,
@@ -134,8 +134,8 @@ class FieldStorage(FieldStorageInterface):
             order__lte=new_order
         ).update(order=F("order") - 1)
 
-    def shift_fields_up(self, template_id: str, new_order: int,
-                        old_order: int):
+    def shift_fields_up(
+            self, template_id: str, new_order: int, old_order: int):
         Field.objects.filter(
             template_id=template_id,
             is_delete=False,
@@ -232,11 +232,4 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id,
             is_deleted=False).order_by('-order').first()
 
-        order = 0
-        if last_field:
-            order = last_field.order
-
-        return order
-
-    def is_field_exists(self, field_id: str) -> bool:
-        return Field.objects.filter(field_id=field_id).exists()
+        return last_field.order if last_field else 0

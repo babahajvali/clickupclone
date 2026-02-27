@@ -1,7 +1,5 @@
 from typing import Optional, List
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface
@@ -12,17 +10,19 @@ from task_management.models import Account
 class AccountStorage(AccountStorageInterface):
 
     def get_account(self, account_id: str) -> AccountDTO | None:
-        try:
-            account_data = Account.objects.get(account_id=account_id)
-            return AccountDTO(
-                account_id=account_data.account_id,
-                name=account_data.name,
-                description=account_data.description,
-                owner_id=account_data.owner.user_id,
-                is_active=account_data.is_active,
-            )
-        except ObjectDoesNotExist:
+
+        account_data = Account.objects.filter(account_id=account_id).first()
+
+        if not account_data:
             return None
+
+        return AccountDTO(
+            account_id=account_data.account_id,
+            name=account_data.name,
+            description=account_data.description,
+            owner_id=account_data.owner.user_id,
+            is_active=account_data.is_active,
+        )
 
     def create_account(
             self, name: str, description: Optional[str],
@@ -116,6 +116,3 @@ class AccountStorage(AccountStorageInterface):
             account_data = account_data.exclude(account_id=account_id)
 
         return account_data.exists()
-
-    def is_account_exists(self, account_id: str) -> bool:
-        return Account.objects.filter(account_id=account_id).exists()

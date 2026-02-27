@@ -1,1 +1,1 @@
-FolderDTO(folder_id=UUID('1676a05a-d251-4191-82a0-6882a8985277'), name='New Folder', description='New description', space_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, is_deleted=False, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_private=False)
+FolderDTO(folder_id=UUID('1adaad9c-0d38-47b5-8c3b-c3313f6b2289'), name='New Folder', description='New description', space_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, is_deleted=False, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_private=False)

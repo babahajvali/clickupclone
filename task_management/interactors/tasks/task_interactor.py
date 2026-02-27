@@ -93,7 +93,7 @@ class TaskInteractor:
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id)
 
-        return self.task_storage.remove_task(task_id=task_id)
+        return self.task_storage.delete_task(task_id=task_id)
 
     @interactor_cache(cache_name="tasks", timeout=5 * 60)
     def get_tasks_for_list(self, list_id: str) -> list[TaskDTO]:

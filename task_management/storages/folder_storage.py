@@ -26,12 +26,13 @@ class FolderStorage(FolderStorageInterface):
         )
 
     def get_folder(self, folder_id: str) -> FolderDTO | None:
-        try:
-            folder_data = Folder.objects.get(folder_id=folder_id)
 
-            return self._folder_dto(folder_data)
-        except Folder.DoesNotExist:
+        folder_data = Folder.objects.filter(folder_id=folder_id).first()
+
+        if not folder_data:
             return None
+
+        return self._folder_dto(folder_data)
 
     def is_folder_exists(self, folder_id: str) -> bool:
         return Folder.objects.filter(folder_id=folder_id).exists()
@@ -51,12 +52,9 @@ class FolderStorage(FolderStorageInterface):
 
     def get_last_folder_order_in_space(self, space_id: str) -> int:
         last_folder = Folder.objects.filter(
-            space_id=space_id, is_deleet=False).order_by('-order').first()
-        order = 0
-        if last_folder:
-            order = last_folder.order
+            space_id=space_id, is_deleted=False).order_by('-order').first()
 
-        return order
+        return last_folder.order if last_folder else 0
 
     def update_folder(
             self, folder_id: str, name: Optional[str],

@@ -34,18 +34,18 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_field_values_by_task_ids(self, task_ids: list[str]) -> list[
-        TaskFieldValuesDTO]:
+    def get_field_values_by_task_ids(
+            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
         pass
 
     @abstractmethod
-    def shift_fields_up(self, template_id: str, new_order: int,
-                        old_order: int):
+    def shift_fields_up(
+            self, template_id: str, new_order: int, old_order: int):
         pass
 
     @abstractmethod
-    def shift_fields_down(self, template_id: str, old_order: int,
-                          new_order: int):
+    def shift_fields_down(
+            self, template_id: str, old_order: int, new_order: int):
         pass
 
     @abstractmethod
@@ -82,8 +82,4 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def get_last_field_order_in_template(self, template_id: str) -> int:
-        pass
-
-    @abstractmethod
-    def is_field_exists(self, field_id: str) -> bool:
         pass

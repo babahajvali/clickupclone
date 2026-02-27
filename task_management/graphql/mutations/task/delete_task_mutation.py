@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
-    DeletedTaskType, ModificationNotAllowedType, UserNotWorkspaceMemberType
+    ModificationNotAllowedType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import DeleteTaskInputParams
 from task_management.graphql.types.response_types import DeleteTaskResponse
 from task_management.graphql.types.types import TaskType

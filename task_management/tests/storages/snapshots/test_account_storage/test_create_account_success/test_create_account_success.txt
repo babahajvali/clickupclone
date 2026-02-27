@@ -1,1 +1,1 @@
-AccountDTO(account_id=UUID('42c8f6cd-7500-4858-840a-67e581d55ece'), name='New Account', description='New accounts description', owner_id=UUID('12345678-1234-5678-1234-567812345678'), is_active=True)
+AccountDTO(account_id=UUID('e8ea5dbe-23aa-4ea9-b8e0-caa406fd1119'), name='New Account', description='New accounts description', owner_id=UUID('12345678-1234-5678-1234-567812345678'), is_active=True)

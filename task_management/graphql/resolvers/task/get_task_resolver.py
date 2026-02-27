@@ -30,7 +30,7 @@ def get_task_resolver(root, info, params):
             list_id=task_data.list_id,
             order=task_data.order,
             created_by=task_data.created_by,
-            is_delete=task_data.is_deleted
+            is_deleted=task_data.is_deleted
         )
 
         return task_output

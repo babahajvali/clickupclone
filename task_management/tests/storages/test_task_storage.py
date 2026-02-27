@@ -146,7 +146,7 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.remove_task(task_id=str(task_id))
+        result = storage.delete_task(task_id=str(task_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_remove_task_success.txt")

@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from task_management.interactors.dtos import CreateTaskDTO, UpdateTaskDTO, \
-    TaskDTO, FilterDTO, TaskAssigneeDTO, UserTasksDTO
+from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, FilterDTO, \
+    TaskAssigneeDTO, UserTasksDTO
 
 
 class TaskStorageInterface(ABC):
@@ -42,7 +42,7 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def remove_task(self, task_id: str) -> TaskDTO:
+    def delete_task(self, task_id: str) -> TaskDTO:
         pass
 
     @abstractmethod
@@ -54,8 +54,8 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def reorder_tasks(self, list_id: str, new_order: int,
-                      task_id: str) -> TaskDTO:
+    def reorder_tasks(
+            self, list_id: str, new_order: int, task_id: str) -> TaskDTO:
         pass
 
     @abstractmethod
@@ -69,8 +69,9 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_task_assignee(self, task_id: str, user_id: str,
-                          assigned_by: str) -> TaskAssigneeDTO:
+    def add_task_assignee(
+            self, task_id: str, user_id: str,
+            assigned_by: str) -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
@@ -91,8 +92,9 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_task_assignee(self, user_id: str, task_id: str,
-                               assigned_by: str) -> TaskAssigneeDTO:
+    def get_user_task_assignee(
+            self, user_id: str, task_id: str, assigned_by: str) \
+            -> TaskAssigneeDTO:
         pass
 
     @abstractmethod
@@ -100,6 +102,6 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_assignees_for_list_tasks(self, list_id: str) -> list[
-        TaskAssigneeDTO]:
+    def get_assignees_for_list_tasks(
+            self, list_id: str) -> list[TaskAssigneeDTO]:
         pass

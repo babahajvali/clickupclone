@@ -115,8 +115,9 @@ class FieldInteractor:
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="fields")
-    def reorder_field(self, field_id: str, template_id: str, new_order: int,
-                      user_id: str) -> FieldDTO:
+    def reorder_field(
+            self, field_id: str, template_id: str, new_order: int,
+            user_id: str) -> FieldDTO:
 
         self.template_mixin.check_template_exists(template_id=template_id)
         self.field_mixin.check_field_is_active(field_id=field_id)

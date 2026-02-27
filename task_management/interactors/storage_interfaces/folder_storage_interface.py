@@ -17,8 +17,9 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_folder(self, create_folder_data: CreateFolderDTO, order: int) \
-            -> FolderDTO:
+    def create_folder(
+            self, create_folder_data: CreateFolderDTO,
+            order: int) -> FolderDTO:
         pass
 
     @abstractmethod
@@ -73,28 +74,28 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_permission_for_folder(self, user_id: str,
-                                       folder_id: str) -> UserFolderPermissionDTO:
+    def get_user_permission_for_folder(
+            self, user_id: str, folder_id: str) -> UserFolderPermissionDTO:
         pass
 
     @abstractmethod
-    def update_user_permission_for_folder(self, user_id: str, folder_id: str,
-                                          permission_type: Permissions) -> UserFolderPermissionDTO:
+    def update_user_permission_for_folder(
+            self, user_id: str, folder_id: str,
+            permission_type: Permissions) -> UserFolderPermissionDTO:
         pass
 
     @abstractmethod
-    def remove_user_permission_for_folder(self, folder_id: str,
-                                          user_id: str) -> UserFolderPermissionDTO:
+    def remove_user_permission_for_folder(
+            self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
         pass
 
     @abstractmethod
-    def get_folder_permissions(self, folder_id: str) -> list[
-        UserFolderPermissionDTO]:
+    def get_folder_permissions(
+            self, folder_id: str) -> list[UserFolderPermissionDTO]:
         pass
 
     @abstractmethod
-    def create_folder_users_permissions(self,
-                                        users_permission_data: list[
-                                            CreateFolderPermissionDTO]) -> \
+    def create_folder_users_permissions(
+            self, users_permission_data: list[CreateFolderPermissionDTO]) -> \
             list[UserFolderPermissionDTO]:
         pass

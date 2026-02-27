@@ -46,11 +46,7 @@ class TaskStorage(TaskStorageInterface):
         last_task = Task.objects.filter(
             list_id=list_id, is_deleted=False).order_by('-order').first()
 
-        order = 0
-        if last_task:
-            order = last_task.order
-
-        return order
+        return last_task.order if last_task else 0
 
     def update_task(
             self, task_id: str, title: Optional[str],
@@ -70,8 +66,12 @@ class TaskStorage(TaskStorageInterface):
 
         return self._task_dto(task_data=task_data)
 
-    def get_task(self, task_id: str) -> TaskDTO:
-        task_data = Task.objects.get(task_id=task_id)
+    def get_task(self, task_id: str) -> TaskDTO | None:
+        task_data = Task.objects.filter(task_id=task_id).first()
+
+        is_task_not_found = not task_data
+        if is_task_not_found:
+            return None
 
         return self._task_dto(task_data=task_data)
 
@@ -97,7 +97,7 @@ class TaskStorage(TaskStorageInterface):
         return [self._task_dto(task_data=task_data) for task_data in
                 list_tasks]
 
-    def remove_task(self, task_id: str) -> TaskDTO:
+    def delete_task(self, task_id: str) -> TaskDTO:
         task_data = Task.objects.get(task_id=task_id)
         task_data.is_deleted = True
         task_data.save()
@@ -135,8 +135,8 @@ class TaskStorage(TaskStorageInterface):
     def get_tasks_count(self, list_id: str) -> int:
         return Task.objects.filter(list_id=list_id, is_deleted=False).count()
 
-    def reorder_tasks(self, list_id: str, new_order: int,
-                      task_id: str) -> TaskDTO:
+    def reorder_tasks(
+            self, list_id: str, new_order: int, task_id: str) -> TaskDTO:
         task_data = Task.objects.get(task_id=task_id)
         old_order = task_data.order
 
@@ -178,8 +178,9 @@ class TaskStorage(TaskStorageInterface):
             order__lt=new_order
         ).update(order=F("order") + 1)
 
-    def add_task_assignee(self, task_id: str, user_id: str,
-                          assigned_by: str) -> TaskAssigneeDTO:
+    def add_task_assignee(
+            self, task_id: str, user_id: str,
+            assigned_by: str) -> TaskAssigneeDTO:
 
         assignment_data = TaskAssignee.objects.create(
             assigned_by_id=assigned_by, task_id=task_id, user_id=user_id)
@@ -194,7 +195,8 @@ class TaskStorage(TaskStorageInterface):
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.filter(assign_id=assign_id).first()
+        assignee_data = TaskAssignee.objects.filter(
+            assign_id=assign_id).first()
 
         return self._assignee_dto(assignee_data=assignee_data)
 
