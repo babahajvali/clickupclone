@@ -1,1 +1,0 @@
-AccountDTO(account_id='f77383c1-3458-4748-a9bb-17bca3f2c9bf', name='Woods, Grimes and Green', description='Trouble behavior style report size personal partner.', owner_id='3e70f16a-5548-4822-9e1b-372ad3fbf47a', is_active=True)

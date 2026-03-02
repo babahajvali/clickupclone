@@ -2,13 +2,13 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import AccountNotFoundType, \
-    InactiveAccountType, ModificationNotAllowedType, UserNotAccountOwnerType
+    UserNotAccountOwnerType
 from task_management.graphql.types.input_types import DeleteAccountInputParams
 from task_management.graphql.types.response_types import DeleteAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.accounts.account_interactor import \
-    AccountInteractor
-from task_management.storages import UserStorage, AccountStorage
+from task_management.interactors.accounts.delete_account_interactor import \
+    DeleteAccountInteractor
+from task_management.storages import AccountStorage
 
 
 class DeleteAccountMutation(graphene.Mutation):
@@ -22,11 +22,9 @@ class DeleteAccountMutation(graphene.Mutation):
         account_id = params.account_id
         deleted_by = info.context.user_id
 
-        user_storage = UserStorage()
         account_storage = AccountStorage()
 
-        interactor = AccountInteractor(
-            user_storage=user_storage,
+        interactor = DeleteAccountInteractor(
             account_storage=account_storage)
 
         try:

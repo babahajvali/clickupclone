@@ -6,6 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     DeletedWorkspaceFound,
     UserNotWorkspaceOwner,
     InactiveUser,
+    UserNotFound,
 )
 from task_management.interactors.dtos import WorkspaceDTO
 from task_management.interactors.storage_interfaces import (
@@ -132,4 +133,22 @@ class TestTransferWorkspaceInteractor:
         snapshot.assert_match(
             repr(exc.value),
             "transfer_workspace_new_user_inactive.txt",
+        )
+
+    def test_transfer_workspace_new_user_not_found(self, snapshot):
+        self.workspace_storage.get_workspace.return_value = (
+            make_workspace_model(owner_id="user_1")
+        )
+        self.user_storage.get_user_data.return_value = None
+
+        with pytest.raises(UserNotFound) as exc:
+            self.interactor.transfer_workspace(
+                workspace_id="workspace_1",
+                user_id="user_1",
+                new_user_id="new_user",
+            )
+
+        snapshot.assert_match(
+            repr(exc.value),
+            "transfer_workspace_user_not_found.txt",
         )

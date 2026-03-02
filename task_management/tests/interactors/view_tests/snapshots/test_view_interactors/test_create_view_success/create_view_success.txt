@@ -1,1 +1,1 @@
-ViewDTO(view_id='2011bc8a-e7bf-4a96-a484-9eb55096ccf2', name='southern', description='Image central challenge term memory.', view_type='lists', created_by='224af354-e490-4635-a019-10c629b49664')
+ViewDTO(view_id='6e566274-99c7-4bea-a756-264dc8649f78', name='conference', description='Small notice kind.', view_type='lists', created_by='f2d7fe55-0262-45aa-adec-31ef57627626')

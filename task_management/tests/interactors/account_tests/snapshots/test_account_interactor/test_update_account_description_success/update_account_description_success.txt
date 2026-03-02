@@ -1,1 +1,0 @@
-AccountDTO(account_id='ded733e8-b421-4aeb-9340-97cabaf3897a', name='Lee PLC', description='Draw whose sort language ball.', owner_id='ff7b118e-8208-45d6-a005-b86051ef1922', is_active=True)

@@ -2,8 +2,8 @@ from typing import Optional
 
 from django.db import transaction
 
-from task_management.interactors.accounts.account_interactor import \
-    AccountInteractor
+from task_management.interactors.accounts.create_account_interactor import \
+    CreateAccountInteractor
 from task_management.interactors.dtos import AccountDTO, CreateWorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
@@ -54,7 +54,7 @@ class AccountOnboardingHandler:
         """ First create the accounts interactor
         and the create accounts based on input data
         """
-        account_interactor = AccountInteractor(
+        account_interactor = CreateAccountInteractor(
             account_storage=self.account_storage,
             user_storage=self.user_storage,
         )

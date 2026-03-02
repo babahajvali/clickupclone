@@ -1,1 +1,1 @@
-ViewDTO(view_id='40fe6898-b56b-4357-b34d-c8b053f3c158', name='stay', description='Military lead travel series large.', view_type='board', created_by='95e38180-a1ee-491a-89e1-c3b0271f2772')
+ViewDTO(view_id='4408c04c-6f44-4806-8137-8e75627b9de7', name='foreign', description='Add sing standard exactly election.', view_type='board', created_by='fd768f63-5163-4e1d-8df7-a26786fadb0e')

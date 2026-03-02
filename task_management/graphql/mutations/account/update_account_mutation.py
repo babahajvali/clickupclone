@@ -8,9 +8,9 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import UpdateAccountInputParams
 from task_management.graphql.types.response_types import UpdateAccountResponse
 from task_management.graphql.types.types import AccountType
-from task_management.interactors.accounts.account_interactor import \
-    AccountInteractor
-from task_management.storages import UserStorage, AccountStorage
+from task_management.interactors.accounts.update_account_interactor import \
+    UpdateAccountInteractor
+from task_management.storages import AccountStorage
 
 
 class UpdateAccountMutation(graphene.Mutation):
@@ -23,11 +23,9 @@ class UpdateAccountMutation(graphene.Mutation):
     def mutate(root, info, params):
         user_id = info.context.user_id
 
-        user_storage = UserStorage()
         account_storage = AccountStorage()
 
-        interactor = AccountInteractor(
-            user_storage=user_storage,
+        interactor = UpdateAccountInteractor(
             account_storage=account_storage)
 
         try:
@@ -46,13 +44,18 @@ class UpdateAccountMutation(graphene.Mutation):
 
         except custom_exceptions.AccountNameAlreadyExists as e:
             return AccountNameAlreadyExistsType(name=e.name)
+
         except custom_exceptions.AccountNotFound as e:
             return AccountNotFoundType(account_id=e.account_id)
+
         except custom_exceptions.InactiveAccount as e:
             return InactiveAccountType(account_id=e.account_id)
+
         except custom_exceptions.UserNotAccountOwner as e:
             return UserNotAccountOwnerType(user_id=e.user_id)
+
         except custom_exceptions.NothingToUpdateAccount as e:
             return NothingToUpdateAccountType(account_id=e.account_id)
+        
         except custom_exceptions.EmptyAccountName as e:
             return EmptyAccountNameExistsType(account_name=e.account_name)

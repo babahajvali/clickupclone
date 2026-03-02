@@ -1,1 +1,0 @@
-AccountDTO(account_id='e3e70682-c209-4cac-a29f-6fbed82c07cd', name='Williams-Sheppard', description='If six field live on traditional measure.', owner_id='1846d424-c17c-4279-a3c6-612f48268673', is_active=True)
