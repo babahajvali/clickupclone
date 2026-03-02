@@ -8,9 +8,9 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     RemoveTaskAssigneeResponse
 from task_management.graphql.types.types import TaskAssigneeType
-from task_management.interactors.tasks.task_assignee_interactor import \
-    TaskAssigneeInteractor
-from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.remove_task_assignee_interactor import \
+    RemoveTaskAssigneeInteractor
+from task_management.storages import TaskStorage, WorkspaceStorage
 
 
 class RemoveTaskAssigneeMutation(graphene.Mutation):
@@ -21,12 +21,10 @@ class RemoveTaskAssigneeMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        user_storage = UserStorage()
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = TaskAssigneeInteractor(
-            user_storage=user_storage,
+        interactor = RemoveTaskAssigneeInteractor(
             task_storage=task_storage,
             workspace_storage=workspace_storage
         )

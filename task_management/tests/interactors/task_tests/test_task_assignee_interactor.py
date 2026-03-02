@@ -1,28 +1,25 @@
-import pytest
 from unittest.mock import create_autospec
 
+import pytest
+
+from task_management.exceptions.custom_exceptions import (
+    ModificationNotAllowed,
+    TaskNotFound,
+    UserNotFound
+)
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO, \
     TaskAssigneeDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.list_storage_interface import \
-    ListStorageInterface
-from task_management.interactors.storage_interfaces.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.tasks.task_assignee_interactor import (
-    TaskAssigneeInteractor
-)
 from task_management.interactors.storage_interfaces.task_storage_interface import (
     TaskStorageInterface
 )
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface
 )
-from task_management.exceptions.custom_exceptions import (
-    ModificationNotAllowed,
-    TaskNotFound,
-    UserNotFound
+from task_management.interactors.tasks.get_user_tasks_interactor import (
+    GetUserTasksInteractor
 )
 from task_management.tests.factories.interactor_factory import (
     TaskAssigneeDTOFactory, UserTasksDTOFactory
@@ -39,6 +36,7 @@ def make_permission(role: Role):
         added_by="admin"
     )
 
+
 class TestTaskAssigneeInteractor:
 
     def setup_method(self):
@@ -46,7 +44,7 @@ class TestTaskAssigneeInteractor:
         self.user_storage = create_autospec(UserStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = TaskAssigneeInteractor(
+        self.interactor = GetUserTasksInteractor(
             task_storage=self.task_storage,
             user_storage=self.user_storage,
             workspace_storage=self.workspace_storage
@@ -74,7 +72,6 @@ class TestTaskAssigneeInteractor:
         )()
 
     def test_assign_task_assignee_success(self, snapshot):
-
         self.user_storage.get_user_data.return_value = self._mock_active_user()
         self.task_storage.get_task.return_value = self._mock_active_task()
         self.workspace_storage.get_workspace_member.return_value = (

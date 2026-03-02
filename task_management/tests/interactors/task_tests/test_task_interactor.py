@@ -1,28 +1,29 @@
-import pytest
 from unittest.mock import create_autospec
 
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
-from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface
-from task_management.interactors.storage_interfaces.field_storage_interface import \
-    FieldStorageInterface
-from task_management.interactors.storage_interfaces.space_storage_interface import \
-    SpaceStorageInterface
-from task_management.interactors.tasks.task_interactor import \
-    TaskInteractor
-from task_management.interactors.storage_interfaces.list_storage_interface import (
-    ListStorageInterface
-)
-from task_management.interactors.storage_interfaces.task_storage_interface import (
-    TaskStorageInterface
-)
+import pytest
+
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     ListNotFound,
     DeletedListFound,
     TaskNotFound
 )
+from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import WorkspaceMemberDTO
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
+from task_management.interactors.storage_interfaces.field_storage_interface import \
+    FieldStorageInterface
+from task_management.interactors.storage_interfaces.list_storage_interface import (
+    ListStorageInterface
+)
+from task_management.interactors.storage_interfaces.space_storage_interface import \
+    SpaceStorageInterface
+from task_management.interactors.storage_interfaces.task_storage_interface import (
+    TaskStorageInterface
+)
+from task_management.interactors.tasks.task_filter_interactor import \
+    TaskFilterInteractor
 from task_management.tests.factories.interactor_factory import (
     CreateTaskDTOFactory,
     UpdateTaskDTOFactory,
@@ -41,7 +42,6 @@ def make_permission(role: Role):
     )
 
 
-
 class TestCreateTaskInteractor:
 
     def setup_method(self):
@@ -51,7 +51,7 @@ class TestCreateTaskInteractor:
         self.field_storage = create_autospec(FieldStorageInterface)
         self.space_storage = create_autospec(SpaceStorageInterface)
 
-        self.interactor = TaskInteractor(
+        self.interactor = TaskFilterInteractor(
             task_storage=self.task_storage,
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,

@@ -4,8 +4,6 @@ from task_management.graphql.mutations.account.create_account_mutation import \
     CreateAccountMutation
 from task_management.graphql.mutations.account.delete_account_mutation import \
     DeleteAccountMutation
-
-
 from task_management.graphql.mutations.account.update_account_mutation import \
     UpdateAccountMutation
 from task_management.graphql.mutations.field.create_field_mutation import \
@@ -53,7 +51,7 @@ from task_management.graphql.mutations.space.set_space_visibility_mutation impor
 from task_management.graphql.mutations.space.update_space_mutation import \
     UpdateSpaceMutation
 from task_management.graphql.mutations.task.assign_task_assignee_mutation import \
-    AssignTaskAssigneeMutation
+    AddTaskAssigneeMutation
 from task_management.graphql.mutations.task.create_task_mutation import \
     CreateTaskMutation
 from task_management.graphql.mutations.task.delete_task_mutation import \
@@ -239,7 +237,7 @@ class RemoveMemberFromWorkspace(graphene.ObjectType):
 
 
 class TaskAssignee(graphene.ObjectType):
-    task_assignee = AssignTaskAssigneeMutation.Field(required=True)
+    task_assignee = AddTaskAssigneeMutation.Field(required=True)
 
 
 class RemoveTaskAssignee(graphene.ObjectType):
@@ -295,4 +293,5 @@ class UpdateAccount(graphene.ObjectType):
 
 
 class AddUserForListPermission(graphene.ObjectType):
-    add_list_permission_for_user = AddListPermissionForUserMutation.Field(required=True)
+    add_list_permission_for_user = AddListPermissionForUserMutation.Field(
+        required=True)

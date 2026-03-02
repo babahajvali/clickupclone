@@ -1,9 +1,11 @@
+from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
     CreateFieldValueDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TaskStorageInterface, \
     WorkspaceStorageInterface, FieldStorageInterface
-from task_management.interactors.tasks.task_interactor import TaskInteractor
+from task_management.interactors.tasks.create_task_interactor import \
+    CreateTaskInteractor
 
 
 class TaskCreationHandler:
@@ -27,7 +29,7 @@ class TaskCreationHandler:
         return task
 
     def _create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
-        task_interactor = TaskInteractor(
+        task_interactor = CreateTaskInteractor(
             list_storage=self.list_storage,
             task_storage=self.task_storage,
             workspace_storage=self.workspace_storage)
@@ -43,7 +45,7 @@ class TaskCreationHandler:
 
         field_values = []
         for field in template_fields:
-            default_value = field.config.get('default')
+            default_value = field.config.get(FieldConfig.DEFAULT.value)
 
             field_values.append(
                 CreateFieldValueDTO(

@@ -5,7 +5,6 @@ from task_management.exceptions.custom_exceptions import EmptyViewName, \
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces import \
     ViewStorageInterface, ListStorageInterface
-
 from task_management.mixins import ViewValidationMixin
 
 
@@ -57,15 +56,14 @@ class ViewInteractor:
             self, view_id: str, name: Optional[str],
             description: Optional[str]):
 
-        field_properties_to_update = {}
-
+        is_description_provided = description is not None
         is_name_provided = name is not None
+        has_no_update_field_properties = any([
+            is_description_provided,
+            is_name_provided,
+        ])
+
+        if has_no_update_field_properties:
+            raise NothingToUpdateView(view_id=view_id)
         if is_name_provided:
             self._check_view_name_not_empty(name=name)
-            field_properties_to_update['name'] = name
-        is_description_provided = description is not None
-        if is_description_provided:
-            field_properties_to_update['description'] = description
-
-        if not field_properties_to_update:
-            raise NothingToUpdateView(view_id=view_id)

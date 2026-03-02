@@ -6,9 +6,9 @@ from task_management.graphql.types.error_types import TaskNotFoundType, \
 from task_management.graphql.types.input_types import DeleteTaskInputParams
 from task_management.graphql.types.response_types import DeleteTaskResponse
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.tasks.task_interactor import \
-    TaskInteractor
-from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.delete_task_interactor import \
+    DeleteTaskInteractor
+from task_management.storages import TaskStorage, WorkspaceStorage
 
 
 class DeleteTaskMutation(graphene.Mutation):
@@ -19,12 +19,10 @@ class DeleteTaskMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        list_storage = ListStorage()
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = TaskInteractor(
-            list_storage=list_storage,
+        interactor = DeleteTaskInteractor(
             task_storage=task_storage,
             workspace_storage=workspace_storage,
         )

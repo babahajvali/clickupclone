@@ -3,28 +3,24 @@ from task_management.graphql.types.error_types import TaskNotFoundType, \
     DeletedTaskType
 from task_management.graphql.types.types import TaskAssigneeType, \
     TaskAssigneesType
-from task_management.interactors.tasks.task_assignee_interactor import \
-    TaskAssigneeInteractor
-from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.get_task_assignees import \
+    GetTaskAssigneesInteractor
+from task_management.storages import TaskStorage
 
 
-def get_task_assignees_resolver(root,info,params):
+def get_task_assignees_resolver(root, info, params):
     task_id = params.task_id
 
-    user_storage = UserStorage()
     task_storage = TaskStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = TaskAssigneeInteractor(
-        user_storage=user_storage,
+    interactor = GetTaskAssigneesInteractor(
         task_storage=task_storage,
-        workspace_storage=workspace_storage
     )
 
     try:
         assignees_data = interactor.get_task_assignees(task_id=task_id)
 
-        result = [ TaskAssigneeType(
+        result = [TaskAssigneeType(
             assign_id=each.assign_id,
             user_id=each.user_id,
             task_id=each.task_id,

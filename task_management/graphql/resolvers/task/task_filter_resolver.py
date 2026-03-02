@@ -5,8 +5,8 @@ from task_management.graphql.types.error_types import ListNotFoundType, \
 from task_management.graphql.types.types import TaskType, TasksType
 
 from task_management.interactors.dtos import FilterDTO
-from task_management.interactors.tasks.task_interactor import \
-    TaskInteractor
+from task_management.interactors.tasks.task_filter_interactor import \
+    TaskFilterInteractor
 from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
 
 
@@ -15,7 +15,7 @@ def task_filter_resolver(root, info, params):
     task_storage = TaskStorage()
     workspace_storage = WorkspaceStorage()
 
-    interactor = TaskInteractor(
+    interactor = TaskFilterInteractor(
         list_storage=list_storage,
         task_storage=task_storage,
         workspace_storage=workspace_storage,

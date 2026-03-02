@@ -1,8 +1,7 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import InvalidOffset, \
-    InvalidLimit, InvalidOrder, EmptyTaskTitle, NothingToUpdateTask
-from task_management.interactors.dtos import FilterDTO
+from task_management.exceptions.custom_exceptions import EmptyTaskTitle, \
+    NothingToUpdateTask
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 
 
@@ -10,27 +9,6 @@ class TaskValidator:
 
     def __init__(self, task_storage: TaskStorageInterface):
         self.task_storage = task_storage
-
-    @staticmethod
-    def check_filter_parameters(filter_data: FilterDTO):
-
-        if filter_data.offset < 1:
-            raise InvalidOffset(
-                offset=filter_data.offset,
-            )
-
-        if filter_data.limit < 1:
-            raise InvalidLimit(
-                limit=filter_data.limit)
-
-    def check_task_order(self, list_id: str, order: int):
-        if order < 1:
-            raise InvalidOrder(order=order)
-        tasks_count = self.task_storage.get_tasks_count(
-            list_id=list_id)
-
-        if order > tasks_count:
-            raise InvalidOrder(order=order)
 
     @staticmethod
     def check_task_title_not_empty(title: str):

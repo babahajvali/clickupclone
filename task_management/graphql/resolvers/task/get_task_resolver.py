@@ -2,22 +2,18 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import TaskNotFoundType, \
     DeletedTaskType
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.tasks.task_interactor import \
-    TaskInteractor
-from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.get_task_interactor import \
+    GetTaskInteractor
+from task_management.storages import TaskStorage
 
 
 def get_task_resolver(root, info, params):
     task_id = params.task_id
 
-    list_storage = ListStorage()
     task_storage = TaskStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = TaskInteractor(
-        list_storage=list_storage,
+    interactor = GetTaskInteractor(
         task_storage=task_storage,
-        workspace_storage=workspace_storage,
     )
 
     try:

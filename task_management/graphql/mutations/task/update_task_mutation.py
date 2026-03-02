@@ -1,14 +1,15 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import DeletedListType, \
-    ListNotFoundType, ModificationNotAllowedType, TaskNotFoundType, \
+from task_management.graphql.types.error_types import \
+    ModificationNotAllowedType, TaskNotFoundType, \
     DeletedTaskType, NothingToUpdateTaskType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import UpdateTaskInputParams
 from task_management.graphql.types.response_types import UpdateTaskResponse
 from task_management.graphql.types.types import TaskType
-from task_management.interactors.tasks.task_interactor import TaskInteractor
-from task_management.storages import ListStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.update_task_interactor import \
+    UpdateTaskInteractor
+from task_management.storages import TaskStorage, WorkspaceStorage
 
 
 class UpdateTaskMutation(graphene.Mutation):
@@ -19,19 +20,17 @@ class UpdateTaskMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
-        list_storage = ListStorage()
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = TaskInteractor(
-            list_storage=list_storage,
+        interactor = UpdateTaskInteractor(
             task_storage=task_storage,
             workspace_storage=workspace_storage,
         )
         try:
             result = interactor.update_task(
                 task_id=params.task_id, title=params.title,
-                user_id=info.context.user_id,description=params.description)
+                user_id=info.context.user_id, description=params.description)
 
             return TaskType(
                 task_id=result.task_id,

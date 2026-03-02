@@ -2,22 +2,20 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import UserNotFoundType, \
     InactiveUserType
 from task_management.graphql.types.types import GetUserTaskType, TaskType
-from task_management.interactors.tasks.task_assignee_interactor import \
-    TaskAssigneeInteractor
-from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
+from task_management.interactors.tasks.get_user_tasks_interactor import \
+    GetUserTasksInteractor
+from task_management.storages import UserStorage, TaskStorage
 
 
-def get_user_tasks_resolver(root, info,params):
+def get_user_tasks_resolver(root, info, params):
     user_id = params.user_id
 
     user_storage = UserStorage()
     task_storage = TaskStorage()
-    workspace_storage = WorkspaceStorage()
 
-    interactor = TaskAssigneeInteractor(
+    interactor = GetUserTasksInteractor(
         user_storage=user_storage,
         task_storage=task_storage,
-        workspace_storage=workspace_storage,
     )
 
     try:

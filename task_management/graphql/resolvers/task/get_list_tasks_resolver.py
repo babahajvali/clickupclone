@@ -3,9 +3,10 @@ from task_management.graphql.types.error_types import ListNotFoundType, \
     DeletedListType
 from task_management.graphql.types.types import TaskAssigneeType, \
     FieldValuesType, TaskDetailType, TaskDetailsType, TaskType
-from task_management.interactors.tasks.task_interactor import TaskInteractor
+from task_management.interactors.tasks.get_list_tasks_interactor import \
+    GetListTasksInteractor
 from task_management.storages import ListStorage, TaskStorage, \
-    WorkspaceStorage, FieldStorage
+    FieldStorage
 
 
 def get_list_tasks_resolver(root, info, params):
@@ -13,13 +14,11 @@ def get_list_tasks_resolver(root, info, params):
 
     list_storage = ListStorage()
     task_storage = TaskStorage()
-    workspace_storage = WorkspaceStorage()
     field_storage = FieldStorage()
 
-    task_interactor = TaskInteractor(
+    task_interactor = GetListTasksInteractor(
         list_storage=list_storage,
         task_storage=task_storage,
-        workspace_storage=workspace_storage,
     )
 
     try:
