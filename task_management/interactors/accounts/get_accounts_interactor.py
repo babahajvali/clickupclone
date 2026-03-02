@@ -4,14 +4,6 @@ from task_management.interactors.storage_interfaces import \
 
 
 class GetAccountsInteractor:
-    """
-    Account management class
-    create accounts, update accounts, delete accounts, deactivate accounts, get accounts
-    storages:
-    account_storage for modifying the accounts data
-    user_storage for validating the user related data
-    Validating the Input data
-    """
 
     def __init__(self, account_storage: AccountStorageInterface):
         self.account_storage = account_storage

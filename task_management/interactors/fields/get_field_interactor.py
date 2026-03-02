@@ -5,20 +5,18 @@ from task_management.mixins import FieldValidationMixin
 
 
 class GetFieldInteractor:
-    """Field Management Business Logic Interactor.
-    
-    Handles Get Filed .
-    This interactor enforces business rules and validates user permissions
-     before performing any fields operations.
+    """
+    Get Field Interactor get the custom field by field id
 
-    Key Responsibilities:
-        - Get Field
-    
+    Handle the get field operation
+    This interactor check the business rules and input validation
+     before get the custom field
+
+    Key Responsibility:
+     - Get the custom field
+
     Dependencies:
-        - FieldStorageInterface: Field data persistence
-
-    Attributes:
-        field_storage (FieldStorageInterface): Storage for fields operations
+        - FieldStorageInterface
     """
 
     def __init__(self, field_storage: FieldStorageInterface):
@@ -29,6 +27,7 @@ class GetFieldInteractor:
         return FieldValidationMixin(field_storage=self.field_storage)
 
     def get_field(self, field_id: str) -> FieldDTO:
+        """Fetch a single field by id."""
         self.field_mixin.validate_field_exists(field_id=field_id)
 
         return self.field_storage.get_field(field_id=field_id)

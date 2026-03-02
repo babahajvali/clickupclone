@@ -14,6 +14,21 @@ from task_management.mixins import TemplateValidationMixin, \
 
 
 class CreateFieldInteractor:
+    """
+    Create Field Interactor create the custom field for template
+
+    Handle the create field Operation
+    This interactor check the business rules and input validation
+     and permission validation before create the custom field
+
+    Key Responsibility:
+     - Create the custom field
+
+    Dependencies:
+        - FieldStorageInterface
+        - WorkspaceStorageInterface
+        - TemplateStorageInterface
+    """
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface,
@@ -41,6 +56,7 @@ class CreateFieldInteractor:
 
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
+        """Create a new custom field for the target template."""
         self._create_field_input_validation(field_data=field_data)
         self.template_mixin.check_template_exists(
             template_id=field_data.template_id)

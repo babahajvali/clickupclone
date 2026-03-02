@@ -13,8 +13,7 @@ from task_management.graphql.types.types import FieldType
 from task_management.interactors.dtos import UpdateFieldDTO
 from task_management.interactors.fields.update_field_interactor import \
     UpdateFieldInteractor
-from task_management.storages import FieldStorage, TemplateStorage, \
-    WorkspaceStorage
+from task_management.storages import FieldStorage, WorkspaceStorage
 
 
 class UpdateFieldMutation(graphene.Mutation):
@@ -26,12 +25,10 @@ class UpdateFieldMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         field_storage = FieldStorage()
-        template_storage = TemplateStorage()
         workspace_storage = WorkspaceStorage()
 
         interactor = UpdateFieldInteractor(
             field_storage=field_storage,
-            template_storage=template_storage,
             workspace_storage=workspace_storage,
         )
 

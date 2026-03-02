@@ -11,6 +11,21 @@ from task_management.mixins import TemplateValidationMixin, \
 
 
 class ReorderFieldInteractor:
+    """
+    Reorder Field Interactor reorder custom fields in template
+
+    Handle the reorder field operation
+    This interactor check the business rules and input validation
+     and permission validation before reorder the custom field
+
+    Key Responsibility:
+     - Reorder the custom field
+
+    Dependencies:
+        - FieldStorageInterface
+        - WorkspaceStorageInterface
+        - TemplateStorageInterface
+    """
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface,
@@ -37,6 +52,7 @@ class ReorderFieldInteractor:
     def reorder_field(
             self, field_id: str, template_id: str, new_order: int,
             user_id: str) -> FieldDTO:
+        """Move a field to a new position after validations and access checks."""
 
         self.template_mixin.check_template_exists(template_id=template_id)
         self.field_mixin.check_field_not_deleted(field_id=field_id)

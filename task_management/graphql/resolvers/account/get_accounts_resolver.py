@@ -4,16 +4,15 @@ from task_management.graphql.types.error_types import InvalidAccountIdsType
 from task_management.graphql.types.types import AccountsType, AccountType
 from task_management.interactors.accounts.get_accounts_interactor import \
     GetAccountsInteractor
-from task_management.storages import AccountStorage, UserStorage
+from task_management.storages import AccountStorage
 
 
 def get_accounts_resolver(root, info, params):
     account_ids = params.account_ids
     account_storage = AccountStorage()
-    user_storage = UserStorage()
 
     account_interactor = GetAccountsInteractor(
-        account_storage=account_storage, user_storage=user_storage)
+        account_storage=account_storage)
 
     try:
         accounts_data = account_interactor.get_accounts(

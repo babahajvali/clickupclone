@@ -16,8 +16,8 @@ class FieldResponseInteractor:
     This interactor check the business logic and permission validation
      before set the task field value.
 
-    Key responsibilities:
-    - Create or update the task field value with validations
+    Key Responsibility:
+     - Create or update the task field value with validations
 
     Dependencies:
         - FieldStorageInterface
@@ -54,6 +54,7 @@ class FieldResponseInteractor:
     def set_task_field_response(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
+        """Set or update a task's value for a specific custom field."""
         self.task_mixin.check_task_not_deleted(
             task_id=set_value_data.task_id)
         self.field_mixin.check_field_not_deleted(

@@ -6,6 +6,20 @@ from task_management.mixins import TemplateValidationMixin
 
 
 class GetTemplateFieldsInteractor:
+    """
+    Get Template Fields Interactor get all fields for a template
+
+    Handle the get template fields operation
+    This interactor check the business rules and template validation
+     before get the fields for template
+
+    Key Responsibility:
+     - Get fields for template
+
+    Dependencies:
+        - FieldStorageInterface
+        - TemplateStorageInterface
+    """
 
     def __init__(self, field_storage: FieldStorageInterface,
                  template_storage: TemplateStorageInterface):

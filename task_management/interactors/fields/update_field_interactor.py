@@ -7,23 +7,31 @@ from task_management.interactors.fields.validators.field_config_validator import
 from task_management.interactors.fields.validators.field_validator import \
     FieldValidator
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
-from task_management.mixins import TemplateValidationMixin, \
-    WorkspaceValidationMixin, FieldValidationMixin
+    FieldStorageInterface, WorkspaceStorageInterface
+from task_management.mixins import WorkspaceValidationMixin, FieldValidationMixin
 
 
 class UpdateFieldInteractor:
+    """
+    Update Field Interactor update the custom field in template
+
+    Handle the update field operation
+    This interactor check the business rules and input validation
+     and permission validation before update the custom field
+
+    Key Responsibility:
+     - Update the custom field
+
+    Dependencies:
+        - FieldStorageInterface
+        - WorkspaceStorageInterface
+        - TemplateStorageInterface
+    """
 
     def __init__(self, field_storage: FieldStorageInterface,
-                 template_storage: TemplateStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
         self.field_storage = field_storage
-        self.template_storage = template_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def template_mixin(self) -> TemplateValidationMixin:
-        return TemplateValidationMixin(template_storage=self.template_storage)
 
     @property
     def workspace_mixin(self) -> WorkspaceValidationMixin:
@@ -45,6 +53,7 @@ class UpdateFieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def update_field(
             self, update_field_data: UpdateFieldDTO, user_id: str) -> FieldDTO:
+        """Update field metadata/config for a template field."""
 
         self.field_mixin.check_field_not_deleted(
             field_id=update_field_data.field_id)
@@ -54,8 +63,8 @@ class UpdateFieldInteractor:
         self._check_update_field_properties(
             update_field_data=update_field_data, field_data=field_data
         )
-        self._check_user_has_edit_access_to_template(
-            template_id=field_data.template_id, user_id=user_id
+        self._check_user_has_edit_access_to_field(
+            field_id=field_data.field_id, user_id=user_id
         )
 
         return self.field_storage.update_field(
@@ -94,10 +103,10 @@ class UpdateFieldInteractor:
             update_field_data.description is not None,
             update_field_data.is_required is not None])
 
-    def _check_user_has_edit_access_to_template(
-            self, template_id: str, user_id: str):
-        workspace_id = self.template_storage.get_workspace_id_from_template_id(
-            template_id=template_id)
+    def _check_user_has_edit_access_to_field(
+            self, field_id: str, user_id: str):
+        workspace_id = self.field_storage.get_workspace_id_from_field_id(
+            field_id=field_id)
 
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
