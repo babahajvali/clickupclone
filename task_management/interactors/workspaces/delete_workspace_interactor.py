@@ -1,13 +1,14 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.interactors.dtos import WorkspaceDTO
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin
-from task_management.storages import WorkspaceStorage
 
 
 class DeleteWorkspaceInteractor:
 
-    def __init__(self, workspace_storage: WorkspaceStorage):
+    def __init__(self, workspace_storage: WorkspaceStorageInterface):
         self.workspace_storage = workspace_storage
 
     @property

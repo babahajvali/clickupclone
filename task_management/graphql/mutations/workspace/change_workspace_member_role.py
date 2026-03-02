@@ -8,10 +8,10 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import \
     ChangeWorkspaceMemberRoleInputParams
 from task_management.graphql.types.response_types import \
-    AddMemberToWorkspaceResponse, ChangeWorkspaceMemberRoleResponse
+    ChangeWorkspaceMemberRoleResponse
 from task_management.graphql.types.types import WorkspaceMemberType
-from task_management.interactors.workspaces.workspace_member_interactor import \
-    WorkspaceMemberInteractor
+from task_management.interactors.workspaces.change_workspace_member_role_interactor import \
+    ChangeWorkspaceMemberRoleInteractor
 from task_management.storages import WorkspaceStorage, UserStorage
 
 
@@ -26,7 +26,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
 
-        interactor = WorkspaceMemberInteractor(
+        interactor = ChangeWorkspaceMemberRoleInteractor(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
 

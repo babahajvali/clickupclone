@@ -1,8 +1,8 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    WorkspaceMemberIdNotFound, UserNotWorkspaceMember, ModificationNotAllowed, \
-    InactiveWorkspaceMember, EmptyWorkspaceName, InvalidWorkspaceIdsFound, \
+    WorkspaceMemberIdNotFound, InactiveWorkspaceMember, EmptyWorkspaceName, \
+    InvalidWorkspaceIdsFound, \
     UnexpectedRole, WorkspaceMemberNotFound, NothingToUpdateWorkspace
 from task_management.exceptions.enums import Role, Permissions
 from task_management.interactors.storage_interfaces import \
@@ -29,23 +29,6 @@ class WorkspaceValidator:
             raise InactiveWorkspaceMember(
                 workspace_member_id=workspace_member_id)
 
-    def check_user_permission_for_change_workspace_role(
-            self, workspace_id: str, user_id: str):
-
-        member_permission = self.workspace_storage.get_workspace_member(
-            workspace_id=workspace_id, user_id=user_id)
-
-        is_member_not_found = not member_permission
-
-        if is_member_not_found:
-            raise UserNotWorkspaceMember(user_id=user_id)
-
-        user_role = member_permission.role
-        is_user_not_allowed = user_role == Role.MEMBER or user_role == Role.GUEST
-
-        if is_user_not_allowed:
-            raise ModificationNotAllowed(user_id=user_id)
-
     @staticmethod
     def check_workspace_name_not_empty(workspace_name: str):
         is_name_empty = not workspace_name or not workspace_name.strip()
@@ -58,9 +41,11 @@ class WorkspaceValidator:
         workspaces_data = self.workspace_storage.get_workspaces(
             workspace_ids=workspace_ids)
 
-        existed_workspace_ids = [str(obj.workspace_id) for obj in workspaces_data]
+        existed_workspace_ids = [str(obj.workspace_id) for obj in
+                                 workspaces_data]
         invalid_workspace_ids = [workspace_id for workspace_id in workspace_ids
-                                 if str(workspace_id) not in existed_workspace_ids]
+                                 if
+                                 str(workspace_id) not in existed_workspace_ids]
 
         if invalid_workspace_ids:
             raise InvalidWorkspaceIdsFound(

@@ -1,8 +1,8 @@
 from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
+from task_management.graphql.types.error_types import \
     InvalidWorkspaceIdsFoundType
 from task_management.graphql.types.types import WorkspaceType, WorkspacesType
-from task_management.interactors.workspaces.workspace_interactor import \
+from task_management.interactors.workspaces.get_workspaces_interactor import \
     WorkspaceInteractor
 from task_management.storages import WorkspaceStorage, UserStorage, \
     AccountStorage
@@ -21,9 +21,9 @@ def get_workspace_resolver(root, info, params):
         account_storage=account_storage,
     )
 
-
     try:
-        workspaces_data = interactor.get_workspaces(workspace_ids=workspace_ids)
+        workspaces_data = interactor.get_workspaces(
+            workspace_ids=workspace_ids)
 
         workspace_output = [WorkspaceType(
             workspace_id=workspace_data.workspace_id,

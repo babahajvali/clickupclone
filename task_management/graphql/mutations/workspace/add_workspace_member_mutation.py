@@ -2,7 +2,7 @@ import graphene
 
 from task_management.exceptions import custom_exceptions
 from task_management.exceptions.custom_exceptions import \
-    ModificationNotAllowed, UserNotWorkspaceMember
+    ModificationNotAllowed
 from task_management.exceptions.enums import Role
 from task_management.graphql.types.error_types import WorkspaceNotFoundType, \
     DeletedWorkspaceType, UserNotFoundType, InactiveUserType, \
@@ -13,8 +13,8 @@ from task_management.graphql.types.response_types import \
     AddMemberToWorkspaceResponse
 from task_management.graphql.types.types import WorkspaceMemberType
 from task_management.interactors.dtos import AddMemberToWorkspaceDTO
-from task_management.interactors.workspaces.workspace_member_interactor import \
-    WorkspaceMemberInteractor
+from task_management.interactors.workspaces.add_workspace_member_interactor import \
+    AddWorkspaceMemberInteractor
 from task_management.storages import WorkspaceStorage, UserStorage
 
 
@@ -29,7 +29,7 @@ class AddMemberToWorkspaceMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         user_storage = UserStorage()
 
-        interactor = WorkspaceMemberInteractor(
+        interactor = AddWorkspaceMemberInteractor(
             workspace_storage=workspace_storage,
             user_storage=user_storage,
         )

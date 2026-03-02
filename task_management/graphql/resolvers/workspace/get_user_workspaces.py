@@ -4,8 +4,8 @@ from task_management.graphql.types.error_types import UserNotFoundType, \
 from task_management.graphql.types.types import WorkspaceMemberType, \
     WorkspaceMembersType
 
-from task_management.interactors.workspaces.workspace_member_interactor import \
-    WorkspaceMemberInteractor
+from task_management.interactors.workspaces.get_user_workspaces_interactor import \
+    GetUserWorkspacesInteractor
 from task_management.storages import WorkspaceStorage, UserStorage
 
 
@@ -15,7 +15,7 @@ def get_user_workspace_resolver(root, info, params):
     workspace_storage = WorkspaceStorage()
     user_storage = UserStorage()
 
-    interactor = WorkspaceMemberInteractor(
+    interactor = GetUserWorkspacesInteractor(
         workspace_storage=workspace_storage,
         user_storage=user_storage,
     )

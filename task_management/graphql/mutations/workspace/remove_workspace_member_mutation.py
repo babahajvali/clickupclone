@@ -11,9 +11,9 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     RemoveWorkspaceMemberResponse
 from task_management.graphql.types.types import WorkspaceMemberType
-from task_management.interactors.workspaces.workspace_member_interactor import \
-    WorkspaceMemberInteractor
-from task_management.storages import WorkspaceStorage, UserStorage
+from task_management.interactors.workspaces.remove_workspace_member_interactor import \
+    RemoveWorkspaceMemberInteractor
+from task_management.storages import WorkspaceStorage
 
 
 class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
@@ -25,11 +25,9 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         workspace_storage = WorkspaceStorage()
-        user_storage = UserStorage()
 
-        interactor = WorkspaceMemberInteractor(
+        interactor = RemoveWorkspaceMemberInteractor(
             workspace_storage=workspace_storage,
-            user_storage=user_storage,
         )
 
         try:
