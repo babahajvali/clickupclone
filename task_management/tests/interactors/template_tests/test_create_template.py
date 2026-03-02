@@ -1,20 +1,14 @@
 from unittest.mock import create_autospec
 
 import pytest
-from faker import Faker
 
 from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.template_interactor import (
     TemplateInteractor
 )
-from task_management.tests.factories.interactor_factory import (
-    CreateTemplateDTOFactory,
-    TemplateDTOFactory
-)
-
-Faker.seed(0)
 
 
 class TestCreateTemplateInteractor:
@@ -31,12 +25,19 @@ class TestCreateTemplateInteractor:
         )
 
     def test_create_template_success(self, snapshot):
-        create_template_dto = CreateTemplateDTOFactory()
+        create_template_dto = CreateTemplateDTO(
+            name="three",
+            description="Serious inside else memory if six.",
+            list_id="5ba91faf-7a02-4204-b7c1-bd874da5e709",
+            created_by="cca5a5a1-9e4d-4e3c-9846-d424c17c6279",
+        )
 
-        template_dto = TemplateDTOFactory(
+        template_dto = TemplateDTO(
+            template_id="23c6612f-4826-4673-a3a7-711a81332876",
             name=create_template_dto.name,
             list_id=create_template_dto.list_id,
             description=create_template_dto.description,
+            created_by=create_template_dto.created_by,
         )
 
         self.list_storage.get_list.return_value = type(
@@ -57,7 +58,12 @@ class TestCreateTemplateInteractor:
 
     def test_create_template_list_not_found(self):
         # Arrange
-        create_template_dto = CreateTemplateDTOFactory()
+        create_template_dto = CreateTemplateDTO(
+            name="Template name",
+            description="Template description",
+            list_id="list_1",
+            created_by="user_1",
+        )
         self.list_storage.get_list.return_value = None
 
         # Act & Assert
@@ -67,7 +73,12 @@ class TestCreateTemplateInteractor:
         self.template_storage.create_template.assert_not_called()
 
     def test_create_template_permission_denied(self):
-        create_template_dto = CreateTemplateDTOFactory()
+        create_template_dto = CreateTemplateDTO(
+            name="Template name",
+            description="Template description",
+            list_id="list_1",
+            created_by="user_1",
+        )
 
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_active": True}

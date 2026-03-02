@@ -9,6 +9,7 @@ from task_management.exceptions.custom_exceptions import (
     TaskNotFound,
 )
 from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import TaskDTO, WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import (
     TaskStorageInterface,
     WorkspaceStorageInterface,
@@ -16,10 +17,29 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.reorder_task_interactor import (
     ReorderTaskInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import (
-    make_permission,
-    make_task,
-)
+
+
+def make_task(order: int = 1, is_deleted: bool = False) -> TaskDTO:
+    return TaskDTO(
+        task_id="task_1",
+        title="Task title",
+        description="Task description",
+        list_id="list_1",
+        order=order,
+        created_by="user_1",
+        is_deleted=is_deleted,
+    )
+
+
+def make_permission(role: Role = Role.MEMBER) -> WorkspaceMemberDTO:
+    return WorkspaceMemberDTO(
+        id=1,
+        workspace_id="workspace_1",
+        role=role,
+        user_id="user_1",
+        is_active=True,
+        added_by="admin_1",
+    )
 
 
 class TestReorderTaskInteractor:
@@ -31,20 +51,17 @@ class TestReorderTaskInteractor:
             workspace_storage=self.workspace_storage,
         )
 
-    def test_reorder_task_move_down_success(self):
-        self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=1,
-        )
-        self.task_storage.get_tasks_count.return_value = 3
+    def _setup_dependencies(
+            self, current_order: int, new_order: int,
+            role: Role = Role.MEMBER, tasks_count: int = 3):
+        self.task_storage.get_task.return_value = make_task(order=current_order)
+        self.task_storage.get_tasks_count.return_value = tasks_count
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission()
-        self.task_storage.reorder_tasks.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=3,
-        )
+        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.task_storage.reorder_tasks.return_value = make_task(order=new_order)
+
+    def test_reorder_task_move_down_success(self):
+        self._setup_dependencies(current_order=1, new_order=3)
 
         result = self.interactor.reorder_task(
             task_id="task_1",
@@ -60,19 +77,7 @@ class TestReorderTaskInteractor:
         assert result.order == 3
 
     def test_reorder_task_move_up_success(self):
-        self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=3,
-        )
-        self.task_storage.get_tasks_count.return_value = 3
-        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission()
-        self.task_storage.reorder_tasks.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=1,
-        )
+        self._setup_dependencies(current_order=3, new_order=1)
 
         result = self.interactor.reorder_task(
             task_id="task_1",
@@ -88,7 +93,7 @@ class TestReorderTaskInteractor:
         assert result.order == 1
 
     def test_reorder_task_same_order_returns_original(self):
-        task_data = make_task(task_id="task_1", list_id="list_1", order=2)
+        task_data = make_task(order=2)
         self.task_storage.get_task.return_value = task_data
         self.task_storage.get_tasks_count.return_value = 3
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
@@ -117,8 +122,7 @@ class TestReorderTaskInteractor:
 
     def test_reorder_task_deleted_task(self):
         self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            is_deleted=True,
+            order=1, is_deleted=True
         )
 
         with pytest.raises(DeletedTaskFound):
@@ -129,11 +133,7 @@ class TestReorderTaskInteractor:
             )
 
     def test_reorder_task_invalid_order_less_than_one(self):
-        self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=1,
-        )
+        self.task_storage.get_task.return_value = make_task(order=1)
 
         with pytest.raises(InvalidOrder):
             self.interactor.reorder_task(
@@ -143,11 +143,7 @@ class TestReorderTaskInteractor:
             )
 
     def test_reorder_task_invalid_order_greater_than_task_count(self):
-        self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=1,
-        )
+        self.task_storage.get_task.return_value = make_task(order=1)
         self.task_storage.get_tasks_count.return_value = 2
 
         with pytest.raises(InvalidOrder):
@@ -158,16 +154,7 @@ class TestReorderTaskInteractor:
             )
 
     def test_reorder_task_permission_denied(self):
-        self.task_storage.get_task.return_value = make_task(
-            task_id="task_1",
-            list_id="list_1",
-            order=1,
-        )
-        self.task_storage.get_tasks_count.return_value = 3
-        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(
-            role=Role.GUEST
-        )
+        self._setup_dependencies(current_order=1, new_order=2, role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed):
             self.interactor.reorder_task(

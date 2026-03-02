@@ -6,6 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     DeletedListFound,
     ListNotFound,
 )
+from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     TaskStorageInterface,
@@ -13,10 +14,22 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.get_list_tasks_interactor import (
     GetListTasksInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import (
-    make_list,
-    make_task,
-)
+
+
+def make_list(is_deleted: bool = False):
+    return type("List", (), {"is_deleted": is_deleted})()
+
+
+def make_task(task_id: str, order: int) -> TaskDTO:
+    return TaskDTO(
+        task_id=task_id,
+        title="Task Title",
+        description="Task description",
+        list_id="list_1",
+        order=order,
+        created_by="user_1",
+        is_deleted=False,
+    )
 
 
 class TestGetListTasksInteractor:

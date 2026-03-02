@@ -1,20 +1,14 @@
 from unittest.mock import create_autospec
 import pytest
-from faker import Faker
 
 from task_management.exceptions.custom_exceptions import \
     ModificationNotAllowed
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
+from task_management.interactors.dtos import WorkspaceMemberDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.template_interactor import \
     TemplateInteractor
-from task_management.tests.factories.interactor_factory import (
-    TemplateDTOFactory
-)
-
-Faker.seed(0)
 
 
 def make_permission(role: Role):
@@ -55,11 +49,12 @@ class TestUpdateTemplateInteractor:
         description = "description"
         list_id = "list_id1"
 
-        updated_template = TemplateDTOFactory(
+        updated_template = TemplateDTO(
             template_id=template_id,
             name=name,
             list_id=list_id,
             description=description,
+            created_by="a0116be5-ab0c-4681-88f8-e3d0d3290a4c",
         )
 
         self.template_storage.get_template_by_id.return_value = self._mock_template()

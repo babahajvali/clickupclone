@@ -8,6 +8,7 @@ from task_management.exceptions.custom_exceptions import (
     UserNotWorkspaceMember,
 )
 from task_management.exceptions.enums import Role
+from task_management.interactors.dtos import TaskDTO, WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import (
     TaskStorageInterface,
     WorkspaceStorageInterface,
@@ -15,10 +16,29 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.delete_task_interactor import (
     DeleteTaskInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import (
-    make_permission,
-    make_task,
-)
+
+
+def make_task(is_deleted: bool = False) -> TaskDTO:
+    return TaskDTO(
+        task_id="task_1",
+        title="Task Title",
+        description="Task description",
+        list_id="list_1",
+        order=1,
+        created_by="user_1",
+        is_deleted=is_deleted,
+    )
+
+
+def make_permission(role: Role = Role.MEMBER) -> WorkspaceMemberDTO:
+    return WorkspaceMemberDTO(
+        id=1,
+        workspace_id="workspace_1",
+        role=role,
+        user_id="user_1",
+        is_active=True,
+        added_by="admin_1",
+    )
 
 
 class TestDeleteTaskInteractor:
@@ -30,14 +50,14 @@ class TestDeleteTaskInteractor:
             workspace_storage=self.workspace_storage,
         )
 
-    def test_delete_task_success(self, snapshot):
-        self.task_storage.get_task.return_value = make_task(task_id="task_1")
+    def _setup_dependencies(self, role: Role = Role.MEMBER):
+        self.task_storage.get_task.return_value = make_task()
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission()
-        self.task_storage.delete_task.return_value = make_task(
-            task_id="task_1",
-            is_deleted=True,
-        )
+        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.task_storage.delete_task.return_value = make_task(is_deleted=True)
+
+    def test_delete_task_success(self, snapshot):
+        self._setup_dependencies()
 
         result = self.interactor.delete_task(task_id="task_1", user_id="user_1")
 
@@ -52,11 +72,7 @@ class TestDeleteTaskInteractor:
         snapshot.assert_match(repr(exc.value), "test_delete_task_not_found.txt")
 
     def test_delete_task_permission_denied(self, snapshot):
-        self.task_storage.get_task.return_value = make_task(task_id="task_1")
-        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(
-            role=Role.GUEST
-        )
+        self._setup_dependencies(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.delete_task(task_id="task_1", user_id="user_1")
@@ -67,8 +83,7 @@ class TestDeleteTaskInteractor:
         )
 
     def test_delete_task_user_not_workspace_member(self):
-        self.task_storage.get_task.return_value = make_task(task_id="task_1")
-        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
+        self._setup_dependencies()
         self.workspace_storage.get_workspace_member.return_value = None
 
         with pytest.raises(UserNotWorkspaceMember):

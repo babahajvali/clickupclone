@@ -2,7 +2,11 @@ import pytest
 from unittest.mock import create_autospec
 
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import WorkspaceMemberDTO
+from task_management.interactors.dtos import (
+    ListViewDTO,
+    RemoveListViewDTO,
+    WorkspaceMemberDTO,
+)
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.views.list_view_interactor import (
@@ -20,11 +24,6 @@ from task_management.exceptions.custom_exceptions import (
     ListNotFound,
     DeletedListFound
 )
-from task_management.tests.factories.interactor_factory import (
-    ListViewDTOFactory,
-    RemoveListViewDTOFactory
-)
-
 
 def make_permission(role: Role):
     return WorkspaceMemberDTO(
@@ -64,7 +63,13 @@ class TestListViewInteractor:
             "List", (), {"is_deleted": False}
         )()
 
-        expected = ListViewDTOFactory()
+        expected = ListViewDTO(
+            id=1,
+            list_id="d3fbf47a-7e5b-4e7f-9ca5-499d004ae545",
+            view_id="baf3897a-3e70-416a-9548-5822de1b372a",
+            applied_by="101fbccc-ded7-43e8-b421-eaeb534097ca",
+            is_active=True,
+        )
         self.view_storage.apply_view_for_list.return_value = expected
 
         result = self.interactor.apply_view_for_list(
@@ -165,7 +170,13 @@ class TestListViewInteractor:
             "List", (), {"is_deleted": False}
         )()
 
-        expected = RemoveListViewDTOFactory()
+        expected = RemoveListViewDTO(
+            id=1,
+            list_id="38c1962e-9148-424f-aac1-c14f30e9c5cc",
+            view_id="247a8333-f7b0-47d2-8da8-056c3d15eef7",
+            removed_by="1759edc3-72ae-4244-8b01-63c1cd9d2b7d",
+            is_active=False,
+        )
         self.view_storage.remove_list_view.return_value = expected
 
         result = self.interactor.remove_view_for_list(
@@ -193,7 +204,29 @@ class TestListViewInteractor:
             "List", (), {"is_deleted": False}
         )()
 
-        views = [ListViewDTOFactory() for _ in range(3)]
+        views = [
+            ListViewDTO(
+                id=2,
+                list_id="e005b860-51ef-4922-be43-c49e149818d1",
+                view_id="7d41e602-eece-428b-bf7b-118e820865d6",
+                applied_by="4a84eb03-8d1f-49b7-8d2b-9deb1beb3711",
+                is_active=True,
+            ),
+            ListViewDTO(
+                id=3,
+                list_id="552f233a-8c25-466a-9ff3-9849b4e1357d",
+                view_id="3405095c-8a50-46c1-ac18-8efbd080e66e",
+                applied_by="8c1745a7-9a6a-4f92-8ca7-4147f6be1f72",
+                is_active=True,
+            ),
+            ListViewDTO(
+                id=4,
+                list_id="1775336d-71ea-4d05-89a3-e80e966e1277",
+                view_id="5129fb7c-6288-41a5-8c45-782198a6416d",
+                applied_by="2f120554-4a53-48cc-bdfa-bc08935ddd72",
+                is_active=True,
+            ),
+        ]
         self.view_storage.get_list_views.return_value = views
 
         result = self.interactor.get_list_views("list_id")

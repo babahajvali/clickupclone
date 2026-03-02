@@ -63,7 +63,7 @@ class ViewInteractor:
             is_name_provided,
         ])
 
-        if has_no_update_field_properties:
+        if not has_no_update_field_properties:
             raise NothingToUpdateView(view_id=view_id)
         if is_name_provided:
             self._check_view_name_not_empty(name=name)

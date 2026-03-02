@@ -21,8 +21,7 @@ from task_management.interactors.dtos import (
 from task_management.interactors.fields.update_field_interactor import \
     UpdateFieldInteractor
 from task_management.interactors.storage_interfaces import \
-    FieldStorageInterface, TemplateStorageInterface, \
-    WorkspaceStorageInterface
+    FieldStorageInterface, WorkspaceStorageInterface
 
 
 def make_permission_dto(role: Role):
@@ -55,12 +54,10 @@ class TestUpdateFieldInteractor:
 
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
-        self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = UpdateFieldInteractor(
             field_storage=self.field_storage,
-            template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,
         )
 
@@ -74,7 +71,7 @@ class TestUpdateFieldInteractor:
         self.field_storage.update_field.return_value = self._get_field_dto()
         self.field_storage.get_field.return_value = self._get_field_dto()
 
-        self.template_storage.get_workspace_id_from_template_id.return_value = (
+        self.field_storage.get_workspace_id_from_field_id.return_value = (
             "workspace_id"
         )
 

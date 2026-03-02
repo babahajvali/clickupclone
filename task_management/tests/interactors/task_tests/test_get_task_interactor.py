@@ -3,9 +3,21 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import TaskNotFound
+from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 from task_management.interactors.tasks.get_task_interactor import GetTaskInteractor
-from task_management.tests.interactors.task_tests.test_helpers import make_task
+
+
+def make_task() -> TaskDTO:
+    return TaskDTO(
+        task_id="task_1",
+        title="Task Title",
+        description="Task description",
+        list_id="list_1",
+        order=1,
+        created_by="user_1",
+        is_deleted=False,
+    )
 
 
 class TestGetTaskInteractor:
@@ -14,7 +26,7 @@ class TestGetTaskInteractor:
         self.interactor = GetTaskInteractor(task_storage=self.task_storage)
 
     def test_get_task_success(self, snapshot):
-        self.task_storage.get_task.return_value = make_task(task_id="task_1")
+        self.task_storage.get_task.return_value = make_task()
 
         result = self.interactor.get_task(task_id="task_1")
 

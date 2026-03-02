@@ -3,6 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import InactiveUser, UserNotFound
+from task_management.interactors.dtos import TaskDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces import (
     TaskStorageInterface,
     UserStorageInterface,
@@ -10,10 +11,36 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.get_user_tasks_interactor import (
     GetUserTasksInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import (
-    make_user,
-    make_user_tasks,
-)
+
+
+def make_user(is_active: bool = True):
+    return type("User", (), {"is_active": is_active})()
+
+
+def make_user_tasks() -> UserTasksDTO:
+    return UserTasksDTO(
+        user_id="user_2",
+        tasks=[
+            TaskDTO(
+                task_id="task_1",
+                title="Task 1",
+                description="Task 1 description",
+                list_id="list_1",
+                order=1,
+                created_by="user_1",
+                is_deleted=False,
+            ),
+            TaskDTO(
+                task_id="task_2",
+                title="Task 2",
+                description="Task 2 description",
+                list_id="list_1",
+                order=2,
+                created_by="user_1",
+                is_deleted=False,
+            ),
+        ],
+    )
 
 
 class TestGetUserTasksInteractor:
@@ -25,9 +52,12 @@ class TestGetUserTasksInteractor:
             user_storage=self.user_storage,
         )
 
-    def test_get_user_assigned_tasks_success(self, snapshot):
+    def _setup_dependencies(self):
         self.user_storage.get_user_data.return_value = make_user()
         self.task_storage.get_user_assigned_tasks.return_value = make_user_tasks()
+
+    def test_get_user_assigned_tasks_success(self, snapshot):
+        self._setup_dependencies()
 
         result = self.interactor.get_user_assigned_tasks(user_id="user_2")
 

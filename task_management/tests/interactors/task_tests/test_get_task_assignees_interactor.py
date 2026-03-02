@@ -6,14 +6,25 @@ from task_management.exceptions.custom_exceptions import (
     DeletedTaskFound,
     TaskNotFound,
 )
+from task_management.interactors.dtos import TaskAssigneeDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 from task_management.interactors.tasks.get_task_assignees import (
     GetTaskAssigneesInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import (
-    make_task_assignee,
-    make_task_data,
-)
+
+
+def make_task(is_deleted: bool = False):
+    return type("Task", (), {"is_deleted": is_deleted, "list_id": "list_1"})()
+
+
+def make_task_assignee(assign_id: str, user_id: str) -> TaskAssigneeDTO:
+    return TaskAssigneeDTO(
+        assign_id=assign_id,
+        user_id=user_id,
+        task_id="task_1",
+        assigned_by="user_1",
+        is_active=True,
+    )
 
 
 class TestGetTaskAssigneesInteractor:
@@ -21,12 +32,15 @@ class TestGetTaskAssigneesInteractor:
         self.task_storage = create_autospec(TaskStorageInterface)
         self.interactor = GetTaskAssigneesInteractor(task_storage=self.task_storage)
 
-    def test_get_task_assignee_success(self, snapshot):
-        self.task_storage.get_task.return_value = make_task_data()
+    def _setup_dependencies(self):
+        self.task_storage.get_task.return_value = make_task()
         self.task_storage.get_task_assignees.return_value = [
-            make_task_assignee(assign_id="assign_1"),
+            make_task_assignee(assign_id="assign_1", user_id="user_2"),
             make_task_assignee(assign_id="assign_2", user_id="user_3"),
         ]
+
+    def test_get_task_assignee_success(self, snapshot):
+        self._setup_dependencies()
 
         result = self.interactor.get_task_assignees(task_id="task_1")
 
@@ -39,7 +53,7 @@ class TestGetTaskAssigneesInteractor:
             self.interactor.get_task_assignees(task_id="task_1")
 
     def test_get_task_assignee_deleted_task(self):
-        self.task_storage.get_task.return_value = make_task_data(is_deleted=True)
+        self.task_storage.get_task.return_value = make_task(is_deleted=True)
 
         with pytest.raises(DeletedTaskFound):
             self.interactor.get_task_assignees(task_id="task_1")

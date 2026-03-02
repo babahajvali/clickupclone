@@ -17,7 +17,20 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.task_filter_interactor import (
     TaskFilterInteractor,
 )
-from task_management.tests.interactors.task_tests.test_helpers import make_list
+
+
+def make_filter_data(offset: int = 1, limit: int = 10) -> FilterDTO:
+    return FilterDTO(
+        list_id="list_1",
+        field_filters={"priority": ["high"]},
+        assignees=["user_1"],
+        offset=offset,
+        limit=limit,
+    )
+
+
+def make_list(is_deleted: bool = False):
+    return type("List", (), {"is_deleted": is_deleted})()
 
 
 class TestTaskFilterInteractor:
@@ -31,46 +44,39 @@ class TestTaskFilterInteractor:
             workspace_storage=self.workspace_storage,
         )
 
-    @staticmethod
-    def _make_input(offset: int = 1, limit: int = 10) -> FilterDTO:
-        return FilterDTO(
-            list_id="list_1",
-            field_filters={"priority": ["high"]},
-            assignees=["user_1"],
-            offset=offset,
-            limit=limit,
-        )
-
-    def test_task_filter_success(self):
-        filter_data = self._make_input()
+    def _setup_dependencies(self):
         self.list_storage.get_list.return_value = make_list()
         self.task_storage.task_filter_data.return_value = ["task_1", "task_2"]
+
+    def test_task_filter_success(self):
+        self._setup_dependencies()
+        filter_data = make_filter_data()
 
         result = self.interactor.task_filter(task_filter_data=filter_data)
 
         assert result == ["task_1", "task_2"]
 
     def test_task_filter_invalid_offset(self):
-        filter_data = self._make_input(offset=0)
+        filter_data = make_filter_data(offset=0)
 
         with pytest.raises(InvalidOffset):
             self.interactor.task_filter(task_filter_data=filter_data)
 
     def test_task_filter_invalid_limit(self):
-        filter_data = self._make_input(limit=0)
+        filter_data = make_filter_data(limit=0)
 
         with pytest.raises(InvalidLimit):
             self.interactor.task_filter(task_filter_data=filter_data)
 
     def test_task_filter_list_not_found(self):
-        filter_data = self._make_input()
+        filter_data = make_filter_data()
         self.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound):
             self.interactor.task_filter(task_filter_data=filter_data)
 
     def test_task_filter_deleted_list(self):
-        filter_data = self._make_input()
+        filter_data = make_filter_data()
         self.list_storage.get_list.return_value = make_list(is_deleted=True)
 
         with pytest.raises(DeletedListFound):
