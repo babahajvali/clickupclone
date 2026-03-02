@@ -8,7 +8,8 @@ from task_management.exceptions.custom_exceptions import (
     TaskAssigneeNotFound,
 )
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import TaskAssigneeDTO, WorkspaceMemberDTO
+from task_management.interactors.dtos import TaskAssigneeDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import (
     TaskStorageInterface,
     WorkspaceStorageInterface,
@@ -53,7 +54,8 @@ class TestRemoveTaskAssigneeInteractor:
             is_active=True
         )
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
+            role)
         self.task_storage.remove_task_assignee.return_value = make_task_assignee(
             is_active=False
         )

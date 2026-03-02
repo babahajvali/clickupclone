@@ -2,7 +2,8 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import InactiveUser, UserNotFound
+from task_management.exceptions.custom_exceptions import InactiveUser, \
+    UserNotFound
 from task_management.interactors.dtos import TaskDTO, UserTasksDTO
 from task_management.interactors.storage_interfaces import (
     TaskStorageInterface,
@@ -61,7 +62,8 @@ class TestGetUserTasksInteractor:
 
         result = self.interactor.get_user_assigned_tasks(user_id="user_2")
 
-        snapshot.assert_match(repr(result), "get_user_assigned_tasks_success.txt")
+        snapshot.assert_match(repr(result),
+                              "get_user_assigned_tasks_success.txt")
 
     def test_get_user_assigned_tasks_user_not_found(self):
         self.user_storage.get_user_data.return_value = None
@@ -70,7 +72,8 @@ class TestGetUserTasksInteractor:
             self.interactor.get_user_assigned_tasks(user_id="user_2")
 
     def test_get_user_assigned_tasks_inactive_user(self):
-        self.user_storage.get_user_data.return_value = make_user(is_active=False)
+        self.user_storage.get_user_data.return_value = make_user(
+            is_active=False)
 
         with pytest.raises(InactiveUser):
             self.interactor.get_user_assigned_tasks(user_id="user_2")

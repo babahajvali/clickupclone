@@ -10,7 +10,8 @@ from task_management.exceptions.custom_exceptions import (
     UserNotWorkspaceMember,
 )
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, WorkspaceMemberDTO
+from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     TaskStorageInterface,
@@ -69,7 +70,8 @@ class TestCreateTaskInteractor:
             "List", (), {"is_deleted": False}
         )()
         self.list_storage.get_workspace_id_by_list_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.workspace_storage.get_workspace_member.return_value = (
+            make_permission(role))
         self.task_storage.get_last_task_order_in_list.return_value = 2
         self.task_storage.create_task.return_value = make_task()
 

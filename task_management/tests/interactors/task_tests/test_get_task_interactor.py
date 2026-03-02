@@ -5,7 +5,8 @@ import pytest
 from task_management.exceptions.custom_exceptions import TaskNotFound
 from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
-from task_management.interactors.tasks.get_task_interactor import GetTaskInteractor
+from task_management.interactors.tasks.get_task_interactor import \
+    GetTaskInteractor
 
 
 def make_task() -> TaskDTO:

@@ -30,7 +30,8 @@ def make_task_assignee(assign_id: str, user_id: str) -> TaskAssigneeDTO:
 class TestGetTaskAssigneesInteractor:
     def setup_method(self):
         self.task_storage = create_autospec(TaskStorageInterface)
-        self.interactor = GetTaskAssigneesInteractor(task_storage=self.task_storage)
+        self.interactor = GetTaskAssigneesInteractor(
+            task_storage=self.task_storage)
 
     def _setup_dependencies(self):
         self.task_storage.get_task.return_value = make_task()

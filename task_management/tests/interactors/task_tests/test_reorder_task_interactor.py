@@ -54,11 +54,14 @@ class TestReorderTaskInteractor:
     def _setup_dependencies(
             self, current_order: int, new_order: int,
             role: Role = Role.MEMBER, tasks_count: int = 3):
-        self.task_storage.get_task.return_value = make_task(order=current_order)
+        self.task_storage.get_task.return_value = make_task(
+            order=current_order)
         self.task_storage.get_tasks_count.return_value = tasks_count
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
-        self.task_storage.reorder_tasks.return_value = make_task(order=new_order)
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
+            role)
+        self.task_storage.reorder_tasks.return_value = make_task(
+            order=new_order)
 
     def test_reorder_task_move_down_success(self):
         self._setup_dependencies(current_order=1, new_order=3)

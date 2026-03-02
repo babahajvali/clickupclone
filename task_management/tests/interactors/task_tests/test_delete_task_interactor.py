@@ -53,13 +53,15 @@ class TestDeleteTaskInteractor:
     def _setup_dependencies(self, role: Role = Role.MEMBER):
         self.task_storage.get_task.return_value = make_task()
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.workspace_storage.get_workspace_member.return_value = make_permission(
+            role)
         self.task_storage.delete_task.return_value = make_task(is_deleted=True)
 
     def test_delete_task_success(self, snapshot):
         self._setup_dependencies()
 
-        result = self.interactor.delete_task(task_id="task_1", user_id="user_1")
+        result = self.interactor.delete_task(task_id="task_1",
+                                             user_id="user_1")
 
         snapshot.assert_match(repr(result), "test_delete_task_success.txt")
 
@@ -67,9 +69,11 @@ class TestDeleteTaskInteractor:
         self.task_storage.get_task.return_value = None
 
         with pytest.raises(TaskNotFound) as exc:
-            self.interactor.delete_task(task_id="missing_task", user_id="user_1")
+            self.interactor.delete_task(task_id="missing_task",
+                                        user_id="user_1")
 
-        snapshot.assert_match(repr(exc.value), "test_delete_task_not_found.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "test_delete_task_not_found.txt")
 
     def test_delete_task_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)

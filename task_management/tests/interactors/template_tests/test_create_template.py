@@ -2,13 +2,26 @@ from unittest.mock import create_autospec
 
 import pytest
 
+from task_management.exceptions.custom_exceptions import ModificationNotAllowed
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
+from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.template_interactor import (
     TemplateInteractor
 )
+
+
+def make_permission(role: Role):
+    return WorkspaceMemberDTO(
+        id=1,
+        workspace_id="workspace_id1",
+        role=role,
+        user_id="user_id",
+        is_active=True,
+        added_by="admin"
+    )
 
 
 class TestCreateTemplateInteractor:
@@ -81,14 +94,13 @@ class TestCreateTemplateInteractor:
         )
 
         self.list_storage.get_list.return_value = type(
-            "List", (), {"is_active": True}
+            "List", (), {"is_deleted": False}
         )()
 
         self.workspace_storage.get_workspace_member.return_value = (
-            Role.MEMBER
-        )
+            make_permission(Role.GUEST))
 
-        with pytest.raises(Exception):
+        with pytest.raises(ModificationNotAllowed):
             self.interactor.create_template(create_template_dto)
 
         self.template_storage.create_template.assert_not_called()

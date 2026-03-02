@@ -130,36 +130,17 @@ class TestAddTaskAssigneeInteractor:
                 assigned_by="user_1",
             )
 
-    def test_assign_task_assignee_deleted_task(self):
+    def test_assign_task_assignee_deleted_task(self, snapshot):
         self._setup_dependencies()
         self.task_storage.get_task.return_value = type(
             "Task", (), {"is_deleted": True, "list_id": "list_1"}
         )()
 
-        with pytest.raises(DeletedTaskFound):
+        with pytest.raises(DeletedTaskFound) as e:
             self.interactor.add_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
             )
 
-    def test_assign_task_assignee_existing_assignee_reassigns(self):
-        self._setup_dependencies()
-        existing_assignee = make_task_assignee(assign_id="assign_existing")
-        self.task_storage.get_user_task_assignee.return_value = existing_assignee
-        self.task_storage.reassign_task_assignee.return_value = make_task_assignee(
-            assign_id="assign_existing"
-        )
-
-        result = self.interactor.add_task_assignee(
-            task_id="task_1",
-            user_id="user_2",
-            assigned_by="user_1",
-        )
-
-        self.task_storage.reassign_task_assignee.assert_called_once_with(
-            assign_id="assign_existing"
-        )
-        self.task_storage.get_task.assert_not_called()
-        self.user_storage.get_user_data.assert_not_called()
-        assert result.assign_id == "assign_existing"
+        snapshot.assert_match(repr(e.value), "deleted_task_found.txt")

@@ -55,7 +55,8 @@ class TestUpdateTaskInteractor:
     def _setup_dependencies(self, role: Role = Role.MEMBER):
         self.task_storage.get_task.return_value = make_task()
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(role)
+        self.workspace_storage.get_workspace_member.return_value = (
+            make_permission(role))
         self.task_storage.update_task.return_value = TaskDTO(
             task_id="task_1",
             title="Updated Task",
