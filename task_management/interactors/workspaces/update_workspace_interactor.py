@@ -53,7 +53,7 @@ class UpdateWorkspaceInteractor:
             has_description_provided,
             has_name_provided
         ])
-        if not has_no_update_field_properties:
+        if has_no_update_field_properties:
             raise NothingToUpdateWorkspace(workspace_id=workspace_id)
         if has_name_provided:
             self.workspace_validator.check_workspace_name_not_empty(

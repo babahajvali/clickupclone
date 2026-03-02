@@ -42,7 +42,7 @@ class DeleteTaskMutation(graphene.Mutation):
                 list_id=result.list_id,
                 order=result.order,
                 created_by=result.created_by,
-                is_delete=result.is_deleted
+                is_deleted=result.is_deleted
             )
 
 
