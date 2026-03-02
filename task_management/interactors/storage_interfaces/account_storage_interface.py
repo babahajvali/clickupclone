@@ -17,10 +17,6 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def deactivate_account(self, account_id: str) -> AccountDTO:
-        pass
-
-    @abstractmethod
     def delete_account(self, account_id: str):
         pass
 

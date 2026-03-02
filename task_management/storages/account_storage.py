@@ -37,7 +37,7 @@ class AccountStorage(AccountStorageInterface):
             is_active=account_data.is_active,
         )
 
-    def deactivate_account(self, account_id: str) -> AccountDTO:
+    def delete_account(self, account_id: str) -> AccountDTO:
         account_data = Account.objects.get(account_id=account_id)
         account_data.is_active = False
         account_data.save()
@@ -49,10 +49,6 @@ class AccountStorage(AccountStorageInterface):
             owner_id=account_data.owner.user_id,
             is_active=account_data.is_active,
         )
-
-    def delete_account(self, account_id: str) -> AccountDTO:
-        # Backward-compatible alias used by delete interactor.
-        return self.deactivate_account(account_id=account_id)
 
     def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         accounts_data = Account.objects.filter(account_id__in=account_ids)
