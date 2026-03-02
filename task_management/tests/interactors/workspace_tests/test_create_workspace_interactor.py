@@ -49,7 +49,8 @@ class TestCreateWorkspaceInteractor:
             account_storage=self.account_storage,
         )
 
-    def _make_input(self, name: str = "Workspace") -> CreateWorkspaceDTO:
+    @staticmethod
+    def _make_input(name: str = "Workspace") -> CreateWorkspaceDTO:
         return CreateWorkspaceDTO(
             name=name,
             description="Description",
@@ -72,7 +73,8 @@ class TestCreateWorkspaceInteractor:
         with pytest.raises(EmptyWorkspaceName) as exc:
             self.interactor.create_workspace(workspace_data=input_data)
 
-        snapshot.assert_match(repr(exc.value), "create_workspace_empty_name.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "create_workspace_empty_name.txt")
 
     def test_create_workspace_account_not_found(self, snapshot):
         self.account_storage.get_account.return_value = None

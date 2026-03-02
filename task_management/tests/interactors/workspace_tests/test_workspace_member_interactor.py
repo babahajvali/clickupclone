@@ -124,8 +124,6 @@ class TestWorkspaceMemberInteractor:
         )
         assert result == expected
 
-        # snapshot.assert_match(repr(result), "change_role_success.txt")
-
     def test_change_member_role_invalid(self, snapshot):
         self.workspace_storage.get_workspace.return_value = self._mock_active_workspace()
         self.user_storage.get_user_data.return_value = self._mock_active_user()
