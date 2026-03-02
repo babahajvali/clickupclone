@@ -25,7 +25,7 @@ class TestFieldValueStorage:
         field_value_data = UpdateFieldValueDTO(
             task_id=str(task_id),
             field_id=str(field_id),
-            value={"text": "new value"}
+            value="new value"
         )
         storage = FieldStorage()
 
@@ -48,29 +48,29 @@ class TestFieldValueStorage:
         list_obj = ListFactory()
         template = TemplateFactory(list=list_obj)
         user = UserFactory(user_id=user_id)
-        task_1 = TaskFactory(task_id=task_id_1, list=list_obj, created_by=user)
-        task_2 = TaskFactory(task_id=task_id_2, list=list_obj, created_by=user)
-        field_1 = FieldFactory(field_id=field_id_1, template=template,
-                               created_by=user)
-        field_2 = FieldFactory(field_id=field_id_2, template=template,
-                               created_by=user)
+        TaskFactory(task_id=task_id_1, list=list_obj, created_by=user)
+        TaskFactory(task_id=task_id_2, list=list_obj, created_by=user)
+        FieldFactory(field_id=field_id_1, template=template,
+                     created_by=user)
+        FieldFactory(field_id=field_id_2, template=template,
+                     created_by=user)
         bulk_field_values = [
             CreateFieldValueDTO(
                 task_id=str(task_id_1),
                 field_id=str(field_id_1),
-                value={"text": "value1"},
+                value="value1",
                 created_by=str(user_id)
             ),
             CreateFieldValueDTO(
                 task_id=str(task_id_1),
                 field_id=str(field_id_2),
-                value={"text": "value2"},
+                value="value2",
                 created_by=str(user_id)
             ),
             CreateFieldValueDTO(
                 task_id=str(task_id_2),
                 field_id=str(field_id_1),
-                value={"text": "value3"},
+                value="value3",
                 created_by=str(user_id)
             )
         ]
@@ -96,14 +96,14 @@ class TestFieldValueStorage:
         list_obj = ListFactory()
         template = TemplateFactory(list=list_obj)
         user = UserFactory(user_id=user_id)
-        task = TaskFactory(task_id=task_id, list=list_obj, created_by=user)
-        field = FieldFactory(field_id=field_id, template=template,
-                             created_by=user)
+        TaskFactory(task_id=task_id, list=list_obj, created_by=user)
+        FieldFactory(field_id=field_id, template=template,
+                     created_by=user)
         bulk_field_values = [
             CreateFieldValueDTO(
                 task_id=str(task_id),
                 field_id=str(field_id),
-                value={"text": "single value"},
+                value="single value",
                 created_by=str(user_id)
             )
         ]

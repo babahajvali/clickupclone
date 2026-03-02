@@ -231,13 +231,14 @@ class TaskStorage(TaskStorageInterface):
     def get_user_task_assignee(
             self, user_id: str, task_id: str,
             assigned_by: str) -> TaskAssigneeDTO | None:
-        try:
-            assignee_data = TaskAssignee.objects.get(
-                user_id=user_id, task_id=task_id, assigned_by=assigned_by)
 
-            return self._assignee_dto(assignee_data=assignee_data)
-        except TaskAssignee.DoesNotExist:
+        assignee_data = TaskAssignee.objects.filter(
+            user_id=user_id, task_id=task_id, assigned_by=assigned_by).first()
+
+        if not assignee_data:
             return None
+
+        return self._assignee_dto(assignee_data=assignee_data)
 
     def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.get(assign_id=assign_id)

@@ -11,6 +11,7 @@ from task_management.tests.factories.storage_factory import (
     FolderFactory
 )
 
+
 class TestTemplateStorage:
 
     @pytest.mark.django_db
@@ -108,7 +109,7 @@ class TestTemplateStorage:
         list_obj = ListFactory(list_id=list_id, space=space, folder=folder,
                                created_by=user)
 
-        template = TemplateFactory(
+        TemplateFactory(
             template_id=template_id,
             list=list_obj,
             name="Old Template",

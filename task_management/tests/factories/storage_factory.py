@@ -1,4 +1,5 @@
 import uuid
+
 import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
@@ -56,6 +57,7 @@ class WorkspaceMemberFactory(DjangoModelFactory):
     class Meta:
         model = WorkspaceMember
 
+    id = factory.Sequence(lambda n: n)
     workspace = factory.SubFactory(WorkspaceFactory)
     user = factory.SubFactory(UserFactory)
     role = "MEMBER"

@@ -1,11 +1,13 @@
 import pytest
+
 from task_management.exceptions.enums import ViewTypes
-from task_management.interactors.dtos import CreateViewDTO, UpdateViewDTO
+from task_management.interactors.dtos import CreateViewDTO
 from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import (
     ViewFactory,
     UserFactory
 )
+
 
 class TestViewStorage:
 
@@ -37,7 +39,7 @@ class TestViewStorage:
         view_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345678"
         user = UserFactory(user_id=user_id)
-        view = ViewFactory(
+        ViewFactory(
             view_id=view_id,
             created_by=user,
             name="Table View"
@@ -57,7 +59,7 @@ class TestViewStorage:
     def test_create_view(self, snapshot):
         # Arrange
         user_id = "12345678-1234-5678-1234-567812345679"
-        user = UserFactory(user_id=user_id)
+        UserFactory(user_id=user_id)
 
         dto = CreateViewDTO(
             name="Board View",
@@ -89,7 +91,7 @@ class TestViewStorage:
         view_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
         user = UserFactory(user_id=user_id)
-        view = ViewFactory(
+        ViewFactory(
             view_id=view_id,
             created_by=user,
             name="Old View",

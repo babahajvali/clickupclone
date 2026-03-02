@@ -1,9 +1,10 @@
 import pytest
 
-from task_management.interactors.dtos import CreateListDTO, UpdateListDTO
+from task_management.interactors.dtos import CreateListDTO
 from task_management.storages.list_storage import ListStorage
 from task_management.tests.factories.storage_factory import ListFactory, \
     TemplateFactory, SpaceFactory, FolderFactory, UserFactory
+
 
 class TestListStorage:
 
@@ -62,8 +63,8 @@ class TestListStorage:
         folder_id = "12345678-1234-5678-1234-567812345679"
         user_id = "12345678-1234-5678-1234-567812345680"
         space = SpaceFactory(space_id=space_id)
-        folder = FolderFactory(folder_id=folder_id, space=space)
-        user = UserFactory(user_id=user_id)
+        FolderFactory(folder_id=folder_id, space=space)
+        UserFactory(user_id=user_id)
         create_list_data = CreateListDTO(
             name="Test List",
             description="Test description",
@@ -75,7 +76,7 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.create_list(list_data=create_list_data,order= 1)
+        result = storage.create_list(list_data=create_list_data, order=1)
 
         # Assert
         snapshot.assert_match(
@@ -88,7 +89,8 @@ class TestListStorage:
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                    "folder_id": str(
+                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_with_folder_success.txt",
@@ -99,8 +101,8 @@ class TestListStorage:
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345680"
-        space = SpaceFactory(space_id=space_id)
-        user = UserFactory(user_id=user_id)
+        SpaceFactory(space_id=space_id)
+        UserFactory(user_id=user_id)
         create_list_data = CreateListDTO(
             name="Test List",
             description="Test description",
@@ -125,7 +127,8 @@ class TestListStorage:
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                    "folder_id": str(
+                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_without_folder_success.txt",
@@ -166,7 +169,8 @@ class TestListStorage:
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                    "folder_id": str(
+                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_with_existing_lists_in_folder.txt",
@@ -256,11 +260,14 @@ class TestListStorage:
         space2 = SpaceFactory(space_id=space_id_2)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id="12345678-1234-5678-1234-567812345681",
-                    space=space1, folder=None, created_by=user, is_deleted=False)
+                    space=space1, folder=None, created_by=user,
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345682",
-                    space=space1, folder=None, created_by=user, is_deleted=False)
+                    space=space1, folder=None, created_by=user,
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345683",
-                    space=space2, folder=None, created_by=user, is_deleted=False)
+                    space=space2, folder=None, created_by=user,
+                    is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345684",
                     space=space1, folder=None, created_by=user,
                     is_deleted=True)
@@ -335,7 +342,6 @@ class TestListStorage:
         snapshot.assert_match(repr(result),
                               "test_remove_list_without_folder_success.txt")
 
-
     @pytest.mark.django_db
     def test_update_list_public_success(self, snapshot):
         # Arrange
@@ -351,7 +357,8 @@ class TestListStorage:
         storage = ListStorage()
 
         # Act
-        result = storage.update_list_visibility(list_id=str(list_id), visibility="PRIVATE")
+        result = storage.update_list_visibility(list_id=str(list_id),
+                                                visibility="PRIVATE")
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -375,7 +382,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_folder(folder_id=str(folder_id),
-                                                     list_id=str(list_id), order=3)
+                                                     list_id=str(list_id),
+                                                     order=3)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -399,7 +407,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_folder(folder_id=str(folder_id),
-                                                     list_id=str(list_id), order=1)
+                                                     list_id=str(list_id),
+                                                     order=1)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -421,7 +430,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_folder(folder_id=str(folder_id),
-                                                     list_id=str(list_id), order=2)
+                                                     list_id=str(list_id),
+                                                     order=2)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -443,7 +453,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_space(space_id=str(space_id),
-                                                    list_id=str(list_id), order=3)
+                                                    list_id=str(list_id),
+                                                    order=3)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -465,7 +476,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_space(space_id=str(space_id),
-                                                    list_id=str(list_id), order=1)
+                                                    list_id=str(list_id),
+                                                    order=1)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -485,7 +497,8 @@ class TestListStorage:
 
         # Act
         result = storage.update_list_order_in_space(space_id=str(space_id),
-                                                    list_id=str(list_id), order=2)
+                                                    list_id=str(list_id),
+                                                    order=2)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -538,8 +551,10 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(space=space, folder=None, created_by=user, is_deleted=False)
-        ListFactory(space=space, folder=None, created_by=user, is_deleted=False)
+        ListFactory(space=space, folder=None, created_by=user,
+                    is_deleted=False)
+        ListFactory(space=space, folder=None, created_by=user,
+                    is_deleted=False)
         ListFactory(space=space, folder=None, created_by=user, is_deleted=True)
         storage = ListStorage()
 

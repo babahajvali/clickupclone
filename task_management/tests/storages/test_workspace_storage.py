@@ -13,6 +13,7 @@ from task_management.tests.factories.storage_factory import (
 
 reseed_random(12345)
 
+
 class TestWorkspaceStorage:
 
     @pytest.mark.django_db
@@ -23,7 +24,7 @@ class TestWorkspaceStorage:
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345679"
         account = AccountFactory(owner=user, account_id=account_id)
-        workspace = WorkspaceFactory(
+        WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
             account=account
@@ -62,7 +63,7 @@ class TestWorkspaceStorage:
         account_id = "12345678-1234-5678-1234-567812345680"
 
         user = UserFactory(user_id=user_id)
-        account = AccountFactory(account_id=account_id, owner=user)
+        AccountFactory(account_id=account_id, owner=user)
 
         dto = CreateWorkspaceDTO(
             name="My Workspace",
@@ -97,7 +98,7 @@ class TestWorkspaceStorage:
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345690"
         account = AccountFactory(owner=user, account_id=account_id)
-        workspace = WorkspaceFactory(
+        WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
             account=account
@@ -126,7 +127,7 @@ class TestWorkspaceStorage:
         user = UserFactory(user_id=user_id)
         account_id = "12345678-1234-5678-1234-567812345690"
         account = AccountFactory(owner=user, account_id=account_id)
-        workspace = WorkspaceFactory(
+        WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
             account=account,
@@ -156,7 +157,7 @@ class TestWorkspaceStorage:
         account_id = "12345678-1234-5678-1234-567812345690"
         account = AccountFactory(owner=old_owner, account_id=account_id)
 
-        workspace = WorkspaceFactory(
+        WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=old_owner,
             account=account

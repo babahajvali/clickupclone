@@ -6,6 +6,7 @@ from task_management.tests.factories.storage_factory import TaskFactory, \
     UserFactory, ListFactory, FieldValueFactory, \
     FieldFactory, TemplateFactory
 
+
 class TestTaskStorage:
 
     @pytest.mark.django_db
@@ -13,8 +14,8 @@ class TestTaskStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
+        ListFactory(list_id=list_id)
+        UserFactory(user_id=user_id)
         task_data = CreateTaskDTO(
             title="Test Task",
             description="Test description",
@@ -211,8 +212,8 @@ class TestTaskStorage:
                             order=1)
         task2 = TaskFactory(list=list_obj, created_by=user, is_deleted=False,
                             order=2)
-        task3 = TaskFactory(list=list_obj, created_by=user, is_deleted=False,
-                            order=3)
+        TaskFactory(list=list_obj, created_by=user, is_deleted=False,
+                    order=3)
         FieldValueFactory(task=task1, field=field,
                           value={"status": "in_progress"}, created_by=user)
         FieldValueFactory(task=task2, field=field,
@@ -220,7 +221,7 @@ class TestTaskStorage:
         filter_data = FilterDTO(
             list_id=str(list_id),
             assignees=None,
-            field_filters={str(field_id): [{"status": "in_progress"}]},
+            field_filters={str(field_id): ["in-progress"]},
             offset=1,
             limit=10
         )

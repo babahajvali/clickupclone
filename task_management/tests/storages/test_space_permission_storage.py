@@ -180,9 +180,9 @@ class TestSpacePermissionStorage:
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345680"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        space = SpaceFactory(space_id=space_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
+        SpaceFactory(space_id=space_id)
+        UserFactory(user_id=user_id)
+        UserFactory(user_id=added_by_id)
         permission_data = [
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id),

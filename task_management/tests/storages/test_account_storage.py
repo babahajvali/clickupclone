@@ -4,6 +4,7 @@ from task_management.storages.account_storage import AccountStorage
 from task_management.tests.factories.storage_factory import AccountFactory, \
     UserFactory
 
+
 class TestAccountStorage:
 
     @pytest.mark.django_db
@@ -75,7 +76,7 @@ class TestAccountStorage:
     def test_create_account_success(self, snapshot):
         # Arrange
         owner_id = "12345678-1234-5678-1234-567812345678"
-        owner = UserFactory(user_id=owner_id)
+        UserFactory(user_id=owner_id)
         name = "New Account"
         description = "New accounts description"
         owner_id = str(owner_id)

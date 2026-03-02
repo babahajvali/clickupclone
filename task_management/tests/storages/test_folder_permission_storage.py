@@ -1,5 +1,4 @@
 import pytest
-from factory.random import reseed_random
 
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateFolderPermissionDTO
@@ -138,11 +137,11 @@ class TestFolderPermissionStorage:
         user_id_1 = "12345678-1234-5678-1234-567812345680"
         user_id_2 = "12345678-1234-5678-1234-567812345681"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        folder1 = FolderFactory(folder_id=folder_id_1)
-        folder2 = FolderFactory(folder_id=folder_id_2)
-        user1 = UserFactory(user_id=user_id_1)
-        user2 = UserFactory(user_id=user_id_2)
-        added_by = UserFactory(user_id=added_by_id)
+        FolderFactory(folder_id=folder_id_1)
+        FolderFactory(folder_id=folder_id_2)
+        UserFactory(user_id=user_id_1)
+        UserFactory(user_id=user_id_2)
+        UserFactory(user_id=added_by_id)
         users_permission_data = [
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id_1),
@@ -179,9 +178,9 @@ class TestFolderPermissionStorage:
         folder_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345680"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        folder = FolderFactory(folder_id=folder_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
+        FolderFactory(folder_id=folder_id)
+        UserFactory(user_id=user_id)
+        UserFactory(user_id=added_by_id)
         users_permission_data = [
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id),

@@ -122,11 +122,11 @@ class TestListPermissionStorage:
         user_id_1 = "12345678-1234-5678-1234-567812345680"
         user_id_2 = "12345678-1234-5678-1234-567812345681"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        list1 = ListFactory(list_id=list_id_1)
-        list2 = ListFactory(list_id=list_id_2)
-        user1 = UserFactory(user_id=user_id_1)
-        user2 = UserFactory(user_id=user_id_2)
-        added_by = UserFactory(user_id=added_by_id)
+        ListFactory(list_id=list_id_1)
+        ListFactory(list_id=list_id_2)
+        UserFactory(user_id=user_id_1)
+        UserFactory(user_id=user_id_2)
+        UserFactory(user_id=added_by_id)
         user_permissions = [
             CreateListPermissionDTO(
                 list_id=str(list_id_1),
@@ -163,9 +163,9 @@ class TestListPermissionStorage:
         list_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345680"
         added_by_id = "12345678-1234-5678-1234-567812345682"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
+        ListFactory(list_id=list_id)
+        UserFactory(user_id=user_id)
+        UserFactory(user_id=added_by_id)
         user_permissions = [
             CreateListPermissionDTO(
                 list_id=str(list_id),

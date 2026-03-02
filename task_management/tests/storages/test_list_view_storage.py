@@ -2,7 +2,8 @@ import pytest
 
 from task_management.exceptions.enums import ViewTypes
 from task_management.storages.view_storage import ViewStorage
-from task_management.tests.factories.storage_factory import ListViewFactory, ListFactory, ViewFactory, UserFactory
+from task_management.tests.factories.storage_factory import ListViewFactory, \
+    ListFactory, ViewFactory, UserFactory
 
 
 class TestListViewStorage:
@@ -13,16 +14,19 @@ class TestListViewStorage:
         list_id = "12345678-1234-5678-1234-567812345678"
         view_id = "12345678-1234-5678-1234-567812345679"
         user_id = "12345678-1234-5678-1234-567812345680"
-        list_obj = ListFactory(list_id=list_id)
-        view = ViewFactory(view_id=view_id)
-        user = UserFactory(user_id=user_id)
+        ListFactory(list_id=list_id)
+        ViewFactory(view_id=view_id)
+        UserFactory(user_id=user_id)
         storage = ViewStorage()
 
         # Act
-        result = storage.apply_view_for_list(list_id=str(list_id), view_id=str(view_id), user_id=str(user_id))
+        result = storage.apply_view_for_list(list_id=str(list_id),
+                                             view_id=str(view_id),
+                                             user_id=str(user_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_apply_view_for_list_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_apply_view_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_remove_view_for_list_success(self, snapshot):
@@ -33,14 +37,17 @@ class TestListViewStorage:
         list_obj = ListFactory(list_id=list_id)
         view = ViewFactory(view_id=view_id)
         user = UserFactory(user_id=user_id)
-        ListViewFactory(list=list_obj, view=view, applied_by=user, is_active=True)
+        ListViewFactory(list=list_obj, view=view, applied_by=user,
+                        is_active=True)
         storage = ViewStorage()
 
         # Act
-        result = storage.remove_list_view(view_id=str(view_id), list_id=str(list_id))
+        result = storage.remove_list_view(view_id=str(view_id),
+                                          list_id=str(list_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_remove_view_for_list_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_remove_view_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_get_list_views_success(self, snapshot):
@@ -55,9 +62,12 @@ class TestListViewStorage:
         view2 = ViewFactory(view_id=view_id2, view_type=ViewTypes.GANTT.value)
         view3 = ViewFactory(view_id=view_id3)
         user = UserFactory(user_id=user_id)
-        ListViewFactory(list=list_obj, view=view1, applied_by=user, is_active=True)
-        ListViewFactory(list=list_obj, view=view2, applied_by=user, is_active=True)
-        ListViewFactory(list=list_obj, view=view3, applied_by=user, is_active=False)
+        ListViewFactory(list=list_obj, view=view1, applied_by=user,
+                        is_active=True)
+        ListViewFactory(list=list_obj, view=view2, applied_by=user,
+                        is_active=True)
+        ListViewFactory(list=list_obj, view=view3, applied_by=user,
+                        is_active=False)
         storage = ViewStorage()
 
         # Act
@@ -91,10 +101,12 @@ class TestListViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.is_list_view_exist(list_id=str(list_id), view_id=str(view_id))
+        result = storage.is_list_view_exist(list_id=str(list_id),
+                                            view_id=str(view_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_is_list_view_exist_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_is_list_view_exist_success.txt")
 
     @pytest.mark.django_db
     def test_is_list_view_exist_failure(self, snapshot):
@@ -104,7 +116,9 @@ class TestListViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.is_list_view_exist(list_id=str(list_id), view_id=str(view_id))
+        result = storage.is_list_view_exist(list_id=str(list_id),
+                                            view_id=str(view_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_is_list_view_exist_failure.txt")
+        snapshot.assert_match(repr(result),
+                              "test_is_list_view_exist_failure.txt")

@@ -1,9 +1,10 @@
 import pytest
 
-from task_management.interactors.dtos import CreateSpaceDTO, UpdateSpaceDTO
+from task_management.interactors.dtos import CreateSpaceDTO
 from task_management.storages.space_storage import SpaceStorage
 from task_management.tests.factories.storage_factory import SpaceFactory, \
     WorkspaceFactory, UserFactory
+
 
 class TestSpaceStorage:
 
@@ -41,8 +42,8 @@ class TestSpaceStorage:
         # Arrange
         workspace_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
+        WorkspaceFactory(workspace_id=workspace_id)
+        UserFactory(user_id=user_id)
         create_space_data = CreateSpaceDTO(
             name="Test Space",
             description="Test description",

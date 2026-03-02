@@ -15,9 +15,9 @@ class TestWorkspaceMemberStorage:
         workspace_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
         added_by_id = "12345678-1234-5678-1234-567812345680"
-        workspace = WorkspaceFactory(workspace_id=workspace_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
+        WorkspaceFactory(workspace_id=workspace_id)
+        UserFactory(user_id=user_id)
+        UserFactory(user_id=added_by_id)
         workspace_member_data = AddMemberToWorkspaceDTO(
             workspace_id=str(workspace_id),
             user_id=str(user_id),
@@ -85,7 +85,7 @@ class TestWorkspaceMemberStorage:
 
         # Act
         result = storage.get_workspace_member_by_id(
-            workspace_member_id=workspace_member.pk)
+            workspace_member_id=workspace_member.id)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -107,7 +107,7 @@ class TestWorkspaceMemberStorage:
 
         # Act
         result = storage.remove_member_from_workspace(
-            workspace_member_id=workspace_member.pk)
+            workspace_member_id=workspace_member.id)
 
         # Assert
         snapshot.assert_match(repr(result),

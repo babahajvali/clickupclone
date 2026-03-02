@@ -3,8 +3,11 @@ from factory.random import reseed_random
 
 from task_management.interactors.dtos import CreateFolderDTO
 from task_management.storages.folder_storage import FolderStorage
-from task_management.tests.factories.storage_factory import FolderFactory, SpaceFactory, UserFactory
+from task_management.tests.factories.storage_factory import FolderFactory, \
+    SpaceFactory, UserFactory
+
 reseed_random(12345)
+
 
 class TestFolderStorage:
     @pytest.mark.django_db
@@ -42,8 +45,8 @@ class TestFolderStorage:
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory(space_id=space_id)
-        user = UserFactory(user_id=user_id)
+        SpaceFactory(space_id=space_id)
+        UserFactory(user_id=user_id)
         create_folder_data = CreateFolderDTO(
             name="Test Folder",
             description="Test description",
@@ -54,7 +57,8 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.create_folder(create_folder_data=create_folder_data, order=1)
+        result = storage.create_folder(create_folder_data=create_folder_data,
+                                       order=1)
 
         # Assert
         snapshot.assert_match(
@@ -91,7 +95,8 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.create_folder(create_folder_data=create_folder_data, order=1)
+        result = storage.create_folder(create_folder_data=create_folder_data,
+                                       order=1)
 
         # Assert
         snapshot.assert_match(
@@ -117,15 +122,17 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, name="Old Name", description="Old description")
-        folder_id=str(folder_id)
-        name="New Name"
-        description="New description"
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      name="Old Name", description="Old description")
+        folder_id = str(folder_id)
+        name = "New Name"
+        description = "New description"
 
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder(folder_id=folder_id, name=name, description=description)
+        result = storage.update_folder(folder_id=folder_id, name=name,
+                                       description=description)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_folder_success.txt")
@@ -138,16 +145,19 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, order=1)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      order=1)
         FolderFactory(space=space, created_by=user, order=2)
         FolderFactory(space=space, created_by=user, order=3)
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder_order(folder_id=str(folder_id), new_order=3)
+        result = storage.update_folder_order(folder_id=str(folder_id),
+                                             new_order=3)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_folder_move_down_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_folder_move_down_success.txt")
 
     @pytest.mark.django_db
     def test_reorder_folder_move_up_success(self, snapshot):
@@ -159,14 +169,17 @@ class TestFolderStorage:
         user = UserFactory(user_id=user_id)
         FolderFactory(space=space, created_by=user, order=1)
         FolderFactory(space=space, created_by=user, order=2)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, order=3)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      order=3)
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder_order(folder_id=str(folder_id), new_order=1)
+        result = storage.update_folder_order(folder_id=str(folder_id),
+                                             new_order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_folder_move_up_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_folder_move_up_success.txt")
 
     @pytest.mark.django_db
     def test_reorder_folder_same_position(self, snapshot):
@@ -176,14 +189,17 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, order=2)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      order=2)
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder_order(folder_id=str(folder_id), new_order=2)
+        result = storage.update_folder_order(folder_id=str(folder_id),
+                                             new_order=2)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_reorder_folder_same_position.txt")
+        snapshot.assert_match(repr(result),
+                              "test_reorder_folder_same_position.txt")
 
     @pytest.mark.django_db
     def test_remove_folder_success(self, snapshot):
@@ -193,7 +209,8 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, order=1, is_deleted=False)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      order=1, is_deleted=False)
         FolderFactory(space=space, created_by=user, order=2, is_deleted=False)
         FolderFactory(space=space, created_by=user, order=3, is_deleted=False)
         storage = FolderStorage()
@@ -264,14 +281,16 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, is_private=False)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      is_private=False)
         storage = FolderStorage()
 
         # Act
         result = storage.set_folder_private(folder_id=str(folder_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_set_folder_private_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_set_folder_private_success.txt")
 
     @pytest.mark.django_db
     def test_set_folder_public_success(self, snapshot):
@@ -281,14 +300,17 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user, is_private=True)
+        FolderFactory(folder_id=folder_id, space=space, created_by=user,
+                      is_private=True)
         storage = FolderStorage()
 
         # Act
-        result = storage.update_folder_visibility(folder_id=str(folder_id), visibility="PUBLIC")
+        result = storage.update_folder_visibility(folder_id=str(folder_id),
+                                                  visibility="PUBLIC")
 
         # Assert
-        snapshot.assert_match(repr(result), "test_set_folder_public_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_set_folder_public_success.txt")
 
     @pytest.mark.django_db
     def test_get_space_folder_count_success(self, snapshot):
@@ -306,7 +328,8 @@ class TestFolderStorage:
         result = storage.get_space_folder_count(space_id=str(space_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_space_folder_count_success.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_space_folder_count_success.txt")
 
     @pytest.mark.django_db
     def test_get_space_folder_count_empty(self, snapshot):
@@ -319,4 +342,5 @@ class TestFolderStorage:
         result = storage.get_space_folder_count(space_id=str(space_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_space_folder_count_empty.txt")
+        snapshot.assert_match(repr(result),
+                              "test_get_space_folder_count_empty.txt")
