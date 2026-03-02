@@ -1,12 +1,10 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO
-from task_management.interactors.folders.validators.folder_validator import \
-    FolderValidator
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
-    WorkspaceValidationMixin
+    WorkspaceValidationMixin, FolderValidationMixin
 
 
 class CreateFolderInteractor:
@@ -28,12 +26,12 @@ class CreateFolderInteractor:
             workspace_storage=self.workspace_storage)
 
     @property
-    def folder_validator(self) -> FolderValidator:
-        return FolderValidator(folder_storage=self.folder_storage)
+    def folder_mixin(self) -> FolderValidationMixin:
+        return FolderValidationMixin(folder_storage=self.folder_storage)
 
     @invalidate_interactor_cache(cache_name="folders")
     def create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
-        self.folder_validator.check_folder_name_not_empty(
+        self.folder_mixin.check_folder_name_not_empty(
             name=folder_data.name)
         self.space_mixin.check_space_not_deleted(
             space_id=folder_data.space_id)

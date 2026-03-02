@@ -3,13 +3,11 @@ from typing import Optional
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.interactors.dtos import CreateListDTO, ListDTO
-from task_management.interactors.lists.validator.list_validator import \
-    ListValidator
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, WorkspaceStorageInterface, \
     SpaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
-    WorkspaceValidationMixin, FolderValidationMixin
+    WorkspaceValidationMixin, FolderValidationMixin, ListValidationMixin
 
 
 class CreateListInteractor:
@@ -36,14 +34,14 @@ class CreateListInteractor:
         return FolderValidationMixin(folder_storage=self.folder_storage)
 
     @property
-    def list_validator(self) -> ListValidator:
-        return ListValidator(list_storage=self.list_storage)
+    def list_mixin(self) -> ListValidationMixin:
+        return ListValidationMixin(list_storage=self.list_storage)
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def create_list(self, list_data: CreateListDTO) -> ListDTO:
 
-        self.list_validator.check_list_name_not_empty(list_name=list_data.name)
+        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
         self._check_user_has_edit_access_for_space(
             space_id=list_data.space_id, user_id=list_data.created_by
         )

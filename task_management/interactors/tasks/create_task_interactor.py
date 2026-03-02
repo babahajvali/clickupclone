@@ -3,10 +3,8 @@ from task_management.decorators.caching_decorators import \
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, ListStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.tasks.validators.task_validator import \
-    TaskValidator
 from task_management.mixins import ListValidationMixin, \
-    WorkspaceValidationMixin
+    WorkspaceValidationMixin, TaskValidationMixin
 
 
 class CreateTaskInteractor:
@@ -28,12 +26,12 @@ class CreateTaskInteractor:
             workspace_storage=self.workspace_storage)
 
     @property
-    def task_validator(self) -> TaskValidator:
-        return TaskValidator(task_storage=self.task_storage)
+    def task_mixin(self) -> TaskValidationMixin:
+        return TaskValidationMixin(task_storage=self.task_storage)
 
     @invalidate_interactor_cache(cache_name="tasks")
     def create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
-        self.task_validator.check_task_title_not_empty(title=task_data.title)
+        self.task_mixin.check_task_title_not_empty(title=task_data.title)
         self.list_mixin.check_list_not_deleted(list_id=task_data.list_id)
         self._check_user_has_edit_access_for_list(
             list_id=task_data.list_id, user_id=task_data.created_by)

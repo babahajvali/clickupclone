@@ -3,8 +3,6 @@ from task_management.exceptions.custom_exceptions import InvalidOffset, \
 from task_management.interactors.dtos import FilterDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, ListStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.tasks.validators.task_validator import \
-    TaskValidator
 from task_management.mixins import ListValidationMixin
 
 
@@ -19,10 +17,6 @@ class TaskFilterInteractor:
     @property
     def list_mixin(self) -> ListValidationMixin:
         return ListValidationMixin(list_storage=self.list_storage)
-
-    @property
-    def task_validator(self) -> TaskValidator:
-        return TaskValidator(task_storage=self.task_storage)
 
     def task_filter(self, task_filter_data: FilterDTO):
         self._check_filter_parameters(

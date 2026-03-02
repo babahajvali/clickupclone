@@ -4,8 +4,6 @@ from task_management.exceptions.custom_exceptions import InvalidOrder
 from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import \
     TaskStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.tasks.validators.task_validator import \
-    TaskValidator
 from task_management.mixins import TaskValidationMixin, \
     WorkspaceValidationMixin
 
@@ -25,10 +23,6 @@ class ReorderTaskInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def task_validator(self) -> TaskValidator:
-        return TaskValidator(task_storage=self.task_storage)
 
     @invalidate_interactor_cache(cache_name="tasks")
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:

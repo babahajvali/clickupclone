@@ -1,1 +1,1 @@
-TaskAssigneeDTO(assign_id='7adcc9dc-983a-430a-8d6a-260fd2f4b8b6', user_id='64c2222d-52d6-430f-a759-82e76df65351', task_id='208bbf8a-55a3-4fd4-af16-7ac5daef7a29', assigned_by='6216d4b2-f107-4ba6-8241-3ef903777ee9', is_active=True)
+TaskAssigneeDTO(assign_id='assign_1', user_id='user_2', task_id='task_1', assigned_by='user_1', is_active=False)

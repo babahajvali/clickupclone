@@ -5,8 +5,6 @@ from task_management.decorators.caching_decorators import \
 from task_management.exceptions.custom_exceptions import \
     NothingToUpdateFolderException
 from task_management.interactors.dtos import FolderDTO
-from task_management.interactors.folders.validators.folder_validator import \
-    FolderValidator
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
@@ -30,10 +28,6 @@ class UpdateFolderInteractor:
     @property
     def folder_mixin(self) -> FolderValidationMixin:
         return FolderValidationMixin(folder_storage=self.folder_storage)
-
-    @property
-    def folder_validator(self) -> FolderValidator:
-        return FolderValidator(folder_storage=self.folder_storage)
 
     @invalidate_interactor_cache(cache_name="folders")
     def update_folder(
@@ -66,7 +60,7 @@ class UpdateFolderInteractor:
             raise NothingToUpdateFolderException(folder_id=folder_id)
 
         if is_name_provided:
-            self.folder_validator.check_folder_name_not_empty(name=name)
+            self.folder_mixin.check_folder_name_not_empty(name=name)
 
     def _check_user_has_edit_access_for_space(
             self, space_id: str, user_id: str):

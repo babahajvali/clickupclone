@@ -4,8 +4,6 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import NothingToUpdateSpace
 from task_management.interactors.dtos import SpaceDTO
-from task_management.interactors.spaces.validators.space_validator import \
-    SpaceValidator
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
@@ -27,10 +25,6 @@ class UpdateSpaceInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def space_validator(self) -> SpaceValidator:
-        return SpaceValidator(space_storage=self.space_storage)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def update_space(
@@ -66,4 +60,4 @@ class UpdateSpaceInteractor:
             raise NothingToUpdateSpace(space_id=space_id)
 
         if is_name_provided:
-            self.space_validator.check_space_name_not_empty(name=name)
+            self.space_mixin.check_space_name_not_empty(name=name)

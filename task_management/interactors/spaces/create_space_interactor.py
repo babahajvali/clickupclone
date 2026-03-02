@@ -1,11 +1,10 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
-from task_management.interactors.spaces.validators.space_validator import \
-    SpaceValidator
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
-from task_management.mixins import WorkspaceValidationMixin
+from task_management.mixins import WorkspaceValidationMixin, \
+    SpaceValidationMixin
 
 
 class CreateSpaceInteractor:
@@ -21,12 +20,12 @@ class CreateSpaceInteractor:
             workspace_storage=self.workspace_storage)
 
     @property
-    def space_validator(self) -> SpaceValidator:
-        return SpaceValidator(space_storage=self.space_storage)
+    def space_mixin(self) -> SpaceValidationMixin:
+        return SpaceValidationMixin(space_storage=self.space_storage)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def create_space(self, space_data: CreateSpaceDTO) -> SpaceDTO:
-        self.space_validator.check_space_name_not_empty(name=space_data.name)
+        self.space_mixin.check_space_name_not_empty(name=space_data.name)
         self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=space_data.workspace_id
         )

@@ -5,9 +5,6 @@ from task_management.decorators.caching_decorators import (
 )
 from task_management.exceptions.custom_exceptions import NothingToUpdateList
 from task_management.interactors.dtos import ListDTO
-from task_management.interactors.lists.validator.list_validator import (
-    ListValidator,
-)
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     WorkspaceStorageInterface,
@@ -36,10 +33,6 @@ class UpdateListInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def list_validator(self) -> ListValidator:
-        return ListValidator(list_storage=self.list_storage)
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
@@ -75,7 +68,7 @@ class UpdateListInteractor:
             raise NothingToUpdateList(list_id=list_id)
 
         if is_name_provided:
-            self.list_validator.check_list_name_not_empty(list_name=name)
+            self.list_mixin.check_list_name_not_empty(list_name=name)
 
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
 

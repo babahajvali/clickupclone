@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    SpaceNotFound, DeletedSpaceFound
+    SpaceNotFound, DeletedSpaceFound, EmptySpaceName
 from task_management.interactors.dtos import SpaceDTO
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface
@@ -26,3 +26,9 @@ class SpaceValidationMixin:
             raise SpaceNotFound(space_id=space_id)
 
         return space_data
+
+    @staticmethod
+    def check_space_name_not_empty(name: str):
+        is_name_empty = not name or not name.strip()
+        if is_name_empty:
+            raise EmptySpaceName(space_name=name)

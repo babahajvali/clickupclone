@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    FolderNotFound, DeletedFolderException
+    FolderNotFound, DeletedFolderException, EmptyFolderName
 from task_management.interactors.dtos import FolderDTO
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface
@@ -27,3 +27,10 @@ class FolderValidationMixin:
             raise FolderNotFound(folder_id=folder_id)
 
         return folder_data
+
+    @staticmethod
+    def check_folder_name_not_empty(name: str):
+        is_name_empty = name is None or not name.strip()
+
+        if is_name_empty:
+            raise EmptyFolderName(folder_name=name)

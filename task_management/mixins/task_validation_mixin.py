@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import TaskNotFound, \
-    DeletedTaskFound
+    DeletedTaskFound, EmptyTaskTitle
 from task_management.interactors.dtos import TaskDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
 
@@ -24,3 +24,9 @@ class TaskValidationMixin:
             raise TaskNotFound(task_id=task_id)
 
         return task_data
+
+    @staticmethod
+    def check_task_title_not_empty(title: str):
+        is_title_empty = not title or not title.strip()
+        if is_title_empty:
+            raise EmptyTaskTitle(title=title)

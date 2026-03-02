@@ -4,8 +4,6 @@ from task_management.exceptions.custom_exceptions import \
     UnsupportedVisibilityType
 from task_management.exceptions.enums import Visibility
 from task_management.interactors.dtos import FolderDTO
-from task_management.interactors.folders.validators.folder_validator import \
-    FolderValidator
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FolderValidationMixin, \
@@ -27,10 +25,6 @@ class SetFolderVisibilityInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def folder_validator(self) -> FolderValidator:
-        return FolderValidator(folder_storage=self.folder_storage)
 
     @invalidate_interactor_cache(cache_name="folders")
     def set_folder_visibility(

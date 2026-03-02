@@ -1,1 +1,1 @@
-TaskDTO(task_id='b79139a8-ccf1-4c46-a51d-a2715728db55', title='About majority just season.', description='Learn would fill clearly get far. Special let list much. Understand man baby information must simple century professional.', list_id='a55eebbc-97b6-4c12-948a-d28f3327c94b', order=7, created_by='fdd2107f-fa3e-43fb-8fe0-af9b83ca9727', is_deleted=False)
+TaskDTO(task_id='task_1', title='New Task', description='Task description', list_id='list_1', order=3, created_by='user_1', is_deleted=False)

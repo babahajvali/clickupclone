@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import ListNotFound, \
-    DeletedListFound
+    DeletedListFound, EmptyListName
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
@@ -25,3 +25,10 @@ class ListValidationMixin:
             raise ListNotFound(list_id=list_id)
 
         return list_data
+
+    @staticmethod
+    def check_list_name_not_empty(list_name: str):
+        is_name_empty = not list_name or not list_name.strip()
+
+        if is_name_empty:
+            raise EmptyListName(list_name=list_name)

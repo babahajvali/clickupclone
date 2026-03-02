@@ -4,8 +4,6 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import InvalidOrder
 from task_management.interactors.dtos import FolderDTO
-from task_management.interactors.folders.validators.folder_validator import \
-    FolderValidator
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
 from task_management.mixins import FolderValidationMixin, SpaceValidationMixin, \
@@ -33,10 +31,6 @@ class ReorderFolderInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def folder_validator(self) -> FolderValidator:
-        return FolderValidator(folder_storage=self.folder_storage)
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="folders")

@@ -1,7 +1,8 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    UserNotWorkspaceMember, ModificationNotAllowed
+    UserNotWorkspaceMember, ModificationNotAllowed, WorkspaceMemberNotFound, \
+    InactiveWorkspaceMember
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
@@ -43,7 +44,7 @@ class ChangeWorkspaceMemberRoleInteractor:
             workspace_id=workspace_id
         )
         self.user_mixin.check_user_is_active(user_id=user_id)
-        self.workspace_validator.check_workspace_member_is_active(
+        self._check_workspace_member_is_active(
             workspace_id=workspace_id, user_id=user_id
         )
 
@@ -68,3 +69,19 @@ class ChangeWorkspaceMemberRoleInteractor:
 
         if is_role_restricted:
             raise ModificationNotAllowed(user_id=user_id)
+
+    def _check_workspace_member_is_active(
+            self, workspace_id: str, user_id: str):
+
+        workspace_member = self.workspace_storage.get_workspace_member(
+            workspace_id=workspace_id, user_id=user_id)
+
+        is_member_not_found = not workspace_member
+        if is_member_not_found:
+            raise WorkspaceMemberNotFound(workspace_id=workspace_id,
+                                          user_id=user_id)
+
+        is_member_inactive = not workspace_member.is_active
+        if is_member_inactive:
+            raise InactiveWorkspaceMember(
+                workspace_member_id=workspace_member.id)
