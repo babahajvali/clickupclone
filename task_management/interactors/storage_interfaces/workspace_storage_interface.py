@@ -62,8 +62,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_workspace_member_by_id(self,
-                                   workspace_member_id: int) -> WorkspaceMemberDTO:
+    def get_workspace_member_by_id(
+            self, workspace_member_id: int) -> WorkspaceMemberDTO:
         pass
 
     @abstractmethod

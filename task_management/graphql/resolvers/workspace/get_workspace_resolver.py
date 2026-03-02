@@ -4,21 +4,16 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.types import WorkspaceType, WorkspacesType
 from task_management.interactors.workspaces.get_workspaces_interactor import \
     WorkspaceInteractor
-from task_management.storages import WorkspaceStorage, UserStorage, \
-    AccountStorage
+from task_management.storages import WorkspaceStorage
 
 
 def get_workspace_resolver(root, info, params):
     workspace_ids = params.workspace_ids
 
     workspace_storage = WorkspaceStorage()
-    user_storage = UserStorage()
-    account_storage = AccountStorage()
 
     interactor = WorkspaceInteractor(
         workspace_storage=workspace_storage,
-        user_storage=user_storage,
-        account_storage=account_storage,
     )
 
     try:

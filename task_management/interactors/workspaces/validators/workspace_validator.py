@@ -1,9 +1,7 @@
-from typing import Optional
-
 from task_management.exceptions.custom_exceptions import \
     WorkspaceMemberIdNotFound, InactiveWorkspaceMember, EmptyWorkspaceName, \
     InvalidWorkspaceIdsFound, \
-    UnexpectedRole, WorkspaceMemberNotFound, NothingToUpdateWorkspace
+    UnexpectedRole, WorkspaceMemberNotFound
 from task_management.exceptions.enums import Role, Permissions
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
@@ -83,23 +81,3 @@ class WorkspaceValidator:
         if is_member_inactive:
             raise InactiveWorkspaceMember(
                 workspace_member_id=workspace_member.id)
-
-    def check_workspace_update_field_properties(
-            self, workspace_id: str, name: Optional[str],
-            description: Optional[str]) -> dict:
-
-        field_properties_to_update = {}
-        has_name_provided = name is not None
-        if has_name_provided:
-            self.check_workspace_name_not_empty(
-                workspace_name=name)
-            field_properties_to_update['name'] = name
-
-        has_description_provided = description is not None
-        if has_description_provided:
-            field_properties_to_update['description'] = description
-
-        if not field_properties_to_update:
-            raise NothingToUpdateWorkspace(workspace_id=workspace_id)
-
-        return field_properties_to_update

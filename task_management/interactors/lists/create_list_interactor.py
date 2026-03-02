@@ -8,7 +8,7 @@ from task_management.interactors.lists.validator.list_validator import \
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, WorkspaceStorageInterface, \
     SpaceStorageInterface
-from task_management.mixins import ListValidationMixin, SpaceValidationMixin, \
+from task_management.mixins import SpaceValidationMixin, \
     WorkspaceValidationMixin, FolderValidationMixin
 
 
@@ -21,10 +21,6 @@ class CreateListInteractor:
         self.folder_storage = folder_storage
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
 
     @property
     def space_mixin(self) -> SpaceValidationMixin:

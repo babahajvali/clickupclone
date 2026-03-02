@@ -5,7 +5,6 @@ from task_management.storages.list_storage import ListStorage
 from task_management.tests.factories.storage_factory import ListFactory, \
     TemplateFactory, SpaceFactory, FolderFactory, UserFactory
 
-
 class TestListStorage:
 
     @pytest.mark.django_db
@@ -79,7 +78,21 @@ class TestListStorage:
         result = storage.create_list(list_data=create_list_data,order= 1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_with_folder_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "space_id": str(result.space_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                }
+            ),
+            "test_create_list_with_folder_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_list_without_folder_success(self, snapshot):
@@ -102,7 +115,21 @@ class TestListStorage:
         result = storage.create_list(list_data=create_list_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_without_folder_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "space_id": str(result.space_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                }
+            ),
+            "test_create_list_without_folder_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_list_with_existing_lists_in_folder(self, snapshot):
@@ -129,7 +156,21 @@ class TestListStorage:
         result = storage.create_list(list_data=create_list_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_list_with_existing_lists_in_folder.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "space_id": str(result.space_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                    "folder_id": str(result.folder_id) if result.folder_id else None,
+                }
+            ),
+            "test_create_list_with_existing_lists_in_folder.txt",
+        )
 
     @pytest.mark.django_db
     def test_update_list_success(self, snapshot):

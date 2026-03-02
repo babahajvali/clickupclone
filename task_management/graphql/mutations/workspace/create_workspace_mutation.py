@@ -1,17 +1,14 @@
 import graphene
+
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import EmptyWorkspaceName
-from task_management.graphql.types.error_types import UserNotFoundType, \
-    InactiveUserType, \
-    AccountNotFoundType, InactiveAccountType, ModificationNotAllowedType, \
+from task_management.graphql.types.error_types import AccountNotFoundType, \
+    InactiveAccountType, ModificationNotAllowedType, \
     UserNotAccountOwnerType, EmptyWorkspaceNameType
 from task_management.graphql.types.input_types import \
     CreateWorkspaceInputParams
 from task_management.graphql.types.response_types import \
     CreateWorkspaceResponse
-
 from task_management.graphql.types.types import WorkspaceType
-
 from task_management.interactors.dtos import CreateWorkspaceDTO
 from task_management.interactors.workspaces.workspace_handler import \
     WorkspaceHandler
@@ -35,7 +32,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
         folder_storage = FolderStorage()
         list_storage = ListStorage()
         view_storage = ViewStorage()
-        
+
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 
@@ -69,7 +66,7 @@ class CreateWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_deleted
+                is_deleted=result.is_deleted
             )
 
         except custom_exceptions.UserNotAccountOwner as e:

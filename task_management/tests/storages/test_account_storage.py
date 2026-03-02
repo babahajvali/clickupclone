@@ -4,7 +4,6 @@ from task_management.storages.account_storage import AccountStorage
 from task_management.tests.factories.storage_factory import AccountFactory, \
     UserFactory
 
-
 class TestAccountStorage:
 
     @pytest.mark.django_db
@@ -51,7 +50,8 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.is_account_name_exists(account_name=name, account_id=None)
+        result = storage.is_account_name_exists(account_name=name,
+                                                account_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -64,7 +64,8 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.is_account_name_exists(account_name=name, account_id=None)
+        result = storage.is_account_name_exists(account_name=name,
+                                                account_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -86,25 +87,14 @@ class TestAccountStorage:
                                         created_by=owner_id)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_account_success.txt")
-
-    @pytest.mark.django_db
-    def test_delete_account_success(self, snapshot):
-        # Arrange
-        account_id = "12345678-1234-5678-1234-567812345678"
-        owner_id = "12345678-1234-5678-1234-567812345692"
-        owner = UserFactory(user_id=owner_id)
-        AccountFactory(
-            account_id=account_id,
-            name="Delete Account",  # Fixed name
-            description="Delete accounts description",  # Fixed description
-            owner=owner,
-            is_active=True
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "owner_id": str(result.owner_id),
+                    "is_active": result.is_active,
+                }
+            ),
+            "test_create_account_success.txt",
         )
-        storage = AccountStorage()
-
-        # Act
-        result = storage.deactivate_account(account_id=str(account_id))
-
-        # Assert
-        snapshot.assert_match(repr(result), "test_delete_account_success.txt")

@@ -16,8 +16,6 @@ from task_management.interactors.lists.update_list_interactor import (
 )
 from task_management.storages import (
     ListStorage,
-    FolderStorage,
-    SpaceStorage,
     WorkspaceStorage,
 )
 
@@ -31,14 +29,10 @@ class UpdateListMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        folder_storage = FolderStorage()
-        space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
         interactor = UpdateListInteractor(
             list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
 

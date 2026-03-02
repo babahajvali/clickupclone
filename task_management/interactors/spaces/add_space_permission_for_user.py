@@ -2,8 +2,6 @@ from task_management.exceptions.custom_exceptions import UnexpectedPermission
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import UserSpacePermissionDTO, \
     CreateUserSpacePermissionDTO
-from task_management.interactors.spaces.validators.space_validator import \
-    SpaceValidator
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
@@ -25,12 +23,6 @@ class AddSpacePermissionForUser:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def space_validator(self) -> SpaceValidator:
-        return SpaceValidator(space_storage=self.space_storage)
-
-    # Permissions Section
 
     def add_user_for_space_permission(
             self, user_data: CreateUserSpacePermissionDTO) \

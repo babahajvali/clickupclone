@@ -57,7 +57,20 @@ class TestFolderStorage:
         result = storage.create_folder(create_folder_data=create_folder_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_folder_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "space_id": str(result.space_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                }
+            ),
+            "test_create_folder_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_folder_with_existing_folders(self, snapshot):
@@ -81,7 +94,20 @@ class TestFolderStorage:
         result = storage.create_folder(create_folder_data=create_folder_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_folder_with_existing_folders.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "space_id": str(result.space_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                }
+            ),
+            "test_create_folder_with_existing_folders.txt",
+        )
 
     @pytest.mark.django_db
     def test_update_folder_success(self, snapshot):
@@ -198,7 +224,23 @@ class TestFolderStorage:
         result = storage.get_space_folders(space_ids=space_ids)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_get_space_folders_success.txt")
+        snapshot.assert_match(
+            repr(
+                [
+                    {
+                        "name": folder.name,
+                        "description": folder.description,
+                        "space_id": str(folder.space_id),
+                        "order": folder.order,
+                        "is_deleted": folder.is_deleted,
+                        "created_by": str(folder.created_by),
+                        "is_private": folder.is_private,
+                    }
+                    for folder in result
+                ]
+            ),
+            "test_get_space_folders_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_get_space_folders_empty(self, snapshot):

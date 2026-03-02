@@ -59,10 +59,10 @@ class UpdateFolderInteractor:
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        is_update_field_properties = not (
+        has_no_update_field_properties = not (
                 is_description_provided or is_name_provided)
 
-        if is_update_field_properties:
+        if has_no_update_field_properties:
             raise NothingToUpdateFolderException(folder_id=folder_id)
 
         if is_name_provided:

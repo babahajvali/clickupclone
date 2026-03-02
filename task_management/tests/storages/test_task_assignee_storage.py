@@ -3,7 +3,6 @@ import pytest
 from task_management.storages.task_storage import TaskStorage
 from task_management.tests.factories.storage_factory import TaskAssigneeFactory, TaskFactory, UserFactory, ListFactory
 
-
 class TestTaskAssigneeStorage:
 
     @pytest.mark.django_db
@@ -23,7 +22,17 @@ class TestTaskAssigneeStorage:
         result = storage.add_task_assignee(task_id=str(task_id), user_id=str(user_id), assigned_by=str(assigned_by_id))
 
         # Assert
-        snapshot.assert_match(repr(result), "test_assign_task_assignee_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "user_id": str(result.user_id),
+                    "task_id": str(result.task_id),
+                    "assigned_by": str(result.assigned_by),
+                    "is_active": result.is_active,
+                }
+            ),
+            "test_assign_task_assignee_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_remove_task_assignee_success(self, snapshot):

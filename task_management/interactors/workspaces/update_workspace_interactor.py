@@ -2,6 +2,8 @@ from typing import Optional
 
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
+from task_management.exceptions.custom_exceptions import \
+    NothingToUpdateWorkspace
 from task_management.interactors.dtos import WorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
@@ -19,7 +21,7 @@ class UpdateWorkspaceInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-    
+
     @property
     def workspace_validator(self) -> WorkspaceValidator:
         return WorkspaceValidator(workspace_storage=self.workspace_storage)
@@ -28,7 +30,7 @@ class UpdateWorkspaceInteractor:
     def update_workspace(
             self, workspace_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> WorkspaceDTO:
-        self.workspace_validator.check_workspace_update_field_properties(
+        self._check_workspace_update_field_properties(
             workspace_id=workspace_id, name=name, description=description
         )
         self.workspace_mixin.check_workspace_not_deleted(
@@ -40,3 +42,19 @@ class UpdateWorkspaceInteractor:
 
         return self.workspace_storage.update_workspace(
             workspace_id=workspace_id, name=name, description=description)
+
+    def _check_workspace_update_field_properties(
+            self, workspace_id: str, name: Optional[str],
+            description: Optional[str]):
+
+        has_name_provided = name is not None
+        has_description_provided = description is not None
+        has_no_update_field_properties = not any([
+            has_description_provided,
+            has_name_provided
+        ])
+        if not has_no_update_field_properties:
+            raise NothingToUpdateWorkspace(workspace_id=workspace_id)
+        if has_name_provided:
+            self.workspace_validator.check_workspace_name_not_empty(
+                workspace_name=name)

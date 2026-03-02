@@ -8,7 +8,6 @@ from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldFactory, \
     TemplateFactory, UserFactory, ListFactory
 
-
 @freeze_time("2024-01-15 10:00:00")
 class TestFieldStorage:
     @pytest.fixture(autouse=True)
@@ -43,7 +42,22 @@ class TestFieldStorage:
                                       order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_field_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "field_name": result.field_name,
+                    "description": result.description,
+                    "field_type": result.field_type,
+                    "template_id": str(result.template_id),
+                    "config": result.config,
+                    "is_required": result.is_required,
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                }
+            ),
+            "test_create_field_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_field_with_existing_fields(self, snapshot):
@@ -77,8 +91,22 @@ class TestFieldStorage:
                                       order=1)
 
         # Assert
-        snapshot.assert_match(repr(result),
-                              "test_create_field_with_existing_fields.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "field_name": result.field_name,
+                    "description": result.description,
+                    "field_type": result.field_type,
+                    "template_id": str(result.template_id),
+                    "config": result.config,
+                    "is_required": result.is_required,
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                }
+            ),
+            "test_create_field_with_existing_fields.txt",
+        )
 
     @pytest.mark.django_db
     def test_is_field_name_exists_success(self, snapshot):
@@ -333,6 +361,3 @@ class TestFieldStorage:
         # Assert
         snapshot.assert_match(repr(result),
                               "test_get_last_field_order_in_template.txt")
-
-
-

@@ -38,6 +38,7 @@ class ChangeWorkspaceMemberRoleInteractor:
     def change_member_role(
             self, workspace_id: str, user_id: str, role: str,
             changed_by: str) -> WorkspaceMemberDTO:
+        self.workspace_validator.check_role(role=role)
         self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_id
         )
@@ -49,8 +50,6 @@ class ChangeWorkspaceMemberRoleInteractor:
         self._check_user_permission_for_change_workspace_role(
             user_id=changed_by, workspace_id=workspace_id)
 
-        self.workspace_validator.check_role(role=role)
-
         return self.workspace_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=user_id, role=role
         )
@@ -58,16 +57,14 @@ class ChangeWorkspaceMemberRoleInteractor:
     def _check_user_permission_for_change_workspace_role(
             self, workspace_id: str, user_id: str):
 
-        member_permission = self.workspace_storage.get_workspace_member(
+        workspace_member_data = self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id, user_id=user_id)
 
-        is_member_not_found = not member_permission
-
-        if is_member_not_found:
+        if not workspace_member_data:
             raise UserNotWorkspaceMember(user_id=user_id)
 
-        user_role = member_permission.role
-        is_user_not_allowed = user_role == Role.MEMBER or user_role == Role.GUEST
+        user_role = workspace_member_data.role
+        is_role_restricted = user_role in (Role.MEMBER, Role.GUEST)
 
-        if is_user_not_allowed:
+        if is_role_restricted:
             raise ModificationNotAllowed(user_id=user_id)

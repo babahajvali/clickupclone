@@ -1,1 +1,1 @@
-ViewDTO(view_id='4408c04c-6f44-4806-8137-8e75627b9de7', name='foreign', description='Add sing standard exactly election.', view_type='board', created_by='fd768f63-5163-4e1d-8df7-a26786fadb0e')
+ViewDTO(view_id='21bba2fa-ac74-4f41-afb7-4f638eb6a71a', name='provide', description='Cultural subject almost all late guy.', view_type='board', created_by='6d5cb6c5-3be9-49ef-8265-85fff230709e')

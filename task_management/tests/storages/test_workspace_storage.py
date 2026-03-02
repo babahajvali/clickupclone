@@ -13,7 +13,6 @@ from task_management.tests.factories.storage_factory import (
 
 reseed_random(12345)
 
-
 class TestWorkspaceStorage:
 
     @pytest.mark.django_db
@@ -78,7 +77,15 @@ class TestWorkspaceStorage:
 
         # Assert
         snapshot.assert_match(
-            repr(result),
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "user_id": str(result.user_id),
+                    "account_id": str(result.account_id),
+                    "is_deleted": result.is_deleted,
+                }
+            ),
             "test_create_workspace.txt"
         )
 

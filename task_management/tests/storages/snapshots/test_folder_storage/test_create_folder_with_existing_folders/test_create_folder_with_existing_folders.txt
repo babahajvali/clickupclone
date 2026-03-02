@@ -1,1 +1,1 @@
-FolderDTO(folder_id=UUID('93516eee-67f2-455b-92cb-797a0d8d595d'), name='New Folder', description='New description', space_id=UUID('12345678-1234-5678-1234-567812345678'), order=1, is_deleted=False, created_by=UUID('12345678-1234-5678-1234-567812345679'), is_private=False)
+{'name': 'New Folder', 'description': 'New description', 'space_id': '12345678-1234-5678-1234-567812345678', 'order': 1, 'is_deleted': False, 'created_by': '12345678-1234-5678-1234-567812345679', 'is_private': False}

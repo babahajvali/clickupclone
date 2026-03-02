@@ -1,1 +1,1 @@
-AccountDTO(account_id=UUID('c4e09cd8-7b78-4ff2-becd-1803151188ab'), name='New Account', description='New accounts description', owner_id=UUID('12345678-1234-5678-1234-567812345678'), is_active=True)
+{'name': 'New Account', 'description': 'New accounts description', 'owner_id': '12345678-1234-5678-1234-567812345678', 'is_active': True}

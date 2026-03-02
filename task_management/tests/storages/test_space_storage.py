@@ -5,7 +5,6 @@ from task_management.storages.space_storage import SpaceStorage
 from task_management.tests.factories.storage_factory import SpaceFactory, \
     WorkspaceFactory, UserFactory
 
-
 class TestSpaceStorage:
 
     @pytest.mark.django_db
@@ -57,7 +56,20 @@ class TestSpaceStorage:
         result = storage.create_space(space_data=create_space_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_space_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "workspace_id": str(result.workspace_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                }
+            ),
+            "test_create_space_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_space_with_existing_spaces(self, snapshot):
@@ -81,8 +93,20 @@ class TestSpaceStorage:
         result = storage.create_space(space_data=create_space_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result),
-                              "test_create_space_with_existing_spaces.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "workspace_id": str(result.workspace_id),
+                    "order": result.order,
+                    "is_deleted": result.is_deleted,
+                    "created_by": str(result.created_by),
+                    "is_private": result.is_private,
+                }
+            ),
+            "test_create_space_with_existing_spaces.txt",
+        )
 
     @pytest.mark.django_db
     def test_update_space_success(self, snapshot):

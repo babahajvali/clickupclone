@@ -57,10 +57,13 @@ class UpdateSpaceInteractor:
 
         is_description_provided = description is not None
         is_name_provided = name is not None
-        has_update_properties = not (
-                is_description_provided or is_name_provided)
+        has_no_update_field_properties = not any([
+            is_description_provided,
+            is_name_provided
+        ])
 
-        if has_update_properties:
+        if has_no_update_field_properties:
             raise NothingToUpdateSpace(space_id=space_id)
+
         if is_name_provided:
             self.space_validator.check_space_name_not_empty(name=name)

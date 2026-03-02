@@ -30,7 +30,7 @@ class DeleteFolderInteractor:
             folder_id=folder_id, user_id=user_id
         )
 
-        return self.folder_storage.delete_folder(folder_id)
+        return self.folder_storage.delete_folder(folder_id=folder_id)
 
     def _check_user_has_edit_access_for_folder(
             self, folder_id: str, user_id: str):

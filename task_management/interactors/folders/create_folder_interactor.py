@@ -44,7 +44,8 @@ class CreateFolderInteractor:
         order = self.folder_storage.get_last_folder_order_in_space(
             space_id=folder_data.space_id)
 
-        return self.folder_storage.create_folder(folder_data, order=order + 1)
+        return self.folder_storage.create_folder(
+            create_folder_data=folder_data, order=order + 1)
 
     def _check_user_has_edit_access_for_space(
             self, space_id: str, user_id: str):

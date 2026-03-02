@@ -30,6 +30,7 @@ class SetSpaceVisibilityInteractor:
     def set_space_visibility(
             self, space_id: str, user_id: str, visibility: Visibility) \
             -> SpaceDTO:
+        self._check_visibility_type(visibility=visibility.value)
         self.space_mixin.check_space_not_deleted(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id
@@ -37,8 +38,6 @@ class SetSpaceVisibilityInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )
-
-        self._check_visibility_type(visibility=visibility.value)
 
         return self.space_storage.update_space_visibility(
             space_id=space_id, visibility=visibility.value

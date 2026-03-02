@@ -11,7 +11,6 @@ from task_management.tests.factories.storage_factory import (
     FolderFactory
 )
 
-
 class TestTemplateStorage:
 
     @pytest.mark.django_db
@@ -79,7 +78,14 @@ class TestTemplateStorage:
 
         # Assert
         snapshot.assert_match(
-            repr(result),
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "list_id": str(result.list_id),
+                    "created_by": str(result.created_by),
+                }
+            ),
             "test_create_template.txt"
         )
 

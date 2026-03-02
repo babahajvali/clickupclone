@@ -6,7 +6,6 @@ from task_management.tests.factories.storage_factory import TaskFactory, \
     UserFactory, ListFactory, FieldValueFactory, \
     FieldFactory, TemplateFactory
 
-
 class TestTaskStorage:
 
     @pytest.mark.django_db
@@ -28,7 +27,19 @@ class TestTaskStorage:
         result = storage.create_task(task_data=task_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result), "test_create_task_success.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "title": result.title,
+                    "description": result.description,
+                    "list_id": str(result.list_id),
+                    "order": result.order,
+                    "created_by": str(result.created_by),
+                    "is_deleted": result.is_deleted,
+                }
+            ),
+            "test_create_task_success.txt",
+        )
 
     @pytest.mark.django_db
     def test_create_task_with_existing_tasks(self, snapshot):
@@ -51,8 +62,19 @@ class TestTaskStorage:
         result = storage.create_task(task_data=task_data, order=1)
 
         # Assert
-        snapshot.assert_match(repr(result),
-                              "test_create_task_with_existing_tasks.txt")
+        snapshot.assert_match(
+            repr(
+                {
+                    "title": result.title,
+                    "description": result.description,
+                    "list_id": str(result.list_id),
+                    "order": result.order,
+                    "created_by": str(result.created_by),
+                    "is_deleted": result.is_deleted,
+                }
+            ),
+            "test_create_task_with_existing_tasks.txt",
+        )
 
     @pytest.mark.django_db
     def test_update_task_success(self, snapshot):

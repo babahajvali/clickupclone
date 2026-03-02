@@ -11,7 +11,7 @@ class AccountValidationMixin:
 
     def check_account_is_active(self, account_id: str):
 
-        account_data = self.get_account_if_exists(account_id=account_id)
+        account_data = self.validate_account_exists(account_id=account_id)
 
         is_account_inactive = not account_data.is_active
         if is_account_inactive:
@@ -25,7 +25,7 @@ class AccountValidationMixin:
         if is_not_account_owner:
             raise UserNotAccountOwner(user_id=user_id)
 
-    def get_account_if_exists(self, account_id: str) -> AccountDTO:
+    def validate_account_exists(self, account_id: str) -> AccountDTO:
 
         account_data = self.account_storage.get_account(account_id=account_id)
 

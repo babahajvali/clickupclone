@@ -7,7 +7,6 @@ from task_management.tests.factories.storage_factory import (
     UserFactory
 )
 
-
 class TestViewStorage:
 
     @pytest.mark.django_db
@@ -73,7 +72,14 @@ class TestViewStorage:
 
         # Assert
         snapshot.assert_match(
-            repr(result),
+            repr(
+                {
+                    "name": result.name,
+                    "description": result.description,
+                    "view_type": result.view_type,
+                    "created_by": str(result.created_by),
+                }
+            ),
             "test_create_view.txt"
         )
 

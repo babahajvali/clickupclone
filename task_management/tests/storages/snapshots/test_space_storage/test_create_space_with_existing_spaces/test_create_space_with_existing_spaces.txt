@@ -1,1 +1,1 @@
-SpaceDTO(space_id='f849ef0a-0033-443d-b589-4ada2959e0c3', name='New Space', description='New description', workspace_id='12345678-1234-5678-1234-567812345678', order=1, is_deleted=False, is_private=False, created_by='12345678-1234-5678-1234-567812345679')
+{'name': 'New Space', 'description': 'New description', 'workspace_id': '12345678-1234-5678-1234-567812345678', 'order': 1, 'is_deleted': False, 'created_by': '12345678-1234-5678-1234-567812345679', 'is_private': False}

@@ -3,7 +3,6 @@ from typing import Optional, List
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface
-
 from task_management.models import Account
 
 
@@ -40,7 +39,7 @@ class AccountStorage(AccountStorageInterface):
 
     def deactivate_account(self, account_id: str) -> AccountDTO:
         account_data = Account.objects.get(account_id=account_id)
-        account_data.is_delete = False
+        account_data.is_active = False
         account_data.save()
 
         return AccountDTO(
@@ -51,8 +50,9 @@ class AccountStorage(AccountStorageInterface):
             is_active=account_data.is_active,
         )
 
-    def delete_account(self, account_id: str):
-        return Account.objects.get(account_id=account_id).delete()
+    def delete_account(self, account_id: str) -> AccountDTO:
+        # Backward-compatible alias used by delete interactor.
+        return self.deactivate_account(account_id=account_id)
 
     def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         accounts_data = Account.objects.filter(account_id__in=account_ids)

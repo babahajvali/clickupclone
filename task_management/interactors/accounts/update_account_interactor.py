@@ -55,16 +55,16 @@ class UpdateAccountInteractor:
             NothingToUpdateAccount
 
         is_name_provided = name is not None
-        if is_name_provided:
-            self.account_validator.check_account_name_in_db(
-                account_id=account_id, account_name=name)
-
         is_description_provided = description is not None
 
-        has_no_update_fields = not any([
+        has_no_update_field_properties = not any([
             is_description_provided,
             is_name_provided
         ])
 
-        if has_no_update_fields:
+        if has_no_update_field_properties:
             raise NothingToUpdateAccount(account_id=account_id)
+
+        if is_name_provided:
+            self.account_validator.check_account_name_in_db(
+                account_id=account_id, account_name=name)

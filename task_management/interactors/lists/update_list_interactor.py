@@ -10,15 +10,11 @@ from task_management.interactors.lists.validator.list_validator import (
 )
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
-    FolderStorageInterface,
     WorkspaceStorageInterface,
-    SpaceStorageInterface,
 )
 from task_management.mixins import (
     ListValidationMixin,
-    SpaceValidationMixin,
     WorkspaceValidationMixin,
-    FolderValidationMixin,
 )
 
 
@@ -27,13 +23,9 @@ class UpdateListInteractor:
     def __init__(
             self,
             list_storage: ListStorageInterface,
-            folder_storage: FolderStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
-            space_storage: SpaceStorageInterface,
     ):
         self.list_storage = list_storage
-        self.folder_storage = folder_storage
-        self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 
     @property
@@ -41,17 +33,9 @@ class UpdateListInteractor:
         return ListValidationMixin(list_storage=self.list_storage)
 
     @property
-    def space_mixin(self) -> SpaceValidationMixin:
-        return SpaceValidationMixin(space_storage=self.space_storage)
-
-    @property
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def folder_mixin(self) -> FolderValidationMixin:
-        return FolderValidationMixin(folder_storage=self.folder_storage)
 
     @property
     def list_validator(self) -> ListValidator:
@@ -70,8 +54,8 @@ class UpdateListInteractor:
             list_id=list_id, name=name, description=description
         )
         self.list_mixin.check_list_not_deleted(list_id=list_id)
-        self._check_user_has_edit_access_for_list(list_id=list_id,
-                                                  user_id=user_id)
+        self._check_user_has_edit_access_for_list(
+            list_id=list_id, user_id=user_id)
 
         return self.list_storage.update_list(
             list_id=list_id, name=name, description=description
@@ -84,10 +68,10 @@ class UpdateListInteractor:
         is_description_provided = description is not None
         is_name_provided = name is not None
 
-        is_update_field_properties_provided = not (
+        has_no_update_field_properties = not (
                 is_description_provided or is_name_provided
         )
-        if is_update_field_properties_provided:
+        if has_no_update_field_properties:
             raise NothingToUpdateList(list_id=list_id)
 
         if is_name_provided:

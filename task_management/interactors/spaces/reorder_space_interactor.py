@@ -2,8 +2,6 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import InvalidOrder
 from task_management.interactors.dtos import SpaceDTO
-from task_management.interactors.spaces.validators.space_validator import \
-    SpaceValidator
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
@@ -25,10 +23,6 @@ class ReorderSpaceInteractor:
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
-
-    @property
-    def space_validator(self) -> SpaceValidator:
-        return SpaceValidator(space_storage=self.space_storage)
 
     @invalidate_interactor_cache(cache_name="spaces")
     def reorder_space(

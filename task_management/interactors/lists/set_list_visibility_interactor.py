@@ -43,8 +43,8 @@ class SetListVisibilityInteractor:
         self._check_visibility_type(visibility=visibility.value)
 
         self.list_mixin.check_list_not_deleted(list_id=list_id)
-        self._check_user_has_edit_access_for_list(list_id=list_id,
-                                                  user_id=user_id)
+        self._check_user_has_edit_access_for_list(
+            list_id=list_id, user_id=user_id)
 
         return self.list_storage.update_list_visibility(
             list_id=list_id, visibility=visibility.value
