@@ -11,8 +11,9 @@ from task_management.mixins import TaskValidationMixin, \
 
 class UpdateTaskInteractor:
 
-    def __init__(self, task_storage: TaskStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, task_storage: TaskStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
 

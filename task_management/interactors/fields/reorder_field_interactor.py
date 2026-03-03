@@ -27,9 +27,10 @@ class ReorderFieldInteractor:
         - TemplateStorageInterface
     """
 
-    def __init__(self, field_storage: FieldStorageInterface,
-                 template_storage: TemplateStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, field_storage: FieldStorageInterface,
+            template_storage: TemplateStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.field_storage = field_storage
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage

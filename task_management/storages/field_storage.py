@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from django.db.models import F
 
@@ -64,8 +64,9 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-    def update_field(self, field_id: str,
-                     update_field_data: UpdateFieldDTO) -> FieldDTO:
+    def update_field(
+            self, field_id: str, update_field_data: UpdateFieldDTO) \
+            -> FieldDTO:
 
         fields_to_update = {}
         if update_field_data.field_name is not None:
@@ -82,8 +83,7 @@ class FieldStorage(FieldStorageInterface):
         field_data = Field.objects.get(field_id=field_id)
         return self._field_dto(field_data=field_data)
 
-    def get_fields_for_template(self, template_id: str) -> \
-            list[FieldDTO]:
+    def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:
 
         fields_data = Field.objects.filter(
             template_id=template_id, is_deleted=False
@@ -94,7 +94,7 @@ class FieldStorage(FieldStorageInterface):
         ]
 
     def get_field_values_by_task_ids(
-            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
+            self, task_ids: List[str]) -> List[TaskFieldValuesDTO]:
         field_values = TaskFieldValue.objects.filter(
             task_id__in=task_ids
         ).select_related('field', 'task')
@@ -167,7 +167,7 @@ class FieldStorage(FieldStorageInterface):
         return self._field_dto(field_data=field_data)
 
     def create_bulk_fields(
-            self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+            self, fields_data: List[CreateFieldDTO]) -> List[FieldDTO]:
 
         fields_to_create = [
             Field(
@@ -207,7 +207,7 @@ class FieldStorage(FieldStorageInterface):
         )
 
     def create_bulk_field_values(
-            self, create_bulk_field_values: list[CreateFieldValueDTO]):
+            self, create_bulk_field_values: List[CreateFieldValueDTO]):
 
         field_values_to_create = [
             TaskFieldValue(

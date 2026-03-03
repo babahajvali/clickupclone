@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from django.db.models import F
 
@@ -33,9 +33,6 @@ class FolderStorage(FolderStorageInterface):
             return None
 
         return self._folder_dto(folder_data)
-
-    def is_folder_exists(self, folder_id: str) -> bool:
-        return Folder.objects.filter(folder_id=folder_id).exists()
 
     def create_folder(
             self, create_folder_data: CreateFolderDTO, order: int) \
@@ -146,8 +143,8 @@ class FolderStorage(FolderStorageInterface):
         return self._folder_dto(folder_data)
 
     def get_space_folder_count(self, space_id: str) -> int:
-        return Folder.objects.filter(space_id=space_id,
-                                     is_deleted=False).count()
+        return Folder.objects.filter(
+            space_id=space_id, is_deleted=False).count()
 
     def get_folder_space_id(self, folder_id: str) -> str:
         folder_data = Folder.objects.filter(folder_id=folder_id). \
@@ -168,38 +165,35 @@ class FolderStorage(FolderStorageInterface):
         )
 
     def get_user_permission_for_folder(
-            self, user_id: str,
-            folder_id: str) -> UserFolderPermissionDTO | None:
-        try:
-            user_folder_permission = FolderPermission.objects.get(
-                user_id=user_id,
-                folder_id=folder_id)
+            self, user_id: str, folder_id: str) \
+            -> UserFolderPermissionDTO | None:
 
-            return self._user_folder_permission_dto(
-                data=user_folder_permission)
-        except FolderPermission.DoesNotExist:
-            return None
+        user_folder_permission = FolderPermission.objects.filter(
+            user_id=user_id, folder_id=folder_id).first()
 
-    def update_user_permission_for_folder(self, user_id: str, folder_id: str,
-                                          permission_type: Permissions) -> UserFolderPermissionDTO:
-        user_folder_permission = FolderPermission.objects.get(user_id=user_id,
-                                                              folder_id=folder_id)
+        return self._user_folder_permission_dto(data=user_folder_permission)
+
+    def update_user_permission_for_folder(
+            self, user_id: str, folder_id: str, permission_type: Permissions) \
+            -> UserFolderPermissionDTO:
+        user_folder_permission = FolderPermission.objects.get(
+            user_id=user_id, folder_id=folder_id)
         user_folder_permission.permission_type = permission_type.value
         user_folder_permission.save(update_fields=['permission_type'])
 
         return self._user_folder_permission_dto(data=user_folder_permission)
 
-    def remove_user_permission_for_folder(self, folder_id: str,
-                                          user_id: str) -> UserFolderPermissionDTO:
-        user_folder_permission = FolderPermission.objects.get(user_id=user_id,
-                                                              folder_id=folder_id)
+    def remove_user_permission_for_folder(
+            self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
+        user_folder_permission = FolderPermission.objects.get(
+            user_id=user_id, folder_id=folder_id)
         user_folder_permission.is_delete = False
         user_folder_permission.save(update_fields=["permission_type"])
 
         return self._user_folder_permission_dto(data=user_folder_permission)
 
-    def get_folder_permissions(self, folder_id: str) -> list[
-        UserFolderPermissionDTO]:
+    def get_folder_permissions(
+            self, folder_id: str) -> List[UserFolderPermissionDTO]:
         folder_permissions = FolderPermission.objects.filter(
             folder_id=folder_id)
 
@@ -207,8 +201,8 @@ class FolderStorage(FolderStorageInterface):
                 folder_permissions]
 
     def create_folder_users_permissions(
-            self, users_permission_data: list[CreateFolderPermissionDTO]) -> \
-            list[UserFolderPermissionDTO]:
+            self, users_permission_data: List[CreateFolderPermissionDTO]) -> \
+            List[UserFolderPermissionDTO]:
 
         permissions_to_create = []
         for perm_data in users_permission_data:

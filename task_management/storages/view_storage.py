@@ -1,13 +1,11 @@
 from typing import Optional
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from task_management.exceptions.enums import ViewTypes
 from task_management.interactors.dtos import ViewDTO, CreateViewDTO, \
-    UpdateViewDTO, ListViewDTO
+    ListViewDTO
 from task_management.interactors.storage_interfaces.view_storage_interface import \
     ViewStorageInterface
-from task_management.models import View, User, List, ListView
+from task_management.models import View, ListView
 
 
 class ViewStorage(ViewStorageInterface):
@@ -32,11 +30,11 @@ class ViewStorage(ViewStorageInterface):
         return self._view_dto(data=view_data)
 
     def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
-        user = User.objects.get(user_id=create_view_data.created_by)
         view_data = View.objects.create(
             name=create_view_data.name,
             view_type=create_view_data.view_type.value,
-            description=create_view_data.description, created_by=user)
+            description=create_view_data.description,
+            created_by_id=create_view_data.created_by, )
 
         return self._view_dto(data=view_data)
 
@@ -62,8 +60,8 @@ class ViewStorage(ViewStorageInterface):
 
         return View.objects.filter(view_id=view_id).exists()
 
-    def apply_view_for_list(self, list_id: str, view_id: str,
-                            user_id: str) -> ListViewDTO:
+    def apply_view_for_list(
+            self, list_id: str, view_id: str, user_id: str) -> ListViewDTO:
 
         list_view_data = ListView.objects.create(
             list_id=list_id, view_id=view_id, applied_by_id=user_id)
@@ -77,7 +75,6 @@ class ViewStorage(ViewStorageInterface):
         )
 
     def remove_list_view(self, view_id: str, list_id: str):
-        # set the is_active is false
         list_view_obj = ListView.objects.get(list_id=list_id, view_id=view_id)
         list_view_obj.is_delete = False
         list_view_obj.save()
@@ -91,7 +88,6 @@ class ViewStorage(ViewStorageInterface):
         )
 
     def get_list_views(self, list_id: str) -> list[ListViewDTO]:
-        # get the active list_view only
 
         list_views = ListView.objects.filter(list_id=list_id, is_active=True)
 
@@ -104,23 +100,23 @@ class ViewStorage(ViewStorageInterface):
         ) for list_view_data in list_views]
 
     def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
-        return ListView.objects.filter(list_id=list_id,
-                                       view_id=view_id).exists()
+        return ListView.objects.filter(
+            list_id=list_id, view_id=view_id).exists()
 
     def get_list_view(self, list_id: str, view_id: str) -> ListViewDTO | None:
-        try:
-            list_view_data = ListView.objects.get(
-                list_id=list_id, view_id=view_id, is_active=True)
+        list_view_data = ListView.objects.filter(
+            list_id=list_id, view_id=view_id, is_active=True).first()
 
-            return ListViewDTO(
-                id=list_view_data.pk,
-                list_id=list_view_data.list.list_id,
-                view_id=list_view_data.view.view_id,
-                applied_by=list_view_data.applied_by.user_id,
-                is_active=list_view_data.is_active,
-            )
-        except ObjectDoesNotExist:
+        if list_view_data is None:
             return None
+
+        return ListViewDTO(
+            id=list_view_data.pk,
+            list_id=list_view_data.list.list_id,
+            view_id=list_view_data.view.view_id,
+            applied_by=list_view_data.applied_by.user_id,
+            is_active=list_view_data.is_active,
+        )
 
     def get_list_view_id(self, view_type: str) -> str:
         view_data = View.objects.get(view_type=view_type)

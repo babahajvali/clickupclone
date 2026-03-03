@@ -13,10 +13,6 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_folder_exists(self, folder_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def create_folder(
             self, create_folder_data: CreateFolderDTO,
             order: int) -> FolderDTO:

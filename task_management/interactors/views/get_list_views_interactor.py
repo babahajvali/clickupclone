@@ -7,8 +7,9 @@ from task_management.mixins import ListValidationMixin
 
 class GetListViewsInteractor:
 
-    def __init__(self, list_storage: ListStorageInterface,
-                 view_storage: ViewStorageInterface):
+    def __init__(
+            self, list_storage: ListStorageInterface,
+            view_storage: ViewStorageInterface):
         self.list_storage = list_storage
         self.view_storage = view_storage
 

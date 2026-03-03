@@ -1,5 +1,6 @@
+from typing import Optional, List as ListType
+
 from django.db.models import F
-from typing import Optional
 
 from task_management.exceptions.enums import Permissions, Visibility
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
@@ -77,8 +78,7 @@ class ListStorage(ListStorageInterface):
 
     def get_last_list_order_in_space(self, space_id: str) -> int:
         list_data = List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_deleted=False).order_by(
-            '-order').first()
+            space_id=space_id, is_deleted=False).order_by('-order').first()
 
         order = 0
         if list_data:
@@ -92,8 +92,9 @@ class ListStorage(ListStorageInterface):
 
         return list_data.space.workspace.workspace_id
 
-    def update_list(self, list_id: str, name: Optional[str],
-                    description: Optional[str]) -> ListDTO:
+    def update_list(
+            self, list_id: str, name: Optional[str],
+            description: Optional[str]) -> ListDTO:
 
         list_data = List.objects.get(list_id=list_id)
         is_name_provided = name is not None
@@ -109,13 +110,13 @@ class ListStorage(ListStorageInterface):
 
         return self._list_dto(list_data=list_data)
 
-    def get_folder_lists(self, folder_ids: list[str]) -> list[ListDTO]:
-        folder_lists = List.objects.filter(folder_id__in=folder_ids,
-                                           is_deleted=False)
+    def get_folder_lists(self, folder_ids: ListType[str]) -> ListType[ListDTO]:
+        folder_lists = List.objects.filter(
+            folder_id__in=folder_ids, is_deleted=False)
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
-    def get_space_lists(self, space_ids: list[str]) -> list[ListDTO]:
+    def get_space_lists(self, space_ids: ListType[str]) -> ListType[ListDTO]:
         space_lists = List.objects.filter(
             space_id__in=space_ids, folder__isnull=True, is_deleted=False)
 
@@ -139,7 +140,6 @@ class ListStorage(ListStorageInterface):
                 order=F('order') - 1)
 
         return self._list_dto(list_data=list_data)
-
 
     def update_list_visibility(self, list_id: str, visibility: str) -> ListDTO:
         # set is_private false
@@ -239,7 +239,7 @@ class ListStorage(ListStorageInterface):
         return self._list_permission_dto(permission_data=permission)
 
     def get_list_permissions(
-            self, list_id: str) -> list[UserListPermissionDTO]:
+            self, list_id: str) -> ListType[UserListPermissionDTO]:
 
         permissions = ListPermission.objects.filter(
             list_id=list_id
@@ -268,8 +268,8 @@ class ListStorage(ListStorageInterface):
         return self._list_permission_dto(permission_data=permission)
 
     def create_list_users_permission(
-            self, user_permissions: list[CreateListPermissionDTO]) \
-            -> list[UserListPermissionDTO]:
+            self, user_permissions: ListType[CreateListPermissionDTO]) \
+            -> ListType[UserListPermissionDTO]:
 
         permissions_to_create = []
         for perm_data in user_permissions:

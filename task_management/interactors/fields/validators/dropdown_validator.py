@@ -1,10 +1,9 @@
 from typing import Any
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
-from task_management.exceptions.custom_exceptions import \
-    DropdownOptionsEmpty, UnexpectedFieldConfigKeys, DropdownOptionNotAllowed, \
-    EmptyFieldConfig, \
-    DropdownDefaultValueNotInOptions
+from task_management.exceptions.custom_exceptions import EmptyFieldConfig, \
+    DropdownOptionsEmpty, UnexpectedFieldConfigKeys, \
+    DropdownOptionNotAllowed, DropdownDefaultValueNotInOptions
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 

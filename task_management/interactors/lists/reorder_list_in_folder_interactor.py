@@ -19,11 +19,9 @@ from task_management.mixins import (
 class ReorderListInFolderInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
+            self, list_storage: ListStorageInterface,
             folder_storage: FolderStorageInterface,
-            workspace_storage: WorkspaceStorageInterface,
-    ):
+            workspace_storage: WorkspaceStorageInterface):
         self.list_storage = list_storage
         self.folder_storage = folder_storage
         self.workspace_storage = workspace_storage
@@ -43,8 +41,8 @@ class ReorderListInFolderInteractor:
 
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(
-            self, folder_id: str, list_id: str, order: int, user_id: str
-    ) -> ListDTO:
+            self, folder_id: str, list_id: str, order: int, user_id: str) \
+            -> ListDTO:
         self._check_list_order_in_folder(folder_id=folder_id, order=order)
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
@@ -96,8 +94,7 @@ class ReorderListInFolderInteractor:
         )
 
     def _reorder_list_positions_in_folder(
-            self, folder_id: str, old_order: int, new_order: int
-    ):
+            self, folder_id: str, old_order: int, new_order: int):
 
         if new_order > old_order:
             self.list_storage.shift_lists_down_in_folder(

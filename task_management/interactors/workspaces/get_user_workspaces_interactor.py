@@ -7,9 +7,9 @@ from task_management.mixins import UserValidationMixin
 
 class GetUserWorkspacesInteractor:
 
-    def __init__(self,
-                 workspace_storage: WorkspaceStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, workspace_storage: WorkspaceStorageInterface,
+            user_storage: UserStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
 

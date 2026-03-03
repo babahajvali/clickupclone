@@ -10,10 +10,11 @@ from task_management.interactors.tasks.create_task_interactor import \
 
 class TaskCreationHandler:
 
-    def __init__(self, list_storage: ListStorageInterface,
-                 task_storage: TaskStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 field_storage: FieldStorageInterface):
+    def __init__(
+            self, list_storage: ListStorageInterface,
+            task_storage: TaskStorageInterface,
+            workspace_storage: WorkspaceStorageInterface,
+            field_storage: FieldStorageInterface):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
@@ -36,8 +37,8 @@ class TaskCreationHandler:
 
         return task_interactor.create_task(task_data=task_data)
 
-    def _create_default_field_values_at_task(self, task_id: str, list_id: str,
-                                             created_by: str):
+    def _create_default_field_values_at_task(
+            self, task_id: str, list_id: str, created_by: str):
         template_id = self.list_storage.get_template_id_by_list_id(
             list_id=list_id)
         template_fields = self.field_storage.get_fields_for_template(

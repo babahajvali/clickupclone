@@ -35,9 +35,10 @@ class TemplateInteractor:
         list_storage (ListStorageInterface): Storage for lists operations
     """
 
-    def __init__(self, workspace_storage: WorkspaceStorageInterface,
-                 template_storage: TemplateStorageInterface,
-                 list_storage: ListStorageInterface):
+    def __init__(
+            self, workspace_storage: WorkspaceStorageInterface,
+            template_storage: TemplateStorageInterface,
+            list_storage: ListStorageInterface):
 
         self.workspace_storage = workspace_storage
         self.template_storage = template_storage
@@ -66,8 +67,7 @@ class TemplateInteractor:
         list_id = self.template_storage.get_template_list_id(
             template_id=template_id)
         self._check_user_has_edit_access_for_list(
-            list_id=list_id,
-            user_id=user_id)
+            list_id=list_id, user_id=user_id)
 
         return self.template_storage.update_template(
             template_id=template_id, name=name, description=description)

@@ -9,9 +9,10 @@ from task_management.mixins import TaskValidationMixin, UserValidationMixin, \
 
 class AddTaskAssigneeInteractor:
 
-    def __init__(self, task_storage: TaskStorageInterface,
-                 user_storage: UserStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, task_storage: TaskStorageInterface,
+            user_storage: UserStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.task_storage = task_storage
         self.user_storage = user_storage
         self.workspace_storage = workspace_storage

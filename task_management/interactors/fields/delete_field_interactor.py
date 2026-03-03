@@ -22,8 +22,9 @@ class DeleteFieldInteractor:
         - WorkspaceStorageInterface
     """
 
-    def __init__(self, field_storage: FieldStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, field_storage: FieldStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
 

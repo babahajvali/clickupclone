@@ -21,8 +21,9 @@ class GetTemplateFieldsInteractor:
         - TemplateStorageInterface
     """
 
-    def __init__(self, field_storage: FieldStorageInterface,
-                 template_storage: TemplateStorageInterface):
+    def __init__(
+            self, field_storage: FieldStorageInterface,
+            template_storage: TemplateStorageInterface):
         self.field_storage = field_storage
         self.template_storage = template_storage
 

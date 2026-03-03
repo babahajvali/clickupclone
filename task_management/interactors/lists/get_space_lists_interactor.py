@@ -9,10 +9,8 @@ from task_management.mixins import SpaceValidationMixin
 class GetSpaceListsInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
-            space_storage: SpaceStorageInterface,
-    ):
+            self, list_storage: ListStorageInterface,
+            space_storage: SpaceStorageInterface):
         self.list_storage = list_storage
         self.space_storage = space_storage
 

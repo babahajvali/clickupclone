@@ -10,8 +10,9 @@ from task_management.mixins import UserValidationMixin
 
 class CreateAccountInteractor:
 
-    def __init__(self, account_storage: AccountStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, account_storage: AccountStorageInterface,
+            user_storage: UserStorageInterface):
         self.account_storage = account_storage
         self.user_storage = user_storage
 

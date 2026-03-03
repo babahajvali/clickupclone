@@ -1,6 +1,5 @@
-from typing import Optional
+from typing import Optional, List
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
 
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
@@ -84,14 +83,14 @@ class TaskStorage(TaskStorageInterface):
         return task.list.list_id
 
     def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
-        try:
-            task_data = Task.objects.get(task_id=task_id)
 
-            return task_data.list.space.workspace.workspace_id
-        except ObjectDoesNotExist:
+        task_data = Task.objects.filter(task_id=task_id).first()
+        if task_data is None:
             return None
 
-    def get_tasks_for_list(self, list_id: str) -> list[TaskDTO]:
+        return task_data.list.space.workspace.workspace_id
+
+    def get_tasks_for_list(self, list_id: str) -> List[TaskDTO]:
         list_tasks = Task.objects.filter(list_id=list_id, is_deleted=False)
 
         return [self._task_dto(task_data=task_data) for task_data in
@@ -200,7 +199,7 @@ class TaskStorage(TaskStorageInterface):
 
         return self._assignee_dto(assignee_data=assignee_data)
 
-    def get_task_assignees(self, task_id: str) -> list[TaskAssigneeDTO]:
+    def get_task_assignees(self, task_id: str) -> List[TaskAssigneeDTO]:
         task_assignees = TaskAssignee.objects.filter(
             task_id=task_id, is_active=True)
 
@@ -248,7 +247,7 @@ class TaskStorage(TaskStorageInterface):
         return self._assignee_dto(assignee_data=assignee_data)
 
     def get_assignees_for_list_tasks(
-            self, list_id: str) -> list[TaskAssigneeDTO]:
+            self, list_id: str) -> List[TaskAssigneeDTO]:
 
         task_ids = (Task.objects.filter(list_id=list_id, is_deleted=False).
                     values_list('task_id', flat=True))

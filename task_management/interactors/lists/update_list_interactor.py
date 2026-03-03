@@ -18,10 +18,8 @@ from task_management.mixins import (
 class UpdateListInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
-            workspace_storage: WorkspaceStorageInterface,
-    ):
+            self, list_storage: ListStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.list_storage = list_storage
         self.workspace_storage = workspace_storage
 
@@ -37,12 +35,8 @@ class UpdateListInteractor:
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def update_list(
-            self,
-            list_id: str,
-            user_id: str,
-            name: Optional[str],
-            description: Optional[str],
-    ) -> ListDTO:
+            self, list_id: str, user_id: str, name: Optional[str],
+            description: Optional[str]) -> ListDTO:
         self._check_update_field_properties(
             list_id=list_id, name=name, description=description
         )

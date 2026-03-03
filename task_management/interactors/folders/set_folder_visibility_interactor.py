@@ -12,8 +12,9 @@ from task_management.mixins import FolderValidationMixin, \
 
 class SetFolderVisibilityInteractor:
 
-    def __init__(self, folder_storage: FolderStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, folder_storage: FolderStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.folder_storage = folder_storage
         self.workspace_storage = workspace_storage
 

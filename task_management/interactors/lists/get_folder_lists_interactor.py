@@ -9,10 +9,8 @@ from task_management.mixins import FolderValidationMixin
 class GetFolderListsInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
-            folder_storage: FolderStorageInterface,
-    ):
+            self, list_storage: ListStorageInterface,
+            folder_storage: FolderStorageInterface):
         self.list_storage = list_storage
         self.folder_storage = folder_storage
 

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from django.db import transaction
 from django.db.models import F
@@ -39,12 +39,9 @@ class SpaceStorage(SpaceStorageInterface):
         )
 
     def get_space(self, space_id: str) -> SpaceDTO | None:
-        try:
-            space_data = Space.objects.get(space_id=space_id)
+        space_data = Space.objects.filter(space_id=space_id).first()
 
-            return self._to_dto(space_data=space_data)
-        except Space.DoesNotExist:
-            return None
+        return self._to_dto(space_data=space_data)
 
     def create_space(
             self, space_data: CreateSpaceDTO, order: int) -> SpaceDTO:
@@ -114,7 +111,7 @@ class SpaceStorage(SpaceStorageInterface):
 
         return self._to_dto(space)
 
-    def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
+    def get_workspace_spaces(self, workspace_id: str) -> List[SpaceDTO]:
 
         spaces = Space.objects.filter(
             workspace_id=workspace_id,
@@ -165,23 +162,20 @@ class SpaceStorage(SpaceStorageInterface):
             self, user_id: str, space_id: str) \
             -> UserSpacePermissionDTO | None:
 
-        try:
-            permission = SpacePermission.objects.get(
-                user_id=user_id,
-                space_id=space_id
-            )
-            return self._to_permission_dto(permission)
-        except SpacePermission.DoesNotExist:
+        permission_data = SpacePermission.objects.filter(
+            user_id=user_id, space_id=space_id).first()
+
+        if permission_data is None:
             return None
+
+        return self._to_permission_dto(permission_data)
 
     def update_user_permission_for_space(
             self, user_id: str, space_id: str, permission_type: Permissions) \
             -> UserSpacePermissionDTO:
 
         permission = SpacePermission.objects.get(
-            user_id=user_id,
-            space_id=space_id
-        )
+            user_id=user_id, space_id=space_id)
         permission.permission_type = permission_type.value
         permission.save()
 
@@ -191,16 +185,14 @@ class SpaceStorage(SpaceStorageInterface):
             self, user_id: str, space_id: str) -> UserSpacePermissionDTO:
 
         permission = SpacePermission.objects.get(
-            user_id=user_id,
-            space_id=space_id
-        )
+            user_id=user_id, space_id=space_id)
         permission.is_delete = False
         permission.save()
 
         return self._to_permission_dto(permission)
 
     def get_space_permissions(
-            self, space_id: str) -> list[UserSpacePermissionDTO]:
+            self, space_id: str) -> List[UserSpacePermissionDTO]:
 
         permissions = SpacePermission.objects.filter(
             space_id=space_id, is_active=True)
@@ -208,8 +200,8 @@ class SpaceStorage(SpaceStorageInterface):
         return [self._to_permission_dto(perm) for perm in permissions]
 
     def create_user_space_permissions(
-            self, permission_data: list[CreateUserSpacePermissionDTO]) \
-            -> list[UserSpacePermissionDTO]:
+            self, permission_data: List[CreateUserSpacePermissionDTO]) \
+            -> List[UserSpacePermissionDTO]:
 
         permissions_to_create = []
         for perm_data in permission_data:

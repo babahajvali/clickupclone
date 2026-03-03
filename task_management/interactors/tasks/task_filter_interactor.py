@@ -7,9 +7,10 @@ from task_management.mixins import ListValidationMixin
 
 
 class TaskFilterInteractor:
-    def __init__(self, task_storage: TaskStorageInterface,
-                 list_storage: ListStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, task_storage: TaskStorageInterface,
+            list_storage: ListStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage

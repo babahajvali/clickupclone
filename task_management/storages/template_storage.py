@@ -1,11 +1,9 @@
 from typing import Optional
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
 from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.models import Template, List
+from task_management.models import Template
 
 
 class TemplateStorage(TemplateStorageInterface):
@@ -58,13 +56,13 @@ class TemplateStorage(TemplateStorageInterface):
         return Template.objects.filter(list_id=template_id).values_list(
             'list_id', flat=True)[0]
 
-    def get_workspace_id_from_template_id(self,
-                                          template_id: str) -> str | None:
-        try:
-            template_data = Template.objects.select_related(
-                "list__space__workspace").get(
-                template_id=template_id)
+    def get_workspace_id_from_template_id(
+            self, template_id: str) -> str | None:
+        template_data = Template.objects.select_related(
+            "list__space__workspace").filter(
+            template_id=template_id).first()
 
-            return template_data.list.space.workspace.workspace_id
-        except ObjectDoesNotExist:
+        if template_data is None:
             return None
+
+        return template_data.list.space.workspace.workspace_id

@@ -14,10 +14,8 @@ from task_management.mixins import (
 class DeleteListInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
-            workspace_storage: WorkspaceStorageInterface,
-    ):
+            self, list_storage: ListStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.list_storage = list_storage
         self.workspace_storage = workspace_storage
 

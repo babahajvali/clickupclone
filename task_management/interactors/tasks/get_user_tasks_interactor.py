@@ -36,8 +36,9 @@ class GetUserTasksInteractor:
         user_storage (UserStorageInterface): Storage for user operations
     """
 
-    def __init__(self, task_storage: TaskStorageInterface,
-                 user_storage: UserStorageInterface):
+    def __init__(
+            self, task_storage: TaskStorageInterface,
+            user_storage: UserStorageInterface):
         self.task_storage = task_storage
         self.user_storage = user_storage
 

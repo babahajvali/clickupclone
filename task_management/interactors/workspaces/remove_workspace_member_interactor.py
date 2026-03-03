@@ -10,8 +10,7 @@ from task_management.mixins import WorkspaceValidationMixin
 
 class RemoveWorkspaceMemberInteractor:
 
-    def __init__(self,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(self, workspace_storage: WorkspaceStorageInterface):
         self.workspace_storage = workspace_storage
 
     @property

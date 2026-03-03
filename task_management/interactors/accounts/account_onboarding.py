@@ -18,15 +18,16 @@ class AccountOnboardingHandler:
         default workspaces and spaces, lists...
     """
 
-    def __init__(self, workspace_storage: WorkspaceStorageInterface,
-                 user_storage: UserStorageInterface,
-                 account_storage: AccountStorageInterface,
-                 space_storage: SpaceStorageInterface,
-                 list_storage: ListStorageInterface,
-                 template_storage: TemplateStorageInterface,
-                 field_storage: FieldStorageInterface,
-                 folder_storage: FolderStorageInterface,
-                 view_storage: ViewStorageInterface):
+    def __init__(
+            self, workspace_storage: WorkspaceStorageInterface,
+            user_storage: UserStorageInterface,
+            account_storage: AccountStorageInterface,
+            space_storage: SpaceStorageInterface,
+            list_storage: ListStorageInterface,
+            template_storage: TemplateStorageInterface,
+            field_storage: FieldStorageInterface,
+            folder_storage: FolderStorageInterface,
+            view_storage: ViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage

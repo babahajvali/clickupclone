@@ -35,15 +35,13 @@ from task_management.interactors.views.add_list_view_interactor import \
 class ListCreationHandler:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
+            self, list_storage: ListStorageInterface,
             space_storage: SpaceStorageInterface,
             folder_storage: FolderStorageInterface,
             template_storage: TemplateStorageInterface,
             field_storage: FieldStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
-            view_storage: ViewStorageInterface,
-    ):
+            view_storage: ViewStorageInterface):
         self.list_storage = list_storage
         self.space_storage = space_storage
         self.folder_storage = folder_storage
@@ -104,8 +102,7 @@ class ListCreationHandler:
         return list_interactor.create_list(list_data=list_data)
 
     def _create_list_permission_for_created_by_user(
-            self, list_id: str, user_id: str
-    ) -> UserListPermissionDTO:
+            self, list_id: str, user_id: str) -> UserListPermissionDTO:
         permission_interactor = self._get_add_list_permission_for_user_interactor()
         permission_data = CreateListPermissionDTO(
             list_id=list_id,
@@ -117,8 +114,8 @@ class ListCreationHandler:
             user_permission_data=permission_data
         )
 
-    def _create_default_template(self,
-                                 template_data: CreateTemplateDTO) -> TemplateDTO:
+    def _create_default_template(
+            self, template_data: CreateTemplateDTO) -> TemplateDTO:
         template_creation_handler = TemplateCreationHandler(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
@@ -130,8 +127,7 @@ class ListCreationHandler:
             template_data=template_data)
 
     def _create_default_list_view(
-            self, view_id: str, list_id: str, user_id: str
-    ) -> ListViewDTO:
+            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
         list_view_interactor = AddListViewInteractor(
             list_storage=self.list_storage,
             view_storage=self.view_storage,

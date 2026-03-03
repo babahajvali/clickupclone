@@ -32,10 +32,10 @@ class FieldResponseInteractor:
 
     """
 
-    def __init__(self,
-                 field_storage: FieldStorageInterface,
-                 task_storage: TaskStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, field_storage: FieldStorageInterface,
+            task_storage: TaskStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage

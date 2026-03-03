@@ -10,8 +10,9 @@ from task_management.mixins import AccountValidationMixin
 
 class CreateWorkspaceInteractor:
 
-    def __init__(self, workspace_storage: WorkspaceStorageInterface,
-                 account_storage: AccountStorageInterface):
+    def __init__(
+            self, workspace_storage: WorkspaceStorageInterface,
+            account_storage: AccountStorageInterface):
         self.workspace_storage = workspace_storage
         self.account_storage = account_storage
 

@@ -6,8 +6,9 @@ from task_management.mixins import SpaceValidationMixin
 
 
 class GetSpaceFoldersInteractor:
-    def __init__(self, folder_storage: FolderStorageInterface,
-                 space_storage: SpaceStorageInterface):
+    def __init__(
+            self, folder_storage: FolderStorageInterface,
+            space_storage: SpaceStorageInterface):
         self.folder_storage = folder_storage
         self.space_storage = space_storage
 

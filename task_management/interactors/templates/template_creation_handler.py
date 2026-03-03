@@ -13,10 +13,11 @@ from task_management.interactors.templates.create_template_interactor import \
 
 class TemplateCreationHandler:
 
-    def __init__(self, template_storage: TemplateStorageInterface,
-                 list_storage: ListStorageInterface,
-                 field_storage: FieldStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface, ):
+    def __init__(
+            self, template_storage: TemplateStorageInterface,
+            list_storage: ListStorageInterface,
+            field_storage: FieldStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.template_storage = template_storage
         self.list_storage = list_storage
         self.field_storage = field_storage

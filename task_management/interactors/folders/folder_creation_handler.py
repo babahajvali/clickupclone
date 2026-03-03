@@ -13,9 +13,10 @@ from task_management.interactors.storage_interfaces import \
 
 class FolderCreationHandler:
 
-    def __init__(self, folder_storage: FolderStorageInterface,
-                 space_storage: SpaceStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, folder_storage: FolderStorageInterface,
+            space_storage: SpaceStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.folder_storage = folder_storage
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage

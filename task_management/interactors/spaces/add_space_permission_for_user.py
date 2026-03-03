@@ -10,8 +10,9 @@ from task_management.mixins import SpaceValidationMixin, \
 
 class AddSpacePermissionForUser:
 
-    def __init__(self, space_storage: SpaceStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface):
+    def __init__(
+            self, space_storage: SpaceStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 

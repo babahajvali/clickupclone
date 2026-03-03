@@ -1,7 +1,8 @@
 import json
 import time
-from django.http import JsonResponse
+
 from django.core.cache import cache
+from django.http import JsonResponse
 
 RATE_LIMIT = 5
 WINDOW_SIZE = 2  # seconds
@@ -45,7 +46,6 @@ class RateLimitMiddleware:
         timestamps = [ts for ts in timestamps if ts > cutoff]
 
         if len(timestamps) >= RATE_LIMIT:
-
             cache.set(block_key, 1, timeout=COOLDOWN_PERIOD)
             cache.delete(window_key)
             return self.too_many_requests_response(COOLDOWN_PERIOD)

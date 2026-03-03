@@ -18,10 +18,8 @@ from task_management.mixins import (
 class AddListPermissionForUserInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
-            workspace_storage: WorkspaceStorageInterface,
-    ):
+            self, list_storage: ListStorageInterface,
+            workspace_storage: WorkspaceStorageInterface):
         self.list_storage = list_storage
         self.workspace_storage = workspace_storage
 
@@ -35,8 +33,8 @@ class AddListPermissionForUserInteractor:
             workspace_storage=self.workspace_storage)
 
     def add_user_in_list_permission(
-            self, user_permission_data: CreateListPermissionDTO
-    ) -> UserListPermissionDTO:
+            self, user_permission_data: CreateListPermissionDTO) \
+            -> UserListPermissionDTO:
         self._check_user_have_already_list_permission(
             user_id=user_permission_data.user_id,
             list_id=user_permission_data.list_id,

@@ -18,11 +18,9 @@ from task_management.mixins import (
 class ReorderListInSpaceInteractor:
 
     def __init__(
-            self,
-            list_storage: ListStorageInterface,
+            self, list_storage: ListStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
-            space_storage: SpaceStorageInterface,
-    ):
+            space_storage: SpaceStorageInterface):
         self.list_storage = list_storage
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
@@ -63,8 +61,8 @@ class ReorderListInSpaceInteractor:
             space_id=space_id,
         )
 
-    def _check_user_has_edit_access_for_space(self, space_id: str,
-                                              user_id: str):
+    def _check_user_has_edit_access_for_space(
+            self, space_id: str, user_id: str):
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
@@ -72,8 +70,7 @@ class ReorderListInSpaceInteractor:
         )
 
     def _reorder_list_positions_in_space(
-            self, space_id: str, old_order: int, new_order: int, list_id: str
-    ):
+            self, space_id: str, old_order: int, new_order: int, list_id: str):
 
         self._reorder_list_positions_in_space_except_current(
             space_id=space_id, old_order=old_order, new_order=new_order
@@ -84,8 +81,7 @@ class ReorderListInSpaceInteractor:
         )
 
     def _reorder_list_positions_in_space_except_current(
-            self, space_id: str, old_order: int, new_order: int
-    ):
+            self, space_id: str, old_order: int, new_order: int):
 
         if new_order > old_order:
             self.list_storage.shift_lists_down_in_space(

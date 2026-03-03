@@ -21,15 +21,16 @@ from task_management.interactors.workspaces.transfer_workspace_interactor import
 
 
 class WorkspaceHandler:
-    def __init__(self, space_storage: SpaceStorageInterface,
-                 user_storage: UserStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 list_storage: ListStorageInterface,
-                 template_storage: TemplateStorageInterface,
-                 field_storage: FieldStorageInterface,
-                 folder_storage: FolderStorageInterface,
-                 account_storage: AccountStorageInterface,
-                 view_storage: ViewStorageInterface):
+    def __init__(
+            self, space_storage: SpaceStorageInterface,
+            user_storage: UserStorageInterface,
+            workspace_storage: WorkspaceStorageInterface,
+            list_storage: ListStorageInterface,
+            template_storage: TemplateStorageInterface,
+            field_storage: FieldStorageInterface,
+            folder_storage: FolderStorageInterface,
+            account_storage: AccountStorageInterface,
+            view_storage: ViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.space_storage = space_storage
@@ -136,7 +137,8 @@ class WorkspaceHandler:
         return self.workspace_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)
 
-    def delete_workspace_handle(self, workspace_id: str, user_id: str):
+    def delete_workspace_handle(
+            self, workspace_id: str, user_id: str) -> WorkspaceDTO:
         workspace_interactor = DeleteWorkspaceInteractor(
             workspace_storage=self.workspace_storage,
         )

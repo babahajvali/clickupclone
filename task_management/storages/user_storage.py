@@ -24,18 +24,21 @@ class UserStorage(UserStorageInterface):
         )
 
     def get_user_data(self, user_id: str) -> UserDTO | None:
-        try:
-            user_data = User.objects.get(user_id=user_id)
-            return self._user_dto(data=user_data)
-        except User.DoesNotExist:
+
+        user_data = User.objects.get(user_id=user_id)
+        if user_data is None:
             return None
 
+        return self._user_dto(data=user_data)
+
     def get_user_details(self, email: str) -> UserDTO | None:
-        try:
-            user_data = User.objects.get(email=email)
-            return self._user_dto(data=user_data)
-        except User.DoesNotExist:
+
+        user_data = User.objects.filter(email=email).first()
+
+        if user_data is None:
             return None
+
+        return self._user_dto(data=user_data)
 
     def create_user(self, user_data: CreateUserDTO) -> UserDTO:
         user_obj = User.objects.create(
@@ -81,24 +84,27 @@ class UserStorage(UserStorageInterface):
     def check_phone_number_exists(self, phone_number: str) -> bool:
         return User.objects.filter(phone_number=phone_number).exists()
 
-    def check_username_except_current_user(self, user_id: str, username: str) -> bool:
+    def check_username_except_current_user(
+            self, user_id: str, username: str) -> bool:
         return User.objects.filter(username=username).exclude(
             user_id=user_id).exists()
 
-    def check_email_exists_except_current_user(self, user_id: str, email: str) -> bool:
+    def check_email_exists_except_current_user(
+            self, user_id: str, email: str) -> bool:
         return User.objects.filter(email=email).exclude(
             user_id=user_id).exists()
 
-    def check_phone_number_except_current_user(self, user_id: str,
-                                               phone_number: str) -> bool:
+    def check_phone_number_except_current_user(
+            self, user_id: str, phone_number: str) -> bool:
         return User.objects.filter(phone_number=phone_number).exclude(
             user_id=user_id).exists()
 
-    def check_user_exists(self, user_id: str)-> bool:
+    def check_user_exists(self, user_id: str) -> bool:
         return User.objects.filter(user_id=user_id).exists()
 
-    def create_password_reset_token(self, user_id: str, token: str,
-                                    expires_at: datetime) -> PasswordResetTokenDTO:
+    def create_password_reset_token(
+            self, user_id: str, token: str, expires_at: datetime) \
+            -> PasswordResetTokenDTO:
         try:
             PasswordResetToken.objects.filter(
                 user_id=user_id,
@@ -126,10 +132,7 @@ class UserStorage(UserStorageInterface):
     def get_reset_token(self, token: str) -> PasswordResetTokenDTO | None:
         try:
             reset_token = PasswordResetToken.objects.select_related(
-                'user').get(
-                token=token,
-                is_used=False
-            )
+                'user').get(token=token, is_used=False)
 
             return PasswordResetTokenDTO(
                 user_id=str(reset_token.user.user_id),
@@ -155,21 +158,21 @@ class UserStorage(UserStorageInterface):
 
     def update_user_password(self, user_id: str, new_password: str) -> UserDTO:
         try:
-            user = User.objects.get(user_id=user_id)
+            user_data = User.objects.get(user_id=user_id)
 
-            user.password = new_password
-            user.save()
+            user_data.password = new_password
+            user_data.save()
 
             return UserDTO(
-                user_id=str(user.user_id),
-                full_name=user.full_name,
-                gender=user.gender,
-                username=user.username,
-                email=user.email,
-                phone_number=user.phone_number,
-                is_active=user.is_delete,
-                password=None,
-                image_url=user.image_url,
+                user_id=str(user_data.user_id),
+                full_name=user_data.full_name,
+                gender=user_data.gender,
+                username=user_data.username,
+                email=user_data.email,
+                phone_number=user_data.phone_number,
+                is_active=user_data.is_active,
+                image_url=user_data.image_url,
+                password=user_data.password,
             )
 
         except Exception as e:

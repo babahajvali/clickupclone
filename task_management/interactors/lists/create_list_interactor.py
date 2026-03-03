@@ -11,10 +11,11 @@ from task_management.mixins import SpaceValidationMixin, \
 
 
 class CreateListInteractor:
-    def __init__(self, list_storage: ListStorageInterface,
-                 folder_storage: FolderStorageInterface,
-                 workspace_storage: WorkspaceStorageInterface,
-                 space_storage: SpaceStorageInterface):
+    def __init__(
+            self, list_storage: ListStorageInterface,
+            folder_storage: FolderStorageInterface,
+            workspace_storage: WorkspaceStorageInterface,
+            space_storage: SpaceStorageInterface):
         self.list_storage = list_storage
         self.folder_storage = folder_storage
         self.space_storage = space_storage

@@ -16,8 +16,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_workspace(self,
-                         workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
+    def create_workspace(
+            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass
 
     @abstractmethod
@@ -27,8 +27,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def validate_user_is_workspace_owner(self, user_id: str,
-                                         workspace_id: str) -> bool:
+    def validate_user_is_workspace_owner(
+            self, user_id: str, workspace_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -36,8 +36,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def transfer_workspace(self, workspace_id: str,
-                           new_user_id: str) -> WorkspaceDTO:
+    def transfer_workspace(
+            self, workspace_id: str, new_user_id: str) -> WorkspaceDTO:
         # change the owner id with new_user_id
         pass
 
@@ -52,13 +52,14 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_member_to_workspace(self,
-                                workspace_member_data: AddMemberToWorkspaceDTO) -> WorkspaceMemberDTO:
+    def add_member_to_workspace(
+            self, workspace_member_data: AddMemberToWorkspaceDTO) \
+            -> WorkspaceMemberDTO:
         pass
 
     @abstractmethod
-    def get_workspace_member(self, workspace_id: str,
-                             user_id: str) -> WorkspaceMemberDTO:
+    def get_workspace_member(
+            self, workspace_id: str, user_id: str) -> WorkspaceMemberDTO:
         pass
 
     @abstractmethod
@@ -73,19 +74,20 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_the_member_role(self, workspace_id: str, user_id: str,
-                               role: str) -> WorkspaceMemberDTO:
+    def update_the_member_role(
+            self, workspace_id: str, user_id: str, role: str) \
+            -> WorkspaceMemberDTO:
         # change the member role
         pass
 
     @abstractmethod
-    def get_workspace_members(self, workspace_id: str) -> list[
-        WorkspaceMemberDTO]:
+    def get_workspace_members(
+            self, workspace_id: str) -> list[WorkspaceMemberDTO]:
         pass
 
     @abstractmethod
-    def get_active_user_workspaces(self, user_id: str) -> list[
-        WorkspaceMemberDTO]:
+    def get_active_user_workspaces(
+            self, user_id: str) -> list[WorkspaceMemberDTO]:
         pass
 
     @abstractmethod
@@ -95,8 +97,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def deactivate_workspace_members(self, member_ids: list[int]) -> list[
-        WorkspaceMemberDTO]:
+    def deactivate_workspace_members(
+            self, member_ids: list[int]) -> list[WorkspaceMemberDTO]:
         pass
 
     @abstractmethod
