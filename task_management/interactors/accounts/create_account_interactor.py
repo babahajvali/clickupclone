@@ -46,7 +46,8 @@ class CreateAccountInteractor:
             AccountNameAlreadyExistsException: If the accounts name is already taken.
         """
 
-        self.check_account_name_is_not_empty(account_name=name)
+        self.account_validator.check_account_name_is_not_empty(
+            account_name=name)
         self.user_mixin.check_user_is_active(user_id=created_by)
         self.account_validator.check_account_name_in_db(
             account_name=name, account_id=None)
