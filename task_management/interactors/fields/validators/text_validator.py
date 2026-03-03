@@ -1,7 +1,7 @@
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
-    InvalidFieldDefaultValue, InvalidFieldValue, \
-    UnexpectedFieldConfigKeys
+    UnexpectedFieldConfigKeys, TextDefaultValueExceedsMaxLength, \
+    TextValueExceedsMaxLength
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 
@@ -23,8 +23,7 @@ class TextField:
         is_exceeds_max_length = max_length is not None and len(
             default_value) > max_length
         if is_exceeds_max_length:
-            raise InvalidFieldDefaultValue(
-                field_type=FieldType.TEXT.value,
+            raise TextDefaultValueExceedsMaxLength(
                 message=f"Default value length {len(default_value)}"
                         f" exceeds max_length {max_length}")
 
@@ -43,6 +42,6 @@ class TextField:
         """Validate text fields value against max_length constraint."""
         max_length = config.get(FieldConfig.MAX_LENGTH.value)
         if max_length and len(value) > max_length:
-            raise InvalidFieldValue(
+            raise TextValueExceedsMaxLength(
                 message=f"Text exceeds maximum length of {max_length} "
                         f"characters")

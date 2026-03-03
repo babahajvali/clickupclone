@@ -86,12 +86,12 @@ class TemplateInteractor:
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        has_no_update_field_properties = any([
+        has_no_update_field_properties = not any([
             is_name_provided,
             is_description_provided
         ])
 
-        if not has_no_update_field_properties:
+        if has_no_update_field_properties:
             raise NothingToUpdateTemplate(template_id=template_id)
 
         if is_name_provided:

@@ -24,7 +24,14 @@ from task_management.graphql.types.error_types import \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
     EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
-    InvalidWorkspaceIdsFoundType, WorkspaceMemberIdNotFoundType
+    InvalidWorkspaceIdsFoundType, WorkspaceMemberIdNotFoundType, \
+    TextDefaultValueExceedsMaxLengthType, \
+    NumberDefaultValueBelowMinimumType, \
+    NumberDefaultValueAboveMaximumType, \
+    DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType, \
+    TextValueExceedsMaxLengthType, InvalidNumberFieldValueType, \
+    NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
+    DropdownOptionNotAllowedType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -92,6 +99,11 @@ class CreateFieldResponse(graphene.Union):
             FieldNameAlreadyExistsType,
             InvalidFieldConfigType,
             InvalidFieldDefaultValueType,
+            TextDefaultValueExceedsMaxLengthType,
+            NumberDefaultValueBelowMinimumType,
+            NumberDefaultValueAboveMaximumType,
+            DropdownDefaultValueNotInOptionsType,
+            MaxValueLessThanMinValueType,
             ModificationNotAllowedType,
             EmptyFieldNameType,
             MissingFieldConfigType,
@@ -107,6 +119,11 @@ class UpdateFieldResponse(graphene.Union):
             ModificationNotAllowedType,
             InvalidFieldConfigType,
             InvalidFieldDefaultValueType,
+            TextDefaultValueExceedsMaxLengthType,
+            NumberDefaultValueBelowMinimumType,
+            NumberDefaultValueAboveMaximumType,
+            DropdownDefaultValueNotInOptionsType,
+            MaxValueLessThanMinValueType,
             NothingToUpdateFieldType,
             FieldNameAlreadyExistsType,
             DeletedFieldType,
@@ -769,7 +786,12 @@ class SetTaskFieldValueResponse(graphene.Union):
                  DeletedFieldType,
                  UserNotWorkspaceMemberType,
                  ModificationNotAllowedType,
-                 InvalidFieldValue)
+                 InvalidFieldValue,
+                 TextValueExceedsMaxLengthType,
+                 InvalidNumberFieldValueType,
+                 NumberValueBelowMinimumType,
+                 NumberValueExceedsMaximumType,
+                 DropdownOptionNotAllowedType)
 
 
 class GetWorkspaceUsersResponse(graphene.Union):

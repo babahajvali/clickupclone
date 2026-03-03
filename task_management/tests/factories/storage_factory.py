@@ -7,7 +7,7 @@ from faker import Faker
 from task_management.exceptions.enums import Gender, ViewTypes, FieldType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
-    Task, Template, View, ListView, TaskAssignee, Field, FieldValue,
+    Task, Template, View, ListView, TaskAssignee, Field, TaskFieldValue,
     WorkspaceMember, SpacePermission, FolderPermission, ListPermission
 )
 
@@ -181,7 +181,7 @@ class FieldFactory(DjangoModelFactory):
 
 class FieldValueFactory(DjangoModelFactory):
     class Meta:
-        model = FieldValue
+        model = TaskFieldValue
 
     field = factory.SubFactory(FieldFactory)
     task = factory.SubFactory(TaskFactory)

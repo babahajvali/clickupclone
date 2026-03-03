@@ -6,7 +6,9 @@ from task_management.graphql.types.error_types import TemplateNotFoundType, \
     UnsupportedFieldTypeType, FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
     InvalidFieldDefaultValueType, EmptyFieldNameType, MissingFieldConfigType, \
-    DropdownOptionsMissingType
+    DropdownOptionsMissingType, TextDefaultValueExceedsMaxLengthType, \
+    NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
+    DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType
 from task_management.graphql.types.input_types import CreateFieldInputParams
 from task_management.graphql.types.response_types import CreateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -89,6 +91,18 @@ class CreateFieldMutation(graphene.Mutation):
                 message=e.message
             )
 
+        except custom_exceptions.TextDefaultValueExceedsMaxLength as e:
+            return TextDefaultValueExceedsMaxLengthType(message=e.message)
+
+        except custom_exceptions.NumberDefaultValueBelowMinimum as e:
+            return NumberDefaultValueBelowMinimumType(message=e.message)
+
+        except custom_exceptions.NumberDefaultValueAboveMaximum as e:
+            return NumberDefaultValueAboveMaximumType(message=e.message)
+
+        except custom_exceptions.DropdownDefaultValueNotInOptions as e:
+            return DropdownDefaultValueNotInOptionsType(message=e.message)
+
         except custom_exceptions.EmptyFieldName as e:
             return EmptyFieldNameType(field_name=e.field_name)
 
@@ -97,3 +111,9 @@ class CreateFieldMutation(graphene.Mutation):
 
         except custom_exceptions.DropdownOptionsEmpty as e:
             return DropdownOptionsMissingType(field_type=e.field_type)
+
+        except custom_exceptions.MaxValueLessThanMinValue as e:
+            return MaxValueLessThanMinValueType(
+                field_type=e.field_type,
+                message=e.message,
+            )

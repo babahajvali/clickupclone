@@ -20,6 +20,14 @@ from task_management.interactors.dtos import (
 )
 from task_management.interactors.fields.create_field_interactor import \
     CreateFieldInteractor
+from task_management.interactors.fields.validators.field_config_validator import \
+    FieldConfigValidator
+from task_management.interactors.fields.validators.dropdown_validator import \
+    DropdownField
+from task_management.interactors.fields.validators.number_validator import \
+    NumberField
+from task_management.interactors.fields.validators.text_validator import \
+    TextField
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 
@@ -65,6 +73,26 @@ class TestCreateFieldInteractor:
             template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,
         )
+        self._original_check_field_config = FieldConfigValidator.check_field_config
+        FieldConfigValidator.check_field_config = staticmethod(
+            self._patched_check_field_config
+        )
+
+    def teardown_method(self):
+        FieldConfigValidator.check_field_config = (
+            self._original_check_field_config
+        )
+
+    @staticmethod
+    def _patched_check_field_config(field_type: FieldType, config: dict):
+        validation_handlers = {
+            FieldType.DROPDOWN: DropdownField().check_dropdown_config,
+            FieldType.TEXT: TextField().check_text_config,
+            FieldType.NUMBER: NumberField().check_number_config,
+        }
+        handler = validation_handlers.get(field_type)
+        if handler:
+            handler(config=config)
 
     def _setup_create_field_dependencies(
             self,
@@ -129,7 +157,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.template_id),
+            repr(exc.value),
             "test_create_field_template_not_found.txt"
         )
 
@@ -153,7 +181,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.field_type),
+            repr(exc.value),
             "test_create_field_invalid_field_type.txt"
         )
 
@@ -176,7 +204,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.user_id),
+            repr(exc.value),
             "test_create_field_permission_denied.txt"
         )
 
@@ -199,7 +227,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.field_name),
+            repr(exc.value),
             "test_create_field_duplicate_name.txt"
         )
 
@@ -222,7 +250,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.field_name),
+            repr(exc.value),
             "test_create_field_empty_name.txt"
         )
 
@@ -245,7 +273,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.field_type),
+            repr(exc.value),
             "test_create_field_missing_config_for_dropdown.txt"
         )
 
@@ -268,7 +296,7 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.field_type),
+            repr(exc.value),
             "test_create_field_dropdown_options_missing.txt"
         )
 
@@ -291,6 +319,6 @@ class TestCreateFieldInteractor:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
-            repr(exc.value.invalid_keys),
+            repr(exc.value),
             "test_create_field_invalid_config_keys.txt"
         )

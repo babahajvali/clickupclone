@@ -75,6 +75,6 @@ class TestGetFieldForTemplateInteractor:
             self.interactor.get_template_fields(template_id)
 
         snapshot.assert_match(
-            exc.value.template_id,
+            repr(exc.value),
             "template_not_found.txt"
         )

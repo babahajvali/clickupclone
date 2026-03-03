@@ -2,10 +2,10 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     DropdownOptionsEmpty,
-    InvalidFieldDefaultValue,
     UnexpectedFieldConfigKeys,
     DropdownOptionNotAllowed,
-    EmptyFieldConfig
+    EmptyFieldConfig,
+    DropdownDefaultValueNotInOptions,
 )
 from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.fields.validators.dropdown_validator import \
@@ -19,7 +19,7 @@ class TestDropdownField:
 
     def test_empty_config(self):
         with pytest.raises(EmptyFieldConfig):
-            self.dropdown.check_dropdown_config_data({})
+            self.dropdown.check_dropdown_config({})
 
     def test_invalid_keys(self):
         config = {
@@ -27,7 +27,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(UnexpectedFieldConfigKeys):
-            self.dropdown.check_dropdown_config_data(config)
+            self.dropdown.check_dropdown_config(config)
 
     def test_options_missing(self):
         config = {
@@ -35,7 +35,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionsEmpty):
-            self.dropdown.check_dropdown_config_data(config)
+            self.dropdown.check_dropdown_config(config)
 
     def test_options_empty_list(self):
         config = {
@@ -43,7 +43,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionsEmpty):
-            self.dropdown.check_dropdown_config_data(config)
+            self.dropdown.check_dropdown_config(config)
 
     def test_invalid_default_value(self):
         config = {
@@ -51,8 +51,8 @@ class TestDropdownField:
             FieldConfig.DEFAULT.value: "C"
         }
 
-        with pytest.raises(InvalidFieldDefaultValue):
-            self.dropdown.check_dropdown_config_data(config)
+        with pytest.raises(DropdownDefaultValueNotInOptions):
+            self.dropdown.check_dropdown_config(config)
 
     def test_valid_config(self):
         config = {
@@ -60,7 +60,7 @@ class TestDropdownField:
             FieldConfig.DEFAULT.value: "A"
         }
 
-        self.dropdown.check_dropdown_config_data(config)
+        self.dropdown.check_dropdown_config(config)
 
     def test_invalid_dropdown_value(self):
         config = {

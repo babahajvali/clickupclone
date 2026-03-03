@@ -81,6 +81,47 @@ class InvalidFieldDefaultValueType(graphene.ObjectType):
     message = graphene.String()
 
 
+class TextDefaultValueExceedsMaxLengthType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class NumberDefaultValueBelowMinimumType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class NumberDefaultValueAboveMaximumType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class DropdownDefaultValueNotInOptionsType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class MaxValueLessThanMinValueType(graphene.ObjectType):
+    field_type = graphene.String(required=True)
+    message = graphene.String(required=True)
+
+
+class TextValueExceedsMaxLengthType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class InvalidNumberFieldValueType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class NumberValueBelowMinimumType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class NumberValueExceedsMaximumType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
+class DropdownOptionNotAllowedType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
 class TemplateNameAlreadyExistsType(graphene.ObjectType):
     template_name = graphene.String(required=True)
 

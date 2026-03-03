@@ -125,6 +125,15 @@ class UnexpectedFieldConfigKeys(Exception):
         return self.message
 
 
+class MaxValueLessThanMinValue(Exception):
+    def __init__(self, field_type: str, message: str):
+        self.field_type = field_type
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 class DropdownOptionsEmpty(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
@@ -145,6 +154,38 @@ class InvalidFieldDefaultValue(Exception):
                 f"Invalid default value '{default_value}' "
                 f"for field type '{field_type}'."
             )
+
+    def __str__(self):
+        return self.message
+
+
+class TextDefaultValueExceedsMaxLength(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class NumberDefaultValueBelowMinimum(Exception):
+    def __init__(self, message: str | None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class NumberDefaultValueAboveMaximum(Exception):
+    def __init__(self, message: str | None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class DropdownDefaultValueNotInOptions(Exception):
+    def __init__(self, message: str | None):
+        self.message = message
 
     def __str__(self):
         return self.message
@@ -447,6 +488,38 @@ class EmptyFieldConfig(Exception):
 class InvalidFieldValue(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class TextValueExceedsMaxLength(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class NumberValueBelowMinimum(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class InvalidNumberFieldValue(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class NumberValueExceedsMaximum(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message
 
 
 class BothFolderAndSpaceProvided(Exception):

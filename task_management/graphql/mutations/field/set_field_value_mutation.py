@@ -1,11 +1,12 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import DeletedFieldException
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, InvalidFieldValue, TaskNotFoundType, \
     DeletedTaskType, FieldNotFoundType, DeletedFieldType, \
-    UserNotWorkspaceMemberType
+    UserNotWorkspaceMemberType, TextValueExceedsMaxLengthType, \
+    InvalidNumberFieldValueType, NumberValueBelowMinimumType, \
+    NumberValueExceedsMaximumType, DropdownOptionNotAllowedType
 from task_management.graphql.types.input_types import SetFieldValuesInputParams
 from task_management.graphql.types.response_types import \
     SetTaskFieldValueResponse
@@ -72,3 +73,18 @@ class SetFieldValueMutation(graphene.Mutation):
 
         except custom_exceptions.InvalidFieldValue as e:
             return InvalidFieldValue(message=e.message)
+
+        except custom_exceptions.TextValueExceedsMaxLength as e:
+            return TextValueExceedsMaxLengthType(message=e.message)
+
+        except custom_exceptions.InvalidNumberFieldValue as e:
+            return InvalidNumberFieldValueType(message=e.message)
+
+        except custom_exceptions.NumberValueBelowMinimum as e:
+            return NumberValueBelowMinimumType(message=e.message)
+
+        except custom_exceptions.NumberValueExceedsMaximum as e:
+            return NumberValueExceedsMaximumType(message=e.message)
+
+        except custom_exceptions.DropdownOptionNotAllowed as e:
+            return DropdownOptionNotAllowedType(message=e.message)

@@ -1,1 +1,1 @@
-'invalid_tpl'
+TemplateNotFound()

@@ -12,7 +12,7 @@ class FieldConfigValidator:
     @staticmethod
     def check_field_config(field_type: FieldType, config: dict):
         validation_handlers = {
-            FieldType.DROPDOWN: DropdownField.check_dropdown_config_data,
+            FieldType.DROPDOWN: DropdownField.check_dropdown_config,
             FieldType.TEXT: TextField.check_text_config,
             FieldType.NUMBER: NumberField.check_number_config,
         }

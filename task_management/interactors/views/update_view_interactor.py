@@ -31,12 +31,12 @@ class UpdateViewInteractor:
 
         is_description_provided = description is not None
         is_name_provided = name is not None
-        has_no_update_field_properties = any([
+        has_no_update_field_properties = not any([
             is_description_provided,
             is_name_provided,
         ])
 
-        if not has_no_update_field_properties:
+        if has_no_update_field_properties:
             raise NothingToUpdateView(view_id=view_id)
         if is_name_provided:
             self.view_mixin.check_view_name_not_empty(name=name)

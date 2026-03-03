@@ -8,8 +8,7 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     CreateFieldValueDTO, TaskFieldValuesDTO, FieldValueDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
-
-from task_management.models import Field, FieldValue
+from task_management.models import Field, TaskFieldValue
 
 
 class FieldStorage(FieldStorageInterface):
@@ -65,7 +64,6 @@ class FieldStorage(FieldStorageInterface):
 
         return self._field_dto(field_data=field_data)
 
-
     def update_field(self, field_id: str,
                      update_field_data: UpdateFieldDTO) -> FieldDTO:
 
@@ -97,7 +95,7 @@ class FieldStorage(FieldStorageInterface):
 
     def get_field_values_by_task_ids(
             self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
-        field_values = FieldValue.objects.filter(
+        field_values = TaskFieldValue.objects.filter(
             task_id__in=task_ids
         ).select_related('field', 'task')
 
@@ -192,7 +190,7 @@ class FieldStorage(FieldStorageInterface):
             self, field_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
 
-        obj, created = FieldValue.objects.update_or_create(
+        obj, created = TaskFieldValue.objects.update_or_create(
             task_id=field_value_data.task_id,
             field_id=field_value_data.field_id,
             defaults={
@@ -212,7 +210,7 @@ class FieldStorage(FieldStorageInterface):
             self, create_bulk_field_values: list[CreateFieldValueDTO]):
 
         field_values_to_create = [
-            FieldValue(
+            TaskFieldValue(
                 task_id=fv_data.task_id,
                 field_id=fv_data.field_id,
                 value=fv_data.value,
@@ -220,7 +218,7 @@ class FieldStorage(FieldStorageInterface):
             )
             for fv_data in create_bulk_field_values
         ]
-        FieldValue.objects.bulk_create(field_values_to_create)
+        TaskFieldValue.objects.bulk_create(field_values_to_create)
 
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
         field_data = Field.objects.select_related(

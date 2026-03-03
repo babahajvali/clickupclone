@@ -1,9 +1,9 @@
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    InvalidFieldDefaultValue,
-    InvalidFieldValue,
-    UnexpectedFieldConfigKeys
+    UnexpectedFieldConfigKeys,
+    TextDefaultValueExceedsMaxLength,
+    TextValueExceedsMaxLength,
 )
 from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.fields.validators.text_validator import \
@@ -29,7 +29,7 @@ class TestTextField:
             FieldConfig.DEFAULT.value: "TooLongText"
         }
 
-        with pytest.raises(InvalidFieldDefaultValue):
+        with pytest.raises(TextDefaultValueExceedsMaxLength):
             self.text_field.check_text_config(config)
 
     def test_valid_text_config(self):
@@ -52,7 +52,7 @@ class TestTextField:
             FieldConfig.MAX_LENGTH.value: 5
         }
 
-        with pytest.raises(InvalidFieldValue):
+        with pytest.raises(TextValueExceedsMaxLength):
             TextField.check_text_field_value("TooLongText", config)
 
     def test_valid_text_value(self):

@@ -99,7 +99,7 @@ class TestDeleteFieldInteractor:
             )
 
         snapshot.assert_match(
-            repr(exc.value.field_id),
+            repr(exc.value),
             "test_delete_field_not_found.txt",
         )
 
@@ -115,6 +115,6 @@ class TestDeleteFieldInteractor:
             )
 
         snapshot.assert_match(
-            repr(exc.value.user_id),
+            repr(exc.value),
             "test_delete_field_permission_denied.txt",
         )

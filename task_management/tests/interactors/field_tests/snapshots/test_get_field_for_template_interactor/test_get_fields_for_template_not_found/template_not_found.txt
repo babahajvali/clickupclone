@@ -1,1 +1,1 @@
-non-existent-template
+TemplateNotFound()

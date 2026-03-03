@@ -81,8 +81,8 @@ class TestFieldValueStorage:
             create_bulk_field_values=bulk_field_values)
 
         # Assert
-        from task_management.models import FieldValue
-        result = FieldValue.objects.filter(
+        from task_management.models import TaskFieldValue
+        result = TaskFieldValue.objects.filter(
             task_id__in=[task_id_1, task_id_2]).count()
         snapshot.assert_match(repr(result),
                               "test_create_bulk_field_values_success.txt")
@@ -114,7 +114,7 @@ class TestFieldValueStorage:
             create_bulk_field_values=bulk_field_values)
 
         # Assert
-        from task_management.models import FieldValue
-        result = FieldValue.objects.filter(task_id=task_id).count()
+        from task_management.models import TaskFieldValue
+        result = TaskFieldValue.objects.filter(task_id=task_id).count()
         snapshot.assert_match(repr(result),
                               "test_create_bulk_field_values_single_record.txt")

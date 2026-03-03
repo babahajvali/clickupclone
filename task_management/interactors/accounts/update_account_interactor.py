@@ -57,7 +57,7 @@ class UpdateAccountInteractor:
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        has_no_update_field_properties = any([
+        has_no_update_field_properties = not any([
             is_description_provided,
             is_name_provided
         ])

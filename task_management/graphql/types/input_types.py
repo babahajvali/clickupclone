@@ -70,7 +70,7 @@ class TransferWorkspaceInputParams(graphene.InputObjectType):
 
 
 class GetWorkspaceInputParams(graphene.InputObjectType):
-    workspace_ids = graphene.List(graphene.String,required=True)
+    workspace_ids = graphene.List(graphene.String, required=True)
 
 
 class DeleteAccountInputParams(graphene.InputObjectType):
@@ -100,7 +100,7 @@ class UpdateTaskInputParams(graphene.InputObjectType):
 class CreateListInputParams(graphene.InputObjectType):
     name = graphene.String(required=True)
     description = graphene.String(required=True)
-    space_id = graphene.String(required=True)
+    space_id = graphene.String()
     is_private = graphene.Boolean(required=True)
     folder_id = graphene.String()
 

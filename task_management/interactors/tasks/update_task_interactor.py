@@ -53,12 +53,12 @@ class UpdateTaskInteractor:
 
         is_title_provided = title is not None
         is_description_provided = description is not None
-        is_no_update_field_properties_provided = any([
+        is_no_update_field_properties_provided = not any([
             is_description_provided,
             is_title_provided
         ])
 
-        if not is_no_update_field_properties_provided:
+        if is_no_update_field_properties_provided:
             raise NothingToUpdateTask(task_id=task_id)
         if is_title_provided:
             self.task_mixin.check_task_title_not_empty(title=title)

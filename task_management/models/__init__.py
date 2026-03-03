@@ -1,5 +1,5 @@
 from task_management.models.account import Account
-from task_management.models.fields import Field, FieldValue
+from task_management.models.fields import Field, TaskFieldValue
 from task_management.models.permissions import ListPermission, \
     FolderPermission, SpacePermission
 from task_management.models.space_folder_list import Space, Folder, \
@@ -24,7 +24,7 @@ __all__ = [
     "View",
     "ListView",
     "Field",
-    "FieldValue",
+    "TaskFieldValue",
     "FolderPermission",
     "SpacePermission",
     "TaskAssignee",

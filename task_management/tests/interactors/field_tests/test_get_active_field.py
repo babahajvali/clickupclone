@@ -64,6 +64,6 @@ class TestGetActiveFieldInteractor:
             self.interactor.get_field(field_id="field_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_id),
+            repr(exc.value),
             "test_get_active_field_not_found.txt",
         )

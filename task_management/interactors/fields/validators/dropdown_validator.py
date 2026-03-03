@@ -2,14 +2,15 @@ from typing import Any
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
-    DropdownOptionsEmpty, InvalidFieldDefaultValue, \
-    UnexpectedFieldConfigKeys, DropdownOptionNotAllowed, EmptyFieldConfig
+    DropdownOptionsEmpty, UnexpectedFieldConfigKeys, DropdownOptionNotAllowed, \
+    EmptyFieldConfig, \
+    DropdownDefaultValueNotInOptions
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 
 class DropdownField:
 
-    def check_dropdown_config_data(self, config: dict):
+    def check_dropdown_config(self, config: dict):
         self.check_mandatory_config_is_not_empty(
             config=config, field_type=FieldType.DROPDOWN.value)
         self._validate_keys(config)
@@ -26,8 +27,7 @@ class DropdownField:
 
         is_invalid_default = default_value not in options
         if is_invalid_default:
-            raise InvalidFieldDefaultValue(
-                field_type=FieldType.DROPDOWN.value,
+            raise DropdownDefaultValueNotInOptions(
                 message="Default value must be one of dropdown options")
 
     @staticmethod

@@ -1,9 +1,10 @@
 from django.contrib import admin
+
 from task_management.models import (
     User, Account, Workspace, WorkspaceMember,
     Space, SpacePermission, Folder, FolderPermission,
     List, ListPermission, Task, TaskAssignee,
-    Template, Field, FieldValue, View, ListView
+    Template, Field, TaskFieldValue, View, ListView
 )
 from task_management.models.user import PasswordResetToken
 
@@ -25,7 +26,6 @@ class AccountAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     readonly_fields = ('account_id', 'created_at', 'updated_at')
     raw_id_fields = ('owner',)
-
 
 
 @admin.register(Workspace)
@@ -94,7 +94,8 @@ class FolderPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'list_id', 'space', 'folder', 'order', 'is_deleted',
+    list_display = ('name', 'list_id', 'space', 'folder', 'order',
+                    'is_deleted',
                     'is_private', 'created_by', 'created_at')
     list_filter = ('is_deleted', 'is_private', 'created_at')
     search_fields = ('name', 'description')
@@ -105,7 +106,8 @@ class ListAdmin(admin.ModelAdmin):
 
 @admin.register(ListPermission)
 class ListPermissionAdmin(admin.ModelAdmin):
-    list_display = ('list', 'user','id', 'permission_type', 'is_active', 'added_by',
+    list_display = ('list', 'user', 'id', 'permission_type', 'is_active',
+                    'added_by',
                     'created_at')
     list_filter = ('permission_type', 'is_active', 'created_at')
     search_fields = ('list__name', 'user__username')
@@ -156,8 +158,8 @@ class FieldAdmin(admin.ModelAdmin):
     ordering = ('template', 'order')
 
 
-@admin.register(FieldValue)
-class FieldValueAdmin(admin.ModelAdmin):
+@admin.register(TaskFieldValue)
+class TaskFieldValueAdmin(admin.ModelAdmin):
     list_display = ('field', 'task', 'value', 'created_by', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('field__field_name', 'task__title')

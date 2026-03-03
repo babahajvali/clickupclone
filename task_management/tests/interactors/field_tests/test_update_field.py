@@ -20,6 +20,14 @@ from task_management.interactors.dtos import (
 )
 from task_management.interactors.fields.update_field_interactor import \
     UpdateFieldInteractor
+from task_management.interactors.fields.validators.dropdown_validator import \
+    DropdownField
+from task_management.interactors.fields.validators.field_config_validator import \
+    FieldConfigValidator
+from task_management.interactors.fields.validators.number_validator import \
+    NumberField
+from task_management.interactors.fields.validators.text_validator import \
+    TextField
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
 
@@ -60,6 +68,26 @@ class TestUpdateFieldInteractor:
             field_storage=self.field_storage,
             workspace_storage=self.workspace_storage,
         )
+        self._original_check_field_config = FieldConfigValidator.check_field_config
+        FieldConfigValidator.check_field_config = staticmethod(
+            self._patched_check_field_config
+        )
+
+    def teardown_method(self):
+        FieldConfigValidator.check_field_config = (
+            self._original_check_field_config
+        )
+
+    @staticmethod
+    def _patched_check_field_config(field_type: FieldType, config: dict):
+        validation_handlers = {
+            FieldType.DROPDOWN: DropdownField().check_dropdown_config,
+            FieldType.TEXT: TextField().check_text_config,
+            FieldType.NUMBER: NumberField().check_number_config,
+        }
+        handler = validation_handlers.get(field_type)
+        if handler:
+            handler(config=config)
 
     def _setup_update_field_dependencies(
             self,
@@ -113,7 +141,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.user_id),
+            repr(exc.value),
             "test_update_field_permission_denied.txt",
         )
 
@@ -127,7 +155,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_name),
+            repr(exc.value),
             "test_update_field_duplicate_name.txt",
         )
 
@@ -142,7 +170,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_id),
+            repr(exc.value),
             "test_update_field_not_found.txt",
         )
 
@@ -161,7 +189,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_id),
+            repr(exc.value),
             "test_update_field_without_updates.txt",
         )
 
@@ -178,7 +206,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_id),
+            repr(exc.value),
             "test_update_field_inactive.txt",
         )
 
@@ -192,7 +220,7 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.field_name),
+            repr(exc.value),
             "test_update_field_empty_name.txt",
         )
 
@@ -206,6 +234,6 @@ class TestUpdateFieldInteractor:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(
-            repr(exc.value.invalid_keys),
+            repr(exc.value),
             "test_update_field_invalid_config_keys.txt",
         )

@@ -97,7 +97,7 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            space_id=None,
             created_by="user_id",
             is_private=False,
             folder_id="folder_1",
@@ -177,7 +177,7 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            space_id=None,
             created_by="user_id",
             is_private=False,
             folder_id="folder_1",
@@ -197,7 +197,7 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            space_id=None,
             created_by="user_id",
             is_private=False,
             folder_id="folder_1",

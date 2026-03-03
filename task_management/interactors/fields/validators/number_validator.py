@@ -2,8 +2,9 @@ from typing import Dict, Any
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
-    UnexpectedFieldConfigKeys, InvalidFieldDefaultValue, \
-    InvalidFieldValue
+    UnexpectedFieldConfigKeys, NumberDefaultValueBelowMinimum, \
+    NumberDefaultValueAboveMaximum, MaxValueLessThanMinValue, \
+    NumberValueBelowMinimum, InvalidNumberFieldValue, NumberValueExceedsMaximum
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 
@@ -31,15 +32,13 @@ class NumberField:
 
         is_below_minimum = min_val is not None and default_value < min_val
         if is_below_minimum:
-            raise InvalidFieldDefaultValue(
-                field_type=FieldType.NUMBER.value,
+            raise NumberDefaultValueBelowMinimum(
                 message=f"Default value {default_value} is less "
                         f"than minimum {min_val}")
 
         is_above_maximum = max_val is not None and default_value > max_val
         if is_above_maximum:
-            raise InvalidFieldDefaultValue(
-                field_type=FieldType.NUMBER.value,
+            raise NumberDefaultValueAboveMaximum(
                 message=f"Default value {default_value} is greater "
                         f"than maximum {max_val}")
 
@@ -52,7 +51,7 @@ class NumberField:
 
         is_max_less_than_min = max_val < min_val
         if is_max_less_than_min:
-            raise UnexpectedFieldConfigKeys(
+            raise MaxValueLessThanMinValue(
                 field_type=FieldType.NUMBER.value,
                 message=f"max {max_val} must be greater than or equal to min {min_val}")
 
@@ -71,15 +70,15 @@ class NumberField:
         try:
             numeric_value = float(value)
         except (ValueError, TypeError):
-            raise InvalidFieldValue(
+            raise InvalidNumberFieldValue(
                 message="Number fields value must be a valid number")
 
         min_value = config.get(FieldConfig.MIN.value)
         if min_value is not None and numeric_value < min_value:
-            raise InvalidFieldValue(
+            raise NumberValueBelowMinimum(
                 message=f"Number must be at least {min_value}")
 
         max_value = config.get(FieldConfig.MAX.value)
         if max_value is not None and numeric_value > max_value:
-            raise InvalidFieldValue(
+            raise NumberValueExceedsMaximum(
                 message=f"Number must not exceed {max_value}")
