@@ -36,8 +36,8 @@ class SetListVisibilityInteractor:
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def set_list_visibility(
-            self, list_id: str, visibility: Visibility, user_id: str
-    ) -> ListDTO:
+            self, list_id: str, visibility: Visibility, user_id: str) \
+            -> ListDTO:
         self._check_visibility_type(visibility=visibility.value)
 
         self.list_mixin.check_list_not_deleted(list_id=list_id)

@@ -251,7 +251,7 @@ class ListStorage(ListStorageInterface):
             self, user_id: str, list_id: str) -> UserListPermissionDTO | None:
 
         permission = ListPermission.objects.filter(
-            list_id=list_id, user_id=user_id).order_by('created_at').last()
+            list_id=list_id, user_id=user_id).order_by('-created_at').first()
 
         return self._list_permission_dto(permission_data=permission)
 

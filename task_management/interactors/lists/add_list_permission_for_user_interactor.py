@@ -50,8 +50,7 @@ class AddListPermissionForUserInteractor:
         )
 
         return self.list_storage.create_list_users_permission(
-            user_permissions=[user_permission_data]
-        )[0]
+            user_permissions=[user_permission_data])[0]
 
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
         workspace_id = self.list_storage.get_workspace_id_by_list_id(

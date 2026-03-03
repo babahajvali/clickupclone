@@ -46,13 +46,13 @@ class FieldStorage(FieldStorageInterface):
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
-            exclude_field_id: Optional[str]) -> bool:
+            field_id: Optional[str]) -> bool:
 
         field_data = Field.objects.filter(
             field_name=field_name, template_id=template_id)
 
-        if exclude_field_id:
-            field_data = field_data.exclude(field_id=exclude_field_id)
+        if field_id:
+            field_data = field_data.exclude(field_id=field_id)
 
         return field_data.exists()
 

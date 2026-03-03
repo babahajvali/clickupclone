@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import InvalidOrder
@@ -25,6 +27,7 @@ class ReorderSpaceInteractor:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
 
+    @transaction.atomic
     @invalidate_interactor_cache(cache_name="spaces")
     def reorder_space(
             self, workspace_id: str, space_id: str, order: int, user_id: str) \

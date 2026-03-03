@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from task_management.decorators.caching_decorators import (
     invalidate_interactor_cache,
 )
@@ -38,10 +40,11 @@ class ReorderListInSpaceInteractor:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
 
+    @transaction.atomic
     @invalidate_interactor_cache(cache_name="space_lists")
     def reorder_list_in_space(
-            self, list_id: str, space_id: str, order: int, user_id: str
-    ) -> ListDTO:
+            self, list_id: str, space_id: str, order: int, user_id: str) \
+            -> ListDTO:
         self._check_list_order_in_space(space_id=space_id, order=order)
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self.space_mixin.check_space_not_deleted(space_id=space_id)

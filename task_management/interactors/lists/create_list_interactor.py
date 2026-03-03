@@ -52,6 +52,7 @@ class CreateListInteractor:
             raise BothFolderAndSpaceProvided(
                 folder_id=list_data.folder_id,
                 space_id=list_data.space_id)
+        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
 
         if is_folder_provided:
             order = self.create_list_in_folder(list_data=list_data)
@@ -69,7 +70,7 @@ class CreateListInteractor:
             workspace_id=workspace_id, user_id=user_id)
 
     def create_list_in_folder(self, list_data: CreateListDTO) -> int:
-        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
+
         self.folder_mixin.check_folder_not_deleted(
             folder_id=list_data.folder_id)
         space_id = self.folder_storage.get_folder_space_id(
@@ -84,7 +85,6 @@ class CreateListInteractor:
 
     def create_list_in_space(self, list_data: CreateListDTO) -> int:
 
-        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
         self.space_mixin.check_space_not_deleted(
             space_id=list_data.space_id)
         self._check_user_has_edit_access_for_space(

@@ -8,6 +8,7 @@ from task_management.storages.field_storage import FieldStorage
 from task_management.tests.factories.storage_factory import FieldFactory, \
     TemplateFactory, UserFactory, ListFactory
 
+
 @freeze_time("2024-01-15 10:00:00")
 class TestFieldStorage:
     @pytest.fixture(autouse=True)
@@ -127,7 +128,7 @@ class TestFieldStorage:
         # Act
         result = storage.is_field_name_exists(
             field_name=field_name, template_id=str(template_id),
-            exclude_field_id=None)
+            field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -147,7 +148,7 @@ class TestFieldStorage:
         # Act
         result = storage.is_field_name_exists(
             field_name=field_name, template_id=str(template_id),
-            exclude_field_id=None)
+            field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),

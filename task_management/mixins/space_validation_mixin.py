@@ -14,8 +14,8 @@ class SpaceValidationMixin:
 
         space_data = self.validate_space_exists(space_id=space_id)
 
-        is_space_delete = space_data.is_deleted
-        if is_space_delete:
+        is_space_deleted = space_data.is_deleted
+        if is_space_deleted:
             raise DeletedSpaceFound(space_id=space_id)
 
     def validate_space_exists(self, space_id: str) -> SpaceDTO:

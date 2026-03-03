@@ -26,9 +26,10 @@ class FolderCreationHandler:
             self, folder_data: CreateFolderDTO) -> FolderDTO:
         folder_obj = self._create_folder(folder_data=folder_data)
 
-        self._create_folder_permission_for_user(
-            folder_id=folder_obj.folder_id, user_id=folder_data.created_by
-        )
+        if folder_obj.is_private:
+            self._create_folder_permission_for_user(
+                folder_id=folder_obj.folder_id, user_id=folder_data.created_by
+            )
 
         return folder_obj
 

@@ -22,9 +22,8 @@ class UpdateAccountInteractor:
         return AccountValidator(account_storage=self.account_storage)
 
     def update_account(
-            self, account_id: str, user_id: str,
-            name: Optional[str], description: Optional[str]) \
-            -> AccountDTO:
+            self, account_id: str, user_id: str, name: Optional[str],
+            description: Optional[str]) -> AccountDTO:
         """ Update accounts data after validations
         validate input data
             1. validate accounts name

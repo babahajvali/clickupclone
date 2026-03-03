@@ -12,10 +12,11 @@ class DropdownField:
     def check_dropdown_config(self, config: dict):
         self.check_mandatory_config_is_not_empty(
             config=config, field_type=FieldType.DROPDOWN.value)
-        self._validate_keys(config)
-        options = self._validate_options_are_required(config)
 
-        self._validate_default_value(config, options)
+        self._validate_keys(config)
+        options = self._validate_options_are_required(config=config)
+
+        self._validate_default_value(config=config, options=options)
 
     @staticmethod
     def _validate_default_value(config: dict, options: Any | None):

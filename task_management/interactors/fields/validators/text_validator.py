@@ -9,8 +9,8 @@ class TextField:
 
     def check_text_config(self, config: dict):
 
-        self._validate_config_keys(config)
-        self._validate_default_value(config)
+        self._validate_config_keys(config=config)
+        self._validate_default_value(config=config)
 
     @staticmethod
     def _validate_default_value(config: dict):

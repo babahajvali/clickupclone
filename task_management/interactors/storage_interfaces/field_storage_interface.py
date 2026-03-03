@@ -16,7 +16,7 @@ class FieldStorageInterface(ABC):
     @abstractmethod
     def is_field_name_exists(
             self, field_name: str, template_id: str,
-            exclude_field_id: Optional[str]) -> bool:
+            field_id: Optional[str]) -> bool:
         pass
 
     @abstractmethod

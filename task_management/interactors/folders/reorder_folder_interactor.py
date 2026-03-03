@@ -75,8 +75,9 @@ class ReorderFolderInteractor:
         if order > folder_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_folder_positions(self, space_id: str, old_order: int,
-                                  new_order: int, folder_id: str):
+    def _reorder_folder_positions(
+            self, space_id: str, old_order: int, new_order: int,
+            folder_id: str):
         self._reorder_folder_positions_except_current(
             space_id=space_id, old_order=old_order, new_order=new_order
         )

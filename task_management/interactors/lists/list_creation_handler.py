@@ -59,14 +59,9 @@ class ListCreationHandler:
                 list_id=list_obj.list_id, user_id=list_obj.created_by
             )
 
-        create_template_dto = CreateTemplateDTO(
-            name=f"{list_obj.name} template",
-            description=None,
-            list_id=list_obj.list_id,
-            created_by=list_obj.created_by,
-        )
-
-        self._create_default_template(template_data=create_template_dto)
+        self._create_default_template(
+            name=list_obj.name, list_id=list_obj.list_id,
+            user_id=list_obj.created_by)
         view_id = self.view_storage.get_list_view_id(
             view_type=ViewTypes.LIST.value)
 
@@ -115,7 +110,7 @@ class ListCreationHandler:
         )
 
     def _create_default_template(
-            self, template_data: CreateTemplateDTO) -> TemplateDTO:
+            self, name: str, list_id: str, user_id: str) -> TemplateDTO:
         template_creation_handler = TemplateCreationHandler(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
@@ -123,8 +118,15 @@ class ListCreationHandler:
             workspace_storage=self.workspace_storage,
         )
 
+        create_template_dto = CreateTemplateDTO(
+            name=f"{name} template",
+            description=None,
+            list_id=list_id,
+            created_by=user_id,
+        )
+
         return template_creation_handler.handle_template(
-            template_data=template_data)
+            template_data=create_template_dto)
 
     def _create_default_list_view(
             self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:

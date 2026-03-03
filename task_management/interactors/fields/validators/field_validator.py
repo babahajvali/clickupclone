@@ -14,11 +14,10 @@ class FieldValidator:
     def check_field_name_not_exist_in_template(
             self, field_name: str, template_id: str, field_id: Optional[str]):
 
-        is_exists = self.field_storage.is_field_name_exists(
-            field_name=field_name, template_id=template_id,
-            exclude_field_id=field_id)
+        is_name_exists = self.field_storage.is_field_name_exists(
+            field_name=field_name, template_id=template_id, field_id=field_id)
 
-        if is_exists:
+        if is_name_exists:
             raise FieldNameAlreadyExists(field_name=field_name)
 
     @staticmethod

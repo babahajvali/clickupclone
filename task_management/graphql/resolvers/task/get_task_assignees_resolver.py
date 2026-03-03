@@ -3,7 +3,7 @@ from task_management.graphql.types.error_types import TaskNotFoundType, \
     DeletedTaskType
 from task_management.graphql.types.types import TaskAssigneeType, \
     TaskAssigneesType
-from task_management.interactors.tasks.get_task_assignees import \
+from task_management.interactors.tasks.get_task_assignees_interactor import \
     GetTaskAssigneesInteractor
 from task_management.storages import TaskStorage
 

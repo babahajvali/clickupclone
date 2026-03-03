@@ -12,18 +12,19 @@ class NumberField:
 
     def check_number_config(self, config: Dict):
 
-        self._validate_config_keys(config)
+        self._validate_config_keys(config=config)
 
         min_val = config.get(FieldConfig.MIN.value)
         max_val = config.get(FieldConfig.MAX.value)
 
-        self._validate_number_config_values(max_val, min_val)
+        self._validate_number_config_values(max_val=max_val, min_val=min_val)
 
-        self._validate_number_default_value(config, max_val, min_val)
+        self._validate_number_default_value(
+            config=config, max_val=max_val, min_val=min_val)
 
     @staticmethod
     def _validate_number_default_value(
-            config: dict, max_val: Any | None, min_val: Any | None):
+            config: Dict, max_val: Any | None, min_val: Any | None):
 
         default_value = config.get(FieldConfig.DEFAULT.value)
         is_default_value_provided = default_value is not None

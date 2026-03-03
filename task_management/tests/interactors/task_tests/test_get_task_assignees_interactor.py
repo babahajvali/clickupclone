@@ -8,7 +8,7 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.interactors.dtos import TaskAssigneeDTO
 from task_management.interactors.storage_interfaces import TaskStorageInterface
-from task_management.interactors.tasks.get_task_assignees import (
+from task_management.interactors.tasks.get_task_assignees_interactor import (
     GetTaskAssigneesInteractor,
 )
 
