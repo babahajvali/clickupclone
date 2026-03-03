@@ -46,11 +46,19 @@ class CreateAccountInteractor:
             AccountNameAlreadyExistsException: If the accounts name is already taken.
         """
 
-        self.account_validator.check_account_name_is_not_empty(
-            account_name=name)
+        self.check_account_name_is_not_empty(account_name=name)
         self.user_mixin.check_user_is_active(user_id=created_by)
         self.account_validator.check_account_name_in_db(
             account_name=name, account_id=None)
 
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)
+
+    @staticmethod
+    def check_account_name_is_not_empty(account_name: str):
+        from task_management.exceptions.custom_exceptions import \
+            EmptyAccountName
+        is_name_empty = not account_name or not account_name.strip()
+
+        if is_name_empty:
+            raise EmptyAccountName(account_name=account_name)
