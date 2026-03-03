@@ -1,7 +1,13 @@
+from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import TaskFieldValueDTO, \
     UpdateFieldValueDTO
-from task_management.interactors.fields.validators.field_value_validator \
-    import FieldValueValidator
+
+from task_management.interactors.fields.validators.dropdown_validator import \
+    DropdownField
+from task_management.interactors.fields.validators.number_validator import \
+    NumberField
+from task_management.interactors.fields.validators.text_validator import \
+    TextField
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TaskStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import FieldValidationMixin, \
@@ -43,10 +49,6 @@ class FieldResponseInteractor:
         return TaskValidationMixin(task_storage=self.task_storage)
 
     @property
-    def field_value_validator(self):
-        return FieldValueValidator()
-
-    @property
     def workspace_mixin(self) -> WorkspaceValidationMixin:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
@@ -66,7 +68,7 @@ class FieldResponseInteractor:
         field_data = self.field_storage.get_field(
             field_id=set_value_data.field_id
         )
-        self.field_value_validator.check_field_value(
+        self._check_field_value(
             config=field_data.config,
             value=set_value_data.value,
             field_type=field_data.field_type.value
@@ -83,3 +85,15 @@ class FieldResponseInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )
+
+    @staticmethod
+    def _check_field_value(field_type: str, value: str, config: dict):
+        validation_handlers = {
+            FieldType.TEXT.value: TextField.check_text_field_value,
+            FieldType.NUMBER.value: NumberField.check_number_field_value,
+            FieldType.DROPDOWN.value: DropdownField.check_dropdown_field_value,
+        }
+
+        handler = validation_handlers.get(field_type)
+        if handler:
+            handler(value=value, config=config)

@@ -1,23 +1,19 @@
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
     InvalidFieldDefaultValue, InvalidFieldValue, \
-    InvalidFieldConfig
+    UnexpectedFieldConfigKeys
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 
 class TextField:
 
+    def check_text_config(self, config: dict):
+
+        self._validate_config_keys(config)
+        self._validate_default_value(config)
+
     @staticmethod
-    def check_text_config(config: dict):
-
-        allowed_keys = FIELD_TYPE_KEYS[FieldType.TEXT.value][
-            FieldConfig.CONFIG_KEYS.value]
-        invalid_keys = set(config.keys()) - allowed_keys
-        if invalid_keys:
-            raise InvalidFieldConfig(
-                field_type=FieldType.TEXT.value,
-                invalid_keys=list(invalid_keys))
-
+    def _validate_default_value(config: dict):
         default_value = config.get(FieldConfig.DEFAULT.value)
         is_default_value_provided = default_value is not None
         if not is_default_value_provided:
@@ -31,6 +27,16 @@ class TextField:
                 field_type=FieldType.TEXT.value,
                 message=f"Default value length {len(default_value)}"
                         f" exceeds max_length {max_length}")
+
+    @staticmethod
+    def _validate_config_keys(config: dict):
+        allowed_keys = FIELD_TYPE_KEYS[FieldType.TEXT.value][
+            FieldConfig.CONFIG_KEYS.value]
+        invalid_keys = set(config.keys()) - allowed_keys
+        if invalid_keys:
+            raise UnexpectedFieldConfigKeys(
+                field_type=FieldType.TEXT.value,
+                invalid_keys=list(invalid_keys))
 
     @staticmethod
     def check_text_field_value(value: str, config: dict):

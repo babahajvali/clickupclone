@@ -58,8 +58,6 @@ class CreateFieldInteractor:
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
         """Create a new custom field for the target template."""
         self._create_field_input_validation(field_data=field_data)
-        self.template_mixin.check_template_exists(
-            template_id=field_data.template_id)
         self._check_user_has_edit_access_to_template(
             template_id=field_data.template_id,
             user_id=field_data.created_by_user_id
@@ -77,13 +75,15 @@ class CreateFieldInteractor:
         self.field_validator.check_field_name_not_empty(
             field_name=field_data.field_name)
         self._check_field_type(field_type=field_data.field_type.value)
-        self.field_config_validator.check_config(
+        self.field_config_validator.check_field_config(
             config=field_data.config, field_type=field_data.field_type)
         self.field_validator.check_field_name_not_exist_in_template(
             field_name=field_data.field_name,
             template_id=field_data.template_id,
             field_id=None
         )
+        self.template_mixin.check_template_exists(
+            template_id=field_data.template_id)
 
     def _check_user_has_edit_access_to_template(
             self, template_id: str, user_id: str):

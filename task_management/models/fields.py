@@ -39,7 +39,7 @@ class Field(models.Model):
         return self.field_name
 
 
-class FieldValue(models.Model):
+class TaskFieldValue(models.Model):
     field = models.ForeignKey(
         'Field',
         on_delete=models.CASCADE,

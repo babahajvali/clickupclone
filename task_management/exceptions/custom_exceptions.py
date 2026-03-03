@@ -101,7 +101,7 @@ class FieldNotFound(Exception):
         self.field_id = field_id
 
 
-class InvalidFieldConfig(Exception):
+class UnexpectedFieldConfigKeys(Exception):
     def __init__(
             self,
             field_type: str,
@@ -125,7 +125,7 @@ class InvalidFieldConfig(Exception):
         return self.message
 
 
-class DropdownOptionsMissing(Exception):
+class DropdownOptionsEmpty(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
@@ -439,7 +439,7 @@ class ResetTokenExpired(Exception):
         return f"Invalid or expired reset token: {self.token}"
 
 
-class MissingFieldConfig(Exception):
+class EmptyFieldConfig(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
@@ -447,3 +447,21 @@ class MissingFieldConfig(Exception):
 class InvalidFieldValue(Exception):
     def __init__(self, message: str):
         self.message = message
+
+
+class BothFolderAndSpaceProvided(Exception):
+    def __init__(self, folder_id: str, space_id: str):
+        self.folder_id = folder_id
+        self.space_id = space_id
+
+    def __str__(self):
+        return (f"Cannot provide both folder_id: {self.folder_id} "
+                f"and space_id: {self.space_id}")
+
+
+class DropdownOptionNotAllowed(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return self.message

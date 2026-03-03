@@ -71,10 +71,10 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.EmptyFieldName as e:
             return EmptyFieldNameType(field_name=e.field_name)
 
-        except custom_exceptions.MissingFieldConfig as e:
+        except custom_exceptions.EmptyFieldConfig as e:
             return MissingFieldConfigType(field_type=e.field_type)
 
-        except custom_exceptions.DropdownOptionsMissing as e:
+        except custom_exceptions.DropdownOptionsEmpty as e:
             return DropdownOptionsMissingType(field_type=e.field_type)
 
         except custom_exceptions.UserNotWorkspaceMember as e:
@@ -83,7 +83,7 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.InvalidFieldConfig as e:
+        except custom_exceptions.UnexpectedFieldConfigKeys as e:
             return InvalidFieldConfigType(
                 field_type=e.field_type,
                 invalid_keys=e.invalid_keys,

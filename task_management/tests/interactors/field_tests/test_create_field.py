@@ -8,9 +8,9 @@ from task_management.exceptions.custom_exceptions import (
     UnsupportedFieldType,
     FieldNameAlreadyExists,
     ModificationNotAllowed,
-    MissingFieldConfig,
-    DropdownOptionsMissing,
-    InvalidFieldConfig, EmptyFieldName,
+    EmptyFieldConfig,
+    DropdownOptionsEmpty,
+    UnexpectedFieldConfigKeys, EmptyFieldName,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import (
@@ -241,7 +241,7 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(MissingFieldConfig) as exc:
+        with pytest.raises(EmptyFieldConfig) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -264,7 +264,7 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(DropdownOptionsMissing) as exc:
+        with pytest.raises(DropdownOptionsEmpty) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -287,7 +287,7 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(InvalidFieldConfig) as exc:
+        with pytest.raises(UnexpectedFieldConfigKeys) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(

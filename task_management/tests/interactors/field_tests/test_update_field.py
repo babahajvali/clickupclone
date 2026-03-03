@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNotFound,
     DeletedFieldException,
     EmptyFieldName,
-    InvalidFieldConfig,
+    UnexpectedFieldConfigKeys,
 )
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import (
@@ -202,7 +202,7 @@ class TestUpdateFieldInteractor:
         dto = self._get_update_dto(config={"bad_key": 1})
 
         # Act
-        with pytest.raises(InvalidFieldConfig) as exc:
+        with pytest.raises(UnexpectedFieldConfigKeys) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(

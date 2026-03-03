@@ -8,7 +8,8 @@ from task_management.interactors.fields.validators.field_validator import \
     FieldValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
-from task_management.mixins import WorkspaceValidationMixin, FieldValidationMixin
+from task_management.mixins import WorkspaceValidationMixin, \
+    FieldValidationMixin
 
 
 class UpdateFieldInteractor:
@@ -89,7 +90,7 @@ class UpdateFieldInteractor:
 
         is_config_provided = update_field_data.config is not None
         if is_config_provided:
-            self.field_config_validator.check_config(
+            self.field_config_validator.check_field_config(
                 field_type=field_data.field_type,
                 config=update_field_data.config)
 

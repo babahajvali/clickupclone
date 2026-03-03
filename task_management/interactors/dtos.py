@@ -137,7 +137,7 @@ class UserTasksDTO:
 class CreateListDTO:
     name: str
     description: str
-    space_id: str
+    space_id: Optional[str]
     created_by: str
     is_private: bool
     folder_id: Optional[str] = None
@@ -155,11 +155,11 @@ class ListDTO:
     list_id: str
     name: str
     description: str
-    space_id: str
     is_deleted: bool
     order: int
     is_private: bool
     created_by: str
+    space_id: Optional[str] = None
     folder_id: Optional[str] = None
 
 

@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Space(models.Model):
-    space_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    space_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                                editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     workspace = models.ForeignKey(
@@ -35,7 +36,8 @@ class Space(models.Model):
 
 
 class Folder(models.Model):
-    folder_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    folder_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                                 editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     space = models.ForeignKey(
@@ -65,13 +67,15 @@ class Folder(models.Model):
 
 
 class List(models.Model):
-    list_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    list_id = models.UUIDField(primary_key=True, default=uuid.uuid4,
+                               editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     space = models.ForeignKey(
         "Space",
         on_delete=models.CASCADE,
-        related_name='lists'
+        related_name='space_lists',
+        null=True, blank=True
     )
     folder = models.ForeignKey(
         "Folder",

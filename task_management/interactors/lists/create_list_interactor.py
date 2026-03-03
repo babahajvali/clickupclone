@@ -1,7 +1,7 @@
-from typing import Optional
-
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
+from task_management.exceptions.custom_exceptions import \
+    BothFolderAndSpaceProvided
 from task_management.interactors.dtos import CreateListDTO, ListDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, FolderStorageInterface, WorkspaceStorageInterface, \
@@ -41,20 +41,21 @@ class CreateListInteractor:
     @invalidate_interactor_cache(cache_name="folder_lists")
     def create_list(self, list_data: CreateListDTO) -> ListDTO:
 
-        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
-        self._check_user_has_edit_access_for_space(
-            space_id=list_data.space_id, user_id=list_data.created_by
-        )
-        self.space_mixin.check_space_not_deleted(
-            space_id=list_data.space_id)
         is_folder_provided = list_data.folder_id is not None
-        if is_folder_provided:
-            self.folder_mixin.check_folder_not_deleted(
-                folder_id=list_data.folder_id)
+        is_space_provided = list_data.space_id is not None
 
-        order = self._get_list_order(
-            folder_id=list_data.folder_id, space_id=list_data.space_id
-        )
+        is_both_folder_and_space_provided = (
+                is_folder_provided and is_space_provided)
+
+        if is_both_folder_and_space_provided:
+            raise BothFolderAndSpaceProvided(
+                folder_id=list_data.folder_id,
+                space_id=list_data.space_id)
+
+        if is_folder_provided:
+            order = self.create_list_in_folder(list_data=list_data)
+        else:
+            order = self.create_list_in_space(list_data=list_data)
 
         return self.list_storage.create_list(list_data=list_data, order=order)
 
@@ -66,14 +67,28 @@ class CreateListInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    def _get_list_order(self, folder_id: Optional[str], space_id: str) -> int:
+    def create_list_in_folder(self, list_data: CreateListDTO) -> int:
+        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
+        self.folder_mixin.check_folder_not_deleted(
+            folder_id=list_data.folder_id)
+        space_id = self.folder_storage.get_folder_space_id(
+            folder_id=list_data.folder_id)
+        self._check_user_has_edit_access_for_space(
+            space_id=space_id, user_id=list_data.created_by
+        )
+        order = self.list_storage.get_last_list_order_in_folder(
+            folder_id=list_data.folder_id)
 
-        is_folder_provided = folder_id is not None
-        if is_folder_provided:
-            order = self.list_storage.get_last_list_order_in_folder(
-                folder_id=folder_id)
-        else:
-            order = self.list_storage.get_last_list_order_in_space(
-                space_id=space_id)
+        return order + 1
 
+    def create_list_in_space(self, list_data: CreateListDTO) -> int:
+
+        self.list_mixin.check_list_name_not_empty(list_name=list_data.name)
+        self.space_mixin.check_space_not_deleted(
+            space_id=list_data.space_id)
+        self._check_user_has_edit_access_for_space(
+            space_id=list_data.space_id, user_id=list_data.created_by
+        )
+        order = self.list_storage.get_last_list_order_in_space(
+            space_id=list_data.space_id)
         return order + 1
