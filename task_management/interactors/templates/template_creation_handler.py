@@ -7,8 +7,8 @@ from task_management.interactors.dtos import CreateTemplateDTO, CreateFieldDTO, 
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, FieldStorageInterface, \
     WorkspaceStorageInterface
-from task_management.interactors.templates.template_interactor import \
-    TemplateInteractor
+from task_management.interactors.templates.create_template_interactor import \
+    CreateTemplateInteractor
 
 
 class TemplateCreationHandler:
@@ -33,7 +33,7 @@ class TemplateCreationHandler:
         return template_obj
 
     def _create_template(self, template_data: CreateTemplateDTO):
-        template_interactor = TemplateInteractor(
+        template_interactor = CreateTemplateInteractor(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage

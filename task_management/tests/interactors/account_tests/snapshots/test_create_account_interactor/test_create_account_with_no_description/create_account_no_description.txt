@@ -1,0 +1,1 @@
+AccountDTO(account_id='41991bf7-b7ba-43f1-a28a-b9cd4e37af45', name='Brooks-Sanchez', description='Modern eye institution sort anything face could.', owner_id='abc46003-71f8-4851-86f7-f18e117e5314', is_active=True)

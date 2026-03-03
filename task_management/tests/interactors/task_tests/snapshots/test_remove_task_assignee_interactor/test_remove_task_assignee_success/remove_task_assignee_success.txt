@@ -1,0 +1,1 @@
+TaskAssigneeDTO(assign_id='assign_1', user_id='user_2', task_id='task_1', assigned_by='user_1', is_active=False)

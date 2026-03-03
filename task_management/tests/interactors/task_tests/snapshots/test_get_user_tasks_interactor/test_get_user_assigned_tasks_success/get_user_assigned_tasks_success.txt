@@ -1,0 +1,1 @@
+UserTasksDTO(user_id='user_2', tasks=[TaskDTO(task_id='task_1', title='Task 1', description='Task 1 description', list_id='list_1', order=1, created_by='user_1', is_deleted=False), TaskDTO(task_id='task_2', title='Task 2', description='Task 2 description', list_id='list_1', order=2, created_by='user_1', is_deleted=False)])

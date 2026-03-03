@@ -1,0 +1,1 @@
+AccountDTO(account_id='1338682e-aaa6-4bf7-8eb9-f69540d607aa', name='Ayala-Reed', description='Clearly computer six throw.', owner_id='f4e6b609-4092-4639-9925-b5eb8161e704', is_active=True)

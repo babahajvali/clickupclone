@@ -1,0 +1,1 @@
+AccountDTO(account_id='8946ba18-6e40-45e7-83a9-5929fd1701c0', name='Serrano-Mcdonald', description='Reflect herself operation no game film paper.', owner_id='72a7ed06-920d-4fdc-bc76-005d8803299a', is_active=True)

@@ -1,0 +1,1 @@
+TaskDTO(task_id='task_1', title='New Task', description='Task description', list_id='list_1', order=3, created_by='user_1', is_deleted=False)

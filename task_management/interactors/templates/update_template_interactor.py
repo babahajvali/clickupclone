@@ -1,8 +1,8 @@
 from typing import Optional
 
-from task_management.exceptions.custom_exceptions import EmptyTemplateName, \
+from task_management.exceptions.custom_exceptions import \
     NothingToUpdateTemplate
-from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO
+from task_management.interactors.dtos import TemplateDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, TemplateStorageInterface, ListStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
@@ -56,18 +56,6 @@ class TemplateInteractor:
         return WorkspaceValidationMixin(
             workspace_storage=self.workspace_storage)
 
-    def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
-
-        self._check_template_name_not_empty(template_name=template_data.name)
-        self.list_mixin.check_list_not_deleted(
-            list_id=template_data.list_id)
-        self._check_user_has_edit_access_for_list(
-            list_id=template_data.list_id, user_id=template_data.created_by)
-
-        result = self.template_storage.create_template(template_data)
-
-        return result
-
     def update_template(
             self, template_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> TemplateDTO:
@@ -75,10 +63,10 @@ class TemplateInteractor:
         self._check_template_update_field_properties(
             template_id=template_id, name=name, description=description)
         self.template_mixin.check_template_exists(template_id=template_id)
-        template_data = self.template_storage.get_template_by_id(
+        list_id = self.template_storage.get_template_list_id(
             template_id=template_id)
         self._check_user_has_edit_access_for_list(
-            list_id=template_data.list_id,
+            list_id=list_id,
             user_id=user_id)
 
         return self.template_storage.update_template(
@@ -91,26 +79,21 @@ class TemplateInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    @staticmethod
-    def _check_template_name_not_empty(template_name: str):
-        is_name_empty = not template_name or not template_name.strip()
-        if is_name_empty:
-            raise EmptyTemplateName(name=template_name)
-
     def _check_template_update_field_properties(
             self, template_id: str, name: Optional[str],
             description: Optional[str]):
 
-        field_properties_to_update = {}
-
         is_name_provided = name is not None
-        if is_name_provided:
-            self._check_template_name_not_empty(template_name=name)
-            field_properties_to_update["name"] = name
-
         is_description_provided = description is not None
-        if is_description_provided:
-            field_properties_to_update["description"] = description
 
-        if not field_properties_to_update:
+        has_no_update_field_properties = any([
+            is_name_provided,
+            is_description_provided
+        ])
+
+        if not has_no_update_field_properties:
             raise NothingToUpdateTemplate(template_id=template_id)
+
+        if is_name_provided:
+            self.template_mixin.check_template_name_not_empty(
+                template_name=name)

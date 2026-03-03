@@ -8,9 +8,8 @@ from task_management.interactors.dtos import CreateTemplateDTO, TemplateDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, ListStorageInterface, WorkspaceStorageInterface
-from task_management.interactors.templates.template_interactor import (
-    TemplateInteractor
-)
+from task_management.interactors.templates.create_template_interactor import \
+    CreateTemplateInteractor
 
 
 def make_permission(role: Role):
@@ -31,7 +30,7 @@ class TestCreateTemplateInteractor:
         self.list_storage = create_autospec(ListStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = TemplateInteractor(
+        self.interactor = CreateTemplateInteractor(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,

@@ -1,15 +1,11 @@
-from task_management.exceptions.custom_exceptions import \
-    ListViewNotFound
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, ViewStorageInterface, \
-    WorkspaceStorageInterface
-
-from task_management.mixins import WorkspaceValidationMixin, \
-    ListValidationMixin, ViewValidationMixin
+    ListStorageInterface, ViewStorageInterface, WorkspaceStorageInterface
+from task_management.mixins import ListValidationMixin, \
+    WorkspaceValidationMixin, ViewValidationMixin
 
 
-class ListViewInteractor:
+class AddListViewInteractor:
 
     def __init__(self, list_storage: ListStorageInterface,
                  view_storage: ViewStorageInterface,
@@ -33,7 +29,6 @@ class ListViewInteractor:
 
     def apply_view_for_list(
             self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
-
         list_view_data = self.view_storage.get_list_view(
             list_id=list_id, view_id=view_id)
         if list_view_data:
@@ -46,30 +41,6 @@ class ListViewInteractor:
 
         return self.view_storage.apply_view_for_list(
             view_id=view_id, list_id=list_id, user_id=user_id)
-
-    def remove_view_for_list(
-            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
-
-        self._check_list_view_exist(list_id=list_id, view_id=view_id)
-        self._check_user_has_edit_access_to_list(
-            user_id=user_id, list_id=list_id)
-
-        return self.view_storage.remove_list_view(
-            view_id=view_id, list_id=list_id)
-
-    def get_list_views(self, list_id: str) -> list[ListViewDTO]:
-        self.list_mixin.check_list_not_deleted(list_id=list_id)
-
-        return self.view_storage.get_list_views(list_id=list_id)
-
-    def _check_list_view_exist(self, list_id: str, view_id: str):
-
-        is_exist = self.view_storage.is_list_view_exist(
-            list_id=list_id, view_id=view_id)
-
-        is_list_view_not_found = not is_exist
-        if is_list_view_not_found:
-            raise ListViewNotFound(view_id=view_id, list_id=list_id)
 
     def _check_user_has_edit_access_to_list(self, list_id: str, user_id: str):
         workspace_id = self.list_storage.get_workspace_id_by_list_id(

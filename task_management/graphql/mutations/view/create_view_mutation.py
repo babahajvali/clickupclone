@@ -8,9 +8,9 @@ from task_management.graphql.types.input_types import CreateViewInputParams
 from task_management.graphql.types.response_types import CreateViewResponse
 from task_management.graphql.types.types import ViewType
 from task_management.interactors.dtos import CreateViewDTO
-from task_management.interactors.views.view_interactor import \
-    ViewInteractor
-from task_management.storages import ViewStorage, ListStorage
+from task_management.interactors.views.create_view_interactor import \
+    CreateViewInteractor
+from task_management.storages import ViewStorage
 
 
 class CreateViewMutation(graphene.Mutation):
@@ -22,12 +22,9 @@ class CreateViewMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         view_storage = ViewStorage()
-        list_storage = ListStorage()
-        
 
-        interactor = ViewInteractor(
+        interactor = CreateViewInteractor(
             view_storage=view_storage,
-            list_storage=list_storage,
         )
 
         try:

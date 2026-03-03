@@ -7,8 +7,8 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import ApplyListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
-from task_management.interactors.views.list_view_interactor import \
-    ListViewInteractor
+from task_management.interactors.views.add_list_view_interactor import \
+    AddListViewInteractor
 from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 
 
@@ -24,7 +24,7 @@ class ApplyListViewMutation(graphene.Mutation):
         view_storage = ViewStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = ListViewInteractor(
+        interactor = AddListViewInteractor(
             list_storage=list_storage,
             view_storage=view_storage,
             workspace_storage=workspace_storage

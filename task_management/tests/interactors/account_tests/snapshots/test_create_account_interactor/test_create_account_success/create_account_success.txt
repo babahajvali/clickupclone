@@ -1,0 +1,1 @@
+AccountDTO(account_id='f47d2b4c-1759-4e56-904c-563496a0798a', name='Smith PLC', description='Reflect hand away.', owner_id='3f62e243-07a2-4971-a935-cdd957aa85e3', is_active=True)

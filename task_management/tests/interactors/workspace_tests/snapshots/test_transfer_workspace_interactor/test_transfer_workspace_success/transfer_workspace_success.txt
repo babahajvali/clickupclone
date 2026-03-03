@@ -1,0 +1,1 @@
+WorkspaceDTO(workspace_id='workspace_1', name='Workspace', description='Description', user_id='new_user', account_id='account_1', is_deleted=False)
