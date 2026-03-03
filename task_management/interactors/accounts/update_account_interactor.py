@@ -66,5 +66,7 @@ class UpdateAccountInteractor:
             raise NothingToUpdateAccount(account_id=account_id)
 
         if is_name_provided:
+            self.account_validator.check_account_name_is_not_empty(
+                account_name=name)
             self.account_validator.check_account_name_in_db(
                 account_id=account_id, account_name=name)

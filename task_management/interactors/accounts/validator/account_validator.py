@@ -18,3 +18,12 @@ class AccountValidator:
 
         if is_account_name_exist:
             raise AccountNameAlreadyExists(name=account_name)
+
+    @staticmethod
+    def check_account_name_is_not_empty(account_name: str):
+        from task_management.exceptions.custom_exceptions import \
+            EmptyAccountName
+        is_name_empty = not account_name or not account_name.strip()
+
+        if is_name_empty:
+            raise EmptyAccountName(account_name=account_name)
