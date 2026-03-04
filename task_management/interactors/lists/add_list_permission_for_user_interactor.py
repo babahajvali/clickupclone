@@ -68,8 +68,8 @@ class AddListPermissionForUserInteractor:
 
         if not user_list_permission:
             return
-        is_user_permission_inactive = user_list_permission.is_active
-        if is_user_permission_inactive:
+        is_user_permission_active = user_list_permission.is_active
+        if is_user_permission_active:
             raise UserHaveAlreadyListPermission(user_id=user_id)
 
     @staticmethod

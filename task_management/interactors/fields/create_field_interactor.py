@@ -58,7 +58,7 @@ class CreateFieldInteractor:
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
         """Create a new custom field for the target template."""
-        self._create_field_input_validation(field_data=field_data)
+        self._check_create_field_input(field_data=field_data)
         self._check_user_has_edit_access_to_template(
             template_id=field_data.template_id,
             user_id=field_data.created_by_user_id
@@ -72,7 +72,7 @@ class CreateFieldInteractor:
             create_field_data=field_data,
             order=last_field_order_in_template + 1)
 
-    def _create_field_input_validation(self, field_data: CreateFieldDTO):
+    def _check_create_field_input(self, field_data: CreateFieldDTO):
         self.field_validator.check_field_name_not_empty(
             field_name=field_data.field_name)
         self._check_invalid_field_type(field_type=field_data.field_type.value)

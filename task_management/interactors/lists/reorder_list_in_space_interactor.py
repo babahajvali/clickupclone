@@ -45,9 +45,9 @@ class ReorderListInSpaceInteractor:
     def reorder_list_in_space(
             self, list_id: str, space_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self._check_list_order_within_range(space_id=space_id, order=order)
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self.space_mixin.check_space_not_deleted(space_id=space_id)
+        self._check_list_order_within_range(space_id=space_id, order=order)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id)
 

@@ -37,7 +37,7 @@ class UpdateListInteractor:
     def update_list(
             self, list_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> ListDTO:
-        self._check_update_field_properties(
+        self._check_update_list_properties(
             list_id=list_id, name=name, description=description
         )
         self.list_mixin.check_list_not_deleted(list_id=list_id)
@@ -48,7 +48,7 @@ class UpdateListInteractor:
             list_id=list_id, name=name, description=description
         )
 
-    def _check_update_field_properties(
+    def _check_update_list_properties(
             self, list_id: str, name: Optional[str], description: Optional[str]
     ):
 

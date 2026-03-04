@@ -1,9 +1,6 @@
 from task_management.decorators.caching_decorators import (
     invalidate_interactor_cache,
 )
-from task_management.exceptions.custom_exceptions import (
-    UnsupportedVisibilityType,
-)
 from task_management.exceptions.enums import VisibilityType
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.storage_interfaces import (
@@ -38,8 +35,6 @@ class SetListVisibilityInteractor:
     def set_list_visibility(
             self, list_id: str, visibility: VisibilityType, user_id: str) \
             -> ListDTO:
-        self._check_visibility_type(visibility=visibility.value)
-
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id)
@@ -54,11 +49,3 @@ class SetListVisibilityInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )
-
-    @staticmethod
-    def _check_visibility_type(visibility: str):
-        existed_visibilities = VisibilityType.get_values()
-        is_visibility_invalid = visibility not in existed_visibilities
-
-        if is_visibility_invalid:
-            raise UnsupportedVisibilityType(visibility_type=visibility)
