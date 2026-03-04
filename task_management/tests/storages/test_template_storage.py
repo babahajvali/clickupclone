@@ -1,5 +1,6 @@
 import pytest
 
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import CreateTemplateDTO
 from task_management.storages.template_storage import TemplateStorage
 from task_management.tests.factories.storage_factory import (
@@ -30,8 +31,12 @@ class TestTemplateStorage:
                              created_by=user)
         folder = FolderFactory(folder_id=folder_id, space=space,
                                created_by=user)
-        list_obj = ListFactory(list_id=list_id, space=space, folder=folder,
-                               created_by=user)
+        list_obj = ListFactory(
+            list_id=list_id,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=str(folder_id),
+            created_by=user
+        )
         template = TemplateFactory(list=list_obj, template_id=template_id)
 
         storage = TemplateStorage()
@@ -62,8 +67,12 @@ class TestTemplateStorage:
                              created_by=user)
         folder = FolderFactory(folder_id=folder_id, space=space,
                                created_by=user)
-        list_obj = ListFactory(list_id=list_id, space=space, folder=folder,
-                               created_by=user)
+        list_obj = ListFactory(
+            list_id=list_id,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=str(folder_id),
+            created_by=user
+        )
 
         dto = CreateTemplateDTO(
             name="Bug Template",
@@ -106,8 +115,12 @@ class TestTemplateStorage:
                              created_by=user)
         folder = FolderFactory(folder_id=folder_id, space=space,
                                created_by=user)
-        list_obj = ListFactory(list_id=list_id, space=space, folder=folder,
-                               created_by=user)
+        list_obj = ListFactory(
+            list_id=list_id,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=str(folder_id),
+            created_by=user
+        )
 
         TemplateFactory(
             template_id=template_id,

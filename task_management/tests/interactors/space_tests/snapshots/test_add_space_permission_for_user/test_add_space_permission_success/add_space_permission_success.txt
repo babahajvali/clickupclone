@@ -1,1 +1,1 @@
-UserSpacePermissionDTO(id=1, space_id='space_1', permission_type=<Permissions.FULL_EDIT: 'FULL_EDIT'>, user_id='user_1', is_active=True, added_by='admin')
+UserSpacePermissionDTO(id=1, space_id='space_1', permission_type=<PermissionType.FULL_EDIT: 'FULL_EDIT'>, user_id='user_1', is_active=True, added_by='admin')

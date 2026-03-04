@@ -5,6 +5,7 @@ from factory.django import DjangoModelFactory
 from faker import Faker
 
 from task_management.exceptions.enums import Gender, ViewType, FieldType
+from task_management.exceptions.enums import ListEntityType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
     Task, Template, View, ListView, TaskAssignee, Field, TaskFieldValue,
@@ -100,8 +101,8 @@ class ListFactory(DjangoModelFactory):
     list_id = factory.LazyFunction(uuid.uuid4)
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    space = factory.SubFactory(SpaceFactory)
-    folder = factory.SubFactory(FolderFactory)
+    entity_type = ListEntityType.SPACE.value
+    entity_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     order = factory.Sequence(lambda n: n + 1)
     is_deleted = False
     is_private = False

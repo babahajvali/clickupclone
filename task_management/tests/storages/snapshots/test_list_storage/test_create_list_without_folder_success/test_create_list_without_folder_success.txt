@@ -1,1 +1,1 @@
-{'name': 'Test List', 'description': 'Test description', 'space_id': '12345678-1234-5678-1234-567812345678', 'order': 1, 'is_deleted': False, 'created_by': '12345678-1234-5678-1234-567812345680', 'is_private': False, 'folder_id': None}
+{'name': 'Test List', 'description': 'Test description', 'entity_type': 'SPACE', 'entity_id': '12345678-1234-5678-1234-567812345678', 'order': 1, 'is_deleted': False, 'created_by': '12345678-1234-5678-1234-567812345680', 'is_private': False}

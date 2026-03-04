@@ -1,1 +1,1 @@
-ListDTO(list_id='list_1', name='List name', description='List description', is_deleted=False, order=1, is_private=False, created_by='user_id', space_id='space_1', folder_id='folder_1')
+ListDTO(list_id='list_1', name='List name', description='List description', is_deleted=False, order=1, is_private=False, created_by='user_id', entity_type=<ListEntityType.FOLDER: 'FOLDER'>, entity_id='folder_1')

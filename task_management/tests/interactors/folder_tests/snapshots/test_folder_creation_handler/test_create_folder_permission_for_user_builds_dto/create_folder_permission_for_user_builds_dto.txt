@@ -1,1 +1,1 @@
-CreateFolderPermissionDTO(folder_id='folder_1', user_id='user_1', permission_type=<Permissions.FULL_EDIT: 'FULL_EDIT'>, added_by='user_1')
+CreateFolderPermissionDTO(folder_id='folder_1', user_id='user_1', permission_type=<PermissionType.FULL_EDIT: 'FULL_EDIT'>, added_by='user_1')

@@ -5,6 +5,9 @@ from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
 from task_management.interactors.spaces.space_creation_handler import (
     SpaceCreationHandler,
 )
+from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
+    AddSpacePermissionForUser,
+)
 from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
     WorkspaceStorageInterface,
@@ -84,19 +87,16 @@ class TestSpaceCreationHandler:
 
     def test_create_space_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-                self.handler, "_get_space_permission_interactor"
-        ) as get_interactor:
-            interactor = get_interactor.return_value
+                AddSpacePermissionForUser,
+                "add_user_for_space_permission"
+        ) as add_space_permission:
 
             self.handler._create_space_permission_for_user(
                 space_id="space_1", user_id="user_1"
             )
 
-        interactor.add_user_for_space_permission.assert_called_once()
-        called_user_data = \
-        interactor.add_user_for_space_permission.call_args.kwargs[
-            "user_data"
-        ]
+        add_space_permission.assert_called_once()
+        called_user_data = add_space_permission.call_args.kwargs["user_data"]
 
         snapshot.assert_match(
             repr(called_user_data),

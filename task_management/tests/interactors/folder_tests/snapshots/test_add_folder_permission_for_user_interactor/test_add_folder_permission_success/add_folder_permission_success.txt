@@ -1,1 +1,1 @@
-UserFolderPermissionDTO(id=1, folder_id='folder_1', permission_type=<Permissions.FULL_EDIT: 'FULL_EDIT'>, user_id='user_1', is_active=True, added_by='admin')
+UserFolderPermissionDTO(id=1, folder_id='folder_1', permission_type=<PermissionType.FULL_EDIT: 'FULL_EDIT'>, user_id='user_1', is_active=True, added_by='admin')

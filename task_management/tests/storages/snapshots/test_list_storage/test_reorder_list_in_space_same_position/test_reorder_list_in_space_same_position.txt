@@ -1,1 +1,1 @@
-ListDTO(list_id=UUID('12345678-1234-5678-1234-567812345678'), name='dark', description='Prevent might game seven.', is_deleted=False, order=2, is_private=False, created_by=UUID('12345678-1234-5678-1234-567812345681'), space_id=UUID('12345678-1234-5678-1234-567812345679'), folder_id=None)
+ListDTO(list_id='12345678-1234-5678-1234-567812345678', name='bar', description='Class chance may.', is_deleted=False, order=2, is_private=False, created_by='12345678-1234-5678-1234-567812345681', entity_type=<ListEntityType.SPACE: 'SPACE'>, entity_id='12345678-1234-5678-1234-567812345679')

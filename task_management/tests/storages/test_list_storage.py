@@ -35,8 +35,7 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         folder = FolderFactory(folder_id=folder_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user)
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user)
         storage = ListStorage()
 
         # Act
@@ -85,13 +84,12 @@ class TestListStorage:
                 {
                     "name": result.name,
                     "description": result.description,
-                    "space_id": str(result.space_id),
+                    "entity_type": result.entity_type.value,
+                    "entity_id": str(result.entity_id),
                     "order": result.order,
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(
-                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_with_folder_success.txt",
@@ -123,13 +121,12 @@ class TestListStorage:
                 {
                     "name": result.name,
                     "description": result.description,
-                    "space_id": str(result.space_id),
+                    "entity_type": result.entity_type.value,
+                    "entity_id": str(result.entity_id),
                     "order": result.order,
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(
-                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_without_folder_success.txt",
@@ -144,8 +141,8 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
         user = UserFactory(user_id=user_id)
-        ListFactory(space=space, folder=folder, created_by=user, order=1)
-        ListFactory(space=space, folder=folder, created_by=user, order=2)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=1)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=2)
         create_list_data = CreateListDTO(
             name="New List",
             description="New description",
@@ -165,13 +162,12 @@ class TestListStorage:
                 {
                     "name": result.name,
                     "description": result.description,
-                    "space_id": str(result.space_id),
+                    "entity_type": result.entity_type.value,
+                    "entity_id": str(result.entity_id),
                     "order": result.order,
                     "is_deleted": result.is_deleted,
                     "created_by": str(result.created_by),
                     "is_private": result.is_private,
-                    "folder_id": str(
-                        result.folder_id) if result.folder_id else None,
                 }
             ),
             "test_create_list_with_existing_lists_in_folder.txt",
@@ -187,8 +183,7 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        ListFactory(list_id=list_id, folder=folder, space=space,
-                    created_by=user, name="Old Name",
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, name="Old Name",
                     description="Old description")
         list_id = str(list_id)
         name = "New Name"
@@ -215,17 +210,21 @@ class TestListStorage:
         folder2 = FolderFactory(folder_id=folder_id_2, space=space)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id="12345678-1234-5678-1234-567812345681",
-                    space=space, folder=folder1, created_by=user,
-                    is_deleted=False)
+                    entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id_1), created_by=user,
+                    name="List A", description="List A description",
+                    order=1, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345682",
-                    space=space, folder=folder1, created_by=user,
-                    is_deleted=False)
+                    entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id_1), created_by=user,
+                    name="List B", description="List B description",
+                    order=2, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345683",
-                    space=space, folder=folder2, created_by=user,
-                    is_deleted=False)
+                    entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id_2), created_by=user,
+                    name="List C", description="List C description",
+                    order=3, is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345684",
-                    space=space, folder=folder1, created_by=user,
-                    is_deleted=True)
+                    entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id_1), created_by=user,
+                    name="List D", description="List D description",
+                    order=4, is_deleted=True)
         folder_ids = [str(folder_id_1), str(folder_id_2)]
         storage = ListStorage()
 
@@ -261,16 +260,16 @@ class TestListStorage:
         space2 = SpaceFactory(space_id=space_id_2)
         user = UserFactory(user_id=user_id)
         ListFactory(list_id="12345678-1234-5678-1234-567812345681",
-                    space=space1, folder=None, created_by=user,
+                    entity_type=ListEntityType.SPACE.value, entity_id=str(space_id_1), created_by=user,
                     is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345682",
-                    space=space1, folder=None, created_by=user,
+                    entity_type=ListEntityType.SPACE.value, entity_id=str(space_id_1), created_by=user,
                     is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345683",
-                    space=space2, folder=None, created_by=user,
+                    entity_type=ListEntityType.SPACE.value, entity_id=str(space_id_2), created_by=user,
                     is_deleted=False)
         ListFactory(list_id="12345678-1234-5678-1234-567812345684",
-                    space=space1, folder=None, created_by=user,
+                    entity_type=ListEntityType.SPACE.value, entity_id=str(space_id_1), created_by=user,
                     is_deleted=True)
         space_ids = [str(space_id_1), str(space_id_2)]
         storage = ListStorage()
@@ -305,11 +304,10 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user, order=1, is_deleted=False)
-        ListFactory(space=space, folder=folder, created_by=user, order=2,
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=1, is_deleted=False)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=2,
                     is_deleted=False)
-        ListFactory(space=space, folder=folder, created_by=user, order=3,
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=3,
                     is_deleted=False)
         storage = ListStorage()
 
@@ -328,11 +326,11 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, folder=None, created_by=user,
+        ListFactory(list_id=list_id, entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     order=1, is_deleted=False)
-        ListFactory(space=space, folder=None, created_by=user, order=2,
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=2,
                     is_deleted=False)
-        ListFactory(space=space, folder=None, created_by=user, order=3,
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=3,
                     is_deleted=False)
         storage = ListStorage()
 
@@ -353,8 +351,13 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, created_by=user,
-                    is_private=True, folder=folder)
+        ListFactory(
+            list_id=list_id,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=str(folder_id),
+            created_by=user,
+            is_private=True
+        )
         storage = ListStorage()
 
         # Act
@@ -375,10 +378,9 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user, order=1)
-        ListFactory(space=space, folder=folder, created_by=user, order=2)
-        ListFactory(space=space, folder=folder, created_by=user, order=3)
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=1)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=2)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=3)
         storage = ListStorage()
 
         # Act
@@ -400,10 +402,9 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        ListFactory(space=space, folder=folder, created_by=user, order=1)
-        ListFactory(space=space, folder=folder, created_by=user, order=2)
-        ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user, order=3)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=1)
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=2)
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=3)
         storage = ListStorage()
 
         # Act
@@ -425,8 +426,7 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        ListFactory(list_id=list_id, space=space, folder=folder,
-                    created_by=user, order=2)
+        ListFactory(list_id=list_id, entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user, order=2)
         storage = ListStorage()
 
         # Act
@@ -446,10 +446,10 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, folder=None, created_by=user,
+        ListFactory(list_id=list_id, entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     order=1)
-        ListFactory(space=space, folder=None, created_by=user, order=2)
-        ListFactory(space=space, folder=None, created_by=user, order=3)
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=2)
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=3)
         storage = ListStorage()
 
         # Act
@@ -469,9 +469,9 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(space=space, folder=None, created_by=user, order=1)
-        ListFactory(space=space, folder=None, created_by=user, order=2)
-        ListFactory(list_id=list_id, space=space, folder=None, created_by=user,
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=1)
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, order=2)
+        ListFactory(list_id=list_id, entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     order=3)
         storage = ListStorage()
 
@@ -492,7 +492,7 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345681"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(list_id=list_id, space=space, folder=None, created_by=user,
+        ListFactory(list_id=list_id, entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     order=2)
         storage = ListStorage()
 
@@ -514,11 +514,11 @@ class TestListStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         folder = FolderFactory(folder_id=folder_id, space=space)
-        ListFactory(space=space, folder=folder, created_by=user,
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user,
                     is_deleted=False)
-        ListFactory(space=space, folder=folder, created_by=user,
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user,
                     is_deleted=False)
-        ListFactory(space=space, folder=folder, created_by=user,
+        ListFactory(entity_type=ListEntityType.FOLDER.value, entity_id=str(folder_id), created_by=user,
                     is_deleted=True)
         storage = ListStorage()
 
@@ -552,11 +552,11 @@ class TestListStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        ListFactory(space=space, folder=None, created_by=user,
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     is_deleted=False)
-        ListFactory(space=space, folder=None, created_by=user,
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user,
                     is_deleted=False)
-        ListFactory(space=space, folder=None, created_by=user, is_deleted=True)
+        ListFactory(entity_type=ListEntityType.SPACE.value, entity_id=str(space_id), created_by=user, is_deleted=True)
         storage = ListStorage()
 
         # Act
