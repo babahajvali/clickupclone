@@ -19,7 +19,7 @@ class DeleteWorkspaceInteractor:
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def delete_workspace(
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
-        self.workspace_mixin.validate_workspace_exists(
+        self.workspace_mixin.check_workspace_exists(
             workspace_id=workspace_id
         )
         self.workspace_mixin.check_user_is_workspace_owner(

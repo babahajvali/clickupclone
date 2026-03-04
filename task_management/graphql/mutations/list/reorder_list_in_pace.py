@@ -58,12 +58,12 @@ class ReorderListInSpaceMutation(graphene.Mutation):
                 list_id=result.list_id,
                 name=result.name,
                 description=result.description,
-                space_id=result.space_id,
+                entity_type=result.entity_type.value,
+                entity_id=result.entity_id,
                 is_deleted=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
-                folder_id=result.folder_id if result.folder_id else None,
             )
 
         except custom_exceptions.ListNotFound as e:

@@ -73,15 +73,14 @@ class ChangeWorkspaceMemberRoleInteractor:
     def _check_workspace_member_is_active(
             self, workspace_id: str, user_id: str):
 
-        workspace_member = self.workspace_storage.get_workspace_member(
+        workspace_member_data = self.workspace_storage.get_workspace_member(
             workspace_id=workspace_id, user_id=user_id)
 
-        is_member_not_found = not workspace_member
-        if is_member_not_found:
-            raise WorkspaceMemberNotFound(workspace_id=workspace_id,
-                                          user_id=user_id)
+        if not workspace_member_data:
+            raise WorkspaceMemberNotFound(
+                workspace_id=workspace_id, user_id=user_id)
 
-        is_member_inactive = not workspace_member.is_active
+        is_member_inactive = not workspace_member_data.is_active
         if is_member_inactive:
             raise InactiveWorkspaceMember(
-                workspace_member_id=workspace_member.id)
+                workspace_member_id=workspace_member_data.id)

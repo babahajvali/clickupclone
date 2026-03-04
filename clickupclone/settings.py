@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = "django-insecure-yc229@4c2k$88b#!hn10x81ew-gspmha02+nv)g&(j_y0098#t
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -55,7 +53,6 @@ MIDDLEWARE = [
     'task_management.middleware.auth_middleware.JWTAuthenticationMiddleware'
 ]
 
-
 # NEW
 ROOT_URLCONF = 'clickupclone.urls'
 WSGI_APPLICATION = 'clickupclone.wsgi.application'
@@ -76,7 +73,6 @@ TEMPLATES = [
     },
 ]
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -86,7 +82,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -106,7 +101,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # settings.py
 
 CACHES = {
@@ -119,14 +113,12 @@ CACHES = {
     }
 }
 
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'babavali3109@gmail.com'
-EMAIL_HOST_PASSWORD = 'nqbx etho jfwv kkpz'
-
+EMAIL_HOST_PASSWORD = 'lijt zdtt vjjf wylk'
 
 FRONTEND_URL = "http://localhost:3000/"
 
@@ -141,7 +133,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -151,7 +142,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 GRAPHENE = {
     'SCHEMA': 'clickupclone.schema.schema',

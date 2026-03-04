@@ -21,12 +21,12 @@ def get_list_resolver(root, info, params):
             list_id=list_data.list_id,
             name=list_data.name,
             description=list_data.description,
-            space_id=list_data.space_id,
-            is_active=list_data.is_deleted,
+            entity_type=list_data.entity_type.value,
+            entity_id=list_data.entity_id,
+            is_deleted=list_data.is_deleted,
             order=list_data.order,
             is_private=list_data.is_private,
             created_by=list_data.created_by,
-            folder_id=list_data.folder_id if list_data.folder_id else None,
         )
 
         return list_output

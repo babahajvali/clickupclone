@@ -28,6 +28,6 @@ class GetFieldInteractor:
 
     def get_field(self, field_id: str) -> FieldDTO:
         """Fetch a single field by id."""
-        self.field_mixin.validate_field_exists(field_id=field_id)
+        self.field_mixin.check_field_exists(field_id=field_id)
 
         return self.field_storage.get_field(field_id=field_id)

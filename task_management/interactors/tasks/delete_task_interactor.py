@@ -26,7 +26,7 @@ class DeleteTaskInteractor:
 
     @invalidate_interactor_cache(cache_name="tasks")
     def delete_task(self, task_id: str, user_id: str) -> TaskDTO:
-        self.task_mixin.validate_task_exists(task_id=task_id)
+        self.task_mixin.check_task_exists(task_id=task_id)
         self._check_user_has_edit_access_for_task(
             task_id=task_id, user_id=user_id)
 

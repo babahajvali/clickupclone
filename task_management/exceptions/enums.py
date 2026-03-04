@@ -106,3 +106,12 @@ class FieldConfig(Enum):
     OPTIONS = "options"
     CONFIG_KEYS = "config_keys"
     MAX_LENGTH = "max_length"
+
+
+class ListEntityType(Enum):
+    FOLDER = "FOLDER"
+    SPACE = "SPACE"
+
+    @classmethod
+    def get_list_of_tuples(cls):
+        return [(member.value, member.value.capitalize()) for member in cls]

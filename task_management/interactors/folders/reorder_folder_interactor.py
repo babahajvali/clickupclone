@@ -38,7 +38,7 @@ class ReorderFolderInteractor:
     def reorder_folder(
             self, space_id: str, folder_id: str, user_id: str, order: int) \
             -> FolderDTO:
-        self._check_folder_order(
+        self._check_folder_order_within_range(
             space_id=space_id, order=order
         )
         self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
@@ -53,7 +53,7 @@ class ReorderFolderInteractor:
         if old_order == order:
             return folder_data
 
-        return self._reorder_folder_positions(
+        return self._reorder_folders_and_update_current(
             space_id=space_id, old_order=old_order, new_order=order,
             folder_id=folder_id)
 
@@ -66,7 +66,7 @@ class ReorderFolderInteractor:
             user_id=user_id, workspace_id=workspace_id
         )
 
-    def _check_folder_order(self, space_id: str, order: int):
+    def _check_folder_order_within_range(self, space_id: str, order: int):
         if order < 1:
             raise InvalidOrder(order=order)
         folder_count = self.folder_storage.get_space_folder_count(
@@ -75,17 +75,17 @@ class ReorderFolderInteractor:
         if order > folder_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_folder_positions(
+    def _reorder_folders_and_update_current(
             self, space_id: str, old_order: int, new_order: int,
             folder_id: str):
-        self._reorder_folder_positions_except_current(
+        self._shift_other_folders(
             space_id=space_id, old_order=old_order, new_order=new_order
         )
 
         return self.folder_storage.update_folder_order(
             folder_id=folder_id, new_order=new_order)
 
-    def _reorder_folder_positions_except_current(
+    def _shift_other_folders(
             self, space_id: str, old_order: int, new_order: int):
 
         if new_order > old_order:

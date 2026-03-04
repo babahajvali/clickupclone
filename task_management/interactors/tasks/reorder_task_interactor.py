@@ -29,7 +29,7 @@ class ReorderTaskInteractor:
     def reorder_task(self, task_id: str, order: int, user_id: str) -> TaskDTO:
         self.task_mixin.check_task_not_deleted(task_id=task_id)
         task_data = self.task_storage.get_task(task_id=task_id)
-        self._check_task_order(
+        self._check_task_order_within_range(
             list_id=task_data.list_id, order=order
         )
         self._check_user_has_edit_access_for_task(
@@ -40,7 +40,7 @@ class ReorderTaskInteractor:
         if current_order == order:
             return task_data
 
-        return self._reorder_task_positions(
+        return self._reorder_tasks_and_update_current(
             list_id=task_data.list_id, current_order=current_order,
             new_order=order, task_id=task_id)
 
@@ -51,7 +51,7 @@ class ReorderTaskInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    def _check_task_order(self, list_id: str, order: int):
+    def _check_task_order_within_range(self, list_id: str, order: int):
         if order < 1:
             raise InvalidOrder(order=order)
         tasks_count = self.task_storage.get_tasks_count(
@@ -60,17 +60,17 @@ class ReorderTaskInteractor:
         if order > tasks_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_task_positions(
+    def _reorder_tasks_and_update_current(
             self, list_id: str, current_order: int,
             new_order: int, task_id: str):
 
-        self._reorder_task_positions_except_current(
+        self._shift_other_tasks(
             list_id=list_id, current_order=current_order, new_order=new_order)
 
         return self.task_storage.reorder_task(
             task_id=task_id, new_order=new_order, list_id=list_id)
 
-    def _reorder_task_positions_except_current(
+    def _shift_other_tasks(
             self, list_id: str, current_order: int, new_order: int):
 
         if new_order > current_order:

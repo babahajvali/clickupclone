@@ -10,13 +10,13 @@ class ListValidationMixin:
         self.list_storage = list_storage
 
     def check_list_not_deleted(self, list_id: str):
-        list_data = self.validate_list_exists(list_id=list_id)
+        list_data = self.check_list_exists(list_id=list_id)
 
         is_list_deleted = list_data.is_deleted
         if is_list_deleted:
             raise DeletedListFound(list_id=list_id)
 
-    def validate_list_exists(self, list_id: str) -> ListDTO:
+    def check_list_exists(self, list_id: str) -> ListDTO:
 
         list_data = self.list_storage.get_list(list_id=list_id)
 

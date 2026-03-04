@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import create_autospec
+
+import pytest
 
 from task_management.exceptions.custom_exceptions import (
     EmptyListName,
@@ -9,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     DeletedSpaceFound,
     SpaceNotFound,
 )
-from task_management.exceptions.enums import Role
+from task_management.exceptions.enums import Role, ListEntityType
 from task_management.interactors.dtos import CreateListDTO, ListDTO, \
     WorkspaceMemberDTO
 from task_management.interactors.lists.create_list_interactor import \
@@ -36,16 +37,18 @@ def make_permission(role: Role):
 class TestCreateList:
     @staticmethod
     def _get_list_dto(*, is_private=False, folder_id=None):
+        entity_type = ListEntityType.FOLDER if folder_id else ListEntityType.SPACE
+        entity_id = folder_id if folder_id else "space_1"
         return ListDTO(
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=is_private,
             created_by="user_id",
-            folder_id=folder_id,
+            entity_type=entity_type,
+            entity_id=entity_id,
         )
 
     def setup_method(self):
@@ -79,8 +82,8 @@ class TestCreateList:
             if folder_exists else None
         )
 
-        self.list_storage.get_last_list_order_in_space.return_value = 1
-        self.list_storage.get_last_list_order_in_folder.return_value = 1
+        self.list_storage.get_last_list_order.return_value = 1
+        self.folder_storage.get_folder_space_id.return_value = "space_1"
         self.list_storage.create_list.return_value = self._get_list_dto(
             folder_id="folder_1"
         )
@@ -97,10 +100,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id=None,
+            entity_type=ListEntityType.FOLDER,
+            entity_id="folder_1",
             created_by="user_id",
             is_private=False,
-            folder_id="folder_1",
         )
 
         # Act
@@ -117,10 +120,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name=" ",
             description="List description",
-            space_id="space_1",
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
             created_by="user_id",
             is_private=False,
-            folder_id=None,
         )
 
         # Act
@@ -128,7 +131,8 @@ class TestCreateList:
             self.interactor.create_list(dto)
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "test_create_list_empty_name.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "test_create_list_empty_name.txt")
 
     def test_create_list_space_not_found(self, snapshot):
         # Arrange
@@ -137,10 +141,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
             created_by="user_id",
             is_private=False,
-            folder_id=None,
         )
 
         # Act
@@ -157,10 +161,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
             created_by="user_id",
             is_private=False,
-            folder_id=None,
         )
 
         # Act
@@ -177,10 +181,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id=None,
+            entity_type=ListEntityType.FOLDER,
+            entity_id="folder_1",
             created_by="user_id",
             is_private=False,
-            folder_id="folder_1",
         )
 
         # Act
@@ -197,10 +201,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id=None,
+            entity_type=ListEntityType.FOLDER,
+            entity_id="folder_1",
             created_by="user_id",
             is_private=False,
-            folder_id="folder_1",
         )
 
         # Act
@@ -217,10 +221,10 @@ class TestCreateList:
         dto = CreateListDTO(
             name="List name",
             description="List description",
-            space_id="space_1",
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
             created_by="user_id",
             is_private=False,
-            folder_id=None,
         )
 
         # Act

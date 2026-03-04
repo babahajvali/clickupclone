@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import ListEntityType
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
     DeletedSpaceType, FolderNotFoundType, DeletedFolderType, \
     ModificationNotAllowedType, EmptyListNameType, UserNotWorkspaceMemberType
@@ -41,13 +42,15 @@ class CreateListMutation(graphene.Mutation):
         )
 
         try:
+            entity_type = ListEntityType(params.entity_type)
+
             create_list_data = CreateListDTO(
                 name=params.name,
                 description=params.description,
-                space_id=params.space_id,
+                entity_type=entity_type,
+                entity_id=params.entity_id,
                 created_by=info.context.user_id,
                 is_private=params.is_private,
-                folder_id=params.folder_id if params.folder_id else None
             )
 
             result = interactor.handle_list_creation(
@@ -57,12 +60,12 @@ class CreateListMutation(graphene.Mutation):
                 list_id=result.list_id,
                 name=result.name,
                 description=result.description,
-                space_id=result.space_id,
+                entity_type=result.entity_type.value,
                 is_deleted=result.is_deleted,
                 order=result.order,
                 is_private=result.is_private,
                 created_by=result.created_by,
-                folder_id=result.folder_id if result.folder_id else None
+                entity_id=result.entity_id,
             )
 
         except custom_exceptions.EmptyListName as e:

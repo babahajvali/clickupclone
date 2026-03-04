@@ -8,7 +8,8 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UnsupportedVisibilityType,
 )
-from task_management.exceptions.enums import Role, VisibilityType
+from task_management.exceptions.enums import Role, VisibilityType, \
+    ListEntityType
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
 from task_management.interactors.lists.set_list_visibility_interactor import (
     SetListVisibilityInteractor,
@@ -41,12 +42,12 @@ class TestSetListPrivate:
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=is_private,
             created_by="user_id",
-            folder_id=None,
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
         )
 
     def setup_method(self):

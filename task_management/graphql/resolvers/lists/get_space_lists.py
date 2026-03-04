@@ -30,12 +30,12 @@ def get_space_lists_resolver(root, info, params):
                 list_id=list_item.list_id,
                 name=list_item.name,
                 description=list_item.description,
-                space_id=list_item.space_id,
+                entity_type=list_item.entity_type.value,
+                entity_id=list_item.entity_id,
                 is_deleted=list_item.is_deleted,
                 order=list_item.order,
                 is_private=list_item.is_private,
-                created_by=list_item.created_by,
-                folder_id=list_item.folder_id if list_item.folder_id else None,
+                created_by=list_item.created_by
             )
             for list_item in lists_data
         ]

@@ -2,14 +2,14 @@ import uuid
 
 import factory
 
-from task_management.exceptions.enums import FieldType, Role
+from task_management.exceptions.enums import FieldType, Role, ListEntityType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     CreateTemplateDTO, TemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
     TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
     CreateSpaceDTO, SpaceDTO, CreateWorkspaceDTO, WorkspaceDTO, \
-    AddMemberToWorkspaceDTO, WorkspaceMemberDTO,  AccountDTO, \
+    AddMemberToWorkspaceDTO, WorkspaceMemberDTO, AccountDTO, \
     CreateAccountMemberDTO, AccountMemberDTO, FolderDTO
 
 
@@ -55,7 +55,6 @@ class CreateTemplateDTOFactory(factory.Factory):
     created_by = factory.Faker("uuid4")
 
 
-
 class TemplateDTOFactory(factory.Factory):
     class Meta:
         model = TemplateDTO
@@ -73,10 +72,10 @@ class CreateListDTOFactory(factory.Factory):
 
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    space_id = factory.Faker("uuid4")
+    entity_type = ListEntityType.SPACE
+    entity_id = factory.Faker("uuid4")
     is_private = False
     created_by = factory.Faker("uuid4")
-    folder_id = None
 
 
 class UpdateListDTOFactory(factory.Factory):
@@ -95,12 +94,12 @@ class ListDTOFactory(factory.Factory):
     list_id = factory.Faker("uuid4")
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    space_id = factory.Faker("uuid4")
-    is_active = True
+    entity_type = ListEntityType.SPACE
+    entity_id = factory.Faker("uuid4")
+    is_deleted = False
     order = factory.Faker("random_int", min=1, max=100)
     is_private = False
     created_by = factory.Faker("uuid4")
-    folder_id = None
 
 
 class CreateTaskDTOFactory(factory.Factory):

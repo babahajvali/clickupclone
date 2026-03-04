@@ -9,7 +9,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     NothingToUpdateList,
 )
-from task_management.exceptions.enums import Role
+from task_management.exceptions.enums import Role, ListEntityType
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
 from task_management.interactors.lists.update_list_interactor import (
     UpdateListInteractor,
@@ -38,12 +38,12 @@ class TestUpdateList:
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
-            folder_id=None,
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
         )
 
     def setup_method(self):

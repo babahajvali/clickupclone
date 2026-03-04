@@ -53,16 +53,18 @@ class TestTextField:
         }
 
         with pytest.raises(TextValueExceedsMaxLength):
-            TextField.check_text_field_value("TooLongText", config)
+            TextField.check_text_value_not_exceeds_max_length("TooLongText",
+                                                              config)
 
     def test_valid_text_value(self):
         config = {
             FieldConfig.MAX_LENGTH.value: 10
         }
 
-        TextField.check_text_field_value("Hello", config)
+        TextField.check_text_value_not_exceeds_max_length("Hello", config)
 
     def test_no_max_length_provided(self):
         config = {}
 
-        TextField.check_text_field_value("AnyLengthIsFine", config)
+        TextField.check_text_value_not_exceeds_max_length("AnyLengthIsFine",
+                                                          config)

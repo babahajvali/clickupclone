@@ -18,7 +18,7 @@ class TemplateStorage(TemplateStorageInterface):
             created_by=data.list.created_by.user_id,
         )
 
-    def get_template_by_id(self, template_id: str) -> TemplateDTO:
+    def get_template(self, template_id: str) -> TemplateDTO:
         template_data = Template.objects.get(template_id=template_id)
 
         return self._template_dto(data=template_data)

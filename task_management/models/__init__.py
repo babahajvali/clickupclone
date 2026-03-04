@@ -1,9 +1,10 @@
 from task_management.models.account import Account
 from task_management.models.fields import Field, TaskFieldValue
+from task_management.models.folder import Folder
+from task_management.models.list import List
 from task_management.models.permissions import ListPermission, \
     FolderPermission, SpacePermission
-from task_management.models.space_folder_list import Space, Folder, \
-    List
+from task_management.models.space import Space
 from task_management.models.task import Task, TaskAssignee
 from task_management.models.template_view import Template, View, \
     ListView

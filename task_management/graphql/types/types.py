@@ -85,12 +85,12 @@ class ListType(graphene.ObjectType):
     list_id = graphene.String(required=True)
     name = graphene.String(required=True)
     description = graphene.String(required=True)
-    space_id = graphene.String(required=True)
+    entity_type = graphene.String(required=True)
     is_deleted = graphene.Boolean(required=True)
     order = graphene.Int(required=True)
     is_private = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
-    folder_id = graphene.String()
+    entity_id = graphene.String(required=True)
 
 
 class ListsType(graphene.ObjectType):

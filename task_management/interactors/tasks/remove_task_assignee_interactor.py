@@ -25,7 +25,7 @@ class RemoveTaskAssigneeInteractor:
     def remove_task_assignee(
             self, assign_id: str, user_id: str) -> TaskAssigneeDTO:
 
-        assignee_data = self._validate_task_assignee_exists(
+        assignee_data = self._check_task_assignee_exists(
             assign_id=assign_id)
         self._check_user_has_edit_access_for_task(
             task_id=assignee_data.task_id, user_id=user_id)
@@ -33,7 +33,7 @@ class RemoveTaskAssigneeInteractor:
         return self.task_storage.remove_task_assignee(
             assign_id=assign_id)
 
-    def _validate_task_assignee_exists(self, assign_id: str):
+    def _check_task_assignee_exists(self, assign_id: str) -> TaskAssigneeDTO:
 
         assignee_data = self.task_storage.get_task_assignee(
             assign_id=assign_id)

@@ -14,6 +14,6 @@ class GetFolderInteractor:
         return FolderValidationMixin(folder_storage=self.folder_storage)
 
     def get_folder(self, folder_id: str) -> FolderDTO:
-        self.folder_mixin.validate_folder_exists(folder_id=folder_id)
+        self.folder_mixin.check_folder_exists(folder_id=folder_id)
 
         return self.folder_storage.get_folder(folder_id=folder_id)

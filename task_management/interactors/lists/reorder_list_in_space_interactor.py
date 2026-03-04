@@ -45,7 +45,7 @@ class ReorderListInSpaceInteractor:
     def reorder_list_in_space(
             self, list_id: str, space_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self._check_list_order_in_space(space_id=space_id, order=order)
+        self._check_list_order_within_range(space_id=space_id, order=order)
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self.space_mixin.check_space_not_deleted(space_id=space_id)
         self._check_user_has_edit_access_for_space(
@@ -57,7 +57,7 @@ class ReorderListInSpaceInteractor:
         if old_order == order:
             return list_data
 
-        return self._reorder_list_positions_in_space(
+        return self._reorder_lists_and_update_current_in_space(
             list_id=list_id,
             old_order=old_order,
             new_order=order,
@@ -72,10 +72,10 @@ class ReorderListInSpaceInteractor:
             workspace_id=workspace_id, user_id=user_id
         )
 
-    def _reorder_list_positions_in_space(
+    def _reorder_lists_and_update_current_in_space(
             self, space_id: str, old_order: int, new_order: int, list_id: str):
 
-        self._reorder_list_positions_in_space_except_current(
+        self._shift_other_lists_in_space(
             space_id=space_id, old_order=old_order, new_order=new_order
         )
 
@@ -83,7 +83,7 @@ class ReorderListInSpaceInteractor:
             list_id=list_id, order=new_order, space_id=space_id
         )
 
-    def _reorder_list_positions_in_space_except_current(
+    def _shift_other_lists_in_space(
             self, space_id: str, old_order: int, new_order: int):
 
         if new_order > old_order:
@@ -95,7 +95,7 @@ class ReorderListInSpaceInteractor:
                 space_id=space_id, old_order=old_order, new_order=new_order
             )
 
-    def _check_list_order_in_space(self, space_id: str, order: int):
+    def _check_list_order_within_range(self, space_id: str, order: int):
         if order < 1:
             raise InvalidOrder(order=order)
         lists_count = self.list_storage.get_space_lists_count(

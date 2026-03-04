@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-
 from typing import Optional
 
-from task_management.exceptions.enums import PermissionType
+from task_management.exceptions.enums import PermissionType, ListEntityType
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UserListPermissionDTO, CreateListPermissionDTO
 
@@ -23,15 +22,11 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
-        # order is auto-increase in folder or spaces
         pass
 
     @abstractmethod
-    def get_last_list_order_in_folder(self, folder_id: str) -> int:
-        pass
-
-    @abstractmethod
-    def get_last_list_order_in_space(self, space_id: str) -> int:
+    def get_last_list_order(
+            self, entity_type: ListEntityType | str, entity_id: str) -> int:
         pass
 
     @abstractmethod

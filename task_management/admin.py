@@ -94,14 +94,13 @@ class FolderPermissionAdmin(admin.ModelAdmin):
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'list_id', 'space', 'folder', 'order',
+    list_display = ('name', 'list_id', 'entity_type', 'entity_id', 'order',
                     'is_deleted',
                     'is_private', 'created_by', 'created_at')
     list_filter = ('is_deleted', 'is_private', 'created_at')
     search_fields = ('name', 'description')
     readonly_fields = ('list_id', 'created_at', 'updated_at')
-    raw_id_fields = ('space', 'folder', 'created_by')
-    ordering = ('space', 'order')
+    ordering = ('entity_type', 'order')
 
 
 @admin.register(ListPermission)

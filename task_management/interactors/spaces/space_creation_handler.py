@@ -30,28 +30,19 @@ class SpaceCreationHandler:
 
         return space_data
 
-    def _get_create_space_interactor(self):
+    def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
         space_interactor = CreateSpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
-
-        return space_interactor
-
-    def _get_space_permission_interactor(self):
-        permission_interactor = AddSpacePermissionForUser(
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage
-        )
-        return permission_interactor
-
-    def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
-        space_interactor = self._get_create_space_interactor()
 
         return space_interactor.create_space(space_data=space_input)
 
     def _create_space_permission_for_user(
             self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
-        space_interactor = self._get_space_permission_interactor()
+        permission_interactor = AddSpacePermissionForUser(
+            space_storage=self.space_storage,
+            workspace_storage=self.workspace_storage
+        )
 
         user_permission_data = CreateUserSpacePermissionDTO(
             space_id=space_id,
@@ -60,5 +51,5 @@ class SpaceCreationHandler:
             added_by=user_id
         )
 
-        return space_interactor.add_user_for_space_permission(
+        return permission_interactor.add_user_for_space_permission(
             user_data=user_permission_data)

@@ -1,5 +1,6 @@
 import pytest
 
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import CreateListDTO
 from task_management.storages.list_storage import ListStorage
 from task_management.tests.factories.storage_factory import ListFactory, \
@@ -68,8 +69,8 @@ class TestListStorage:
         create_list_data = CreateListDTO(
             name="Test List",
             description="Test description",
-            space_id=str(space_id),
-            folder_id=str(folder_id),
+            entity_type=ListEntityType.FOLDER,
+            entity_id=str(folder_id),
             is_private=False,
             created_by=str(user_id)
         )
@@ -106,8 +107,8 @@ class TestListStorage:
         create_list_data = CreateListDTO(
             name="Test List",
             description="Test description",
-            space_id=str(space_id),
-            folder_id=None,
+            entity_type=ListEntityType.SPACE,
+            entity_id=str(space_id),
             is_private=False,
             created_by=str(user_id)
         )
@@ -148,8 +149,8 @@ class TestListStorage:
         create_list_data = CreateListDTO(
             name="New List",
             description="New description",
-            space_id=str(space_id),
-            folder_id=str(folder_id),
+            entity_type=ListEntityType.FOLDER,
+            entity_id=str(folder_id),
             is_private=False,
             created_by=str(user_id)
         )

@@ -32,7 +32,8 @@ class ReorderSpaceInteractor:
     def reorder_space(
             self, workspace_id: str, space_id: str, order: int, user_id: str) \
             -> SpaceDTO:
-        self._check_space_order(workspace_id=workspace_id, order=order)
+        self._check_space_order_within_range(workspace_id=workspace_id,
+                                             order=order)
         self.space_mixin.check_space_not_deleted(space_id=space_id)
         self.workspace_mixin.check_workspace_not_deleted(
             workspace_id=workspace_id
@@ -47,13 +48,13 @@ class ReorderSpaceInteractor:
         if current_order == order:
             return space_data
 
-        return self._reorder_space_positions(
+        return self._reorder_spaces_and_update_current(
             space_id=space_id,
             current_order=current_order,
             new_order=order,
             workspace_id=workspace_id)
 
-    def _check_space_order(self, workspace_id: str, order: int):
+    def _check_space_order_within_range(self, workspace_id: str, order: int):
 
         if order < 1:
             raise InvalidOrder(order=order)
@@ -63,11 +64,11 @@ class ReorderSpaceInteractor:
         if order > space_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_space_positions(
+    def _reorder_spaces_and_update_current(
             self, workspace_id: str, current_order: int,
             new_order: int, space_id: str) -> SpaceDTO:
 
-        self._reorder_space_positions_except_current(
+        self._shift_other_spaces(
             workspace_id=workspace_id,
             current_order=current_order,
             new_order=new_order)
@@ -75,7 +76,7 @@ class ReorderSpaceInteractor:
         return self.space_storage.update_space_order(
             space_id=space_id, new_order=new_order)
 
-    def _reorder_space_positions_except_current(
+    def _shift_other_spaces(
             self, workspace_id: str, current_order: int, new_order: int):
 
         if new_order > current_order:

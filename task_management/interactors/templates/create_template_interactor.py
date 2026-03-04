@@ -35,7 +35,8 @@ class CreateTemplateInteractor:
         self._check_user_has_edit_access_for_list(
             list_id=template_data.list_id, user_id=template_data.created_by)
 
-        return self.template_storage.create_template(template_data)
+        return self.template_storage.create_template(
+            template_data=template_data)
 
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
         workspace_id = self.list_storage.get_workspace_id_by_list_id(

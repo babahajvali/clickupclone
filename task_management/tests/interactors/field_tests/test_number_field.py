@@ -78,7 +78,7 @@ class TestNumberField:
         config = {}
 
         with pytest.raises(InvalidNumberFieldValue):
-            NumberField.check_number_field_value("abc", config)
+            self.number_field.check_number_value_within_range("abc", config)
 
     def test_number_below_min(self):
         config = {
@@ -86,7 +86,7 @@ class TestNumberField:
         }
 
         with pytest.raises(NumberValueBelowMinimum):
-            NumberField.check_number_field_value("5", config)
+            self.number_field.check_number_value_within_range("5", config)
 
     def test_number_above_max(self):
         config = {
@@ -94,7 +94,7 @@ class TestNumberField:
         }
 
         with pytest.raises(NumberValueExceedsMaximum):
-            NumberField.check_number_field_value("150", config)
+            self.number_field.check_number_value_within_range("150", config)
 
     def test_valid_number_value(self):
         config = {
@@ -102,4 +102,4 @@ class TestNumberField:
             FieldConfig.MAX.value: 20
         }
 
-        NumberField.check_number_field_value("10", config)
+        self.number_field.check_number_value_within_range("10", config)

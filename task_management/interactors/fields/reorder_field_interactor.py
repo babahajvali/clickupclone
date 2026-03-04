@@ -60,7 +60,7 @@ class ReorderFieldInteractor:
         self._check_user_has_edit_access_to_template(
             template_id=template_id, user_id=user_id
         )
-        self._check_field_order(
+        self._check_folder_order_within_range(
             template_id=template_id, order=new_order
         )
 
@@ -70,7 +70,7 @@ class ReorderFieldInteractor:
         if old_order == new_order:
             return field_dto
 
-        return self._reorder_field_positions(
+        return self._reorder_fields_and_update_current(
             template_id=template_id, new_order=new_order, old_order=old_order,
             field_id=field_id
         )
@@ -83,7 +83,7 @@ class ReorderFieldInteractor:
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    def _check_field_order(self, template_id: str, order: int):
+    def _check_folder_order_within_range(self, template_id: str, order: int):
 
         if order < 1:
             raise InvalidOrder(order=order)
@@ -94,11 +94,11 @@ class ReorderFieldInteractor:
         if order > fields_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_field_positions(
+    def _reorder_fields_and_update_current(
             self, template_id: str, new_order: int, old_order: int,
             field_id: str):
 
-        self._reorder_field_positions_except_current(
+        self._shift_other_fields(
             template_id=template_id,
             new_order=new_order,
             old_order=old_order
@@ -109,7 +109,7 @@ class ReorderFieldInteractor:
             new_order=new_order
         )
 
-    def _reorder_field_positions_except_current(
+    def _shift_other_fields(
             self, template_id: str, new_order: int, old_order: int):
 
         if new_order > old_order:

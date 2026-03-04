@@ -75,25 +75,36 @@ class UpdateFieldInteractor:
 
     def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
+        self._validate_update_field_not_empty(update_field_data, field_data)
+        self._validate_update_field_name(update_field_data, field_data)
+        self._validate_update_field_config(update_field_data, field_data)
 
+    def _validate_update_field_not_empty(
+            self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
         if not self._is_field_properties_not_empty(
                 update_field_data=update_field_data):
             raise NothingToUpdateField(field_id=field_data.field_id)
 
+    def _validate_update_field_name(
+            self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
         is_field_name_provided = update_field_data.field_name is not None
-        if is_field_name_provided:
-            self.field_validator.check_field_name_not_empty(
-                field_name=update_field_data.field_name)
-            self.field_validator.check_field_name_not_exist_in_template(
-                field_id=update_field_data.field_id,
-                field_name=update_field_data.field_name,
-                template_id=field_data.template_id)
+        if not is_field_name_provided:
+            return
+        self.field_validator.check_field_name_not_empty(
+            field_name=update_field_data.field_name)
+        self.field_validator.check_field_name_not_exist_in_template(
+            field_id=update_field_data.field_id,
+            field_name=update_field_data.field_name,
+            template_id=field_data.template_id)
 
+    def _validate_update_field_config(
+            self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
         is_config_provided = update_field_data.config is not None
-        if is_config_provided:
-            self.field_config_validator.check_field_config(
-                field_type=field_data.field_type,
-                config=update_field_data.config)
+        if not is_config_provided:
+            return
+        self.field_config_validator.check_field_config(
+            field_type=field_data.field_type,
+            config=update_field_data.config)
 
     @staticmethod
     def _is_field_properties_not_empty(

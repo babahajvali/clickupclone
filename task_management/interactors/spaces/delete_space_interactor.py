@@ -26,7 +26,7 @@ class DeleteSpaceInteractor:
 
     @invalidate_interactor_cache(cache_name="spaces")
     def delete_space(self, space_id: str, deleted_by: str) -> SpaceDTO:
-        self.space_mixin.validate_space_exists(space_id=space_id)
+        self.space_mixin.check_space_exists(space_id=space_id)
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id
         )

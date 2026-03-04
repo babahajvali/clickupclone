@@ -1,7 +1,8 @@
 from django.db import transaction
 
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import CreateListDTO, CreateSpaceDTO, \
+from task_management.exceptions.enums import Role, ListEntityType
+from task_management.interactors.dtos import CreateListDTO, \
+    CreateSpaceDTO, \
     CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
@@ -102,10 +103,10 @@ class WorkspaceHandler:
         list_input_data = CreateListDTO(
             name=f"List 1",
             description=f"Default list",
+            entity_type=ListEntityType.SPACE,
+            entity_id=space_id,
             created_by=user_id,
-            space_id=space_id,
             is_private=False,
-            folder_id=None
         )
 
         return list_handler.handle_list_creation(list_input_data)

@@ -73,7 +73,7 @@ class ListCreationHandler:
 
         return list_obj
 
-    def _get_create_list_interactor(self):
+    def _create_list(self, list_data: CreateListDTO) -> ListDTO:
         list_interactor = CreateListInteractor(
             list_storage=self.list_storage,
             space_storage=self.space_storage,
@@ -81,24 +81,14 @@ class ListCreationHandler:
             workspace_storage=self.workspace_storage,
         )
 
-        return list_interactor
-
-    def _get_add_list_permission_for_user_interactor(self):
-        permission_interactor = AddListPermissionForUserInteractor(
-            list_storage=self.list_storage,
-            workspace_storage=self.workspace_storage,
-        )
-
-        return permission_interactor
-
-    def _create_list(self, list_data: CreateListDTO) -> ListDTO:
-        list_interactor = self._get_create_list_interactor()
-
         return list_interactor.create_list(list_data=list_data)
 
     def _create_list_permission_for_created_by_user(
             self, list_id: str, user_id: str) -> UserListPermissionDTO:
-        permission_interactor = self._get_add_list_permission_for_user_interactor()
+        permission_interactor = AddListPermissionForUserInteractor(
+            list_storage=self.list_storage,
+            workspace_storage=self.workspace_storage,
+        )
         permission_data = CreateListPermissionDTO(
             list_id=list_id,
             user_id=user_id,

@@ -4,9 +4,9 @@ from task_management.exceptions.custom_exceptions import \
     NothingToUpdateTemplate
 from task_management.interactors.dtos import TemplateDTO
 from task_management.interactors.storage_interfaces import \
-    WorkspaceStorageInterface, TemplateStorageInterface, ListStorageInterface
+    WorkspaceStorageInterface, TemplateStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
-    ListValidationMixin, WorkspaceValidationMixin
+    WorkspaceValidationMixin
 
 
 class TemplateInteractor:
@@ -14,43 +14,32 @@ class TemplateInteractor:
     
     Handles all templates-related operations including creation, updating, and
     retrieval of templates within lists. This interactor enforces business
-    rules and validates user permissions before performing any templates operations.
+    rules and validates user permissions before performing any templates
+    operations.
     
     Key Responsibilities:
-        - Create new templates with validation
         - Update existing templates properties
         - Validate templates names and descriptions
         - Ensure user has proper workspaces access
-        - Manage templates-fields relationships
-    
+
     Dependencies:
-        - FieldStorageInterface: Field operations for templates validation
         - WorkspaceMemberStorageInterface: User permission validation
         - TemplateStorageInterface: Template data persistence
-        - ListStorageInterface: List access validation
-        - SpaceStorageInterface: Space access validation
     
     Attributes:
         template_storage (TemplateStorageInterface): Storage for templates operations
-        list_storage (ListStorageInterface): Storage for lists operations
     """
 
     def __init__(
             self, workspace_storage: WorkspaceStorageInterface,
-            template_storage: TemplateStorageInterface,
-            list_storage: ListStorageInterface):
+            template_storage: TemplateStorageInterface):
 
         self.workspace_storage = workspace_storage
         self.template_storage = template_storage
-        self.list_storage = list_storage
 
     @property
     def template_mixin(self) -> TemplateValidationMixin:
         return TemplateValidationMixin(template_storage=self.template_storage)
-
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
 
     @property
     def workspace_mixin(self) -> WorkspaceValidationMixin:
@@ -64,18 +53,18 @@ class TemplateInteractor:
         self._check_template_update_field_properties(
             template_id=template_id, name=name, description=description)
         self.template_mixin.check_template_exists(template_id=template_id)
-        list_id = self.template_storage.get_template_list_id(
-            template_id=template_id)
-        self._check_user_has_edit_access_for_list(
-            list_id=list_id, user_id=user_id)
+        self._check_user_has_edit_access_for_template(
+            template_id=template_id, user_id=user_id)
 
         return self.template_storage.update_template(
             template_id=template_id, name=name, description=description)
 
-    def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
+    def _check_user_has_edit_access_for_template(
+            self, template_id: str, user_id: str
+    ):
 
-        workspace_id = self.list_storage.get_workspace_id_by_list_id(
-            list_id=list_id)
+        workspace_id = self.template_storage.get_workspace_id_from_template_id(
+            template_id=template_id)
         self.workspace_mixin.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 

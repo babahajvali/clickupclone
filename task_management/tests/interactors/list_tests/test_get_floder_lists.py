@@ -6,6 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     DeletedFolderException,
     FolderNotFound,
 )
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.lists.get_folder_lists_interactor import (
     GetFolderListsInteractor,
@@ -23,12 +24,12 @@ class TestGetFolderLists:
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
-            folder_id="folder_1",
+            entity_type=ListEntityType.FOLDER,
+            entity_id="folder_1",
         )
 
     def setup_method(self):

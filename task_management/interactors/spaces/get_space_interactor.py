@@ -14,6 +14,6 @@ class GetSpaceInteractor:
         return SpaceValidationMixin(space_storage=self.space_storage)
 
     def get_space(self, space_id: str) -> SpaceDTO:
-        self.space_mixin.validate_space_exists(space_id=space_id)
+        self.space_mixin.check_space_exists(space_id=space_id)
 
         return self.space_storage.get_space(space_id=space_id)

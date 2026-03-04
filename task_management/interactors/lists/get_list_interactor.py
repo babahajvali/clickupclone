@@ -13,6 +13,6 @@ class GetListInteractor:
         return ListValidationMixin(list_storage=self.list_storage)
 
     def get_list(self, list_id: str) -> ListDTO:
-        self.list_mixin.validate_list_exists(list_id=list_id)
+        self.list_mixin.check_list_exists(list_id=list_id)
 
         return self.list_storage.get_list(list_id=list_id)

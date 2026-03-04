@@ -12,13 +12,13 @@ class SpaceValidationMixin:
 
     def check_space_not_deleted(self, space_id: str):
 
-        space_data = self.validate_space_exists(space_id=space_id)
+        space_data = self.check_space_exists(space_id=space_id)
 
         is_space_deleted = space_data.is_deleted
         if is_space_deleted:
             raise DeletedSpaceFound(space_id=space_id)
 
-    def validate_space_exists(self, space_id: str) -> SpaceDTO:
+    def check_space_exists(self, space_id: str) -> SpaceDTO:
         space_data = self.space_storage.get_space(space_id=space_id)
 
         is_space_not_found = not space_data

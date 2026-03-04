@@ -13,7 +13,7 @@ class WorkspaceValidationMixin:
         self.workspace_storage = workspace_storage
 
     def check_workspace_not_deleted(self, workspace_id: str):
-        workspace_data = self.validate_workspace_exists(
+        workspace_data = self.check_workspace_exists(
             workspace_id=workspace_id
         )
 
@@ -21,7 +21,7 @@ class WorkspaceValidationMixin:
         if is_workspace_delete:
             raise DeletedWorkspaceFound(workspace_id=workspace_id)
 
-    def validate_workspace_exists(self, workspace_id: str) -> WorkspaceDTO:
+    def check_workspace_exists(self, workspace_id: str) -> WorkspaceDTO:
         workspace_data = self.workspace_storage.get_workspace(
             workspace_id=workspace_id)
 

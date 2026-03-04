@@ -11,11 +11,11 @@ class TextField:
 
     def check_text_config(self, config: dict):
 
-        self._validate_config_keys(config=config)
-        self._validate_default_value(config=config)
+        self._validate_unexpected_config_keys(config=config)
+        self._validate_default_value_not_exceeds_max_length(config=config)
 
     @staticmethod
-    def _validate_default_value(config: Dict):
+    def _validate_default_value_not_exceeds_max_length(config: Dict):
         default_value = config.get(FieldConfig.DEFAULT.value)
         is_default_value_provided = default_value is not None
         if not is_default_value_provided:
@@ -30,7 +30,7 @@ class TextField:
                         f" exceeds max_length {max_length}")
 
     @staticmethod
-    def _validate_config_keys(config: Dict):
+    def _validate_unexpected_config_keys(config: Dict):
         allowed_keys = FIELD_TYPE_KEYS[FieldType.TEXT.value][
             FieldConfig.CONFIG_KEYS.value]
         invalid_keys = set(config.keys()) - allowed_keys
@@ -40,7 +40,7 @@ class TextField:
                 invalid_keys=list(invalid_keys))
 
     @staticmethod
-    def check_text_field_value(value: str, config: Dict):
+    def check_text_value_not_exceeds_max_length(value: str, config: Dict):
         """Validate text fields value against max_length constraint."""
         max_length = config.get(FieldConfig.MAX_LENGTH.value)
         if max_length and len(value) > max_length:

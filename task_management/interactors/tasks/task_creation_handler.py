@@ -14,7 +14,8 @@ class TaskCreationHandler:
             self, list_storage: ListStorageInterface,
             task_storage: TaskStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
-            field_storage: FieldStorageInterface):
+            field_storage: FieldStorageInterface
+    ):
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
@@ -39,23 +40,30 @@ class TaskCreationHandler:
 
     def _create_default_field_values_at_task(
             self, task_id: str, list_id: str, created_by: str):
-        template_id = self.list_storage.get_template_id_by_list_id(
-            list_id=list_id)
-        template_fields = self.field_storage.get_fields_for_template(
-            template_id=template_id)
-
-        field_values = []
-        for field in template_fields:
-            default_value = field.config.get(FieldConfig.DEFAULT.value)
-
-            field_values.append(
-                CreateFieldValueDTO(
-                    task_id=task_id,
-                    field_id=field.field_id,
-                    value=default_value,
-                    created_by=created_by
-                )
-            )
-
+        template_fields = self._get_template_fields_by_list_id(list_id=list_id)
+        field_values = self._build_default_field_values(
+            task_id=task_id,
+            created_by=created_by,
+            template_fields=template_fields
+        )
         return self.field_storage.create_bulk_field_values(
             create_bulk_field_values=field_values)
+
+    def _get_template_fields_by_list_id(self, list_id: str):
+        template_id = self.list_storage.get_template_id_by_list_id(
+            list_id=list_id)
+        return self.field_storage.get_fields_for_template(
+            template_id=template_id)
+
+    @staticmethod
+    def _build_default_field_values(
+            task_id: str, created_by: str, template_fields: list):
+        return [
+            CreateFieldValueDTO(
+                task_id=task_id,
+                field_id=field.field_id,
+                value=field.config.get(FieldConfig.DEFAULT.value),
+                created_by=created_by
+            )
+            for field in template_fields
+        ]

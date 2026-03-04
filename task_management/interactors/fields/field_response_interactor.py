@@ -68,7 +68,7 @@ class FieldResponseInteractor:
         field_data = self.field_storage.get_field(
             field_id=set_value_data.field_id
         )
-        self._check_field_value(
+        self._check_field_value_by_type(
             config=field_data.config,
             value=set_value_data.value,
             field_type=field_data.field_type.value
@@ -87,11 +87,12 @@ class FieldResponseInteractor:
         )
 
     @staticmethod
-    def _check_field_value(field_type: str, value: str, config: dict):
+    def _check_field_value_by_type(field_type: str, value: str, config: dict):
         validation_handlers = {
-            FieldType.TEXT.value: TextField.check_text_field_value,
-            FieldType.NUMBER.value: NumberField.check_number_field_value,
-            FieldType.DROPDOWN.value: DropdownField.check_dropdown_field_value,
+            FieldType.TEXT.value:
+                TextField.check_text_value_not_exceeds_max_length,
+            FieldType.NUMBER.value: NumberField.check_number_value_within_range,
+            FieldType.DROPDOWN.value: DropdownField.check_dropdown_value_in_options,
         }
 
         handler = validation_handlers.get(field_type)

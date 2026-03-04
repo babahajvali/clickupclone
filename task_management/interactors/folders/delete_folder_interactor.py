@@ -26,7 +26,7 @@ class DeleteFolderInteractor:
 
     @invalidate_interactor_cache(cache_name="folders")
     def delete_folder(self, folder_id: str, user_id: str) -> FolderDTO:
-        self.folder_mixin.validate_folder_exists(folder_id=folder_id)
+        self.folder_mixin.check_folder_exists(folder_id=folder_id)
         self._check_user_has_edit_access_for_folder(
             folder_id=folder_id, user_id=user_id
         )

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional, Dict
 
 from task_management.exceptions.enums import ViewType, FieldType, \
-    Gender, Role, PermissionType
+    Gender, Role, PermissionType, ListEntityType
 
 
 @dataclass
@@ -136,11 +136,11 @@ class UserTasksDTO:
 @dataclass
 class CreateListDTO:
     name: str
-    description: str
-    space_id: Optional[str]
-    created_by: str
+    description: Optional[str]
+    entity_type: ListEntityType
+    entity_id: str
     is_private: bool
-    folder_id: Optional[str] = None
+    created_by: str
 
 
 @dataclass
@@ -159,8 +159,8 @@ class ListDTO:
     order: int
     is_private: bool
     created_by: str
-    space_id: Optional[str] = None
-    folder_id: Optional[str] = None
+    entity_type: ListEntityType
+    entity_id: str
 
 
 @dataclass

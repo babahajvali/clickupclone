@@ -6,6 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     DeletedSpaceFound,
     SpaceNotFound,
 )
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.lists.get_space_lists_interactor import (
     GetSpaceListsInteractor,
@@ -23,12 +24,12 @@ class TestGetSpaceLists:
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
-            folder_id=None,
+            entity_type=ListEntityType.SPACE,
+            entity_id="space_1",
         )
 
     def setup_method(self):

@@ -2,27 +2,32 @@ from typing import Optional, List as ListType
 
 from django.db.models import F
 
-from task_management.exceptions.enums import PermissionType, VisibilityType
+from task_management.exceptions.enums import PermissionType, VisibilityType, \
+    ListEntityType
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UserListPermissionDTO, CreateListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-from task_management.models import ListPermission, List, Template
+from task_management.models import ListPermission, List, Template, Folder, \
+    Space
 
 
 class ListStorage(ListStorageInterface):
 
-    @staticmethod
-    def _list_dto(list_data: List) -> ListDTO:
+    def _list_dto(self, list_data: List) -> ListDTO:
+        created_by = (
+            str(list_data.created_by.user_id) if list_data.created_by else ""
+        )
+
         return ListDTO(
-            list_id=list_data.list_id,
+            list_id=str(list_data.list_id),
             name=list_data.name,
             description=list_data.description,
-            space_id=list_data.space.space_id,
+            entity_type=ListEntityType(list_data.entity_type),
+            entity_id=str(list_data.entity_id),
             is_deleted=list_data.is_deleted,
             order=list_data.order,
-            created_by=list_data.created_by.user_id,
-            folder_id=list_data.folder.folder_id if list_data.folder else None,
+            created_by=created_by,
             is_private=list_data.is_private,
         )
 
@@ -54,43 +59,38 @@ class ListStorage(ListStorageInterface):
 
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
 
-        list_data = List.objects.create(
+        list_obj = List.objects.create(
             name=list_data.name,
             description=list_data.description,
-            space_id=list_data.space_id,
-            folder_id=list_data.folder_id,
+            entity_type=list_data.entity_type.value,
+            entity_id=list_data.entity_id,
             order=order,
             is_private=list_data.is_private,
             created_by_id=list_data.created_by
         )
 
-        return self._list_dto(list_data=list_data)
+        return self._list_dto(list_data=list_obj)
 
-    def get_last_list_order_in_folder(self, folder_id: str) -> int:
-        last_list = List.objects.filter(
-            folder_id=folder_id, is_deleted=False).order_by('-order').first()
-        order = 0
+    def get_last_list_order(
+            self, entity_type: str, entity_id: str) -> int:
 
-        if last_list:
-            order = last_list.order
-
-        return order
-
-    def get_last_list_order_in_space(self, space_id: str) -> int:
         list_data = List.objects.filter(
-            space_id=space_id, is_deleted=False).order_by('-order').first()
+            entity_type=entity_type,
+            entity_id=entity_id,
+            is_deleted=False,
+        ).order_by("-order").first()
 
-        order = 0
-        if list_data:
-            order = list_data.order
-
-        return order
+        return list_data.order if list_data else 0
 
     def get_workspace_id_by_list_id(self, list_id: str) -> str:
-        list_data = List.objects.select_related("space__workspace").get(
-            list_id=list_id)
+        list_data = List.objects.get(list_id=list_id)
+        if list_data.entity_type == ListEntityType.SPACE.value:
+            return Space.objects.values_list(
+                "workspace_id", flat=True).get(space_id=list_data.entity_id)
 
-        return list_data.space.workspace.workspace_id
+        return Folder.objects.values_list(
+            "space__workspace_id", flat=True).get(
+            folder_id=list_data.entity_id)
 
     def update_list(
             self, list_id: str, name: Optional[str],
@@ -112,13 +112,17 @@ class ListStorage(ListStorageInterface):
 
     def get_folder_lists(self, folder_ids: ListType[str]) -> ListType[ListDTO]:
         folder_lists = List.objects.filter(
-            folder_id__in=folder_ids, is_deleted=False)
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id__in=folder_ids,
+            is_deleted=False)
 
         return [self._list_dto(list_data=data) for data in folder_lists]
 
     def get_space_lists(self, space_ids: ListType[str]) -> ListType[ListDTO]:
         space_lists = List.objects.filter(
-            space_id__in=space_ids, folder__isnull=True, is_deleted=False)
+            entity_type=ListEntityType.SPACE.value,
+            entity_id__in=space_ids,
+            is_deleted=False)
 
         return [self._list_dto(list_data=data) for data in space_lists]
 
@@ -129,14 +133,18 @@ class ListStorage(ListStorageInterface):
         list_data.save(update_fields=["is_deleted"])
 
         current_order = list_data.order
-        if list_data.folder:
+        if list_data.entity_type == ListEntityType.FOLDER.value:
             List.objects.filter(
-                folder_id=list_data.folder.folder_id, is_deleted=False,
+                entity_type=ListEntityType.FOLDER.value,
+                entity_id=list_data.entity_id,
+                is_deleted=False,
                 order__gt=current_order).update(order=F('order') - 1)
         else:
             List.objects.filter(
-                space_id=list_data.space.space_id, is_deleted=False,
-                folder__isnull=True, order__gt=current_order).update(
+                entity_type=ListEntityType.SPACE.value,
+                entity_id=list_data.entity_id,
+                is_deleted=False,
+                order__gt=current_order).update(
                 order=F('order') - 1)
 
         return self._list_dto(list_data=list_data)
@@ -164,8 +172,9 @@ class ListStorage(ListStorageInterface):
             self, folder_id: str, old_order: int, new_order: int):
 
         List.objects.filter(
-            folder_id=folder_id,
-            is_delted=False,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=folder_id,
+            is_deleted=False,
             order__gt=old_order,
             order__lte=new_order
         ).update(order=F('order') - 1)
@@ -174,16 +183,21 @@ class ListStorage(ListStorageInterface):
             self, folder_id: str, old_order: int, new_order: int):
 
         List.objects.filter(
-            folder_id=folder_id,
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=folder_id,
             is_deleted=False,
             order__gte=new_order,
-            order_lt=old_order
+            order__lt=old_order
         ).update(order=F('order') + 1)
 
     def update_list_order_in_space(
             self, space_id: str, list_id: str, order: int) -> ListDTO:
 
-        list_data = List.objects.get(list_id=list_id)
+        list_data = List.objects.get(
+            list_id=list_id,
+            entity_type=ListEntityType.SPACE.value,
+            entity_id=space_id,
+        )
 
         list_data.order = order
         list_data.save(update_fields=["order"])
@@ -194,7 +208,8 @@ class ListStorage(ListStorageInterface):
             self, space_id: str, old_order: int, new_order: int):
 
         List.objects.filter(
-            space_id=space_id,
+            entity_type=ListEntityType.SPACE.value,
+            entity_id=space_id,
             is_deleted=False,
             order__gt=old_order,
             order__lte=new_order
@@ -204,26 +219,34 @@ class ListStorage(ListStorageInterface):
             self, space_id: str, old_order: int, new_order: int):
 
         List.objects.filter(
-            space_id=space_id,
+            entity_type=ListEntityType.SPACE.value,
+            entity_id=space_id,
             is_deleted=False,
-            order__gte=old_order,
-            order__lt=new_order
+            order__gt=old_order,
+            order__lte=new_order
         ).update(order=F('order') + 1)
 
     def get_folder_lists_count(self, folder_id: str) -> int:
 
         return List.objects.filter(
-            folder_id=folder_id, is_deleted=False).count()
+            entity_type=ListEntityType.FOLDER.value,
+            entity_id=folder_id,
+            is_deleted=False).count()
 
     def get_space_lists_count(self, space_id: str) -> int:
 
         return List.objects.filter(
-            space_id=space_id, folder__isnull=True, is_deleted=False).count()
+            entity_type=ListEntityType.SPACE.value,
+            entity_id=space_id,
+            is_deleted=False).count()
 
     def get_list_space_id(self, list_id: str) -> str:
+        list_data = List.objects.get(list_id=list_id)
+        if list_data.entity_type == ListEntityType.SPACE.value:
+            return list_data.entity_id
 
-        return List.objects.filter(list_id=list_id).values_list(
-            'space_id', flat=True)[0]
+        return Folder.objects.values_list(
+            "space_id", flat=True).get(folder_id=list_data.entity_id)
 
     def update_user_permission_for_list(
             self, list_id: str, user_id: str, permission_type: PermissionType) \
@@ -252,6 +275,9 @@ class ListStorage(ListStorageInterface):
 
         permission = ListPermission.objects.filter(
             list_id=list_id, user_id=user_id).order_by('-created_at').first()
+
+        if permission is None:
+            return None
 
         return self._list_permission_dto(permission_data=permission)
 

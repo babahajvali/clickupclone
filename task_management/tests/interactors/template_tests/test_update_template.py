@@ -9,7 +9,7 @@ from task_management.exceptions.custom_exceptions import (
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceMemberDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
+    TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.update_template_interactor import \
     TemplateInteractor
 
@@ -29,10 +29,6 @@ def make_template() -> object:
     return type("Template", (), {"list_id": "list_123"})()
 
 
-def make_active_list() -> object:
-    return type("List", (), {"is_deleted": False})()
-
-
 def make_updated_template() -> TemplateDTO:
     return TemplateDTO(
         template_id="template_id",
@@ -47,18 +43,15 @@ class TestUpdateTemplateInteractor:
 
     def setup_method(self):
         self.template_storage = create_autospec(TemplateStorageInterface)
-        self.list_storage = create_autospec(ListStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = TemplateInteractor(
             template_storage=self.template_storage,
-            list_storage=self.list_storage,
             workspace_storage=self.workspace_storage,
         )
 
     def _setup_dependencies(self, role: Role = Role.ADMIN):
-        self.template_storage.get_template_by_id.return_value = make_template()
-        self.list_storage.get_list.return_value = make_active_list()
+        self.template_storage.get_template.return_value = make_template()
         self.workspace_storage.get_workspace_member.return_value = make_permission(
             role=role
         )

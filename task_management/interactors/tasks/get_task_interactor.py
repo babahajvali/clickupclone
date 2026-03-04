@@ -13,6 +13,6 @@ class GetTaskInteractor:
         return TaskValidationMixin(task_storage=self.task_storage)
 
     def get_task(self, task_id: str) -> TaskDTO:
-        self.task_mixin.validate_task_exists(task_id=task_id)
+        self.task_mixin.check_task_exists(task_id=task_id)
 
         return self.task_storage.get_task(task_id=task_id)

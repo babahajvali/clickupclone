@@ -10,7 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     ListNotFound,
     ModificationNotAllowed,
 )
-from task_management.exceptions.enums import Role
+from task_management.exceptions.enums import Role, ListEntityType
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
 from task_management.interactors.lists.reorder_list_in_folder_interactor import (
     ReorderListInFolderInteractor,
@@ -40,12 +40,12 @@ class TestReorderListInFolder:
             list_id="list_1",
             name="List name",
             description="List description",
-            space_id="space_1",
             is_deleted=False,
             order=1,
             is_private=False,
             created_by="user_id",
-            folder_id="folder_1",
+            entity_type=ListEntityType.FOLDER,
+            entity_id="folder_1",
         )
 
     def _get_interactor(

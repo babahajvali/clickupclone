@@ -33,29 +33,19 @@ class FolderCreationHandler:
 
         return folder_obj
 
-    def _get_create_folder_interactor(self):
+    def _create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
         folder_interactor = CreateFolderInteractor(
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
-        return folder_interactor
-
-    def _get_permission_interactor(self):
-        permission_interactor = AddFolderPermissionForUserInteractor(
-            folder_storage=self.folder_storage,
-            workspace_storage=self.workspace_storage
-        )
-
-        return permission_interactor
-
-    def _create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
-        folder_interactor = self._get_create_folder_interactor()
-
         return folder_interactor.create_folder(folder_data=folder_data)
 
     def _create_folder_permission_for_user(self, folder_id: str, user_id: str):
-        folder_interactor = self._get_permission_interactor()
+        folder_interactor = AddFolderPermissionForUserInteractor(
+            folder_storage=self.folder_storage,
+            workspace_storage=self.workspace_storage
+        )
 
         user_permission = CreateFolderPermissionDTO(
             folder_id=folder_id,

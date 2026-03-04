@@ -75,7 +75,7 @@ class CreateFieldInteractor:
     def _create_field_input_validation(self, field_data: CreateFieldDTO):
         self.field_validator.check_field_name_not_empty(
             field_name=field_data.field_name)
-        self._check_field_type(field_type=field_data.field_type.value)
+        self._check_invalid_field_type(field_type=field_data.field_type.value)
         self.field_config_validator.check_field_config(
             config=field_data.config, field_type=field_data.field_type)
         self.field_validator.check_field_name_not_exist_in_template(
@@ -95,7 +95,7 @@ class CreateFieldInteractor:
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
-    def _check_field_type(field_type: str):
+    def _check_invalid_field_type(field_type: str):
         existed_field_types = FieldType.get_values()
         is_invalid_field_type = field_type not in existed_field_types
 

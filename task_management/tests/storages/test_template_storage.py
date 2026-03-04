@@ -37,7 +37,7 @@ class TestTemplateStorage:
         storage = TemplateStorage()
 
         # Act
-        result = storage.get_template_by_id(
+        result = storage.get_template(
             template_id=str(template.template_id)
         )
 

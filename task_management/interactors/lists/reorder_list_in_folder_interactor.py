@@ -43,7 +43,7 @@ class ReorderListInFolderInteractor:
     def reorder_list_in_folder(
             self, folder_id: str, list_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self._check_list_order_in_folder(folder_id=folder_id, order=order)
+        self._check_list_order_within_range(folder_id=folder_id, order=order)
         self.list_mixin.check_list_not_deleted(list_id=list_id)
         self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
         self._check_user_has_edit_access_for_list(
@@ -56,7 +56,7 @@ class ReorderListInFolderInteractor:
         if old_order == order:
             return list_data
 
-        return self._reorder_the_list_positions_in_folder(
+        return self._reorder_lists_and_update_current_in_folder(
             list_id=list_id,
             old_order=old_order,
             new_order=order,
@@ -71,7 +71,7 @@ class ReorderListInFolderInteractor:
             workspace_id=workspace_id, user_id=user_id
         )
 
-    def _check_list_order_in_folder(self, folder_id: str, order: int):
+    def _check_list_order_within_range(self, folder_id: str, order: int):
         if order < 1:
             raise InvalidOrder(order=order)
 
@@ -81,11 +81,11 @@ class ReorderListInFolderInteractor:
         if order > lists_count:
             raise InvalidOrder(order=order)
 
-    def _reorder_the_list_positions_in_folder(
+    def _reorder_lists_and_update_current_in_folder(
             self, folder_id: str, list_id: str, old_order: int, new_order: int
     ):
 
-        self._reorder_list_positions_in_folder(
+        self._shift_other_lists_in_folder(
             folder_id=folder_id, old_order=old_order, new_order=new_order
         )
 
@@ -93,7 +93,7 @@ class ReorderListInFolderInteractor:
             list_id=list_id, order=new_order, folder_id=folder_id
         )
 
-    def _reorder_list_positions_in_folder(
+    def _shift_other_lists_in_folder(
             self, folder_id: str, old_order: int, new_order: int):
 
         if new_order > old_order:
