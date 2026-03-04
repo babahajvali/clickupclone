@@ -1,6 +1,6 @@
 from django.db import models
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 
 
 class SpacePermission(models.Model):
@@ -14,7 +14,7 @@ class SpacePermission(models.Model):
         related_name='space_permissions'
     )
     permission_type = models.CharField(max_length=20,
-                                       choices=Permissions.get_list_of_tuples())
+                                       choices=PermissionType.get_list_of_tuples())
     is_active = models.BooleanField(default=True)
     added_by = models.ForeignKey(
         "User",
@@ -40,7 +40,7 @@ class FolderPermission(models.Model):
         related_name='folder_permissions'
     )
     permission_type = models.CharField(max_length=20,
-                                       choices=Permissions.get_list_of_tuples())
+                                       choices=PermissionType.get_list_of_tuples())
     is_active = models.BooleanField(default=True)
     added_by = models.ForeignKey(
         "User",
@@ -66,7 +66,7 @@ class ListPermission(models.Model):
         related_name='list_permissions'
     )
     permission_type = models.CharField(max_length=20,
-                                       choices=Permissions.get_list_of_tuples())
+                                       choices=PermissionType.get_list_of_tuples())
     is_active = models.BooleanField(default=True)
     added_by = models.ForeignKey(
         "User",

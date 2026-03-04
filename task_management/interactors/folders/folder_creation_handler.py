@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     CreateFolderPermissionDTO
 from task_management.interactors.folders.add_folder_permission_for_user_interactor import \
@@ -60,7 +60,7 @@ class FolderCreationHandler:
         user_permission = CreateFolderPermissionDTO(
             folder_id=folder_id,
             user_id=user_id,
-            permission_type=Permissions.FULL_EDIT,
+            permission_type=PermissionType.FULL_EDIT,
             added_by=user_id)
 
         return folder_interactor.add_user_for_folder_permission(

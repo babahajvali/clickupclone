@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, Dict
 
-from task_management.exceptions.enums import ViewTypes, FieldType, \
-    Gender, Role, Permissions
+from task_management.exceptions.enums import ViewType, FieldType, \
+    Gender, Role, PermissionType
 
 
 @dataclass
@@ -167,7 +167,7 @@ class ListDTO:
 class CreateViewDTO:
     name: str
     description: str
-    view_type: ViewTypes
+    view_type: ViewType
     created_by: str
 
 
@@ -183,7 +183,7 @@ class ViewDTO:
     view_id: str
     name: str
     description: str
-    view_type: ViewTypes
+    view_type: ViewType
     created_by: str
 
 
@@ -308,7 +308,7 @@ class WorkspaceMemberDTO:
 class CreateUserSpacePermissionDTO:
     space_id: str
     user_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     added_by: str
 
 
@@ -316,7 +316,7 @@ class CreateUserSpacePermissionDTO:
 class UserSpacePermissionDTO:
     id: int
     space_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     user_id: str
     is_active: bool
     added_by: str
@@ -326,7 +326,7 @@ class UserSpacePermissionDTO:
 class CreateFolderPermissionDTO:
     folder_id: str
     user_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     added_by: str
 
 
@@ -334,7 +334,7 @@ class CreateFolderPermissionDTO:
 class UserFolderPermissionDTO:
     id: int
     folder_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     user_id: str
     is_active: bool
     added_by: str
@@ -343,7 +343,7 @@ class UserFolderPermissionDTO:
 @dataclass
 class CreateListPermissionDTO:
     list_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     user_id: str
     added_by: str
 
@@ -352,7 +352,7 @@ class CreateListPermissionDTO:
 class UserListPermissionDTO:
     id: int
     list_id: str
-    permission_type: Permissions
+    permission_type: PermissionType
     user_id: str
     is_active: bool
     added_by: str

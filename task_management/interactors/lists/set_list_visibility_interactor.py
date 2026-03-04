@@ -4,7 +4,7 @@ from task_management.decorators.caching_decorators import (
 from task_management.exceptions.custom_exceptions import (
     UnsupportedVisibilityType,
 )
-from task_management.exceptions.enums import Visibility
+from task_management.exceptions.enums import VisibilityType
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
@@ -36,7 +36,7 @@ class SetListVisibilityInteractor:
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def set_list_visibility(
-            self, list_id: str, visibility: Visibility, user_id: str) \
+            self, list_id: str, visibility: VisibilityType, user_id: str) \
             -> ListDTO:
         self._check_visibility_type(visibility=visibility.value)
 
@@ -57,7 +57,7 @@ class SetListVisibilityInteractor:
 
     @staticmethod
     def _check_visibility_type(visibility: str):
-        existed_visibilities = Visibility.get_values()
+        existed_visibilities = VisibilityType.get_values()
         is_visibility_invalid = visibility not in existed_visibilities
 
         if is_visibility_invalid:

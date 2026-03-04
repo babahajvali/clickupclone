@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import ViewTypeNotFound
-from task_management.exceptions.enums import ViewTypes
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces.view_storage_interface import (
     ViewStorageInterface,
@@ -22,7 +22,7 @@ class TestCreateViewInteractor:
         create_data = CreateViewDTO(
             name="be",
             description="Raise study modern miss dog Democrat quickly.",
-            view_type=ViewTypes.LIST,
+            view_type=ViewType.LIST,
             created_by="9466e472-6b5f-4241-b323-ca74d3447490",
         )
         expected_result = ViewDTO(

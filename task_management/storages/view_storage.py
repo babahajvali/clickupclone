@@ -1,6 +1,6 @@
 from typing import Optional
 
-from task_management.exceptions.enums import ViewTypes
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import ViewDTO, CreateViewDTO, \
     ListViewDTO
 from task_management.interactors.storage_interfaces.view_storage_interface import \
@@ -11,7 +11,7 @@ from task_management.models import View, ListView
 class ViewStorage(ViewStorageInterface):
     @staticmethod
     def _view_dto(data: View) -> ViewDTO:
-        view_type = ViewTypes(data.view_type)
+        view_type = ViewType(data.view_type)
         return ViewDTO(
             view_id=data.view_id,
             name=data.name,

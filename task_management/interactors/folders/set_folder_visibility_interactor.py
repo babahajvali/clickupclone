@@ -2,7 +2,7 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
     UnsupportedVisibilityType
-from task_management.exceptions.enums import Visibility
+from task_management.exceptions.enums import VisibilityType
 from task_management.interactors.dtos import FolderDTO
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface
@@ -29,7 +29,7 @@ class SetFolderVisibilityInteractor:
 
     @invalidate_interactor_cache(cache_name="folders")
     def set_folder_visibility(
-            self, folder_id: str, user_id: str, visibility: Visibility) \
+            self, folder_id: str, user_id: str, visibility: VisibilityType) \
             -> FolderDTO:
         self._check_visibility_type(visibility=visibility.value)
         self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
@@ -51,7 +51,7 @@ class SetFolderVisibilityInteractor:
 
     @staticmethod
     def _check_visibility_type(visibility: str):
-        existed_visibilities = [each.value for each in Visibility]
+        existed_visibilities = [each.value for each in VisibilityType]
 
         is_visibility_invalid = visibility not in existed_visibilities
         if is_visibility_invalid:

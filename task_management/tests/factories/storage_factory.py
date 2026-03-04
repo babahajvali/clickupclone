@@ -4,7 +4,7 @@ import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-from task_management.exceptions.enums import Gender, ViewTypes, FieldType
+from task_management.exceptions.enums import Gender, ViewType, FieldType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
     Task, Template, View, ListView, TaskAssignee, Field, TaskFieldValue,
@@ -149,7 +149,7 @@ class ViewFactory(DjangoModelFactory):
     view_id = factory.LazyFunction(uuid.uuid4)
     name = factory.Faker("word")
     description = factory.Faker("sentence")
-    view_type = ViewTypes.LIST.value
+    view_type = ViewType.LIST.value
     created_by = factory.SubFactory(UserFactory)
 
 

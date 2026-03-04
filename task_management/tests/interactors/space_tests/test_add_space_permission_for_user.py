@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UnexpectedPermission,
 )
-from task_management.exceptions.enums import Permissions, Role
+from task_management.exceptions.enums import PermissionType, Role
 from task_management.interactors.dtos import (
     CreateUserSpacePermissionDTO,
     SpaceDTO,
@@ -54,7 +54,7 @@ def make_user_permission() -> UserSpacePermissionDTO:
     return UserSpacePermissionDTO(
         id=1,
         space_id="space_1",
-        permission_type=Permissions.FULL_EDIT,
+        permission_type=PermissionType.FULL_EDIT,
         user_id="user_1",
         is_active=True,
         added_by="admin",
@@ -86,7 +86,7 @@ class TestAddSpacePermissionForUser:
         dto = CreateUserSpacePermissionDTO(
             space_id="space_1",
             user_id="user_1",
-            permission_type=Permissions.FULL_EDIT,
+            permission_type=PermissionType.FULL_EDIT,
             added_by="admin",
         )
 
@@ -99,7 +99,7 @@ class TestAddSpacePermissionForUser:
         dto = CreateUserSpacePermissionDTO(
             space_id="space_1",
             user_id="user_1",
-            permission_type=Permissions.FULL_EDIT,
+            permission_type=PermissionType.FULL_EDIT,
             added_by="admin",
         )
 

@@ -1,6 +1,6 @@
 from task_management.exceptions.custom_exceptions import \
     UserHaveAlreadyListPermission, UnexpectedPermission
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
     CreateListPermissionDTO,
     UserListPermissionDTO,
@@ -75,7 +75,7 @@ class AddListPermissionForUserInteractor:
     @staticmethod
     def _check_permission(permission: str):
 
-        existed_permissions = Permissions.get_values()
+        existed_permissions = PermissionType.get_values()
         is_permission_invalid = permission not in existed_permissions
 
         if is_permission_invalid:

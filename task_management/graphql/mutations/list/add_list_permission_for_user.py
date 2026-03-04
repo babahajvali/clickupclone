@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.graphql.types.error_types import (
     DeletedListType,
     ModificationNotAllowedType,
@@ -36,7 +36,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
     def mutate(root, info, params):
         added_by = info.context.user_id
         user_id = params.user_id
-        permission = Permissions(params.permission)
+        permission = PermissionType(params.permission)
         list_id = params.list_id
 
         list_storage = ListStorage()

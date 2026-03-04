@@ -1,6 +1,6 @@
 from unittest.mock import create_autospec, patch
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
 from task_management.interactors.spaces.space_creation_handler import (
     SpaceCreationHandler,
@@ -44,7 +44,8 @@ class TestSpaceCreationHandler:
         )
 
         with patch.object(
-            self.handler, "_create_space", return_value=make_space(is_private=False)
+                self.handler, "_create_space",
+                return_value=make_space(is_private=False)
         ) as create_space, patch.object(
             self.handler, "_create_space_permission_for_user"
         ) as create_permission:
@@ -66,7 +67,8 @@ class TestSpaceCreationHandler:
         )
 
         with patch.object(
-            self.handler, "_create_space", return_value=make_space(is_private=True)
+                self.handler, "_create_space",
+                return_value=make_space(is_private=True)
         ) as create_space, patch.object(
             self.handler, "_create_space_permission_for_user"
         ) as create_permission:
@@ -82,7 +84,7 @@ class TestSpaceCreationHandler:
 
     def test_create_space_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-            self.handler, "_get_space_permission_interactor"
+                self.handler, "_get_space_permission_interactor"
         ) as get_interactor:
             interactor = get_interactor.return_value
 
@@ -91,7 +93,8 @@ class TestSpaceCreationHandler:
             )
 
         interactor.add_user_for_space_permission.assert_called_once()
-        called_user_data = interactor.add_user_for_space_permission.call_args.kwargs[
+        called_user_data = \
+        interactor.add_user_for_space_permission.call_args.kwargs[
             "user_data"
         ]
 
@@ -99,4 +102,4 @@ class TestSpaceCreationHandler:
             repr(called_user_data),
             "create_space_permission_for_user_builds_dto.txt",
         )
-        assert called_user_data.permission_type == Permissions.FULL_EDIT
+        assert called_user_data.permission_type == PermissionType.FULL_EDIT

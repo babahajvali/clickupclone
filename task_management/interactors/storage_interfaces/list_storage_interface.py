@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from typing import Optional
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UserListPermissionDTO, CreateListPermissionDTO
 
@@ -78,7 +78,8 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_list_order_in_space(self, space_id: str, list_id: str, order: int) \
+    def update_list_order_in_space(self, space_id: str, list_id: str,
+                                   order: int) \
             -> ListDTO:
         pass
 
@@ -106,7 +107,7 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def update_user_permission_for_list(
-            self, list_id: str, user_id: str,permission_type: Permissions) \
+            self, list_id: str, user_id: str, permission_type: PermissionType) \
             -> UserListPermissionDTO:
         pass
 

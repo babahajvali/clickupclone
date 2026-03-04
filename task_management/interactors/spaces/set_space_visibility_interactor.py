@@ -2,7 +2,7 @@ from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
     UnsupportedVisibilityType
-from task_management.exceptions.enums import Visibility
+from task_management.exceptions.enums import VisibilityType
 from task_management.interactors.dtos import SpaceDTO
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
@@ -29,7 +29,7 @@ class SetSpaceVisibilityInteractor:
 
     @invalidate_interactor_cache(cache_name="spaces")
     def set_space_visibility(
-            self, space_id: str, user_id: str, visibility: Visibility) \
+            self, space_id: str, user_id: str, visibility: VisibilityType) \
             -> SpaceDTO:
         self._check_visibility_type(visibility=visibility.value)
         self.space_mixin.check_space_not_deleted(space_id=space_id)
@@ -46,7 +46,7 @@ class SetSpaceVisibilityInteractor:
 
     @staticmethod
     def _check_visibility_type(visibility: str):
-        existed_visibilities = [each.value for each in Visibility]
+        existed_visibilities = [each.value for each in VisibilityType]
 
         is_visibility_invalid = visibility not in existed_visibilities
         if is_visibility_invalid:

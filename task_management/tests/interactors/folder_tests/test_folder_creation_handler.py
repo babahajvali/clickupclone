@@ -1,6 +1,6 @@
 from unittest.mock import create_autospec, patch
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO
 from task_management.interactors.folders.folder_creation_handler import (
     FolderCreationHandler,
@@ -47,19 +47,20 @@ class TestFolderCreationHandler:
         )
 
         with patch.object(
-            self.handler, "_create_folder", return_value=make_folder()
+                self.handler, "_create_folder", return_value=make_folder()
         ) as create_folder, patch.object(
             self.handler, "_create_folder_permission_for_user"
         ) as create_permission:
             result = self.handler.handle_folder_creation(folder_data=dto)
 
-        snapshot.assert_match(repr(result), "handle_folder_creation_success.txt")
+        snapshot.assert_match(repr(result),
+                              "handle_folder_creation_success.txt")
         create_folder.assert_called_once_with(folder_data=dto)
         create_permission.assert_not_called()
 
     def test_create_folder_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-            self.handler, "_get_permission_interactor"
+                self.handler, "_get_permission_interactor"
         ) as get_permission_interactor:
             permission_interactor = get_permission_interactor.return_value
 
@@ -78,4 +79,4 @@ class TestFolderCreationHandler:
             repr(called_permission_dto),
             "create_folder_permission_for_user_builds_dto.txt",
         )
-        assert called_permission_dto.permission_type == Permissions.FULL_EDIT
+        assert called_permission_dto.permission_type == PermissionType.FULL_EDIT

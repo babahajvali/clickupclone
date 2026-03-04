@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import ViewTypeNotFound
-from task_management.exceptions.enums import ViewTypes
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import CreateViewDTO, ViewDTO
 from task_management.interactors.storage_interfaces import ViewStorageInterface
 from task_management.mixins import ViewValidationMixin
@@ -23,7 +23,7 @@ class CreateViewInteractor:
 
     @staticmethod
     def check_view_type(view_type: str):
-        view_types = ViewTypes.get_values()
+        view_types = ViewType.get_values()
         is_view_type_invalid = view_type not in view_types
 
         if is_view_type_invalid:

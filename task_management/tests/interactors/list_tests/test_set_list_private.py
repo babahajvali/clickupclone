@@ -8,7 +8,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UnsupportedVisibilityType,
 )
-from task_management.exceptions.enums import Role, Visibility
+from task_management.exceptions.enums import Role, VisibilityType
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
 from task_management.interactors.lists.set_list_visibility_interactor import (
     SetListVisibilityInteractor,
@@ -79,14 +79,14 @@ class TestSetListPrivate:
         # Act
         result = self.interactor.set_list_visibility(
             list_id="list_1",
-            visibility=Visibility.PRIVATE,
+            visibility=VisibilityType.PRIVATE,
             user_id="user_id",
         )
 
         # Assert
         snapshot.assert_match(repr(result), "set_list_private_success.json")
         self.list_storage.update_list_visibility.assert_called_once_with(
-            list_id="list_1", visibility=Visibility.PRIVATE.value
+            list_id="list_1", visibility=VisibilityType.PRIVATE.value
         )
 
     def test_set_list_private_invalid_visibility(self, snapshot):
@@ -113,7 +113,7 @@ class TestSetListPrivate:
         with pytest.raises(ListNotFound) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PRIVATE,
+                visibility=VisibilityType.PRIVATE,
                 user_id="user_id",
             )
 
@@ -130,7 +130,7 @@ class TestSetListPrivate:
         with pytest.raises(DeletedListFound) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PRIVATE,
+                visibility=VisibilityType.PRIVATE,
                 user_id="user_id",
             )
 
@@ -145,7 +145,7 @@ class TestSetListPrivate:
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PRIVATE,
+                visibility=VisibilityType.PRIVATE,
                 user_id="user_id",
             )
 

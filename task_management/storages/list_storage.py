@@ -2,7 +2,7 @@ from typing import Optional, List as ListType
 
 from django.db.models import F
 
-from task_management.exceptions.enums import Permissions, Visibility
+from task_management.exceptions.enums import PermissionType, VisibilityType
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UserListPermissionDTO, CreateListPermissionDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import \
@@ -144,7 +144,7 @@ class ListStorage(ListStorageInterface):
     def update_list_visibility(self, list_id: str, visibility: str) -> ListDTO:
         # set is_private false
         list_data = List.objects.get(list_id=list_id)
-        list_data.is_private = visibility == Visibility.PRIVATE.value
+        list_data.is_private = visibility == VisibilityType.PRIVATE.value
 
         list_data.save(update_fields=["is_private"])
 
@@ -226,7 +226,7 @@ class ListStorage(ListStorageInterface):
             'space_id', flat=True)[0]
 
     def update_user_permission_for_list(
-            self, list_id: str, user_id: str, permission_type: Permissions) \
+            self, list_id: str, user_id: str, permission_type: PermissionType) \
             -> UserListPermissionDTO:
 
         permission = ListPermission.objects.get(

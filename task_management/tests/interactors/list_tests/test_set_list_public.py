@@ -7,7 +7,7 @@ from task_management.exceptions.custom_exceptions import (
     ListNotFound,
     ModificationNotAllowed,
 )
-from task_management.exceptions.enums import Role, Visibility
+from task_management.exceptions.enums import Role, VisibilityType
 from task_management.interactors.dtos import ListDTO, WorkspaceMemberDTO
 from task_management.interactors.lists.set_list_visibility_interactor import (
     SetListVisibilityInteractor,
@@ -54,7 +54,7 @@ class TestSetListPublic:
         )
 
     def _setup_visibility_dependencies(
-        self, *, role: Role = Role.MEMBER, list_data=None
+            self, *, role: Role = Role.MEMBER, list_data=None
     ):
         if list_data is None:
             list_data = self._get_list_dto()
@@ -77,14 +77,14 @@ class TestSetListPublic:
         # Act
         result = self.interactor.set_list_visibility(
             list_id="list_1",
-            visibility=Visibility.PUBLIC,
+            visibility=VisibilityType.PUBLIC,
             user_id="user_id",
         )
 
         # Assert
         snapshot.assert_match(repr(result), "set_list_public_success.json")
         self.list_storage.update_list_visibility.assert_called_once_with(
-            list_id="list_1", visibility=Visibility.PUBLIC.value
+            list_id="list_1", visibility=VisibilityType.PUBLIC.value
         )
 
     def test_set_list_public_not_found(self, snapshot):
@@ -96,7 +96,7 @@ class TestSetListPublic:
         with pytest.raises(ListNotFound) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PUBLIC,
+                visibility=VisibilityType.PUBLIC,
                 user_id="user_id",
             )
 
@@ -113,7 +113,7 @@ class TestSetListPublic:
         with pytest.raises(DeletedListFound) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PUBLIC,
+                visibility=VisibilityType.PUBLIC,
                 user_id="user_id",
             )
 
@@ -128,7 +128,7 @@ class TestSetListPublic:
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
-                visibility=Visibility.PUBLIC,
+                visibility=VisibilityType.PUBLIC,
                 user_id="user_id",
             )
 

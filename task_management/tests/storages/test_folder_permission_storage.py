@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateFolderPermissionDTO
 from task_management.storages.folder_storage import \
     FolderStorage
@@ -67,7 +67,7 @@ class TestFolderPermissionStorage:
         result = storage.update_user_permission_for_folder(
             user_id=str(user_id),
             folder_id=str(folder_id),
-            permission_type=Permissions.FULL_EDIT
+            permission_type=PermissionType.FULL_EDIT
         )
 
         # Assert
@@ -148,19 +148,19 @@ class TestFolderPermissionStorage:
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_1),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             ),
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id_1),
                 user_id=str(user_id_2),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id_2),
                 user_id=str(user_id_1),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
@@ -187,7 +187,7 @@ class TestFolderPermissionStorage:
             CreateFolderPermissionDTO(
                 folder_id=str(folder_id),
                 user_id=str(user_id),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             )
         ]

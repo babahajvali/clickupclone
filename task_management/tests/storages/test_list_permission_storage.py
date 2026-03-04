@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateListPermissionDTO
 from task_management.storages.list_storage import \
     ListStorage
@@ -27,7 +27,7 @@ class TestListPermissionStorage:
         result = storage.update_user_permission_for_list(
             list_id=str(list_id),
             user_id=str(user_id),
-            permission_type=Permissions.FULL_EDIT
+            permission_type=PermissionType.FULL_EDIT
         )
 
         # Assert
@@ -131,19 +131,19 @@ class TestListPermissionStorage:
             CreateListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_1),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             ),
             CreateListPermissionDTO(
                 list_id=str(list_id_1),
                 user_id=str(user_id_2),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
             CreateListPermissionDTO(
                 list_id=str(list_id_2),
                 user_id=str(user_id_1),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
@@ -170,7 +170,7 @@ class TestListPermissionStorage:
             CreateListPermissionDTO(
                 list_id=str(list_id),
                 user_id=str(user_id),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             )
         ]

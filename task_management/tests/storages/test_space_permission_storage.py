@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.exceptions.enums import Permissions
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateUserSpacePermissionDTO
 from task_management.storages.space_storage import SpaceStorage
 from task_management.tests.factories.storage_factory import \
@@ -62,7 +62,7 @@ class TestSpacePermissionStorage:
         result = storage.update_user_permission_for_space(
             user_id=str(user_id),
             space_id=str(space_id),
-            permission_type=Permissions.FULL_EDIT
+            permission_type=PermissionType.FULL_EDIT
         )
 
         # Assert
@@ -148,19 +148,19 @@ class TestSpacePermissionStorage:
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id_1),
                 user_id=str(user_id_1),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             ),
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id_1),
                 user_id=str(user_id_2),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             ),
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id_2),
                 user_id=str(user_id_1),
-                permission_type=Permissions.FULL_EDIT,
+                permission_type=PermissionType.FULL_EDIT,
                 added_by=str(added_by_id)
             )
         ]
@@ -187,7 +187,7 @@ class TestSpacePermissionStorage:
             CreateUserSpacePermissionDTO(
                 space_id=str(space_id),
                 user_id=str(user_id),
-                permission_type=Permissions.VIEW,
+                permission_type=PermissionType.VIEW,
                 added_by=str(added_by_id)
             )
         ]

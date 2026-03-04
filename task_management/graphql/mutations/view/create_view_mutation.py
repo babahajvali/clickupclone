@@ -1,7 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.enums import ViewTypes
+from task_management.exceptions.enums import ViewType
 from task_management.graphql.types.error_types import ViewTypeNotFoundType, \
     EmptyViewNameType
 from task_management.graphql.types.input_types import CreateViewInputParams
@@ -28,7 +28,7 @@ class CreateViewMutation(graphene.Mutation):
         )
 
         try:
-            view_type = ViewTypes(params.view_type)
+            view_type = ViewType(params.view_type)
             view_input = CreateViewDTO(
                 name=params.name,
                 description=params.description,

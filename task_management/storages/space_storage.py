@@ -3,7 +3,7 @@ from typing import Optional, List
 from django.db import transaction
 from django.db.models import F
 
-from task_management.exceptions.enums import Permissions, Visibility
+from task_management.exceptions.enums import PermissionType, VisibilityType
 from task_management.interactors.dtos import SpaceDTO, \
     CreateSpaceDTO, UserSpacePermissionDTO, CreateUserSpacePermissionDTO
 from task_management.interactors.storage_interfaces.space_storage_interface import \
@@ -106,7 +106,7 @@ class SpaceStorage(SpaceStorageInterface):
             self, space_id: str, visibility: str) -> SpaceDTO:
 
         space = Space.objects.get(space_id=space_id)
-        space.is_private = visibility == Visibility.PRIVATE.value
+        space.is_private = visibility == VisibilityType.PRIVATE.value
         space.save(update_fields=["is_private"])
 
         return self._to_dto(space)
@@ -171,7 +171,7 @@ class SpaceStorage(SpaceStorageInterface):
         return self._to_permission_dto(permission_data)
 
     def update_user_permission_for_space(
-            self, user_id: str, space_id: str, permission_type: Permissions) \
+            self, user_id: str, space_id: str, permission_type: PermissionType) \
             -> UserSpacePermissionDTO:
 
         permission = SpacePermission.objects.get(

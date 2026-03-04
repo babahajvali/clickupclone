@@ -1,6 +1,6 @@
 from enum import Enum
 
-#Rename as singular
+
 class FieldType(Enum):
     DROPDOWN = "DROPDOWN"
     TEXT = "TEXT"
@@ -41,7 +41,7 @@ class Role(Enum):
         return [cls.ADMIN, cls.MEMBER, cls.OWNER]
 
 
-class Permissions(Enum):
+class PermissionType(Enum):
     FULL_EDIT = "FULL_EDIT"
     COMMENT = "COMMENT"
     VIEW = "VIEW"
@@ -55,7 +55,7 @@ class Permissions(Enum):
         return [member.value for member in cls]
 
 
-class ViewTypes(Enum):
+class ViewType(Enum):
     TABLE = "TABLE"
     CALENDAR = "CALENDAR"
     BOARD = "BOARD"
@@ -72,7 +72,7 @@ class ViewTypes(Enum):
         return [member.value for member in cls]
 
 
-class Visibility(Enum):
+class VisibilityType(Enum):
     PUBLIC = "PUBLIC"
     PRIVATE = "PRIVATE"
 

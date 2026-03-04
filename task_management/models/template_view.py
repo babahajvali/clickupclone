@@ -2,7 +2,7 @@ import uuid
 
 from django.db import models
 
-from task_management.exceptions.enums import ViewTypes
+from task_management.exceptions.enums import ViewType
 
 
 class Template(models.Model):
@@ -28,8 +28,8 @@ class View(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     view_type = models.CharField(max_length=20, unique=True,
-                                 choices=ViewTypes.get_list_of_tuples(),
-                                 default=ViewTypes.LIST.value)
+                                 choices=ViewType.get_list_of_tuples(),
+                                 default=ViewType.LIST.value)
     created_by = models.ForeignKey(
         "User",
         on_delete=models.SET_NULL,

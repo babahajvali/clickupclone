@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import ModificationNotAllowed
-from task_management.exceptions.enums import Permissions, Role
+from task_management.exceptions.enums import PermissionType, Role
 from task_management.interactors.dtos import (
     CreateFolderPermissionDTO,
     FolderDTO,
@@ -47,7 +47,7 @@ def make_user_permission() -> UserFolderPermissionDTO:
     return UserFolderPermissionDTO(
         id=1,
         folder_id="folder_1",
-        permission_type=Permissions.FULL_EDIT,
+        permission_type=PermissionType.FULL_EDIT,
         user_id="user_1",
         is_active=True,
         added_by="admin",
@@ -81,7 +81,7 @@ class TestAddFolderPermissionForUserInteractor:
         dto = CreateFolderPermissionDTO(
             folder_id="folder_1",
             user_id="user_1",
-            permission_type=Permissions.FULL_EDIT,
+            permission_type=PermissionType.FULL_EDIT,
             added_by="admin",
         )
 
@@ -89,14 +89,15 @@ class TestAddFolderPermissionForUserInteractor:
             permission_data=dto
         )
 
-        snapshot.assert_match(repr(result), "add_folder_permission_success.txt")
+        snapshot.assert_match(repr(result),
+                              "add_folder_permission_success.txt")
 
     def test_add_folder_permission_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
         dto = CreateFolderPermissionDTO(
             folder_id="folder_1",
             user_id="user_1",
-            permission_type=Permissions.FULL_EDIT,
+            permission_type=PermissionType.FULL_EDIT,
             added_by="admin",
         )
 

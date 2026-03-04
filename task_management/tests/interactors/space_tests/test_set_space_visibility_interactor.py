@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UnsupportedVisibilityType,
 )
-from task_management.exceptions.enums import Role, Visibility
+from task_management.exceptions.enums import Role, VisibilityType
 from task_management.interactors.dtos import SpaceDTO, WorkspaceMemberDTO
 from task_management.interactors.spaces.set_space_visibility_interactor import (
     SetSpaceVisibilityInteractor,
@@ -69,7 +69,7 @@ class TestSetSpaceVisibilityInteractor:
         result = self.interactor.set_space_visibility(
             space_id="space_1",
             user_id="user_1",
-            visibility=Visibility.PRIVATE,
+            visibility=VisibilityType.PRIVATE,
         )
 
         snapshot.assert_match(repr(result), "set_space_visibility_success.txt")
@@ -95,7 +95,7 @@ class TestSetSpaceVisibilityInteractor:
             self.interactor.set_space_visibility(
                 space_id="space_1",
                 user_id="user_1",
-                visibility=Visibility.PRIVATE,
+                visibility=VisibilityType.PRIVATE,
             )
 
         snapshot.assert_match(

@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from django.db.models import F
 
-from task_management.exceptions.enums import Permissions, Visibility
+from task_management.exceptions.enums import PermissionType, VisibilityType
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO, \
     UserFolderPermissionDTO, CreateFolderPermissionDTO
 from task_management.interactors.storage_interfaces.folder_storage_interface import \
@@ -137,7 +137,7 @@ class FolderStorage(FolderStorageInterface):
             self, folder_id: str, visibility: str) -> FolderDTO:
 
         folder_data = Folder.objects.get(folder_id=folder_id)
-        folder_data.is_private = visibility == Visibility.PRIVATE.value
+        folder_data.is_private = visibility == VisibilityType.PRIVATE.value
         folder_data.save(update_fields=["is_private"])
 
         return self._folder_dto(folder_data)
@@ -174,7 +174,8 @@ class FolderStorage(FolderStorageInterface):
         return self._user_folder_permission_dto(data=user_folder_permission)
 
     def update_user_permission_for_folder(
-            self, user_id: str, folder_id: str, permission_type: Permissions) \
+            self, user_id: str, folder_id: str,
+            permission_type: PermissionType) \
             -> UserFolderPermissionDTO:
         user_folder_permission = FolderPermission.objects.get(
             user_id=user_id, folder_id=folder_id)

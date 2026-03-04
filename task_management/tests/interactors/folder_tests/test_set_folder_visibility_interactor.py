@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UnsupportedVisibilityType,
 )
-from task_management.exceptions.enums import Role, Visibility
+from task_management.exceptions.enums import Role, VisibilityType
 from task_management.interactors.dtos import FolderDTO, WorkspaceMemberDTO
 from task_management.interactors.folders.set_folder_visibility_interactor import (
     SetFolderVisibilityInteractor,
@@ -71,10 +71,11 @@ class TestSetFolderVisibilityInteractor:
         result = self.interactor.set_folder_visibility(
             folder_id="folder_1",
             user_id="user_1",
-            visibility=Visibility.PRIVATE,
+            visibility=VisibilityType.PRIVATE,
         )
 
-        snapshot.assert_match(repr(result), "set_folder_visibility_success.txt")
+        snapshot.assert_match(repr(result),
+                              "set_folder_visibility_success.txt")
 
     def test_set_folder_visibility_invalid_type(self, snapshot):
         self._setup_dependencies()
@@ -97,7 +98,7 @@ class TestSetFolderVisibilityInteractor:
             self.interactor.set_folder_visibility(
                 folder_id="folder_1",
                 user_id="user_1",
-                visibility=Visibility.PRIVATE,
+                visibility=VisibilityType.PRIVATE,
             )
 
         snapshot.assert_match(
