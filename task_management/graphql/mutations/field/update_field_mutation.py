@@ -4,7 +4,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
     FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
-    InvalidFieldDefaultValueType, NothingToUpdateFieldType, DeletedFieldType, \
+    NothingToUpdateFieldType, DeletedFieldType, \
     EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
     UserNotWorkspaceMemberType, TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
@@ -89,13 +89,6 @@ class UpdateFieldMutation(graphene.Mutation):
             return InvalidFieldConfigType(
                 field_type=e.field_type,
                 invalid_keys=e.invalid_keys,
-                message=e.message
-            )
-
-        except custom_exceptions.InvalidFieldDefaultValue as e:
-            return InvalidFieldDefaultValueType(
-                field_type=e.field_type,
-                default_value=e.default_value,
                 message=e.message
             )
 

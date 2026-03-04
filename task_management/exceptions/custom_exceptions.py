@@ -139,26 +139,6 @@ class DropdownOptionsEmpty(Exception):
         self.field_type = field_type
 
 
-class InvalidFieldDefaultValue(Exception):
-    def __init__(
-            self, field_type: str, default_value=None,
-            message: str | None = None):
-
-        self.field_type = field_type
-        self.default_value = default_value
-
-        if message:
-            self.message = message
-        else:
-            self.message = (
-                f"Invalid default value '{default_value}' "
-                f"for field type '{field_type}'."
-            )
-
-    def __str__(self):
-        return self.message
-
-
 class TextDefaultValueExceedsMaxLength(Exception):
     def __init__(self, message: str):
         self.message = message
@@ -194,17 +174,6 @@ class DropdownDefaultValueNotInOptions(Exception):
 class ListNotFound(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
-
-
-class UserListPermissionNotFound(Exception):
-    def __init__(self, user_id: str, list_id: str):
-        self.user_id = user_id
-        self.list_id = list_id
-
-
-class InactiveUserListPermission(Exception):
-    def __init__(self, user_id: str):
-        self.user_id = user_id
 
 
 class UserHaveAlreadyListPermission(Exception):
@@ -332,11 +301,6 @@ class NothingToUpdateUser(Exception):
         self.user_id = user_id
 
 
-class UsernameNotFound(Exception):
-    def __init__(self, username: str):
-        self.username = username
-
-
 class InvalidOffset(Exception):
     def __init__(self, offset: int):
         self.offset = offset
@@ -433,11 +397,6 @@ class InvalidAccountIds(Exception):
         self.account_ids = account_ids
 
 
-class InactiveAccountIds(Exception):
-    def __init__(self, account_ids: list[str]):
-        self.account_ids = account_ids
-
-
 class InactiveAccount(Exception):
     def __init__(self, account_id: str):
         self.account_id = account_id
@@ -448,20 +407,10 @@ class UserNotAccountOwner(Exception):
         self.user_id = user_id
 
 
-class UserDoesNotHaveAccountPermission(Exception):
-    def __init__(self, user_id: str):
-        self.user_id = user_id
-
-
 class ListViewNotFound(Exception):
     def __init__(self, list_id: str, view_id: str):
         self.list_id = list_id
         self.view_id = view_id
-
-
-class AccountMemberNotFound(Exception):
-    def __init__(self, account_member_id: int):
-        self.account_member_id = account_member_id
 
 
 class InvalidResetToken(Exception):

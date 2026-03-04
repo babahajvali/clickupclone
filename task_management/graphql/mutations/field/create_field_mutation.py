@@ -5,7 +5,7 @@ from task_management.exceptions.enums import FieldType as FieldTypeEnum
 from task_management.graphql.types.error_types import TemplateNotFoundType, \
     UnsupportedFieldTypeType, FieldNameAlreadyExistsType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
-    InvalidFieldDefaultValueType, EmptyFieldNameType, MissingFieldConfigType, \
+    EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
     DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType
@@ -81,13 +81,6 @@ class CreateFieldMutation(graphene.Mutation):
             return InvalidFieldConfigType(
                 field_type=e.field_type,
                 invalid_keys=e.invalid_keys,
-                message=e.message
-            )
-
-        except custom_exceptions.InvalidFieldDefaultValue as e:
-            return InvalidFieldDefaultValueType(
-                field_type=e.field_type,
-                default_value=e.default_value,
                 message=e.message
             )
 
