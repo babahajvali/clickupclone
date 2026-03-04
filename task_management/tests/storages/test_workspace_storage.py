@@ -5,6 +5,7 @@ from task_management.interactors.dtos import (
     CreateWorkspaceDTO,
 )
 from task_management.storages.workspace_storage import WorkspaceStorage
+from task_management.models import Workspace
 from task_management.tests.factories.storage_factory import (
     WorkspaceFactory,
     UserFactory,
@@ -27,7 +28,9 @@ class TestWorkspaceStorage:
         WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=user,
-            account=account
+            account=account,
+            name="Workspace One",
+            description="Workspace Description",
         )
         storage = WorkspaceStorage()
 
@@ -35,10 +38,12 @@ class TestWorkspaceStorage:
         result = storage.get_workspace(workspace_id=str(workspace_id))
 
         # Assert
-        snapshot.assert_match(
-            repr(result),
-            "test_get_workspace_success.txt"
-        )
+        assert str(result.workspace_id) == workspace_id
+        assert str(result.user_id) == user_id
+        assert str(result.account_id) == account_id
+        assert result.name == "Workspace One"
+        assert result.description == "Workspace Description"
+        assert result.is_deleted is False
 
     @pytest.mark.django_db
     def test_get_workspace_failure(self, snapshot):
@@ -46,13 +51,14 @@ class TestWorkspaceStorage:
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.get_workspace(
-            workspace_id="12345678-1234-5678-1234-567812345612"
-        )
+        with pytest.raises(Workspace.DoesNotExist) as exc:
+            storage.get_workspace(
+                workspace_id="12345678-1234-5678-1234-567812345612"
+            )
 
         # Assert
         snapshot.assert_match(
-            repr(result),
+            repr(exc.value),
             "test_get_workspace_failure.txt"
         )
 
@@ -131,7 +137,9 @@ class TestWorkspaceStorage:
             workspace_id=workspace_id,
             created_by=user,
             account=account,
-            is_deleted=False
+            is_deleted=False,
+            name="To Delete",
+            description="To Delete Description",
         )
         storage = WorkspaceStorage()
 
@@ -141,10 +149,10 @@ class TestWorkspaceStorage:
         )
 
         # Assert
-        snapshot.assert_match(
-            repr(result),
-            "test_delete_workspace.txt"
-        )
+        assert str(result.workspace_id) == workspace_id
+        assert result.name == "To Delete"
+        assert result.description == "To Delete Description"
+        assert result.is_deleted is True
 
     @pytest.mark.django_db
     def test_transfer_workspace(self, snapshot):
@@ -160,7 +168,9 @@ class TestWorkspaceStorage:
         WorkspaceFactory(
             workspace_id=workspace_id,
             created_by=old_owner,
-            account=account
+            account=account,
+            name="Transfer Workspace",
+            description="Transfer Description",
         )
         storage = WorkspaceStorage()
 
@@ -171,10 +181,10 @@ class TestWorkspaceStorage:
         )
 
         # Assert
-        snapshot.assert_match(
-            repr(result),
-            "test_transfer_workspace.txt"
-        )
+        assert str(result.workspace_id) == workspace_id
+        assert str(result.user_id) == new_user_id
+        assert result.name == "Transfer Workspace"
+        assert result.description == "Transfer Description"
 
     @pytest.mark.django_db
     def test_get_workspaces_by_account(self, snapshot):
@@ -202,7 +212,6 @@ class TestWorkspaceStorage:
         )
 
         # Assert
-        snapshot.assert_match(
-            repr(result),
-            "test_get_workspaces_by_account.txt"
-        )
+        assert len(result) == 2
+        result_workspace_ids = {str(each.workspace_id) for each in result}
+        assert result_workspace_ids == {workspace_id1, workspace_id2}

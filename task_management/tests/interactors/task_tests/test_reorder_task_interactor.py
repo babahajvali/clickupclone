@@ -60,7 +60,7 @@ class TestReorderTaskInteractor:
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
         self.workspace_storage.get_workspace_member.return_value = make_permission(
             role)
-        self.task_storage.reorder_tasks.return_value = make_task(
+        self.task_storage.reorder_task.return_value = make_task(
             order=new_order)
 
     def test_reorder_task_move_down_success(self):
@@ -110,7 +110,7 @@ class TestReorderTaskInteractor:
 
         self.task_storage.shift_tasks_up.assert_not_called()
         self.task_storage.shift_tasks_down.assert_not_called()
-        self.task_storage.reorder_tasks.assert_not_called()
+        self.task_storage.reorder_task.assert_not_called()
         assert result == task_data
 
     def test_reorder_task_task_not_found(self):

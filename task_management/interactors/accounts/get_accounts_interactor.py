@@ -1,3 +1,5 @@
+from typing import List
+
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface
@@ -8,7 +10,7 @@ class GetAccountsInteractor:
     def __init__(self, account_storage: AccountStorageInterface):
         self.account_storage = account_storage
 
-    def get_accounts(self, account_ids: list[str]) -> list[AccountDTO]:
+    def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         """ Get accounts data after validations
         1. Validate the account_ids
         Args:
@@ -22,7 +24,7 @@ class GetAccountsInteractor:
 
         return self.account_storage.get_accounts(account_ids=account_ids)
 
-    def _check_account_ids(self, account_ids: list[str]):
+    def _check_account_ids(self, account_ids: List[str]):
         from task_management.exceptions.custom_exceptions import \
             InvalidAccountIds
 

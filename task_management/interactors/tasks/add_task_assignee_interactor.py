@@ -34,17 +34,19 @@ class AddTaskAssigneeInteractor:
     def add_task_assignee(
             self, task_id: str, user_id: str, assigned_by: str) \
             -> TaskAssigneeDTO:
-        assignee_data = self.task_storage.get_user_task_assignee(
-            user_id=user_id, task_id=task_id, assigned_by=assigned_by)
-        if assignee_data and not assignee_data.is_active:
-            return self.task_storage.reassign_task_assignee(
-                assign_id=assignee_data.assign_id)
-
         self.task_mixin.check_task_not_deleted(task_id=task_id)
         self.user_mixin.check_user_is_active(user_id=user_id)
 
         self._check_user_has_edit_access_for_task(
             task_id=task_id, user_id=assigned_by)
+
+        assignee_data = self.task_storage.get_user_task_assignee(
+            user_id=user_id, task_id=task_id, assigned_by=assigned_by)
+        if assignee_data:
+            if not assignee_data.is_active:
+                return self.task_storage.reassign_task_assignee(
+                    assign_id=assignee_data.assign_id)
+            return assignee_data
 
         return self.task_storage.add_task_assignee(
             task_id=task_id, assigned_by=assigned_by, user_id=user_id)

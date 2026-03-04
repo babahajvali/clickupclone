@@ -13,7 +13,7 @@ from task_management.interactors.dtos import (
     UserSpacePermissionDTO,
     WorkspaceMemberDTO,
 )
-from task_management.interactors.spaces.add_space_permission_for_user import (
+from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
     AddSpacePermissionForUser,
 )
 from task_management.interactors.storage_interfaces import (

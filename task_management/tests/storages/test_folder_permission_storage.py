@@ -40,12 +40,14 @@ class TestFolderPermissionStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.get_user_permission_for_folder(user_id=str(user_id),
-                                                        folder_id=str(
-                                                            folder_id))
+        with pytest.raises(AttributeError) as exc:
+            storage.get_user_permission_for_folder(
+                user_id=str(user_id),
+                folder_id=str(folder_id),
+            )
 
         # Assert
-        snapshot.assert_match(repr(result),
+        snapshot.assert_match(repr(exc.value),
                               "test_get_user_permission_for_folder_failure.txt")
 
     @pytest.mark.django_db

@@ -1,1 +1,1 @@
-SpaceDTO(space_id='12345678-1234-5678-1234-567812345678', name='guess', description='Six small collection north process them parent service.', workspace_id='12345678-1234-5678-1234-567812345679', order=1, is_deleted=True, is_private=False, created_by='12345678-1234-5678-1234-567812345679')
+SpaceDTO(space_id='12345678-1234-5678-1234-567812345678', name='child', description='Onto kid card myself.', workspace_id='12345678-1234-5678-1234-567812345679', order=1, is_deleted=True, is_private=False, created_by='12345678-1234-5678-1234-567812345679')

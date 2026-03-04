@@ -3,7 +3,7 @@ from django.db import transaction
 from task_management.exceptions.enums import Permissions
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     CreateUserSpacePermissionDTO, UserSpacePermissionDTO
-from task_management.interactors.spaces.add_space_permission_for_user import \
+from task_management.interactors.spaces.add_space_permission_for_user_interactor import \
     AddSpacePermissionForUser
 from task_management.interactors.spaces.create_space_interactor import \
     CreateSpaceInteractor

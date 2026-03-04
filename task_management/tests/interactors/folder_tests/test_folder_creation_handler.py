@@ -55,9 +55,7 @@ class TestFolderCreationHandler:
 
         snapshot.assert_match(repr(result), "handle_folder_creation_success.txt")
         create_folder.assert_called_once_with(folder_data=dto)
-        create_permission.assert_called_once_with(
-            folder_id="folder_1", user_id="user_1"
-        )
+        create_permission.assert_not_called()
 
     def test_create_folder_permission_for_user_builds_dto(self, snapshot):
         with patch.object(

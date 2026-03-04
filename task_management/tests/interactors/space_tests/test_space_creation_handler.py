@@ -82,7 +82,7 @@ class TestSpaceCreationHandler:
 
     def test_create_space_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-            self.handler, "_get_create_space_interactor"
+            self.handler, "_get_space_permission_interactor"
         ) as get_interactor:
             interactor = get_interactor.return_value
 

@@ -279,8 +279,8 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=3,
-                                       task_id=str(task_id))
+        result = storage.reorder_task(list_id=str(list_id), new_order=3,
+                                      task_id=str(task_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -301,8 +301,8 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=1,
-                                       task_id=str(task_id))
+        result = storage.reorder_task(list_id=str(list_id), new_order=1,
+                                      task_id=str(task_id))
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -321,8 +321,8 @@ class TestTaskStorage:
         storage = TaskStorage()
 
         # Act
-        result = storage.reorder_tasks(list_id=str(list_id), new_order=2,
-                                       task_id=str(task_id))
+        result = storage.reorder_task(list_id=str(list_id), new_order=2,
+                                      task_id=str(task_id))
 
         # Assert
         snapshot.assert_match(repr(result),

@@ -1,1 +1,1 @@
-None
+DoesNotExist('Workspace matching query does not exist.')

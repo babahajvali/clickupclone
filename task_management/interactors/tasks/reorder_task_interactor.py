@@ -67,7 +67,7 @@ class ReorderTaskInteractor:
         self._reorder_task_positions_except_current(
             list_id=list_id, current_order=current_order, new_order=new_order)
 
-        return self.task_storage.reorder_tasks(
+        return self.task_storage.reorder_task(
             task_id=task_id, new_order=new_order, list_id=list_id)
 
     def _reorder_task_positions_except_current(

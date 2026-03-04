@@ -134,25 +134,9 @@ class TaskStorage(TaskStorageInterface):
     def get_tasks_count(self, list_id: str) -> int:
         return Task.objects.filter(list_id=list_id, is_deleted=False).count()
 
-    def reorder_tasks(
+    def reorder_task(
             self, list_id: str, new_order: int, task_id: str) -> TaskDTO:
         task_data = Task.objects.get(task_id=task_id)
-        old_order = task_data.order
-
-        if old_order == new_order:
-            return self._task_dto(task_data=task_data)
-
-        task_data.order = 0
-        task_data.save()
-        if new_order > old_order:
-            Task.objects.filter(
-                list_id=list_id, is_deleted=False, order__gt=old_order,
-                order__lte=new_order).update(order=F("order") - 1)
-        else:
-            Task.objects.filter(
-                list_id=list_id, is_deleted=False, order__gte=new_order,
-                order__lt=old_order).update(order=F("order") + 1)
-
         task_data.order = new_order
         task_data.save()
 
@@ -251,8 +235,8 @@ class TaskStorage(TaskStorageInterface):
 
         task_ids = (Task.objects.filter(list_id=list_id, is_deleted=False).
                     values_list('task_id', flat=True))
-        task_assignees = TaskAssignee.objects.filter(task_id__in=task_ids,
-                                                     is_active=True)
+        task_assignees = TaskAssignee.objects.filter(
+            task_id__in=task_ids, is_active=True)
 
         return [self._assignee_dto(assignee_data=data) for data in
                 task_assignees]
