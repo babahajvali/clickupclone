@@ -10,7 +10,7 @@ from task_management.exceptions.enums import FieldConfig, FieldType
 class DropdownField:
 
     def check_dropdown_config(self, config: dict):
-        self.check_mandatory_config_is_not_empty(
+        self._check_mandatory_config_is_not_empty(
             config=config, field_type=FieldType.DROPDOWN.value)
 
         self._validate_keys(config)
@@ -61,7 +61,7 @@ class DropdownField:
                         f"Option must be one of: {', '.join(options)}")
 
     @staticmethod
-    def check_mandatory_config_is_not_empty(config: dict, field_type: str):
+    def _check_mandatory_config_is_not_empty(config: dict, field_type: str):
 
         is_empty_config = not config
         if is_empty_config:

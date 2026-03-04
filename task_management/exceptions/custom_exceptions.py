@@ -484,6 +484,9 @@ class EmptyFieldConfig(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
+    def __str__(self):
+        return f"Empty field config: {self.field_type}"
+
 
 class InvalidFieldValue(Exception):
     def __init__(self, message: str):

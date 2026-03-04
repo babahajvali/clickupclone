@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
@@ -24,7 +24,7 @@ class NumberField:
 
     @staticmethod
     def _validate_number_default_value(
-            config: Dict, max_val: Any | None, min_val: Any | None):
+            config: Dict, max_val: int | None, min_val: int | None):
 
         default_value = config.get(FieldConfig.DEFAULT.value)
         is_default_value_provided = default_value is not None
@@ -45,7 +45,7 @@ class NumberField:
 
     @staticmethod
     def _validate_number_config_values(
-            max_val: Any | None, min_val: Any | None):
+            max_val: int | None, min_val: int | None):
         is_min_max_both_provided = min_val is not None and max_val is not None
         if not is_min_max_both_provided:
             return
@@ -57,7 +57,7 @@ class NumberField:
                 message=f"max {max_val} must be greater than or equal to min {min_val}")
 
     @staticmethod
-    def _validate_config_keys(config: dict):
+    def _validate_config_keys(config: Dict):
         allowed_keys = FIELD_TYPE_KEYS[FieldType.NUMBER.value][
             FieldConfig.CONFIG_KEYS.value]
         invalid_keys = set(config.keys()) - allowed_keys
