@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
-
 from typing import Optional
 
-from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     UserSpacePermissionDTO, CreateUserSpacePermissionDTO
 
@@ -65,32 +63,7 @@ class SpaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_permission_for_space(
-            self, user_id: str, space_id: str) -> UserSpacePermissionDTO:
-        pass
-
-    @abstractmethod
-    def update_user_permission_for_space(
-            self, user_id: str, space_id: str, permission_type: PermissionType) \
-            -> UserSpacePermissionDTO:
-        pass
-
-    @abstractmethod
-    def remove_user_permission_for_space(
-            self, user_id: str, space_id: str) -> UserSpacePermissionDTO:
-        pass
-
-    @abstractmethod
-    def get_space_permissions(
-            self, space_id: str) -> list[UserSpacePermissionDTO]:
-        pass
-
-    @abstractmethod
     def create_user_space_permissions(
             self, permission_data: list[CreateUserSpacePermissionDTO]) \
             -> list[UserSpacePermissionDTO]:
-        pass
-
-    @abstractmethod
-    def check_space_exists(self, space_id: str) -> bool:
         pass

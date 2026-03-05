@@ -8,7 +8,7 @@ def get_user_with_email_resolver(root, info, params):
     user_storage = UserStorage()
 
     try:
-        result = user_storage.get_user_details(email)
+        result = user_storage.get_user_by_email(email)
 
         return UserType(
             user_id=result.user_id,

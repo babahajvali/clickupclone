@@ -1,3 +1,5 @@
+from django.contrib.auth.hashers import check_password
+
 from task_management.exceptions.custom_exceptions import \
     EmailNotFound, IncorrectPassword, \
     UsernameAlreadyExists, EmailAlreadyExists, \
@@ -12,10 +14,7 @@ from task_management.mixins import UserValidationMixin
 class UserInteractor:
     def __init__(self, user_storage: UserStorageInterface):
         self.user_storage = user_storage
-
-    @property
-    def user_mixin(self) -> UserValidationMixin:
-        return UserValidationMixin(user_storage=self.user_storage)
+        self.user_mixin = UserValidationMixin(user_storage=user_storage)
 
     def create_user(self, user_details: CreateUserDTO) -> UserDTO:
 
@@ -36,7 +35,7 @@ class UserInteractor:
 
         self.user_mixin.check_user_is_active(user_id=user_id)
 
-        return self.user_storage.get_user_data(user_id=user_id)
+        return self.user_storage.get_user(user_id=user_id)
 
     def block_user(self, user_id: str) -> UserDTO:
 
@@ -50,11 +49,15 @@ class UserInteractor:
 
         if not is_email_exist:
             raise EmailNotFound(email=email)
-        user_data = self.user_storage.get_user_details(email=email)
+        user_data = self.user_storage.get_user_by_email(email=email)
 
         if not user_data.is_active:
             raise InactiveUser(user_id=user_data.user_id)
 
+        if check_password(password, user_data.password):
+            return user_data
+
+        # Backward compatibility for old plain-text records.
         if user_data.password == password:
             return user_data
 
@@ -127,7 +130,6 @@ class UserInteractor:
         if is_phone_number_provided:
             self._check_phone_number_except_current_user(
                 user_id=user_data.user_id, phone_number=user_data.phone_number)
-
 
     @staticmethod
     def _has_at_least_one_field_to_update(user_data: UpdateUserDTO) -> bool:

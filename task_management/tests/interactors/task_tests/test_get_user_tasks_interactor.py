@@ -54,7 +54,7 @@ class TestGetUserTasksInteractor:
         )
 
     def _setup_dependencies(self):
-        self.user_storage.get_user_data.return_value = make_user()
+        self.user_storage.get_user.return_value = make_user()
         self.task_storage.get_user_assigned_tasks.return_value = make_user_tasks()
 
     def test_get_user_assigned_tasks_success(self, snapshot):
@@ -66,13 +66,13 @@ class TestGetUserTasksInteractor:
                               "get_user_assigned_tasks_success.txt")
 
     def test_get_user_assigned_tasks_user_not_found(self):
-        self.user_storage.get_user_data.return_value = None
+        self.user_storage.get_user.return_value = None
 
         with pytest.raises(UserNotFound):
             self.interactor.get_user_assigned_tasks(user_id="user_2")
 
     def test_get_user_assigned_tasks_inactive_user(self):
-        self.user_storage.get_user_data.return_value = make_user(
+        self.user_storage.get_user.return_value = make_user(
             is_active=False)
 
         with pytest.raises(InactiveUser):

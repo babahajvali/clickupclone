@@ -1,16 +1,17 @@
 from datetime import datetime
 
+from django.contrib.auth.hashers import make_password
+
 from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
     UpdateUserDTO, PasswordResetTokenDTO
-from task_management.interactors.storage_interfaces.user_storage_interface import \
-    UserStorageInterface
+from task_management.interactors.storage_interfaces import UserStorageInterface
 from task_management.models import User, PasswordResetToken
 
 
 class UserStorage(UserStorageInterface):
 
     @staticmethod
-    def _user_dto(data: User) -> UserDTO:
+    def _convert_user_to_dto(data: User) -> UserDTO:
         return UserDTO(
             user_id=data.user_id,
             username=data.username,
@@ -23,32 +24,33 @@ class UserStorage(UserStorageInterface):
             gender=data.gender,
         )
 
-    def get_user_data(self, user_id: str) -> UserDTO | None:
+    def get_user(self, user_id: str) -> UserDTO | None:
 
-        user_data = User.objects.get(user_id=user_id)
+        user_data = User.objects.filter(user_id=user_id).first()
         if user_data is None:
             return None
 
-        return self._user_dto(data=user_data)
+        return self._convert_user_to_dto(data=user_data)
 
-    def get_user_details(self, email: str) -> UserDTO | None:
+    def get_user_by_email(self, email: str) -> UserDTO | None:
 
         user_data = User.objects.filter(email=email).first()
 
         if user_data is None:
             return None
 
-        return self._user_dto(data=user_data)
+        return self._convert_user_to_dto(data=user_data)
 
     def create_user(self, user_data: CreateUserDTO) -> UserDTO:
         user_obj = User.objects.create(
             username=user_data.username, full_name=user_data.full_name,
             email=user_data.email, phone_number=user_data.phone_number,
-            image_url=user_data.image_url, password=user_data.password,
+            image_url=user_data.image_url,
+            password=make_password(user_data.password),
             gender=user_data.gender.value,
         )
 
-        return self._user_dto(data=user_obj)
+        return self._convert_user_to_dto(data=user_obj)
 
     def update_user(self, user_data: UpdateUserDTO) -> UserDTO:
         user_obj = User.objects.get(user_id=user_data.user_id)
@@ -66,14 +68,14 @@ class UserStorage(UserStorageInterface):
 
         user_obj.save()
 
-        return self._user_dto(data=user_obj)
+        return self._convert_user_to_dto(data=user_obj)
 
     def block_user(self, user_id: str) -> UserDTO:
         user_obj = User.objects.get(user_id=user_id)
-        user_obj.is_delete = False
+        user_obj.is_active = False
         user_obj.save()
 
-        return self._user_dto(data=user_obj)
+        return self._convert_user_to_dto(data=user_obj)
 
     def check_username_exists(self, username: str) -> bool:
         return User.objects.filter(username=username).exists()
@@ -160,7 +162,7 @@ class UserStorage(UserStorageInterface):
         try:
             user_data = User.objects.get(user_id=user_id)
 
-            user_data.password = new_password
+            user_data.password = make_password(new_password)
             user_data.save()
 
             return UserDTO(

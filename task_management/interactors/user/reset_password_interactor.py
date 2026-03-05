@@ -1,12 +1,12 @@
 import secrets
 from datetime import timedelta
+
 from django.utils import timezone
 
 from task_management.interactors.email_service_interface.email_service_interface import \
     EmailServiceInterface
 from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-
 from task_management.mixins import UserValidationMixin
 
 
@@ -21,7 +21,7 @@ class PasswordResetInteractor(UserValidationMixin):
 
     def request_password_reset(self, email: str, base_url: str) -> bool:
 
-        user_data = self.user_storage.get_user_details(email=email)
+        user_data = self.user_storage.get_user_by_email(email=email)
         if not user_data:
             from task_management.exceptions.custom_exceptions import \
                 EmailNotFound

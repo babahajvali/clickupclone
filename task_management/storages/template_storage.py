@@ -1,15 +1,16 @@
 from typing import Optional
 
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import TemplateDTO, CreateTemplateDTO
 from task_management.interactors.storage_interfaces.template_storage_interface import \
     TemplateStorageInterface
-from task_management.models import Template
+from task_management.models import Template, Space, Folder
 
 
 class TemplateStorage(TemplateStorageInterface):
 
     @staticmethod
-    def _template_dto(data: Template) -> TemplateDTO:
+    def _convert_template_to_dto(data: Template) -> TemplateDTO:
         return TemplateDTO(
             template_id=data.template_id,
             name=data.name,
@@ -21,15 +22,15 @@ class TemplateStorage(TemplateStorageInterface):
     def get_template(self, template_id: str) -> TemplateDTO:
         template_data = Template.objects.get(template_id=template_id)
 
-        return self._template_dto(data=template_data)
+        return self._convert_template_to_dto(data=template_data)
 
     def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
 
-        template_data = Template.objects.create(
+        template_obj = Template.objects.create(
             name=template_data.name, description=template_data.description,
             list_id=template_data.list_id)
 
-        return self._template_dto(data=template_data)
+        return self._convert_template_to_dto(data=template_obj)
 
     def validate_template_exists(self, template_id: str) -> bool:
         return Template.objects.filter(template_id=template_id).exists()
@@ -50,19 +51,26 @@ class TemplateStorage(TemplateStorageInterface):
 
         template_data.save()
 
-        return self._template_dto(data=template_data)
-
-    def get_template_list_id(self, template_id: str) -> str:
-        return Template.objects.filter(list_id=template_id).values_list(
-            'list_id', flat=True)[0]
+        return self._convert_template_to_dto(data=template_data)
 
     def get_workspace_id_from_template_id(
             self, template_id: str) -> str | None:
-        template_data = Template.objects.select_related(
-            "list__space__workspace").filter(
-            template_id=template_id).first()
+        list_data = Template.objects.select_related("list").values(
+            "list__entity_type",
+            "list__entity_id",
+        ).filter(template_id=template_id).first()
 
-        if template_data is None:
+        if list_data is None:
             return None
 
-        return template_data.list.space.workspace.workspace_id
+        entity_type = list_data["list__entity_type"]
+        entity_id = list_data["list__entity_id"]
+
+        if entity_type == ListEntityType.SPACE.value:
+            return str(Space.objects.values_list(
+                "workspace_id", flat=True
+            ).get(space_id=entity_id))
+
+        return str(Folder.objects.values_list(
+            "space__workspace_id", flat=True
+        ).get(folder_id=entity_id))

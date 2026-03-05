@@ -55,7 +55,7 @@ class TestAddTaskAssigneeInteractor:
         )
 
     def _setup_dependencies(self, role: Role = Role.MEMBER):
-        self.user_storage.get_user_data.return_value = type(
+        self.user_storage.get_user.return_value = type(
             "User", (), {"is_active": True}
         )()
         self.task_storage.get_task.return_value = type(
@@ -93,7 +93,7 @@ class TestAddTaskAssigneeInteractor:
 
     def test_assign_task_assignee_user_not_found(self, snapshot):
         self._setup_dependencies()
-        self.user_storage.get_user_data.return_value = None
+        self.user_storage.get_user.return_value = None
 
         with pytest.raises(UserNotFound) as exc:
             self.interactor.add_task_assignee(
@@ -119,7 +119,7 @@ class TestAddTaskAssigneeInteractor:
 
     def test_assign_task_assignee_inactive_user(self):
         self._setup_dependencies()
-        self.user_storage.get_user_data.return_value = type(
+        self.user_storage.get_user.return_value = type(
             "User", (), {"is_active": False}
         )()
 

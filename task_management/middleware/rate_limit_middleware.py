@@ -35,7 +35,10 @@ class RateLimitMiddleware:
         window_key = f"rl:login:window:{identifier}"
 
         if cache.get(block_key):
-            retry_after = cache.ttl(block_key) or COOLDOWN_PERIOD
+            retry_after = COOLDOWN_PERIOD
+            get_ttl = getattr(cache, "ttl", None)
+            if callable(get_ttl):
+                retry_after = get_ttl(block_key) or COOLDOWN_PERIOD
             return self.too_many_requests_response(retry_after)
 
         now = time.time()

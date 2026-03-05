@@ -1,4 +1,5 @@
 from unittest.mock import create_autospec
+
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
@@ -36,7 +37,7 @@ class TestBlockUser:
             **{**active_user.__dict__, "is_active": False}
         )
 
-        user_storage.get_user_data.return_value = active_user
+        user_storage.get_user.return_value = active_user
         user_storage.block_user.return_value = blocked_user
 
         interactor = UserInteractor(user_storage=user_storage)
@@ -52,7 +53,7 @@ class TestBlockUser:
 
     def test_block_user_user_not_found(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
-        user_storage.get_user_data.return_value = None
+        user_storage.get_user.return_value = None
 
         interactor = UserInteractor(user_storage=user_storage)
 
@@ -79,7 +80,7 @@ class TestBlockUser:
             image_url="url",
         )
 
-        user_storage.get_user_data.return_value = inactive_user
+        user_storage.get_user.return_value = inactive_user
 
         interactor = UserInteractor(user_storage=user_storage)
 

@@ -20,11 +20,11 @@ class GetAccountsInteractor:
         Exceptions:
             InvalidAccountIdsFoundException: If the accounts does not exist.
         """
-        self._check_account_ids(account_ids=account_ids)
+        self._check_account_ids_exist(account_ids=account_ids)
 
         return self.account_storage.get_accounts(account_ids=account_ids)
 
-    def _check_account_ids(self, account_ids: List[str]):
+    def _check_account_ids_exist(self, account_ids: List[str]):
         from task_management.exceptions.custom_exceptions import \
             InvalidAccountIds
 

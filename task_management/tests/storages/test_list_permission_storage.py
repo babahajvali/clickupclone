@@ -11,68 +11,6 @@ from task_management.tests.factories.storage_factory import \
 class TestListPermissionStorage:
 
     @pytest.mark.django_db
-    def test_update_user_permission_for_list_success(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        added_by_id = "12345678-1234-5678-1234-567812345680"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
-                              permission_type="views")
-        storage = ListStorage()
-
-        # Act
-        result = storage.update_user_permission_for_list(
-            list_id=str(list_id),
-            user_id=str(user_id),
-            permission_type=PermissionType.FULL_EDIT
-        )
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_update_user_permission_for_list_success.txt")
-
-    @pytest.mark.django_db
-    def test_get_list_permissions_success(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        user_id1 = "12345678-1234-5678-1234-567812345679"
-        user_id2 = "12345678-1234-5678-1234-567812345680"
-        added_by_id = "12345678-1234-5678-1234-567812345681"
-        list_obj = ListFactory(list_id=list_id)
-        user1 = UserFactory(user_id=user_id1)
-        user2 = UserFactory(user_id=user_id2)
-        added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user1, added_by=added_by,
-                              permission_type="views")
-        ListPermissionFactory(list=list_obj, user=user2, added_by=added_by,
-                              permission_type="edit")
-        storage = ListStorage()
-
-        # Act
-        result = storage.get_list_permissions(list_id=str(list_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_get_list_permissions_success.txt")
-
-    @pytest.mark.django_db
-    def test_get_list_permissions_empty(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        ListFactory(list_id=list_id)
-        storage = ListStorage()
-
-        # Act
-        result = storage.get_list_permissions(list_id=str(list_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_get_list_permissions_empty.txt")
-
-    @pytest.mark.django_db
     def test_get_user_permission_for_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
@@ -92,27 +30,6 @@ class TestListPermissionStorage:
         # Assert
         snapshot.assert_match(repr(result),
                               "test_get_user_permission_for_list_success.txt")
-
-    @pytest.mark.django_db
-    def test_remove_user_permission_for_list_success(self, snapshot):
-        # Arrange
-        list_id = "12345678-1234-5678-1234-567812345678"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        added_by_id = "12345678-1234-5678-1234-567812345680"
-        list_obj = ListFactory(list_id=list_id)
-        user = UserFactory(user_id=user_id)
-        added_by = UserFactory(user_id=added_by_id)
-        ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
-                              is_active=True)
-        storage = ListStorage()
-
-        # Act
-        result = storage.remove_user_permission_for_list(list_id=str(list_id),
-                                                         user_id=str(user_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_remove_user_permission_for_list_success.txt")
 
     @pytest.mark.django_db
     def test_create_list_users_permissions_success(self, snapshot):

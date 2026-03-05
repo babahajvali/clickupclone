@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import InvalidResetToken, \
 from task_management.graphql.types.response_types import \
     ValidateResetTokenResponse
 from task_management.graphql.types.types import ValidateResetTokenType
-from task_management.interactors.user.reset_password_interator import \
+from task_management.interactors.user.reset_password_interactor import \
     PasswordResetInteractor
 from task_management.storages import UserStorage
 
@@ -32,6 +32,5 @@ class ValidateResetTokenMutation(graphene.Mutation):
 
         except custom_exceptions.ResetTokenExpired as e:
             return ResetTokenExpired(token=e.token)
-
 
 

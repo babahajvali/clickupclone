@@ -10,7 +10,7 @@ from task_management.models import View, ListView
 
 class ViewStorage(ViewStorageInterface):
     @staticmethod
-    def _view_dto(data: View) -> ViewDTO:
+    def _convert_view_to_dto(data: View) -> ViewDTO:
         view_type = ViewType(data.view_type)
         return ViewDTO(
             view_id=data.view_id,
@@ -22,12 +22,13 @@ class ViewStorage(ViewStorageInterface):
 
     def get_all_views(self) -> list[ViewDTO]:
         views = View.objects.all()
-        return [self._view_dto(data=view_data) for view_data in views]
+        return [self._convert_view_to_dto(data=view_data) for view_data in
+                views]
 
     def get_view(self, view_id: str) -> ViewDTO:
         view_data = View.objects.get(view_id=view_id)
 
-        return self._view_dto(data=view_data)
+        return self._convert_view_to_dto(data=view_data)
 
     def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
         view_data = View.objects.create(
@@ -36,7 +37,7 @@ class ViewStorage(ViewStorageInterface):
             description=create_view_data.description,
             created_by_id=create_view_data.created_by, )
 
-        return self._view_dto(data=view_data)
+        return self._convert_view_to_dto(data=view_data)
 
     def update_view(
             self, view_id: str, name: Optional[str],
@@ -54,7 +55,7 @@ class ViewStorage(ViewStorageInterface):
 
         view_data.save()
 
-        return self._view_dto(data=view_data)
+        return self._convert_view_to_dto(data=view_data)
 
     def check_view_exists(self, view_id: str) -> bool:
 
@@ -62,10 +63,8 @@ class ViewStorage(ViewStorageInterface):
 
     def apply_view_for_list(
             self, list_id: str, view_id: str, user_id: str) -> ListViewDTO:
-
         list_view_data = ListView.objects.create(
             list_id=list_id, view_id=view_id, applied_by_id=user_id)
-
         return ListViewDTO(
             id=list_view_data.pk,
             list_id=list_view_data.list.list_id,
@@ -76,8 +75,8 @@ class ViewStorage(ViewStorageInterface):
 
     def remove_list_view(self, view_id: str, list_id: str):
         list_view_obj = ListView.objects.get(list_id=list_id, view_id=view_id)
-        list_view_obj.is_delete = False
-        list_view_obj.save()
+        list_view_obj.is_active = False
+        list_view_obj.save(update_fields=["is_active"])
 
         return ListViewDTO(
             id=list_view_obj.pk,

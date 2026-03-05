@@ -3,17 +3,20 @@ from django.conf import settings
 
 from task_management.email_service.email_service import EmailService
 from task_management.exceptions.custom_exceptions import \
-    EmailNotFound, InvalidResetToken, \
-    ResetTokenExpired
-from task_management.graphql.types.error_types import EmailNotFound, \
-    InvalidResetToken, ResetTokenExpired
+    EmailNotFound as EmailNotFoundException, \
+    InvalidResetToken as InvalidResetTokenException, \
+    ResetTokenExpired as ResetTokenExpiredException
+from task_management.graphql.types.error_types import \
+    EmailNotFound as EmailNotFoundType, \
+    InvalidResetToken as InvalidResetTokenType, \
+    ResetTokenExpired as ResetTokenExpiredType
 from task_management.graphql.types.input_types import ForgotPasswordReqParams, \
     ResetPasswordReqParams
 from task_management.graphql.types.response_types import \
     ForgotPasswordResponse, ResetPasswordResponse
 from task_management.graphql.types.types import PasswordResetResponseType, \
     UserType
-from task_management.interactors.user.reset_password_interator import \
+from task_management.interactors.user.reset_password_interactor import \
     PasswordResetInteractor
 from task_management.storages import UserStorage
 
@@ -59,8 +62,8 @@ class ForgotPasswordMutation(graphene.Mutation):
                     message="Failed to send email. Please try again later."
                 )
 
-        except EmailNotFound as e:
-            return EmailNotFound(email=e.email)
+        except EmailNotFoundException as e:
+            return EmailNotFoundType(email=e.email)
 
         except Exception as e:
             import traceback
@@ -98,12 +101,12 @@ class ResetPasswordMutation(graphene.Mutation):
                 username=result.username,
                 email=result.email,
                 phone_number=result.phone_number,
-                is_active=result.is_deleted,
+                is_active=result.is_active,
                 image_url=result.image_url
             )
 
-        except InvalidResetToken as e:
-            return InvalidResetToken(token=e.token)
+        except InvalidResetTokenException as e:
+            return InvalidResetTokenType(token=e.token)
 
-        except ResetTokenExpired as e:
-            return ResetTokenExpired(token=e.token)
+        except ResetTokenExpiredException as e:
+            return ResetTokenExpiredType(token=e.token)

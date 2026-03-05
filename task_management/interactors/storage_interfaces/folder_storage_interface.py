@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import FolderDTO, CreateFolderDTO, \
     UserFolderPermissionDTO, CreateFolderPermissionDTO
 
@@ -55,11 +54,6 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def set_folder_private(self, folder_id: str) -> FolderDTO:
-        # set the folder to private
-        pass
-
-    @abstractmethod
     def update_folder_visibility(
             self, folder_id: str, visibility: str) -> FolderDTO:
         pass
@@ -71,27 +65,6 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def get_folder_space_id(self, folder_id: str) -> str:
-        pass
-
-    @abstractmethod
-    def get_user_permission_for_folder(
-            self, user_id: str, folder_id: str) -> UserFolderPermissionDTO:
-        pass
-
-    @abstractmethod
-    def update_user_permission_for_folder(
-            self, user_id: str, folder_id: str,
-            permission_type: PermissionType) -> UserFolderPermissionDTO:
-        pass
-
-    @abstractmethod
-    def remove_user_permission_for_folder(
-            self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
-        pass
-
-    @abstractmethod
-    def get_folder_permissions(
-            self, folder_id: str) -> list[UserFolderPermissionDTO]:
         pass
 
     @abstractmethod

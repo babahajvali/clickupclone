@@ -8,11 +8,11 @@ from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
 class UserStorageInterface(ABC):
 
     @abstractmethod
-    def get_user_data(self, user_id: str) -> UserDTO:
+    def get_user(self, user_id: str) -> UserDTO:
         pass
 
     @abstractmethod
-    def get_user_details(self, email: str) -> UserDTO:
+    def get_user_by_email(self, email: str) -> UserDTO:
         pass
 
     @abstractmethod
@@ -40,18 +40,18 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_username_except_current_user(self, user_id: str,
-                                           username: str) -> bool:
+    def check_username_except_current_user(
+            self, user_id: str, username: str) -> bool:
         pass
 
     @abstractmethod
-    def check_email_exists_except_current_user(self, user_id: str,
-                                               email: str) -> bool:
+    def check_email_exists_except_current_user(
+            self, user_id: str, email: str) -> bool:
         pass
 
     @abstractmethod
-    def check_phone_number_except_current_user(self, user_id: str,
-                                               phone_number: str) -> bool:
+    def check_phone_number_except_current_user(
+            self, user_id: str, phone_number: str) -> bool:
         pass
 
     @abstractmethod
@@ -59,8 +59,9 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_password_reset_token(self, user_id: str, token: str,
-                                    expires_at: datetime) -> PasswordResetTokenDTO:
+    def create_password_reset_token(
+            self, user_id: str, token: str, expires_at: datetime) \
+            -> PasswordResetTokenDTO:
         pass
 
     @abstractmethod

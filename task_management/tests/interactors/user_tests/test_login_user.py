@@ -1,4 +1,5 @@
 from unittest.mock import create_autospec
+
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
@@ -31,7 +32,7 @@ class TestGetUserProfile:
             image_url="https://example.com/image.png",
         )
 
-        user_storage.get_user_data.return_value = user
+        user_storage.get_user.return_value = user
 
         interactor = UserInteractor(user_storage=user_storage)
 
@@ -42,12 +43,12 @@ class TestGetUserProfile:
             "test_get_user_profile_successfully.txt",
         )
 
-        user_storage.get_user_data.assert_called_with(user_id="user123")
+        user_storage.get_user.assert_called_with(user_id="user123")
 
     def test_get_user_profile_user_not_found(self, snapshot):
         user_storage = create_autospec(UserStorageInterface)
 
-        user_storage.get_user_data.return_value = None
+        user_storage.get_user.return_value = None
 
         interactor = UserInteractor(user_storage=user_storage)
 
@@ -74,7 +75,7 @@ class TestGetUserProfile:
             image_url="url",
         )
 
-        user_storage.get_user_data.return_value = inactive_user
+        user_storage.get_user.return_value = inactive_user
 
         interactor = UserInteractor(user_storage=user_storage)
 

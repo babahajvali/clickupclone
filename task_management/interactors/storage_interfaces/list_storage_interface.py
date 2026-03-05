@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from task_management.exceptions.enums import PermissionType, ListEntityType
+from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import ListDTO, CreateListDTO, \
     UserListPermissionDTO, CreateListPermissionDTO
 
@@ -14,10 +14,6 @@ class ListStorageInterface(ABC):
 
     @abstractmethod
     def get_list(self, list_id: str) -> ListDTO:
-        pass
-
-    @abstractmethod
-    def is_list_exists(self, list_id: str) -> bool:
         pass
 
     @abstractmethod
@@ -73,9 +69,8 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_list_order_in_space(self, space_id: str, list_id: str,
-                                   order: int) \
-            -> ListDTO:
+    def update_list_order_in_space(
+            self, space_id: str, list_id: str, order: int) -> ListDTO:
         pass
 
     @abstractmethod
@@ -101,24 +96,8 @@ class ListStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_user_permission_for_list(
-            self, list_id: str, user_id: str, permission_type: PermissionType) \
-            -> UserListPermissionDTO:
-        pass
-
-    @abstractmethod
-    def get_list_permissions(self, list_id: str) -> list[
-        UserListPermissionDTO]:
-        pass
-
-    @abstractmethod
     def get_user_permission_for_list(
             self, user_id: str, list_id: str) -> UserListPermissionDTO:
-        pass
-
-    @abstractmethod
-    def remove_user_permission_for_list(
-            self, list_id: str, user_id: str) -> UserListPermissionDTO:
         pass
 
     @abstractmethod

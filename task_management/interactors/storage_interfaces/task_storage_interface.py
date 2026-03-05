@@ -26,14 +26,6 @@ class TaskStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_task_exist(self, task_id: str) -> bool:
-        pass
-
-    @abstractmethod
-    def get_task_list_id(self, task_id: str) -> str:
-        pass
-
-    @abstractmethod
     def get_workspace_id_from_task_id(self, task_id: str) -> str | None:
         pass
 

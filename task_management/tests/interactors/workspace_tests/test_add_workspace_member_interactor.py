@@ -67,7 +67,7 @@ class TestAddWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace_member.return_value = type(
             "WorkspaceMember", (), {"role": Role.ADMIN, "is_active": True}
         )()
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
         self.workspace_storage.add_member_to_workspace.return_value = expected
 
         result = self.interactor.add_member_to_workspace(dto)
@@ -113,7 +113,7 @@ class TestAddWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace_member.return_value = type(
             "WorkspaceMember", (), {"role": Role.ADMIN, "is_active": True}
         )()
-        self.user_storage.get_user_data.return_value = self._mock_inactive_user()
+        self.user_storage.get_user.return_value = self._mock_inactive_user()
 
         with pytest.raises(InactiveUser) as exc:
             self.interactor.add_member_to_workspace(dto)
@@ -132,7 +132,7 @@ class TestAddWorkspaceMemberInteractor:
         self.workspace_storage.get_workspace_member.return_value = type(
             "WorkspaceMember", (), {"role": Role.GUEST, "is_active": True}
         )()
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.add_member_to_workspace(dto)

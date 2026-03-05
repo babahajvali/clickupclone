@@ -55,10 +55,12 @@ class UserLoginMutation(graphene.Mutation):
 
     @staticmethod
     def _generate_access_token(user_id):
-        """Generate JWT access token (no expiry)"""
+        """Generate JWT access token with expiry."""
+        now = datetime.utcnow()
         payload = {
             'user_id': str(user_id),
-            'iat': datetime.utcnow(),
+            'iat': now,
+            'exp': now + timedelta(hours=24),
             'type': 'access'
         }
         token = jwt.encode(

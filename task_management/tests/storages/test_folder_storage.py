@@ -274,25 +274,6 @@ class TestFolderStorage:
         snapshot.assert_match(repr(result), "test_get_space_folders_empty.txt")
 
     @pytest.mark.django_db
-    def test_set_folder_private_success(self, snapshot):
-        # Arrange
-        folder_id = "12345678-1234-5678-1234-567812345678"
-        space_id = "12345678-1234-5678-1234-567812345680"
-        user_id = "12345678-1234-5678-1234-567812345679"
-        space = SpaceFactory(space_id=space_id)
-        user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      is_private=False)
-        storage = FolderStorage()
-
-        # Act
-        result = storage.set_folder_private(folder_id=str(folder_id))
-
-        # Assert
-        snapshot.assert_match(repr(result),
-                              "test_set_folder_private_success.txt")
-
-    @pytest.mark.django_db
     def test_set_folder_public_success(self, snapshot):
         # Arrange
         folder_id = "12345678-1234-5678-1234-567812345678"

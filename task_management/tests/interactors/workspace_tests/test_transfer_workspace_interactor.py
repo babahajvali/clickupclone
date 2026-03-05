@@ -66,7 +66,7 @@ class TestTransferWorkspaceInteractor:
         self.workspace_storage.get_workspace.return_value = (
             make_workspace_model(owner_id="user_1")
         )
-        self.user_storage.get_user_data.return_value = make_user(True)
+        self.user_storage.get_user.return_value = make_user(True)
         self.workspace_storage.transfer_workspace.return_value = (
             make_workspace(owner_id="new_user")
         )
@@ -121,7 +121,7 @@ class TestTransferWorkspaceInteractor:
         self.workspace_storage.get_workspace.return_value = (
             make_workspace_model(owner_id="user_1")
         )
-        self.user_storage.get_user_data.return_value = make_user(False)
+        self.user_storage.get_user.return_value = make_user(False)
 
         with pytest.raises(InactiveUser) as exc:
             self.interactor.transfer_workspace(
@@ -139,7 +139,7 @@ class TestTransferWorkspaceInteractor:
         self.workspace_storage.get_workspace.return_value = (
             make_workspace_model(owner_id="user_1")
         )
-        self.user_storage.get_user_data.return_value = None
+        self.user_storage.get_user.return_value = None
 
         with pytest.raises(UserNotFound) as exc:
             self.interactor.transfer_workspace(

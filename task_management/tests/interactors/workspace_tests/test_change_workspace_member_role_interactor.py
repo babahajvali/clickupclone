@@ -65,7 +65,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         # target member active
         self.workspace_storage.get_workspace_member.side_effect = [
@@ -109,7 +109,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = (
+        self.user_storage.get_user.return_value = (
             self._mock_inactive_user()
         )
 
@@ -130,7 +130,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         # target member inactive
         self.workspace_storage.get_workspace_member.return_value = type(
@@ -155,7 +155,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         # target member active
         self.workspace_storage.get_workspace_member.side_effect = [
@@ -181,7 +181,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         self.workspace_storage.get_workspace_member.side_effect = [
             type("WorkspaceMember", (),
@@ -206,7 +206,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         self.workspace_storage.get_workspace.return_value = (
             self._mock_active_workspace()
         )
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         self.workspace_storage.get_workspace_member.side_effect = [
             type("WorkspaceMember", (),

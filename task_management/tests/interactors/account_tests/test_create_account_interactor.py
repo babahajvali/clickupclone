@@ -17,7 +17,8 @@ from task_management.interactors.storage_interfaces.account_storage_interface im
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.tests.factories.interactor_factory import AccountDTOFactory
+from task_management.tests.factories.interactor_factory import \
+    AccountDTOFactory
 
 
 class TestCreateAccountInteractor:
@@ -43,7 +44,7 @@ class TestCreateAccountInteractor:
         )
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
         self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
 
@@ -58,7 +59,7 @@ class TestCreateAccountInteractor:
     def test_create_account_name_already_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
         self.account_storage.is_account_name_exists.return_value = type(
             "Account", (), {"is_active": True, "owner_id": owner_id}
         )
@@ -70,11 +71,12 @@ class TestCreateAccountInteractor:
                 created_by=owner_id,
             )
 
-        snapshot.assert_match(repr(exc.value), "create_account_name_already_exists.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "create_account_name_already_exists.txt")
 
     def test_empty_account_name_exists(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
         self.account_storage.is_account_name_exists.return_value = None
 
         with pytest.raises(EmptyAccountName) as exc:
@@ -84,12 +86,13 @@ class TestCreateAccountInteractor:
                 created_by=owner_id,
             )
 
-        snapshot.assert_match(repr(exc.value), "create_empty_account_name_exists.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "create_empty_account_name_exists.txt")
 
     def test_create_account_whitespace_name(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
 
         with pytest.raises(EmptyAccountName) as exc:
             self.interactor.create_account(
@@ -98,12 +101,13 @@ class TestCreateAccountInteractor:
                 created_by=owner_id,
             )
 
-        snapshot.assert_match(repr(exc.value), "create_account_whitespace_name.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "create_account_whitespace_name.txt")
 
     def test_create_account_non_owner(self, snapshot):
         owner_id = "some-other-user"
 
-        self.user_storage.get_user_data.return_value = None
+        self.user_storage.get_user.return_value = None
 
         with pytest.raises(UserNotFound) as exc:
             self.interactor.create_account(
@@ -117,7 +121,7 @@ class TestCreateAccountInteractor:
     def test_create_account_inactive_user(self, snapshot):
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.user_storage.get_user_data.return_value = type(
+        self.user_storage.get_user.return_value = type(
             "User", (), {"is_active": False}
         )()
 
@@ -128,7 +132,8 @@ class TestCreateAccountInteractor:
                 created_by=owner_id,
             )
 
-        snapshot.assert_match(repr(exc.value), "create_account_inactive_user.txt")
+        snapshot.assert_match(repr(exc.value),
+                              "create_account_inactive_user.txt")
 
     def test_create_account_with_no_description(self, snapshot):
         expected = AccountDTOFactory(
@@ -140,7 +145,7 @@ class TestCreateAccountInteractor:
         )
         owner_id = "12345678-1234-5678-1234-567812345678"
 
-        self.user_storage.get_user_data.return_value = self._mock_active_user()
+        self.user_storage.get_user.return_value = self._mock_active_user()
         self.account_storage.is_account_name_exists.return_value = False
         self.account_storage.create_account.return_value = expected
 
@@ -150,4 +155,5 @@ class TestCreateAccountInteractor:
             created_by=owner_id,
         )
 
-        snapshot.assert_match(repr(result), "create_account_no_description.txt")
+        snapshot.assert_match(repr(result),
+                              "create_account_no_description.txt")

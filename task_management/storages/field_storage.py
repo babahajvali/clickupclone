@@ -2,19 +2,19 @@ from typing import Optional, List
 
 from django.db.models import F
 
-from task_management.exceptions.enums import FieldType
+from task_management.exceptions.enums import FieldType, ListEntityType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldDTO, UpdateFieldValueDTO, TaskFieldValueDTO, \
     CreateFieldValueDTO, TaskFieldValuesDTO, FieldValueDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
-from task_management.models import Field, TaskFieldValue
+from task_management.models import Field, TaskFieldValue, Space, Folder
 
 
 class FieldStorage(FieldStorageInterface):
 
     @staticmethod
-    def _field_dto(field_data: Field) -> FieldDTO:
+    def _convert_field_to_dto(field_data: Field) -> FieldDTO:
         return FieldDTO(
             field_id=field_data.field_id,
             field_name=field_data.field_name,
@@ -42,7 +42,7 @@ class FieldStorage(FieldStorageInterface):
             created_by_id=create_field_data.created_by_user_id
         )
 
-        return self._field_dto(field_data=field_data)
+        return self._convert_field_to_dto(field_data=field_data)
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
@@ -62,7 +62,7 @@ class FieldStorage(FieldStorageInterface):
         if field_data is None:
             return None
 
-        return self._field_dto(field_data=field_data)
+        return self._convert_field_to_dto(field_data=field_data)
 
     def update_field(
             self, field_id: str, update_field_data: UpdateFieldDTO) \
@@ -81,7 +81,7 @@ class FieldStorage(FieldStorageInterface):
         Field.objects.filter(field_id=field_id).update(**fields_to_update)
 
         field_data = Field.objects.get(field_id=field_id)
-        return self._field_dto(field_data=field_data)
+        return self._convert_field_to_dto(field_data=field_data)
 
     def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:
 
@@ -89,7 +89,7 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id, is_deleted=False
         )
         return [
-            self._field_dto(field_data=field_data)
+            self._convert_field_to_dto(field_data=field_data)
             for field_data in fields_data
         ]
 
@@ -127,7 +127,7 @@ class FieldStorage(FieldStorageInterface):
             self, template_id: str, old_order: int, new_order: int):
         Field.objects.filter(
             template_id=template_id,
-            is_delete=False,
+            is_deleted=False,
             order__gt=old_order,
             order__lte=new_order
         ).update(order=F("order") - 1)
@@ -136,7 +136,7 @@ class FieldStorage(FieldStorageInterface):
             self, template_id: str, new_order: int, old_order: int):
         Field.objects.filter(
             template_id=template_id,
-            is_delete=False,
+            is_deleted=False,
             order__gte=new_order,
             order__lt=old_order
         ).update(order=F("order") + 1)
@@ -146,7 +146,7 @@ class FieldStorage(FieldStorageInterface):
         field_data = Field.objects.get(field_id=field_id)
         field_data.order = new_order
         field_data.save()
-        return self._field_dto(field_data=field_data)
+        return self._convert_field_to_dto(field_data=field_data)
 
     def template_fields_count(self, template_id: str) -> int:
 
@@ -164,7 +164,7 @@ class FieldStorage(FieldStorageInterface):
             order__gt=field_data.order
         ).update(order=F("order") - 1)
 
-        return self._field_dto(field_data=field_data)
+        return self._convert_field_to_dto(field_data=field_data)
 
     def create_bulk_fields(
             self, fields_data: List[CreateFieldDTO]) -> List[FieldDTO]:
@@ -184,7 +184,8 @@ class FieldStorage(FieldStorageInterface):
         ]
 
         created_fields = Field.objects.bulk_create(fields_to_create)
-        return [self._field_dto(field) for field in created_fields]
+
+        return [self._convert_field_to_dto(field) for field in created_fields]
 
     def update_or_create_task_field_value(
             self, field_value_data: UpdateFieldValueDTO, user_id: str) \
@@ -221,9 +222,22 @@ class FieldStorage(FieldStorageInterface):
         TaskFieldValue.objects.bulk_create(field_values_to_create)
 
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
-        field_data = Field.objects.select_related(
-            "template__list__space__workspace").get(field_id=field_id)
-        return field_data.template.list.space.workspace.workspace_id
+        list_data = Field.objects.select_related("template__list").values(
+            "template__list__entity_type",
+            "template__list__entity_id",
+        ).get(field_id=field_id)
+
+        entity_type = list_data["template__list__entity_type"]
+        entity_id = list_data["template__list__entity_id"]
+
+        if entity_type == ListEntityType.SPACE.value:
+            return str(Space.objects.values_list(
+                "workspace_id", flat=True
+            ).get(space_id=entity_id))
+
+        return str(Folder.objects.values_list(
+            "space__workspace_id", flat=True
+        ).get(folder_id=entity_id))
 
     def get_last_field_order_in_template(self, template_id: str) -> int:
         last_field = Field.objects.filter(

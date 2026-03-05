@@ -1,4 +1,5 @@
 from unittest.mock import create_autospec
+
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
@@ -19,7 +20,7 @@ from task_management.interactors.user.user_interactor import (
 class TestUpdateUser:
 
     def _mock_storage_defaults(self, user_storage):
-        user_storage.get_user_data.return_value = type(
+        user_storage.get_user.return_value = type(
             "User", (), {"is_active": True}
         )()
 

@@ -11,7 +11,7 @@ from task_management.models import Workspace, WorkspaceMember
 class WorkspaceStorage(WorkspaceStorageInterface):
 
     @staticmethod
-    def _workspace_dto(data: Workspace) -> WorkspaceDTO:
+    def _convert_workspace_to_dto(data: Workspace) -> WorkspaceDTO:
         return WorkspaceDTO(
             workspace_id=data.workspace_id,
             name=data.name,
@@ -22,7 +22,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         )
 
     @staticmethod
-    def _workspace_member_dto(data: WorkspaceMember) -> WorkspaceMemberDTO:
+    def _convert_workspace_member_to_dto(data: WorkspaceMember) -> WorkspaceMemberDTO:
         role = Role(data.role)
         return WorkspaceMemberDTO(
             id=data.pk,
@@ -34,12 +34,13 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         )
 
     def get_workspace(self, workspace_id: str) -> WorkspaceDTO | None:
-        workspace_data = Workspace.objects.get(workspace_id=workspace_id)
+        workspace_data = Workspace.objects.filter(
+            workspace_id=workspace_id).first()
 
         if workspace_data is None:
             return None
 
-        return self._workspace_dto(data=workspace_data)
+        return self._convert_workspace_to_dto(data=workspace_data)
 
     def is_workspace_exists(self, workspace_id: str) -> bool:
         return Workspace.objects.filter(workspace_id=workspace_id).exists()
@@ -52,7 +53,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             created_by_id=workspace_data.user_id,
             account_id=workspace_data.account_id)
 
-        return self._workspace_dto(data=workspace_data)
+        return self._convert_workspace_to_dto(data=workspace_data)
 
     def update_workspace(
             self, workspace_id: str, name: Optional[str],
@@ -70,7 +71,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
 
         workspace_obj.save()
 
-        return self._workspace_dto(data=workspace_obj)
+        return self._convert_workspace_to_dto(data=workspace_obj)
 
     def validate_user_is_workspace_owner(
             self, user_id: str, workspace_id: str) -> bool:
@@ -84,7 +85,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_data.is_deleted = True
         workspace_data.save(update_fields=["is_deleted"])
 
-        return self._workspace_dto(data=workspace_data)
+        return self._convert_workspace_to_dto(data=workspace_data)
 
     def transfer_workspace(
             self, workspace_id: str, new_user_id: str) -> WorkspaceDTO:
@@ -93,7 +94,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_data.created_by_id = new_user_id
         workspace_data.save(update_fields=["created_by_id"])
 
-        return self._workspace_dto(data=workspace_data)
+        return self._convert_workspace_to_dto(data=workspace_data)
 
     def get_account_workspaces(
             self, account_id: str) -> list[WorkspaceDTO]:
@@ -101,7 +102,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         account_workspaces = Workspace.objects.filter(
             account_id=account_id, is_deleted=False)
 
-        return [self._workspace_dto(data=workspace_data) for workspace_data in
+        return [self._convert_workspace_to_dto(data=workspace_data) for workspace_data in
                 account_workspaces]
 
     def get_active_workspaces(
@@ -110,7 +111,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspaces_data = Workspace.objects.filter(
             workspace_id__in=workspace_ids, is_deleted=False)
 
-        return [self._workspace_dto(data=each) for each in workspaces_data]
+        return [self._convert_workspace_to_dto(data=each) for each in workspaces_data]
 
     def add_member_to_workspace(
             self, workspace_member_data: AddMemberToWorkspaceDTO) \
@@ -122,7 +123,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             added_by_id=workspace_member_data.added_by,
             role=workspace_member_data.role.value)
 
-        return self._workspace_member_dto(data=workspace_member_data)
+        return self._convert_workspace_member_to_dto(data=workspace_member_data)
 
     def get_workspace_member(
             self, workspace_id: str, user_id: str) \
@@ -134,14 +135,14 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         if not workspace_member_data:
             return None
 
-        return self._workspace_member_dto(data=workspace_member_data)
+        return self._convert_workspace_member_to_dto(data=workspace_member_data)
 
     def get_workspace_member_by_id(
             self, workspace_member_id: int) -> WorkspaceMemberDTO:
         workspace_member_data = WorkspaceMember.objects.get(
             pk=workspace_member_id)
 
-        return self._workspace_member_dto(data=workspace_member_data)
+        return self._convert_workspace_member_to_dto(data=workspace_member_data)
 
     def remove_member_from_workspace(
             self, workspace_member_id: int) -> WorkspaceMemberDTO:
@@ -151,7 +152,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_member_data.is_active = False
         workspace_member_data.save(update_fields=["is_active"])
 
-        return self._workspace_member_dto(data=workspace_member_data)
+        return self._convert_workspace_member_to_dto(data=workspace_member_data)
 
     def update_the_member_role(
             self, workspace_id: str, user_id: str, role: str) \
@@ -162,7 +163,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_member_data.role = role
         workspace_member_data.save(update_fields=["role"])
 
-        return self._workspace_member_dto(data=workspace_member_data)
+        return self._convert_workspace_member_to_dto(data=workspace_member_data)
 
     def get_workspace_members(
             self, workspace_id: str) -> list[WorkspaceMemberDTO]:
@@ -170,7 +171,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_members = WorkspaceMember.objects.filter(
             workspace_id=workspace_id, is_active=True)
 
-        return [self._workspace_member_dto(data=each) for each in
+        return [self._convert_workspace_member_to_dto(data=each) for each in
                 workspace_members]
 
     def get_active_user_workspaces(
@@ -179,7 +180,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         user_workspaces = WorkspaceMember.objects.filter(
             user_id=user_id, is_active=True).distinct()
 
-        return [self._workspace_member_dto(data=each) for each in
+        return [self._convert_workspace_member_to_dto(data=each) for each in
                 user_workspaces]
 
     def re_add_member_to_workspace(
@@ -194,7 +195,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspace_member.added_by = workspace_member_data.added_by
         workspace_member.save(update_fields=["is_active", "added_by"])
 
-        return self._workspace_member_dto(data=workspace_member)
+        return self._convert_workspace_member_to_dto(data=workspace_member)
 
     def deactivate_workspace_members(
             self, member_ids: list[int]) -> list[WorkspaceMemberDTO]:
@@ -203,7 +204,7 @@ class WorkspaceStorage(WorkspaceStorageInterface):
             is_active=False)
         workspace_members = WorkspaceMember.objects.filter(pk__in=member_ids)
 
-        return [self._workspace_member_dto(data=each) for each in
+        return [self._convert_workspace_member_to_dto(data=each) for each in
                 workspace_members]
 
     def get_workspaces(self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
@@ -211,4 +212,4 @@ class WorkspaceStorage(WorkspaceStorageInterface):
         workspaces_data = Workspace.objects.filter(
             workspace_id__in=workspace_ids, is_deleted=False)
 
-        return [self._workspace_dto(data=each) for each in workspaces_data]
+        return [self._convert_workspace_to_dto(data=each) for each in workspaces_data]

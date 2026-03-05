@@ -34,7 +34,7 @@ from task_management.graphql.mutations.list.delete_list_mutation import \
     DeleteListMutation
 from task_management.graphql.mutations.list.reorder_list_in_folder_mutation import \
     ReorderListInFolderMutation
-from task_management.graphql.mutations.list.reorder_list_in_pace import \
+from task_management.graphql.mutations.list.reorder_list_in_space import \
     ReorderListInSpaceMutation
 from task_management.graphql.mutations.list.set_list_visibility import \
     SetListVisibilityMutation
@@ -72,7 +72,7 @@ from task_management.graphql.mutations.user.update_user_mutation import \
     UpdateUserMutation
 from task_management.graphql.mutations.user.user_login_mutation import \
     UserLoginMutation
-from task_management.graphql.mutations.user.valiate_reset_token_mutation import \
+from task_management.graphql.mutations.user.validate_reset_token_mutation import \
     ValidateResetTokenMutation
 from task_management.graphql.mutations.view.apply_list_view_mutation import \
     ApplyListViewMutation
@@ -199,7 +199,7 @@ class SetListVisibility(graphene.ObjectType):
 
 
 class ReorderListInSpace(graphene.ObjectType):
-    reorder_list_inspace = ReorderListInSpaceMutation.Field(required=True)
+    reorder_list_in_space = ReorderListInSpaceMutation.Field(required=True)
 
 
 class CreateTask(graphene.ObjectType):
