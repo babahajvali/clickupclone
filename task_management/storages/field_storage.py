@@ -65,8 +65,7 @@ class FieldStorage(FieldStorageInterface):
         return self._convert_field_to_dto(field_data=field_data)
 
     def update_field(
-            self, field_id: str, update_field_data: UpdateFieldDTO) \
-            -> FieldDTO:
+            self, update_field_data: UpdateFieldDTO) -> FieldDTO:
 
         fields_to_update = {}
         if update_field_data.field_name is not None:
@@ -78,9 +77,10 @@ class FieldStorage(FieldStorageInterface):
         if update_field_data.is_required is not None:
             fields_to_update['is_required'] = update_field_data.is_required
 
-        Field.objects.filter(field_id=field_id).update(**fields_to_update)
+        Field.objects.filter(field_id=update_field_data.field_id).update(
+            **fields_to_update)
 
-        field_data = Field.objects.get(field_id=field_id)
+        field_data = Field.objects.get(field_id=update_field_data.field_id)
         return self._convert_field_to_dto(field_data=field_data)
 
     def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:

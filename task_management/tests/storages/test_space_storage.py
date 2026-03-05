@@ -44,11 +44,10 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        with pytest.raises(AttributeError) as exc:
-            storage.get_space(space_id=str(space_id))
+        result = storage.get_space(space_id=str(space_id))
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "test_get_space_failure.txt")
+        assert result is None
 
     @pytest.mark.django_db
     def test_create_space_success(self, snapshot):

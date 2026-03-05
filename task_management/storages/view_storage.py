@@ -20,6 +20,15 @@ class ViewStorage(ViewStorageInterface):
             created_by=data.created_by.user_id,
         )
 
+    def _convert_list_view_to_dto(self, data: ListView) -> ListViewDTO:
+        return ListViewDTO(
+            id=data.pk,
+            list_id=data.list.list_id,
+            view_id=data.view.view_id,
+            applied_by=data.applied_by.user_id,
+            is_active=data.is_active,
+        )
+
     def get_all_views(self) -> list[ViewDTO]:
         views = View.objects.all()
         return [self._convert_view_to_dto(data=view_data) for view_data in
@@ -65,38 +74,21 @@ class ViewStorage(ViewStorageInterface):
             self, list_id: str, view_id: str, user_id: str) -> ListViewDTO:
         list_view_data = ListView.objects.create(
             list_id=list_id, view_id=view_id, applied_by_id=user_id)
-        return ListViewDTO(
-            id=list_view_data.pk,
-            list_id=list_view_data.list.list_id,
-            view_id=list_view_data.view.view_id,
-            applied_by=list_view_data.applied_by.user_id,
-            is_active=list_view_data.is_active,
-        )
+
+        return self._convert_list_view_to_dto(data=list_view_data)
 
     def remove_list_view(self, view_id: str, list_id: str):
         list_view_obj = ListView.objects.get(list_id=list_id, view_id=view_id)
         list_view_obj.is_active = False
         list_view_obj.save(update_fields=["is_active"])
 
-        return ListViewDTO(
-            id=list_view_obj.pk,
-            list_id=list_id,
-            view_id=view_id,
-            applied_by=list_view_obj.applied_by.user_id,
-            is_active=list_view_obj.is_active,
-        )
+        return self._convert_list_view_to_dto(data=list_view_obj)
 
     def get_list_views(self, list_id: str) -> list[ListViewDTO]:
 
         list_views = ListView.objects.filter(list_id=list_id, is_active=True)
 
-        return [ListViewDTO(
-            id=list_view_data.pk,
-            list_id=list_view_data.list.list_id,
-            view_id=list_view_data.view.view_id,
-            applied_by=list_view_data.applied_by.user_id,
-            is_active=list_view_data.is_active,
-        ) for list_view_data in list_views]
+        return [self._convert_list_view_to_dto(data=list_view_data) for list_view_data in list_views]
 
     def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
         return ListView.objects.filter(
@@ -109,13 +101,7 @@ class ViewStorage(ViewStorageInterface):
         if list_view_data is None:
             return None
 
-        return ListViewDTO(
-            id=list_view_data.pk,
-            list_id=list_view_data.list.list_id,
-            view_id=list_view_data.view.view_id,
-            applied_by=list_view_data.applied_by.user_id,
-            is_active=list_view_data.is_active,
-        )
+        return self._convert_list_view_to_dto(data=list_view_data)
 
     def get_list_view_id(self, view_type: str) -> str:
         view_data = View.objects.get(view_type=view_type)

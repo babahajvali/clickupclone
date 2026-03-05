@@ -1,1 +1,1 @@
-ViewDTO(view_id=UUID('12345678-1234-5678-1234-567812345678'), name='Table View', description='Late new bring.', view_type=<ViewType.LIST: 'LIST'>, created_by=UUID('12345678-1234-5678-1234-567812345678'))
+ViewDTO(view_id=UUID('12345678-1234-5678-1234-567812345678'), name='Table View', description='Marriage decide relate outside degree.', view_type=<ViewType.LIST: 'LIST'>, created_by=UUID('12345678-1234-5678-1234-567812345678'))

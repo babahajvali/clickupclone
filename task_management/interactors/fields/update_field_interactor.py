@@ -70,16 +70,18 @@ class UpdateFieldInteractor:
         )
 
         return self.field_storage.update_field(
-            field_id=update_field_data.field_id,
             update_field_data=update_field_data)
 
     def _check_update_field_properties(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
-        self._validate_update_field_not_empty(update_field_data, field_data)
-        self._validate_update_field_name(update_field_data, field_data)
-        self._validate_update_field_config(update_field_data, field_data)
+        self._validate_update_field_properties_not_empty(
+            update_field_data=update_field_data, field_data=field_data)
+        self._validate_update_field_name(
+            update_field_data=update_field_data, field_data=field_data)
+        self._validate_update_field_config(
+            update_field_data=update_field_data, field_data=field_data)
 
-    def _validate_update_field_not_empty(
+    def _validate_update_field_properties_not_empty(
             self, update_field_data: UpdateFieldDTO, field_data: FieldDTO):
         if not self._is_field_properties_not_empty(
                 update_field_data=update_field_data):

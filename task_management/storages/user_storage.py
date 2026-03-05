@@ -129,7 +129,7 @@ class UserStorage(UserStorageInterface):
             )
 
         except Exception as e:
-            raise Exception(f"Failed to create password reset token: {str(e)}")
+            raise Exception(f"Failed to create password reset token: {str(e)}") from e
 
     def get_reset_token(self, token: str) -> PasswordResetTokenDTO | None:
         try:
@@ -148,7 +148,7 @@ class UserStorage(UserStorageInterface):
             return None
 
         except Exception as e:
-            raise Exception(f"Failed to get reset token: {str(e)}")
+            raise Exception(f"Failed to get reset token: {str(e)}") from e
 
     def used_reset_token(self, token: str) -> bool:
 
@@ -178,4 +178,4 @@ class UserStorage(UserStorageInterface):
             )
 
         except Exception as e:
-            raise Exception(f"Failed to update user password: {str(e)}")
+            raise Exception(f"Failed to update user password: {str(e)}") from e

@@ -19,15 +19,28 @@ def get_user_data_mock(mocker):
     )
 
 
+def get_create_account_mock(mocker):
+    return mocker.patch(
+        'task_management.storages.account_storage.AccountStorage.create_account'
+    )
+
+
 @pytest.mark.django_db
 class TestCreateAccountAPI(BaseCreateAccount):
 
     def test_create_account_successfully(self, snapshot, mocker):
         # Arrange
         user_id = "49bb508e-c6d1-4882-95fd-1991d103f7dd"
+        fixed_account_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 
         UserFactory(user_id=user_id, is_active=True)
-        view = ViewFactory(created_by_id=user_id)  # ✅ real view in DB
+        view = ViewFactory(created_by_id=user_id)
+        list_view_mock = get_list_view_id_mock(mocker=mocker)
+        list_view_mock.return_value = str(view.view_id)
+
+        account_mock = get_create_account_mock(mocker=mocker)
+        account_mock.return_value = AccountDTOFactory(
+            account_id=fixed_account_id)
 
         variables = {
             "params": {
@@ -37,11 +50,13 @@ class TestCreateAccountAPI(BaseCreateAccount):
             }
         }
         # Act
-        self.execute_schema(
+        result = self.execute_schema(
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
         )
+
+        print(result)
 
     def test_create_account_with_empty_name(self, snapshot, mocker):
         # Arrange

@@ -25,8 +25,7 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def update_field(
-            self, field_id: str, update_field_data: UpdateFieldDTO) \
-            -> FieldDTO:
+            self, update_field_data: UpdateFieldDTO) -> FieldDTO:
         pass
 
     @abstractmethod

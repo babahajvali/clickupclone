@@ -20,9 +20,8 @@ class FieldValidationMixin:
 
     def check_field_exists(self, field_id: str) -> FieldDTO:
         field_data = self.field_storage.get_field(field_id=field_id)
-        is_field_not_exists = not field_data
 
-        if is_field_not_exists:
+        if not field_data:
             raise FieldNotFound(field_id=field_id)
 
         return field_data

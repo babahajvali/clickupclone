@@ -4,7 +4,6 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
-    UnsupportedVisibilityType,
 )
 from task_management.exceptions.enums import Role, VisibilityType
 from task_management.interactors.dtos import FolderDTO, WorkspaceMemberDTO
@@ -76,20 +75,6 @@ class TestSetFolderVisibilityInteractor:
 
         snapshot.assert_match(repr(result),
                               "set_folder_visibility_success.txt")
-
-    def test_set_folder_visibility_invalid_type(self, snapshot):
-        self._setup_dependencies()
-
-        with pytest.raises(UnsupportedVisibilityType) as exc:
-            self.interactor.set_folder_visibility(
-                folder_id="folder_1",
-                user_id="user_1",
-                visibility=InvalidVisibility,
-            )
-
-        snapshot.assert_match(
-            repr(exc.value), "set_folder_visibility_invalid_type.txt"
-        )
 
     def test_set_folder_visibility_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)

@@ -5,7 +5,6 @@ from task_management.interactors.dtos import (
     CreateWorkspaceDTO,
 )
 from task_management.storages.workspace_storage import WorkspaceStorage
-from task_management.models import Workspace
 from task_management.tests.factories.storage_factory import (
     WorkspaceFactory,
     UserFactory,
@@ -46,21 +45,17 @@ class TestWorkspaceStorage:
         assert result.is_deleted is False
 
     @pytest.mark.django_db
-    def test_get_workspace_failure(self, snapshot):
+    def test_get_workspace_failure(self):
         # Arrange
         storage = WorkspaceStorage()
 
         # Act
-        with pytest.raises(Workspace.DoesNotExist) as exc:
-            storage.get_workspace(
-                workspace_id="12345678-1234-5678-1234-567812345612"
-            )
+        result = storage.get_workspace(
+            workspace_id="12345678-1234-5678-1234-567812345612"
+        )
 
         # Assert
-        snapshot.assert_match(
-            repr(exc.value),
-            "test_get_workspace_failure.txt"
-        )
+        assert result is None
 
     @pytest.mark.django_db
     def test_create_workspace(self, snapshot):

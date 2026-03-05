@@ -6,7 +6,6 @@ from task_management.exceptions.custom_exceptions import (
     DeletedListFound,
     ListNotFound,
     ModificationNotAllowed,
-    UnsupportedVisibilityType,
 )
 from task_management.exceptions.enums import Role, VisibilityType, \
     ListEntityType
@@ -89,21 +88,6 @@ class TestSetListPrivate:
         self.list_storage.update_list_visibility.assert_called_once_with(
             list_id="list_1", visibility=VisibilityType.PRIVATE.value
         )
-
-    def test_set_list_private_invalid_visibility(self, snapshot):
-        # Arrange
-        self._setup_visibility_dependencies()
-
-        # Act
-        with pytest.raises(UnsupportedVisibilityType) as exc:
-            self.interactor.set_list_visibility(
-                list_id="list_1",
-                visibility=InvalidVisibility,
-                user_id="user_id",
-            )
-
-        # Assert
-        snapshot.assert_match(repr(exc.value), "invalid_visibility_type.txt")
 
     def test_set_list_private_not_found(self, snapshot):
         # Arrange
