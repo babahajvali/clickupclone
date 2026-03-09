@@ -97,7 +97,7 @@ class TestReorderFieldAPI(BaseReorderField):
         count.return_value = 5
 
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(order=2, is_deleted=False)
+        field_data.return_value = [create_field_dto(order=2, is_deleted=False)]
 
     def test_reorder_field_successfully(self, snapshot, mocker):
         self._setup_common(mocker)
@@ -119,7 +119,7 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_not_found(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = None
+        field_data.return_value = [None]
 
         variables = {"params": {"fieldId": "field_404", "templateId": "tpl_1",
                                 "newOrder": 2}}
@@ -134,7 +134,7 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_deleted(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(order=2, is_deleted=True)
+        field_data.return_value = [create_field_dto(order=2, is_deleted=True)]
 
         variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
                                 "newOrder": 3}}

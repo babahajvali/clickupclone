@@ -101,11 +101,11 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
         task_data.return_value = create_task_dto(is_deleted=False)
 
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.TEXT,
             config={"max_length": 10},
             is_deleted=False,
-        )
+        )]
 
         workspace_id = get_workspace_id_from_field_id_mock(mocker)
         workspace_id.return_value = "workspace_1"
@@ -175,7 +175,7 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
         task_data = get_task_mock(mocker)
         task_data.return_value = create_task_dto()
         field_data = get_field_mock(mocker)
-        field_data.return_value = None
+        field_data.return_value = [None]
 
         variables = {
             "params": {
@@ -196,7 +196,7 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
         task_data = get_task_mock(mocker)
         task_data.return_value = create_task_dto()
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(is_deleted=True)
+        field_data.return_value = [create_field_dto(is_deleted=True)]
 
         variables = {
             "params": {
@@ -254,10 +254,10 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
     def test_set_field_value_text_exceeds_max_length(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.TEXT,
             config={"max_length": 3},
-        )
+        )]
 
         variables = {
             "params": {
@@ -277,10 +277,10 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
     def test_set_field_value_invalid_number(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.NUMBER,
             config={"min": 1, "max": 10},
-        )
+        )]
 
         variables = {
             "params": {
@@ -300,10 +300,10 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
     def test_set_field_value_number_below_min(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.NUMBER,
             config={"min": 5},
-        )
+        )]
 
         variables = {
             "params": {
@@ -323,10 +323,10 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
     def test_set_field_value_number_exceeds_max(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.NUMBER,
             config={"max": 5},
-        )
+        )]
 
         variables = {
             "params": {
@@ -347,10 +347,10 @@ class TestSetFieldValueAPI(BaseSetFieldValue):
             self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
+        field_data.return_value = [create_field_dto(
             field_type=FieldType.DROPDOWN,
             config={"options": ["Low", "Medium"]},
-        )
+        )]
 
         variables = {
             "params": {

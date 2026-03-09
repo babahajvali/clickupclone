@@ -60,8 +60,8 @@ class TestDeleteFieldAPI(BaseDeleteField):
 
     def _setup_common(self, mocker, *, role=Role.MEMBER, field_exists=True):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
-            is_deleted=False) if field_exists else None
+        field_data.return_value = [create_field_dto(
+            is_deleted=False)] if field_exists else [None]
 
         workspace_id = get_workspace_id_from_field_id_mock(mocker)
         workspace_id.return_value = "workspace_1"

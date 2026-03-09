@@ -24,7 +24,6 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
     Dependencies:
         - FieldStorageInterface
         - WorkspaceStorageInterface
-        - TemplateStorageInterface
     """
 
     def __init__(
@@ -47,13 +46,13 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         self.check_field_not_deleted(
             field_id=update_field_data.field_id)
 
-        field_data = self.check_field_exists(
+        field_dto = self.check_field_exists(
             field_id=update_field_data.field_id)
         self._check_update_field_properties(
-            update_field_data=update_field_data, field_data=field_data
+            update_field_data=update_field_data, field_data=field_dto
         )
         self._check_user_has_edit_access_to_field(
-            field_id=field_data.field_id, user_id=user_id
+            field_id=field_dto.field_id, user_id=user_id
         )
 
         return self.field_storage.update_field(

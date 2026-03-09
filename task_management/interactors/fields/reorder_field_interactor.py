@@ -48,6 +48,7 @@ class ReorderFieldInteractor(
         """Move a field to a new position after validations and access checks."""
 
         self.check_template_exists(template_id=template_id)
+
         self.check_field_not_deleted(field_id=field_id)
         self._check_field_order_within_range(
             template_id=template_id, order=new_order

@@ -57,13 +57,12 @@ class FieldResponseInteractor(
         self._check_user_has_edit_access_for_field(
             field_id=set_value_data.field_id, user_id=user_id
         )
-        field_data = self.field_storage.get_fields(
-            field_ids=[set_value_data.field_id]
-        )[0]
+        field_dto = self.field_storage.get_fields(
+            field_ids=[set_value_data.field_id])[0]
         self._check_field_value_by_type(
-            config=field_data.config,
+            config=field_dto.config,
             value=set_value_data.value,
-            field_type=field_data.field_type.value
+            field_type=field_dto.field_type.value
         )
 
         return self.field_storage.update_or_create_task_field_value(

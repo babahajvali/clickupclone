@@ -1,7 +1,21 @@
+import pytest
+
+from task_management.decorators import caching_decorators
 from task_management.tests.test_utils import GraphQLBaseTestCase
 
 
-class BaseCreateField(GraphQLBaseTestCase):
+class BaseFieldGraphQLTestCase(GraphQLBaseTestCase):
+    @pytest.fixture(autouse=True)
+    def _stub_cache_backend(self, monkeypatch):
+        monkeypatch.setattr(caching_decorators.cache, "get",
+                            lambda *args, **kwargs: None)
+        monkeypatch.setattr(caching_decorators.cache, "set",
+                            lambda *args, **kwargs: True)
+        monkeypatch.setattr(caching_decorators.cache, "delete_pattern",
+                            lambda *args, **kwargs: True)
+
+
+class BaseCreateField(BaseFieldGraphQLTestCase):
     QUERY = """
     mutation CreateField($params: CreateFieldInputParams!) {
       createField(params: $params) {
@@ -74,7 +88,7 @@ class BaseCreateField(GraphQLBaseTestCase):
     """
 
 
-class BaseUpdateField(GraphQLBaseTestCase):
+class BaseUpdateField(BaseFieldGraphQLTestCase):
     QUERY = """
     mutation UpdateField($params: UpdateFieldInputParams!) {
       updateField(params: $params) {
@@ -159,7 +173,7 @@ class BaseUpdateField(GraphQLBaseTestCase):
     """
 
 
-class BaseDeleteField(GraphQLBaseTestCase):
+class BaseDeleteField(BaseFieldGraphQLTestCase):
     QUERY = """
     mutation DeleteField($params: DeleteFieldInputParams!) {
       deleteField(params: $params) {
@@ -193,7 +207,7 @@ class BaseDeleteField(GraphQLBaseTestCase):
     """
 
 
-class BaseReorderField(GraphQLBaseTestCase):
+class BaseReorderField(BaseFieldGraphQLTestCase):
     QUERY = """
     mutation ReorderField($params: ReorderFieldInputParams!) {
       reorderField(params: $params) {
@@ -239,7 +253,7 @@ class BaseReorderField(GraphQLBaseTestCase):
     """
 
 
-class BaseSetFieldValue(GraphQLBaseTestCase):
+class BaseSetFieldValue(BaseFieldGraphQLTestCase):
     QUERY = """
     mutation UpdateFieldValue($params: SetFieldValuesInputParams!) {
       updateFieldValue(params: $params) {
@@ -299,7 +313,7 @@ class BaseSetFieldValue(GraphQLBaseTestCase):
     """
 
 
-class BaseGetField(GraphQLBaseTestCase):
+class BaseGetFields(BaseFieldGraphQLTestCase):
     QUERY = """
     query GetFields($params: GetFieldsInputParams!) {
       getFields(params: $params) {
@@ -327,7 +341,7 @@ class BaseGetField(GraphQLBaseTestCase):
     """
 
 
-class BaseGetTemplateFields(GraphQLBaseTestCase):
+class BaseGetTemplateFields(BaseFieldGraphQLTestCase):
     QUERY = """
     query GetTemplateFields($params: GetFieldsForTemplateInputParams!) {
       getTemplateFields(params: $params) {

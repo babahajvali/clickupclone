@@ -2,7 +2,7 @@ import pytest
 
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.tests.api_tests.fields import BaseGetField
+from task_management.tests.api_tests.fields import BaseGetFields
 
 
 def get_field_mock(mocker):
@@ -32,7 +32,7 @@ def create_field_dto() -> FieldDTO:
 
 
 @pytest.mark.django_db
-class TestGetFieldAPI(BaseGetField):
+class TestGetFieldsAPI(BaseGetFields):
 
     def test_get_field_successfully(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
@@ -62,7 +62,8 @@ class TestGetFieldAPI(BaseGetField):
             snapshot=snapshot,
         )
 
-    def test_get_field_with_mixed_valid_and_invalid_ids(self, snapshot, mocker):
+    def test_get_field_with_mixed_valid_and_invalid_ids(self, snapshot,
+                                                        mocker):
         field_data = get_field_mock(mocker)
         existing_field_ids = get_existing_field_ids_mock(mocker)
         existing_field_ids.return_value = ["field_1"]

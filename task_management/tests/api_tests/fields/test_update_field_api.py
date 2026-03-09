@@ -75,7 +75,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def _setup_common_success_path(self, mocker, *, role=Role.MEMBER):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto()
+        field_data.return_value = [create_field_dto()]
 
         name_exists = is_field_name_exists_mock(mocker)
         name_exists.return_value = False
@@ -110,7 +110,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_not_found(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = None
+        field_data.return_value = [None]
 
         variables = {
             "params": {
@@ -128,7 +128,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_deleted(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(is_deleted=True)
+        field_data.return_value = [create_field_dto(is_deleted=True)]
 
         variables = {
             "params": {
@@ -252,7 +252,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_text_default_exceeds_max_length(
             self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.TEXT)
+        field_data.return_value = [create_field_dto(field_type=FieldType.TEXT)]
 
         variables = {
             "params": {
@@ -270,7 +270,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_number_default_below_minimum(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.NUMBER)
+        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
@@ -288,7 +288,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_number_default_above_maximum(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.NUMBER)
+        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
@@ -306,7 +306,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_with_max_less_than_min(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.NUMBER)
+        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
@@ -324,8 +324,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_dropdown_missing_config(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
-            field_type=FieldType.DROPDOWN)
+        field_data.return_value = [create_field_dto(
+            field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
@@ -343,8 +343,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_dropdown_options_missing(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
-            field_type=FieldType.DROPDOWN)
+        field_data.return_value = [create_field_dto(
+            field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
@@ -363,8 +363,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_dropdown_default_not_in_options(
             self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(
-            field_type=FieldType.DROPDOWN)
+        field_data.return_value = [create_field_dto(
+            field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
