@@ -51,7 +51,7 @@ class DropdownField:
                 invalid_keys=list(invalid_keys))
 
     @staticmethod
-    def check_dropdown_value_in_options(value: str, config: dict):
+    def validate_value(value: str, config: dict):
 
         options = config.get(FieldConfig.OPTIONS.value, [])
 

@@ -68,11 +68,11 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionNotAllowed):
-            DropdownField.check_dropdown_value_in_options("C", config)
+            DropdownField.validate_value("C", config)
 
     def test_valid_dropdown_value(self):
         config = {
             FieldConfig.OPTIONS.value: ["A", "B"]
         }
 
-        DropdownField.check_dropdown_value_in_options("A", config)
+        DropdownField.validate_value("A", config)

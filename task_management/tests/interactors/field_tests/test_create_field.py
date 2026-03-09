@@ -20,12 +20,12 @@ from task_management.interactors.dtos import (
 )
 from task_management.interactors.fields.create_field_interactor import \
     CreateFieldInteractor
-from task_management.interactors.fields.validators.field_config_validator import \
-    FieldConfigValidator
 from task_management.interactors.fields.validators.dropdown_validator import \
     DropdownField
+from task_management.interactors.fields.validators.field_config_validator import \
+    FieldConfigValidator
 from task_management.interactors.fields.validators.number_validator import \
-    NumberField
+    NumberValidator
 from task_management.interactors.fields.validators.text_validator import \
     TextField
 from task_management.interactors.storage_interfaces import \
@@ -87,8 +87,8 @@ class TestCreateFieldInteractor:
     def _patched_check_field_config(field_type: FieldType, config: dict):
         validation_handlers = {
             FieldType.DROPDOWN: DropdownField().check_dropdown_config,
-            FieldType.TEXT: TextField().check_text_config,
-            FieldType.NUMBER: NumberField().check_number_config,
+            FieldType.TEXT: TextField().validate_config,
+            FieldType.NUMBER: NumberValidator().check_number_config,
         }
         handler = validation_handlers.get(field_type)
         if handler:

@@ -5,7 +5,7 @@ from task_management.interactors.dtos import TaskFieldValueDTO, \
 from task_management.interactors.fields.validators.dropdown_validator import \
     DropdownField
 from task_management.interactors.fields.validators.number_validator import \
-    NumberField
+    NumberValidator
 from task_management.interactors.fields.validators.text_validator import \
     TextField
 from task_management.interactors.storage_interfaces import \
@@ -80,10 +80,9 @@ class FieldResponseInteractor(
     @staticmethod
     def _check_field_value_by_type(field_type: str, value: str, config: dict):
         validation_handlers = {
-            FieldType.TEXT.value:
-                TextField.check_text_value_not_exceeds_max_length,
-            FieldType.NUMBER.value: NumberField.check_number_value_within_range,
-            FieldType.DROPDOWN.value: DropdownField.check_dropdown_value_in_options,
+            FieldType.TEXT.value: TextField.validate_value,
+            FieldType.NUMBER.value: NumberValidator.validate_value,
+            FieldType.DROPDOWN.value: DropdownField.validate_value,
         }
 
         handler = validation_handlers.get(field_type)

@@ -21,7 +21,7 @@ class TestTextField:
         }
 
         with pytest.raises(UnexpectedFieldConfigKeys):
-            self.text_field.check_text_config(config)
+            self.text_field.validate_config(config)
 
     def test_default_exceeds_max_length(self):
         config = {
@@ -30,7 +30,7 @@ class TestTextField:
         }
 
         with pytest.raises(TextDefaultValueExceedsMaxLength):
-            self.text_field.check_text_config(config)
+            self.text_field.validate_config(config)
 
     def test_valid_text_config(self):
         config = {
@@ -38,14 +38,14 @@ class TestTextField:
             FieldConfig.DEFAULT.value: "Hello"
         }
 
-        self.text_field.check_text_config(config)
+        self.text_field.validate_config(config)
 
     def test_default_not_provided(self):
         config = {
             FieldConfig.MAX_LENGTH.value: 5
         }
 
-        self.text_field.check_text_config(config)
+        self.text_field.validate_config(config)
 
     def test_text_value_exceeds_max_length(self):
         config = {
@@ -53,18 +53,18 @@ class TestTextField:
         }
 
         with pytest.raises(TextValueExceedsMaxLength):
-            TextField.check_text_value_not_exceeds_max_length("TooLongText",
-                                                              config)
+            TextField.validate_value("TooLongText",
+                                     config)
 
     def test_valid_text_value(self):
         config = {
             FieldConfig.MAX_LENGTH.value: 10
         }
 
-        TextField.check_text_value_not_exceeds_max_length("Hello", config)
+        TextField.validate_value("Hello", config)
 
     def test_no_max_length_provided(self):
         config = {}
 
-        TextField.check_text_value_not_exceeds_max_length("AnyLengthIsFine",
-                                                          config)
+        TextField.validate_value("AnyLengthIsFine",
+                                 config)

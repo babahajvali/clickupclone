@@ -9,7 +9,7 @@ from task_management.exceptions.enums import FieldConfig, FieldType
 
 class TextField:
 
-    def check_text_config(self, config: dict):
+    def validate_config(self, config: dict):
 
         self._validate_unexpected_config_keys(config=config)
         self._validate_default_value_not_exceeds_max_length(config=config)
@@ -40,7 +40,7 @@ class TextField:
                 invalid_keys=list(invalid_keys))
 
     @staticmethod
-    def check_text_value_not_exceeds_max_length(value: str, config: Dict):
+    def validate_value(value: str, config: Dict):
         """Validate text fields value against max_length constraint."""
         max_length = config.get(FieldConfig.MAX_LENGTH.value)
         if max_length and len(value) > max_length:

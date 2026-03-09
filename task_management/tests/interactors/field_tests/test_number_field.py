@@ -11,13 +11,13 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.fields.validators.number_validator import \
-    NumberField
+    NumberValidator
 
 
 class TestNumberField:
 
     def setup_method(self):
-        self.number_field = NumberField()
+        self.number_field = NumberValidator()
 
     def test_invalid_config_keys(self):
         config = {

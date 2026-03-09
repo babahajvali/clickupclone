@@ -1,103 +1,81 @@
-from typing import Dict
+from typing import Dict, Any
 
 from task_management.constants.field_constants import FIELD_TYPE_KEYS
 from task_management.exceptions.custom_exceptions import \
-    UnexpectedFieldConfigKeys, NumberDefaultValueBelowMinimum, \
-    NumberDefaultValueAboveMaximum, MaxValueLessThanMinValue, \
-    NumberValueBelowMinimum, InvalidNumberFieldValue, NumberValueExceedsMaximum
+    MaxValueLessThanMinValue, InvalidNumberFieldValue, NumberValueBelowMinimum, \
+    NumberValueExceedsMaximum, UnexpectedFieldConfigKeys
 from task_management.exceptions.enums import FieldConfig, FieldType
 
 
-class NumberField:
+class NumberValidator:
 
-    def check_number_config(self, config: Dict):
-
-        self._validate_unexpected_config_keys(config=config)
+    def validate_config(self, config: Dict[str, Any]) -> None:
+        self._validate_unexpected_config_keys(config)
 
         min_val = config.get(FieldConfig.MIN.value)
         max_val = config.get(FieldConfig.MAX.value)
 
-        self._validate_max_not_less_than_min(max_val=max_val, min_val=min_val)
+        self._validate_max_not_less_than_min(min_val, max_val)
+        self._validate_default_value(config, min_val, max_val)
 
-        self._validate_default_value_within_range(
-            config=config, max_val=max_val, min_val=min_val)
-
-    def _validate_default_value_within_range(
-            self, config: Dict, max_val: int | None, min_val: int | None):
+    def _validate_default_value(self, config, min_val, max_val):
         default_value = config.get(FieldConfig.DEFAULT.value)
-        is_default_value_provided = default_value is not None
-        if not is_default_value_provided:
+
+        if default_value is None:
             return
 
-        self._validate_default_value_not_below_minimum(default_value, min_val)
-        self._validate_default_value_not_above_maximum(default_value, max_val)
+        self._validate_not_below_min(default_value, min_val)
+        self._validate_not_above_max(default_value, max_val)
 
     @staticmethod
-    def _validate_default_value_not_below_minimum(
-            default_value: int, min_val: int | None):
-        is_below_minimum = min_val is not None and default_value < min_val
-        if is_below_minimum:
-            raise NumberDefaultValueBelowMinimum(
-                message=f"Default value {default_value} is less "
-                        f"than minimum {min_val}")
-
-    @staticmethod
-    def _validate_default_value_not_above_maximum(
-            default_value: int, max_val: int | None):
-        is_above_maximum = max_val is not None and default_value > max_val
-        if is_above_maximum:
-            raise NumberDefaultValueAboveMaximum(
-                message=f"Default value {default_value} is greater "
-                        f"than maximum {max_val}")
-
-    @staticmethod
-    def _validate_max_not_less_than_min(
-            max_val: int | None, min_val: int | None):
-        is_min_max_both_provided = min_val is not None and max_val is not None
-        if not is_min_max_both_provided:
+    def _validate_max_not_less_than_min(min_val, max_val):
+        if min_val is None or max_val is None:
             return
 
-        is_max_less_than_min = max_val < min_val
-        if is_max_less_than_min:
+        if max_val < min_val:
             raise MaxValueLessThanMinValue(
                 field_type=FieldType.NUMBER.value,
-                message=f"max {max_val} must be greater than or equal to min {min_val}")
+                message=f"max {max_val} must be >= min {min_val}",
+            )
+
+    def validate_value(self, value: str, config: Dict[str, Any]) -> None:
+        numeric_value = self._parse_numeric_value(value)
+
+        min_val = config.get(FieldConfig.MIN.value)
+        max_val = config.get(FieldConfig.MAX.value)
+
+        self._validate_not_below_min(numeric_value, min_val)
+        self._validate_not_above_max(numeric_value, max_val)
 
     @staticmethod
-    def _validate_unexpected_config_keys(config: Dict):
-        allowed_keys = FIELD_TYPE_KEYS[FieldType.NUMBER.value][
-            FieldConfig.CONFIG_KEYS.value]
-        invalid_keys = set(config.keys()) - allowed_keys
-        if invalid_keys:
-            raise UnexpectedFieldConfigKeys(
-                field_type=FieldType.NUMBER.value,
-                invalid_keys=list(invalid_keys))
-
-    def check_number_value_within_range(self, value: str, config: Dict):
-        numeric_value = self._validate_number_value_is_numeric(value)
-        self._validate_number_value_not_below_minimum(numeric_value, config)
-        self._validate_number_value_not_exceeds_maximum(numeric_value, config)
-
-    @staticmethod
-    def _validate_number_value_is_numeric(value: str) -> float:
+    def _parse_numeric_value(value: str) -> float:
         try:
             return float(value)
         except (ValueError, TypeError):
             raise InvalidNumberFieldValue(
-                message="Number fields value must be a valid number")
+                message="Number fields value must be a valid number"
+            )
 
     @staticmethod
-    def _validate_number_value_not_below_minimum(
-            numeric_value: float, config: Dict):
-        min_value = config.get(FieldConfig.MIN.value)
-        if min_value is not None and numeric_value < min_value:
+    def _validate_not_below_min(value, min_val):
+        if min_val is not None and value < min_val:
             raise NumberValueBelowMinimum(
-                message=f"Number must be at least {min_value}")
+                message=f"Number must be at least {min_val}"
+            )
 
     @staticmethod
-    def _validate_number_value_not_exceeds_maximum(
-            numeric_value: float, config: Dict):
-        max_value = config.get(FieldConfig.MAX.value)
-        if max_value is not None and numeric_value > max_value:
+    def _validate_not_above_max(value, max_val):
+        if max_val is not None and value > max_val:
             raise NumberValueExceedsMaximum(
-                message=f"Number must not exceed {max_value}")
+                message=f"Number must not exceed {max_val}"
+            )
+
+    @staticmethod
+    def _validate_unexpected_config_keys(config: Dict):
+        allowed_keys = FIELD_TYPE_KEYS[FieldType.TEXT.value][
+            FieldConfig.CONFIG_KEYS.value]
+        invalid_keys = set(config.keys()) - allowed_keys
+        if invalid_keys:
+            raise UnexpectedFieldConfigKeys(
+                field_type=FieldType.TEXT.value,
+                invalid_keys=list(invalid_keys))
