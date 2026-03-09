@@ -58,8 +58,8 @@ class FieldResponseInteractor(
             field_id=set_value_data.field_id, user_id=user_id
         )
         field_data = self.field_storage.get_fields(
-            field_id=set_value_data.field_id
-        )
+            field_ids=[set_value_data.field_id]
+        )[0]
         self._check_field_value_by_type(
             config=field_data.config,
             value=set_value_data.value,

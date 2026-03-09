@@ -1,7 +1,6 @@
 from typing import List
 
-from task_management.exceptions.custom_exceptions import InvalidFieldIdsFound, \
-    FieldNotFound
+from task_management.exceptions.custom_exceptions import InvalidFieldIdsFound
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface
@@ -25,19 +24,9 @@ class GetFieldsInteractor:
     def __init__(self, field_storage: FieldStorageInterface):
         self.field_storage = field_storage
 
-    def get_fields(
-            self, field_ids: List[str] | None = None,
-            field_id: str | None = None) -> List[FieldDTO] | FieldDTO | None:
-        if field_ids is None and field_id is not None:
-            field_data = self.field_storage.get_fields(field_id=field_id)
-            if field_data is None:
-                raise FieldNotFound(field_id=field_id)
-            return field_data
-
-        if field_ids is None:
-            return []
-
+    def get_fields(self, field_ids: List[str]) -> List[FieldDTO]:
         self._check_field_ids_exists(field_ids=field_ids)
+
         return self.field_storage.get_fields(field_ids=field_ids)
 
     def _check_field_ids_exists(self, field_ids: List[str]):

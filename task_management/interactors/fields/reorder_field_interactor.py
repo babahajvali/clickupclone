@@ -49,14 +49,14 @@ class ReorderFieldInteractor(
 
         self.check_template_exists(template_id=template_id)
         self.check_field_not_deleted(field_id=field_id)
-        self._check_folder_order_within_range(
+        self._check_field_order_within_range(
             template_id=template_id, order=new_order
         )
         self._check_user_has_edit_access_to_template(
             template_id=template_id, user_id=user_id
         )
 
-        field_dto = self.check_field_exists(field_id=field_id)
+        field_dto = self.field_storage.get_fields(field_ids=[field_id])[0]
         old_order = field_dto.order
 
         if old_order == new_order:
@@ -75,7 +75,7 @@ class ReorderFieldInteractor(
         self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
-    def _check_folder_order_within_range(self, template_id: str, order: int):
+    def _check_field_order_within_range(self, template_id: str, order: int):
 
         if order < 1:
             raise InvalidOrder(order=order)

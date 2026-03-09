@@ -20,9 +20,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_fields(
-            self, field_ids: List[str] | None = None,
-            field_id: str | None = None) -> list[FieldDTO] | FieldDTO | None:
+    def get_fields(self, field_ids: List[str]) -> list[FieldDTO] | None:
         pass
 
     @abstractmethod
@@ -62,7 +60,7 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def delete_field(self, field_id: str):
+    def delete_field(self, field_id: str) -> FieldDTO:
         pass
 
     @abstractmethod

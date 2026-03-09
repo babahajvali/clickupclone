@@ -61,3 +61,17 @@ class TestGetFieldAPI(BaseGetField):
             variables=variables,
             snapshot=snapshot,
         )
+
+    def test_get_field_with_mixed_valid_and_invalid_ids(self, snapshot, mocker):
+        field_data = get_field_mock(mocker)
+        existing_field_ids = get_existing_field_ids_mock(mocker)
+        existing_field_ids.return_value = ["field_1"]
+        field_data.return_value = [create_field_dto()]
+
+        variables = {"params": {"fieldIds": ["field_1", "field_404"]}}
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+        )

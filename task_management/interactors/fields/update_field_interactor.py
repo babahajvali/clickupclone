@@ -4,8 +4,6 @@ from task_management.exceptions.custom_exceptions import NothingToUpdateField
 from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
 from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
-from task_management.interactors.fields.validators.field_validator import \
-    FieldValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
@@ -38,21 +36,8 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         self.workspace_storage = workspace_storage
 
     @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
-
-    @property
-    def field_mixin(self) -> FieldValidationMixin:
-        return FieldValidationMixin(field_storage=self.field_storage)
-
-    @property
     def field_config_validator(self) -> FieldConfigValidator:
         return FieldConfigValidator()
-
-    @property
-    def field_validator(self) -> FieldValidator:
-        return FieldValidator(field_storage=self.field_storage)
 
     @invalidate_interactor_cache(cache_name="fields")
     def update_field(

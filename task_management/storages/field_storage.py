@@ -14,18 +14,18 @@ from task_management.models import Field, TaskFieldValue, Space, Folder
 class FieldStorage(FieldStorageInterface):
 
     @staticmethod
-    def _convert_field_to_dto(field_data: Field) -> FieldDTO:
+    def _convert_to_field_dto(field_db_object: Field) -> FieldDTO:
         return FieldDTO(
-            field_id=field_data.field_id,
-            field_name=field_data.field_name,
-            description=field_data.description,
-            field_type=FieldType(field_data.field_type),
-            template_id=field_data.template.template_id,
-            is_deleted=field_data.is_deleted,
-            order=field_data.order,
-            config=field_data.config,
-            is_required=field_data.is_required,
-            created_by=field_data.created_by.user_id,
+            field_id=field_db_object.field_id,
+            field_name=field_db_object.field_name,
+            description=field_db_object.description,
+            field_type=FieldType(field_db_object.field_type),
+            template_id=field_db_object.template.template_id,
+            is_deleted=field_db_object.is_deleted,
+            order=field_db_object.order,
+            config=field_db_object.config,
+            is_required=field_db_object.is_required,
+            created_by=field_db_object.created_by.user_id,
         )
 
     def create_field(
@@ -42,7 +42,7 @@ class FieldStorage(FieldStorageInterface):
             created_by_id=create_field_data.created_by_user_id
         )
 
-        return self._convert_field_to_dto(field_data=field_data)
+        return self._convert_to_field_dto(field_db_object=field_data)
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
@@ -56,20 +56,12 @@ class FieldStorage(FieldStorageInterface):
 
         return field_data.exists()
 
-    def get_fields(
-            self, field_ids: List[str] | None = None,
-            field_id: str | None = None) -> List[FieldDTO] | FieldDTO | None:
-        if field_id is not None:
-            field_data = Field.objects.filter(field_id=field_id).first()
-            if field_data is None:
-                return None
-            return self._convert_field_to_dto(field_data=field_data)
-
-        if not field_ids:
-            return []
+    def get_fields(self, field_ids: List[str]) -> List[FieldDTO] | None:
 
         fields_data = Field.objects.filter(field_id__in=field_ids)
-        return [self._convert_field_to_dto(field_data=field_data) for
+        if not fields_data:
+            return []
+        return [self._convert_to_field_dto(field_db_object=field_data) for
                 field_data in fields_data]
 
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
@@ -81,21 +73,20 @@ class FieldStorage(FieldStorageInterface):
     def update_field(
             self, update_field_data: UpdateFieldDTO) -> FieldDTO:
 
-        fields_to_update = {}
+        field_properties = {}
         if update_field_data.field_name is not None:
-            fields_to_update['field_name'] = update_field_data.field_name
+            field_properties['field_name'] = update_field_data.field_name
         if update_field_data.description is not None:
-            fields_to_update['description'] = update_field_data.description
+            field_properties['description'] = update_field_data.description
         if update_field_data.config is not None:
-            fields_to_update['config'] = update_field_data.config
+            field_properties['config'] = update_field_data.config
         if update_field_data.is_required is not None:
-            fields_to_update['is_required'] = update_field_data.is_required
+            field_properties['is_required'] = update_field_data.is_required
 
         Field.objects.filter(field_id=update_field_data.field_id).update(
-            **fields_to_update)
+            **field_properties)
 
-        field_data = Field.objects.get(field_id=update_field_data.field_id)
-        return self._convert_field_to_dto(field_data=field_data)
+        return self.get_fields(field_ids=[update_field_data.field_id])[0]
 
     def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:
 
@@ -103,7 +94,7 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id, is_deleted=False
         )
         return [
-            self._convert_field_to_dto(field_data=field_data)
+            self._convert_to_field_dto(field_db_object=field_data)
             for field_data in fields_data
         ]
 
@@ -160,7 +151,7 @@ class FieldStorage(FieldStorageInterface):
         field_data = Field.objects.get(field_id=field_id)
         field_data.order = new_order
         field_data.save()
-        return self._convert_field_to_dto(field_data=field_data)
+        return self._convert_to_field_dto(field_db_object=field_data)
 
     def template_fields_count(self, template_id: str) -> int:
 
@@ -168,17 +159,17 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id, is_deleted=False).count()
 
     def delete_field(self, field_id: str):
-        field_data = Field.objects.get(field_id=field_id)
-        field_data.is_deleted = True
-        field_data.save()
+        Field.objects.filter(field_id=field_id).update(is_deleted=True)
+
+        field_dto = self.get_fields(field_ids=[field_id])[0]
 
         Field.objects.filter(
-            template_id=field_data.template.template_id,
+            template_id=field_dto.template_id,
             is_deleted=False,
-            order__gt=field_data.order
+            order__gt=field_dto.order
         ).update(order=F("order") - 1)
 
-        return self._convert_field_to_dto(field_data=field_data)
+        return field_dto
 
     def create_bulk_fields(
             self, fields_data: List[CreateFieldDTO]) -> List[FieldDTO]:
@@ -199,7 +190,7 @@ class FieldStorage(FieldStorageInterface):
 
         created_fields = Field.objects.bulk_create(fields_to_create)
 
-        return [self._convert_field_to_dto(field) for field in created_fields]
+        return [self._convert_to_field_dto(field) for field in created_fields]
 
     def update_or_create_task_field_value(
             self, field_value_data: UpdateFieldValueDTO, user_id: str) \

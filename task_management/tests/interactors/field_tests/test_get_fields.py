@@ -2,7 +2,7 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import FieldNotFound
+from task_management.exceptions.custom_exceptions import InvalidFieldIdsFound
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.fields.get_fields_interactor import \
@@ -36,18 +36,22 @@ class TestGetActiveFieldInteractor:
         )
 
     def _setup_get_field_dependencies(self, *,
-                                      field_data: FieldDTO | None = None):
+                                      field_data: FieldDTO | None = None,
+                                      existing_field_ids: list[str] | None = None):
         if field_data is None:
             field_data = self._get_field_dto()
+        if existing_field_ids is None:
+            existing_field_ids = ["field_1"]
 
-        self.field_storage.get_fields.return_value = field_data
+        self.field_storage.get_fields.return_value = [field_data]
+        self.field_storage.get_existing_field_ids.return_value = existing_field_ids
 
     def test_get_active_field_success(self, snapshot):
         # Arrange
         self._setup_get_field_dependencies()
 
         # Act
-        result = self.interactor.get_fields(field_id="field_1")
+        result = self.interactor.get_fields(field_ids=["field_1"])[0]
 
         snapshot.assert_match(
             repr(result),
@@ -56,12 +60,13 @@ class TestGetActiveFieldInteractor:
 
     def test_get_active_field_not_found(self, snapshot):
         # Arrange
-        self._setup_get_field_dependencies(field_data=None)
-        self.field_storage.get_fields.return_value = None
+        self._setup_get_field_dependencies(
+            field_data=None, existing_field_ids=[])
+        self.field_storage.get_fields.return_value = []
 
         # Act
-        with pytest.raises(FieldNotFound) as exc:
-            self.interactor.get_fields(field_id="field_1")
+        with pytest.raises(InvalidFieldIdsFound) as exc:
+            self.interactor.get_fields(field_ids=["field_1"])
 
         snapshot.assert_match(
             repr(exc.value),
