@@ -17,14 +17,14 @@ from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetFields, GetListViews, \
-    GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers, GetUserTasks, \
+    GetUserWorkspaces, GetWorkspaceMembers, GetUserTasks, \
     GetAccounts, GetUserWithEmail
 
 QUERY_CLASSES = [
     GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace, GetSpaceFolders,
     GetFolder, GetList, GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask,
     GetListTasks, GetTaskAssignees, GetViews, GetTemplateFields, GetFields,
-    GetListViews, GetUserWorkspaces, GetTaskValues, GetWorkspaceMembers,
+    GetListViews, GetUserWorkspaces, GetWorkspaceMembers,
     GetUserTasks, GetAccounts, GetUserWithEmail]
 
 MUTATION_CLASSES = [

@@ -4,8 +4,6 @@ from task_management.graphql.resolvers.account.get_accounts_resolver import \
     get_accounts_resolver
 from task_management.graphql.resolvers.field.get_fields_resolver import \
     get_fields_resolver
-from task_management.graphql.resolvers.field.get_task_field_values_resolver import \
-    get_task_field_values_resolver
 from task_management.graphql.resolvers.field.get_template_fields_resolver import \
     get_fields_for_template_resolver
 from task_management.graphql.resolvers.folder.get_folder_resolver import \
@@ -55,7 +53,7 @@ from task_management.graphql.types.input_types import \
     GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
     GetFieldsInputParams, GetListViewsInputParams, \
     GetUserWorkspacesInputParams, \
-    GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
+    GetWorkspaceMemberInputParams, \
     GetUserTasksInputParams, GetUserWithEmailInputParams, \
     GetAccountsInputParams
 from task_management.graphql.types.response_types import \
@@ -65,7 +63,7 @@ from task_management.graphql.types.response_types import \
     GetListTasksResponse, GetTaskResponse, TaskFilterResponse, \
     GetTaskAssigneesResponse, GetViewsResponse, GetFieldsForTemplateResponse, \
     GetFieldResponse, GetListViewsResponse, GetUserWorkspacesResponse, \
-    GetTaskFieldValuesResponse, GetWorkspaceUsersResponse, \
+    GetWorkspaceUsersResponse, \
     GetUserTasksResponse, GetAccountsResponse, GetUserWithEmailResponse
 
 
@@ -210,14 +208,6 @@ class GetUserWorkspaces(graphene.ObjectType):
         GetUserWorkspacesResponse,
         params=GetUserWorkspacesInputParams(required=True),
         resolver=get_user_workspace_resolver
-    )
-
-
-class GetTaskValues(graphene.ObjectType):
-    get_task_values = graphene.Field(
-        GetTaskFieldValuesResponse,
-        params=GetTaskFieldValuesInputParams(required=True),
-        resolver=get_task_field_values_resolver
     )
 
 
