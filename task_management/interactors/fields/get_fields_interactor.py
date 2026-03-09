@@ -25,11 +25,11 @@ class GetFieldsInteractor:
         self.field_storage = field_storage
 
     def get_fields(self, field_ids: List[str]) -> List[FieldDTO]:
-        self._check_field_ids_exists(field_ids=field_ids)
+        self._check_field_ids_exist(field_ids=field_ids)
 
         return self.field_storage.get_fields(field_ids=field_ids)
 
-    def _check_field_ids_exists(self, field_ids: List[str]):
+    def _check_field_ids_exist(self, field_ids: List[str]):
         existed_field_ids = self.field_storage.get_existing_field_ids(
             field_ids=field_ids)
 

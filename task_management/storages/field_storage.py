@@ -148,10 +148,9 @@ class FieldStorage(FieldStorageInterface):
 
     def update_field_order(self, field_id: str, new_order: int) -> FieldDTO:
 
-        field_data = Field.objects.get(field_id=field_id)
-        field_data.order = new_order
-        field_data.save()
-        return self._convert_to_field_dto(field_db_object=field_data)
+        Field.objects.filter(field_id=field_id).update(
+            order=new_order)
+        return self.get_fields(field_ids=[field_id])[0]
 
     def template_fields_count(self, template_id: str) -> int:
 
