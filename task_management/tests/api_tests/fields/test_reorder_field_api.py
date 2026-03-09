@@ -27,7 +27,7 @@ def get_workspace_member_mock(mocker):
 
 def get_field_mock(mocker):
     return mocker.patch(
-        "task_management.storages.field_storage.FieldStorage.get_field")
+        "task_management.storages.field_storage.FieldStorage.get_fields")
 
 
 def template_fields_count_mock(mocker):

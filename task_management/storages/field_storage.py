@@ -46,23 +46,37 @@ class FieldStorage(FieldStorageInterface):
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
-            field_id: Optional[str]) -> bool:
+            excluded_field_id: Optional[str]) -> bool:
 
         field_data = Field.objects.filter(
             field_name=field_name, template_id=template_id)
 
-        if field_id:
-            field_data = field_data.exclude(field_id=field_id)
+        if excluded_field_id:
+            field_data = field_data.exclude(field_id=excluded_field_id)
 
         return field_data.exists()
 
-    def get_field(self, field_id: str) -> FieldDTO | None:
+    def get_fields(
+            self, field_ids: List[str] | None = None,
+            field_id: str | None = None) -> List[FieldDTO] | FieldDTO | None:
+        if field_id is not None:
+            field_data = Field.objects.filter(field_id=field_id).first()
+            if field_data is None:
+                return None
+            return self._convert_field_to_dto(field_data=field_data)
 
-        field_data = Field.objects.filter(field_id=field_id).first()
-        if field_data is None:
-            return None
+        if not field_ids:
+            return []
 
-        return self._convert_field_to_dto(field_data=field_data)
+        fields_data = Field.objects.filter(field_id__in=field_ids)
+        return [self._convert_field_to_dto(field_data=field_data) for
+                field_data in fields_data]
+
+    def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
+        existing_field_ids = Field.objects.filter(
+            field_id__in=field_ids).values_list('field_id', flat=True)
+
+        return [str(field_id) for field_id in existing_field_ids]
 
     def update_field(
             self, update_field_data: UpdateFieldDTO) -> FieldDTO:

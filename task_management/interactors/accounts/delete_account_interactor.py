@@ -3,14 +3,11 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import AccountValidationMixin
 
 
-class DeleteAccountInteractor:
+class DeleteAccountInteractor(AccountValidationMixin):
 
     def __init__(self, account_storage: AccountStorageInterface):
+        super().__init__(account_storage=account_storage)
         self.account_storage = account_storage
-
-    @property
-    def account_mixin(self) -> AccountValidationMixin:
-        return AccountValidationMixin(account_storage=self.account_storage)
 
     def delete_account(self, account_id: str, deleted_by: str):
         """ Delete account after validation
@@ -27,8 +24,8 @@ class DeleteAccountInteractor:
             2.UserNotOwnerOfAccountException: If the user is not owner of account.
         """
 
-        self.account_mixin.check_account_exists(account_id=account_id)
-        self.account_mixin.check_user_is_account_owner(
+        self.check_account_exists(account_id=account_id)
+        self.check_user_is_account_owner(
             account_id=account_id, user_id=deleted_by)
 
         return self.account_storage.delete_account(account_id=account_id)

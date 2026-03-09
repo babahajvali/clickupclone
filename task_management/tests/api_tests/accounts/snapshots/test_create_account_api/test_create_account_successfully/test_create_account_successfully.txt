@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "message": "An unknown error occurred.",
+      "message": "AccountStorage.is_account_name_exists() got an unexpected keyword argument 'excluded_account_id'",
       "locations": [
         {
           "line": 3,

@@ -315,8 +315,8 @@ class GetFieldsForTemplateInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
 
 
-class GetFieldInputParams(graphene.InputObjectType):
-    field_id = graphene.String(required=True)
+class GetFieldsInputParams(graphene.InputObjectType):
+    field_ids = graphene.List(graphene.String, required=True)
 
 
 class ApplyListViewInputParams(graphene.InputObjectType):

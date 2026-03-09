@@ -76,6 +76,11 @@ class TemplateNotFound(Exception):
         self.template_id = template_id
 
 
+class InvalidFieldIdsFound(Exception):
+    def __init__(self, field_ids: list[str]):
+        self.field_ids = field_ids
+
+
 class UnsupportedFieldType(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type

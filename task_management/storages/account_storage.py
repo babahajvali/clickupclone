@@ -39,20 +39,18 @@ class AccountStorage(AccountStorageInterface):
 
     def delete_account(self, account_id: str) -> AccountDTO:
         Account.objects.filter(account_id=account_id).update(is_active=False)
-        account_data = Account.objects.get(account_id=account_id)
-
-        return self._convert_to_account_dto(account_db_object=account_data)
+        return self.get_account(account_id=account_id)
 
     def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         accounts_data = Account.objects.filter(account_id__in=account_ids)
 
         return [self._convert_to_account_dto(account_db_object=account_data)
-                for
-                account_data in accounts_data]
+                for account_data in accounts_data]
 
     def get_existing_account_ids(self, account_ids: List[str]) -> List[str]:
         accounts_ids = Account.objects.filter(
-            account_id__in=account_ids).values_list('account_id', flat=True)
+            account_id__in=account_ids).values_list(
+            'account_id', flat=True)
 
         return list(accounts_ids)
 
@@ -71,9 +69,8 @@ class AccountStorage(AccountStorageInterface):
 
         Account.objects.filter(account_id=account_id).update(
             **account_properties)
-        account_data = Account.objects.get(account_id=account_id)
 
-        return self._convert_to_account_dto(account_db_object=account_data)
+        return self.get_account(account_id=account_id)
 
     def is_account_name_exists(
             self, account_name: str,

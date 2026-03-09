@@ -301,24 +301,26 @@ class BaseSetFieldValue(GraphQLBaseTestCase):
 
 class BaseGetField(GraphQLBaseTestCase):
     QUERY = """
-    query GetFields($params: GetFieldInputParams!) {
+    query GetFields($params: GetFieldsInputParams!) {
       getFields(params: $params) {
-        ... on FieldType {
+        ... on FieldsType {
           __typename
-          fieldId
-          fieldType
-          description
-          templateId
-          fieldName
-          isDeleted
-          order
-          config
-          isRequired
-          createdBy
+          fields {
+            fieldId
+            fieldType
+            description
+            templateId
+            fieldName
+            isDeleted
+            order
+            config
+            isRequired
+            createdBy
+          }
         }
-        ... on FieldNotFoundType {
+        ... on InvalidFieldIdsType {
           __typename
-          fieldId
+          fieldIds
         }
       }
     }

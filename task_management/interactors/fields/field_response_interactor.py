@@ -14,7 +14,8 @@ from task_management.mixins import FieldValidationMixin, \
     WorkspaceValidationMixin, TaskValidationMixin
 
 
-class FieldResponseInteractor:
+class FieldResponseInteractor(
+    FieldValidationMixin, TaskValidationMixin, WorkspaceValidationMixin):
     """
     Field Response Interactor set or update the task field value
 
@@ -36,36 +37,27 @@ class FieldResponseInteractor:
             self, field_storage: FieldStorageInterface,
             task_storage: TaskStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            field_storage=field_storage,
+            task_storage=task_storage,
+            workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def field_mixin(self) -> FieldValidationMixin:
-        return FieldValidationMixin(field_storage=self.field_storage)
-
-    @property
-    def task_mixin(self) -> TaskValidationMixin:
-        return TaskValidationMixin(task_storage=self.task_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     def set_task_field_response(
             self, set_value_data: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
         """Set or update a task's value for a specific custom field."""
-        self.task_mixin.check_task_not_deleted(
+        self.check_task_not_deleted(
             task_id=set_value_data.task_id)
-        self.field_mixin.check_field_not_deleted(
+        self.check_field_not_deleted(
             field_id=set_value_data.field_id
         )
         self._check_user_has_edit_access_for_field(
             field_id=set_value_data.field_id, user_id=user_id
         )
-        field_data = self.field_storage.get_field(
+        field_data = self.field_storage.get_fields(
             field_id=set_value_data.field_id
         )
         self._check_field_value_by_type(
@@ -82,7 +74,7 @@ class FieldResponseInteractor:
         workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=field_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )
 

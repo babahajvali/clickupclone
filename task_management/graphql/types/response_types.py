@@ -31,7 +31,7 @@ from task_management.graphql.types.error_types import \
     DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType, \
     TextValueExceedsMaxLengthType, InvalidNumberFieldValueType, \
     NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
-    DropdownOptionNotAllowedType, NothingToUpdateListType
+    DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, ViewType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -730,8 +730,8 @@ class GetFieldsForTemplateResponse(graphene.Union):
 class GetFieldResponse(graphene.Union):
     class Meta:
         types = (
-            FieldType,
-            FieldNotFoundType
+            FieldsType,
+            InvalidFieldIdsType
         )
 
 

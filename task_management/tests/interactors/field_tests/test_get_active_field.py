@@ -5,8 +5,8 @@ import pytest
 from task_management.exceptions.custom_exceptions import FieldNotFound
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.interactors.fields.get_field_interactor import \
-    GetFieldInteractor
+from task_management.interactors.fields.get_fields_interactor import \
+    GetFieldsInteractor
 from task_management.interactors.storage_interfaces import (
     FieldStorageInterface
 )
@@ -31,7 +31,7 @@ class TestGetActiveFieldInteractor:
     def setup_method(self):
         self.field_storage = create_autospec(FieldStorageInterface)
 
-        self.interactor = GetFieldInteractor(
+        self.interactor = GetFieldsInteractor(
             field_storage=self.field_storage
         )
 
@@ -40,14 +40,14 @@ class TestGetActiveFieldInteractor:
         if field_data is None:
             field_data = self._get_field_dto()
 
-        self.field_storage.get_field.return_value = field_data
+        self.field_storage.get_fields.return_value = field_data
 
     def test_get_active_field_success(self, snapshot):
         # Arrange
         self._setup_get_field_dependencies()
 
         # Act
-        result = self.interactor.get_field(field_id="field_1")
+        result = self.interactor.get_fields(field_id="field_1")
 
         snapshot.assert_match(
             repr(result),
@@ -57,11 +57,11 @@ class TestGetActiveFieldInteractor:
     def test_get_active_field_not_found(self, snapshot):
         # Arrange
         self._setup_get_field_dependencies(field_data=None)
-        self.field_storage.get_field.return_value = None
+        self.field_storage.get_fields.return_value = None
 
         # Act
         with pytest.raises(FieldNotFound) as exc:
-            self.interactor.get_field(field_id="field_1")
+            self.interactor.get_fields(field_id="field_1")
 
         snapshot.assert_match(
             repr(exc.value),

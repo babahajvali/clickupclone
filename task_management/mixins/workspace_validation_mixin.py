@@ -11,7 +11,7 @@ from task_management.interactors.storage_interfaces import \
 class WorkspaceValidationMixin:
     def __init__(self, workspace_storage: WorkspaceStorageInterface, **kwargs):
         self.workspace_storage = workspace_storage
-        super.__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def check_workspace_not_deleted(self, workspace_id: str):
         workspace_data = self.check_workspace_exists(

@@ -10,7 +10,8 @@ from task_management.mixins import TemplateValidationMixin, \
     WorkspaceValidationMixin, FieldValidationMixin
 
 
-class ReorderFieldInteractor:
+class ReorderFieldInteractor(
+    TemplateValidationMixin, WorkspaceValidationMixin, FieldValidationMixin):
     """
     Reorder Field Interactor reorder custom fields in template
 
@@ -31,22 +32,13 @@ class ReorderFieldInteractor:
             self, field_storage: FieldStorageInterface,
             template_storage: TemplateStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            field_storage=field_storage,
+            template_storage=template_storage,
+            workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def template_mixin(self) -> TemplateValidationMixin:
-        return TemplateValidationMixin(template_storage=self.template_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
-
-    @property
-    def field_mixin(self) -> FieldValidationMixin:
-        return FieldValidationMixin(field_storage=self.field_storage)
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="fields")
@@ -55,8 +47,8 @@ class ReorderFieldInteractor:
             user_id: str) -> FieldDTO:
         """Move a field to a new position after validations and access checks."""
 
-        self.template_mixin.check_template_exists(template_id=template_id)
-        self.field_mixin.check_field_not_deleted(field_id=field_id)
+        self.check_template_exists(template_id=template_id)
+        self.check_field_not_deleted(field_id=field_id)
         self._check_folder_order_within_range(
             template_id=template_id, order=new_order
         )
@@ -64,7 +56,7 @@ class ReorderFieldInteractor:
             template_id=template_id, user_id=user_id
         )
 
-        field_dto = self.field_storage.get_field(field_id=field_id)
+        field_dto = self.check_field_exists(field_id=field_id)
         old_order = field_dto.order
 
         if old_order == new_order:
@@ -80,7 +72,7 @@ class ReorderFieldInteractor:
         workspace_id = self.template_storage.get_workspace_id_from_template_id(
             template_id=template_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     def _check_folder_order_within_range(self, template_id: str, order: int):

@@ -128,7 +128,7 @@ class TestFieldStorage:
         # Act
         result = storage.is_field_name_exists(
             field_name=field_name, template_id=str(template_id),
-            field_id=None)
+            excluded_field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -148,7 +148,7 @@ class TestFieldStorage:
         # Act
         result = storage.is_field_name_exists(
             field_name=field_name, template_id=str(template_id),
-            field_id=None)
+            excluded_field_id=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -169,7 +169,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field(field_id=str(field_id))
+        result = storage.get_fields(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_success.txt")
@@ -181,7 +181,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.get_field(field_id=str(field_id))
+        result = storage.get_fields(field_id=str(field_id))
 
         # Assert
         snapshot.assert_match(repr(result), "test_get_field_by_id_failure.txt")
@@ -214,8 +214,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.update_field(field_id=field_id,
-                                      update_field_data=update_field_data)
+        result = storage.update_field(update_field_data=update_field_data)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_field_success.txt")

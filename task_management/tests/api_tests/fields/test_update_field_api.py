@@ -10,7 +10,7 @@ from task_management.tests.api_tests.fields import BaseUpdateField
 
 def get_field_mock(mocker):
     return mocker.patch(
-        "task_management.storages.field_storage.FieldStorage.get_field"
+        "task_management.storages.field_storage.FieldStorage.get_fields"
     )
 
 

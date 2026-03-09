@@ -64,7 +64,7 @@ class TestReorderFieldInteractor:
         self.template_storage.validate_template_exists.return_value = template_exists
 
         # field
-        self.field_storage.get_field.return_value = (
+        self.field_storage.get_fields.return_value = (
             make_field(order=field_order, is_deleted=False)
             if field_active
             else None
@@ -140,7 +140,7 @@ class TestReorderFieldInteractor:
     def test_reorder_field_not_found(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True
-        self.field_storage.get_field.return_value = None
+        self.field_storage.get_fields.return_value = None
 
         # Act
         with pytest.raises(FieldNotFound) as exc:
@@ -156,7 +156,8 @@ class TestReorderFieldInteractor:
     def test_reorder_field_inactive(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True
-        self.field_storage.get_field.return_value = make_field(is_deleted=True)
+        self.field_storage.get_fields.return_value = make_field(
+            is_deleted=True)
 
         # Act
         with pytest.raises(DeletedFieldException) as exc:

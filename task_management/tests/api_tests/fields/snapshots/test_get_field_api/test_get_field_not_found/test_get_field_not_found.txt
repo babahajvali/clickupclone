@@ -1,8 +1,10 @@
 {
   "data": {
     "getFields": {
-      "__typename": "FieldNotFoundType",
-      "fieldId": "field_404"
+      "__typename": "InvalidFieldIdsType",
+      "fieldIds": [
+        "field_404"
+      ]
     }
   }
 }

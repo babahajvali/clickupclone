@@ -5,15 +5,14 @@ from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
 from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
-from task_management.interactors.fields.validators.field_validator import \
-    FieldValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
-    WorkspaceValidationMixin
+    WorkspaceValidationMixin, FieldValidationMixin
 
 
-class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin):
+class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
+                            FieldValidationMixin):
     """
     Create Field Interactor create the custom field for template
 
@@ -34,8 +33,11 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin):
             self, field_storage: FieldStorageInterface,
             template_storage: TemplateStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
-        super().__init__(template_storage=template_storage,
-                         workspace_storage=workspace_storage)
+        super().__init__(
+            template_storage=template_storage,
+            workspace_storage=workspace_storage,
+            field_storage=field_storage
+        )
         self.field_storage = field_storage
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage
@@ -43,10 +45,6 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin):
     @property
     def field_config_validator(self) -> FieldConfigValidator:
         return FieldConfigValidator()
-
-    @property
-    def field_validator(self) -> FieldValidator:
-        return FieldValidator(field_storage=self.field_storage)
 
     @invalidate_interactor_cache(cache_name="fields")
     def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
@@ -66,12 +64,12 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin):
             order=last_field_order_in_template + 1)
 
     def _check_create_field_input(self, field_data: CreateFieldDTO):
-        self.field_validator.check_field_name_not_empty(
+        self.check_field_name_not_empty(
             field_name=field_data.field_name)
         self._check_invalid_field_type(field_type=field_data.field_type.value)
         self.field_config_validator.check_field_config(
             config=field_data.config, field_type=field_data.field_type)
-        self.field_validator.check_field_name_not_exist_in_template(
+        self.check_field_name_not_exist_in_template(
             field_name=field_data.field_name,
             template_id=field_data.template_id,
             field_id=None

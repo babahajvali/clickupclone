@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     UpdateFieldValueDTO, TaskFieldValueDTO, CreateFieldValueDTO, \
@@ -16,11 +16,17 @@ class FieldStorageInterface(ABC):
     @abstractmethod
     def is_field_name_exists(
             self, field_name: str, template_id: str,
-            field_id: Optional[str]) -> bool:
+            excluded_field_id: Optional[str]) -> bool:
         pass
 
     @abstractmethod
-    def get_field(self, field_id: str) -> FieldDTO:
+    def get_fields(
+            self, field_ids: List[str] | None = None,
+            field_id: str | None = None) -> list[FieldDTO] | FieldDTO | None:
+        pass
+
+    @abstractmethod
+    def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         pass
 
     @abstractmethod
@@ -29,12 +35,12 @@ class FieldStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_fields_for_template(self, template_id: str) -> list[FieldDTO]:
+    def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:
         pass
 
     @abstractmethod
     def get_field_values_by_task_ids(
-            self, task_ids: list[str]) -> list[TaskFieldValuesDTO]:
+            self, task_ids: List[str]) -> List[TaskFieldValuesDTO]:
         pass
 
     @abstractmethod

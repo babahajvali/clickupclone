@@ -15,7 +15,8 @@ class FieldValidator:
             self, field_name: str, template_id: str, field_id: Optional[str]):
 
         is_name_exists = self.field_storage.is_field_name_exists(
-            field_name=field_name, template_id=template_id, field_id=field_id)
+            field_name=field_name, template_id=template_id,
+            excluded_field_id=field_id)
 
         if is_name_exists:
             raise FieldNameAlreadyExists(field_name=field_name)

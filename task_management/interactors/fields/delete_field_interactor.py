@@ -25,8 +25,8 @@ class DeleteFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
     def __init__(
             self, field_storage: FieldStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
-        super.__init__(field_storage=field_storage,
-                       workspace_storage=workspace_storage)
+        super().__init__(field_storage=field_storage,
+                         workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
 

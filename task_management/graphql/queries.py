@@ -2,8 +2,8 @@ import graphene
 
 from task_management.graphql.resolvers.account.get_accounts_resolver import \
     get_accounts_resolver
-from task_management.graphql.resolvers.field.get_field_resolver import \
-    get_field_resolver
+from task_management.graphql.resolvers.field.get_fields_resolver import \
+    get_fields_resolver
 from task_management.graphql.resolvers.field.get_task_field_values_resolver import \
     get_task_field_values_resolver
 from task_management.graphql.resolvers.field.get_template_fields_resolver import \
@@ -53,7 +53,8 @@ from task_management.graphql.types.input_types import \
     GetFolderListsInputParams, GetSpaceListsInputParams, \
     GetListTasksInputParams, GetTaskInputParams, TaskFilterInputParams, \
     GetTaskAssigneesInputParams, GetFieldsForTemplateInputParams, \
-    GetFieldInputParams, GetListViewsInputParams, GetUserWorkspacesInputParams, \
+    GetFieldsInputParams, GetListViewsInputParams, \
+    GetUserWorkspacesInputParams, \
     GetTaskFieldValuesInputParams, GetWorkspaceMemberInputParams, \
     GetUserTasksInputParams, GetUserWithEmailInputParams, \
     GetAccountsInputParams
@@ -188,11 +189,11 @@ class GetTemplateFields(graphene.ObjectType):
     )
 
 
-class GetField(graphene.ObjectType):
+class GetFields(graphene.ObjectType):
     get_fields = graphene.Field(
         GetFieldResponse,
-        params=GetFieldInputParams(required=True),
-        resolver=get_field_resolver
+        params=GetFieldsInputParams(required=True),
+        resolver=get_fields_resolver
     )
 
 

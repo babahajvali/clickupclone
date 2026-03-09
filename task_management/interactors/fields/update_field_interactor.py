@@ -12,7 +12,7 @@ from task_management.mixins import WorkspaceValidationMixin, \
     FieldValidationMixin
 
 
-class UpdateFieldInteractor:
+class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
     """
     Update Field Interactor update the custom field in template
 
@@ -32,6 +32,8 @@ class UpdateFieldInteractor:
     def __init__(
             self, field_storage: FieldStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(field_storage=field_storage,
+                         workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
 
@@ -57,10 +59,10 @@ class UpdateFieldInteractor:
             self, update_field_data: UpdateFieldDTO, user_id: str) -> FieldDTO:
         """Update field metadata/config for a template field."""
 
-        self.field_mixin.check_field_not_deleted(
+        self.check_field_not_deleted(
             field_id=update_field_data.field_id)
 
-        field_data = self.field_storage.get_field(
+        field_data = self.check_field_exists(
             field_id=update_field_data.field_id)
         self._check_update_field_properties(
             update_field_data=update_field_data, field_data=field_data
@@ -92,9 +94,9 @@ class UpdateFieldInteractor:
         is_field_name_provided = update_field_data.field_name is not None
         if not is_field_name_provided:
             return
-        self.field_validator.check_field_name_not_empty(
+        self.check_field_name_not_empty(
             field_name=update_field_data.field_name)
-        self.field_validator.check_field_name_not_exist_in_template(
+        self.check_field_name_not_exist_in_template(
             field_id=update_field_data.field_id,
             field_name=update_field_data.field_name,
             template_id=field_data.template_id)
@@ -123,5 +125,5 @@ class UpdateFieldInteractor:
         workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=field_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

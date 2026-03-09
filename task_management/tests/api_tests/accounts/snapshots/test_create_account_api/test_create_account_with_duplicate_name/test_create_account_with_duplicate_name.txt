@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "message": "User matching query does not exist.",
+      "message": "AccountStorage.is_account_name_exists() got an unexpected keyword argument 'excluded_account_id'",
       "locations": [
         {
           "line": 3,

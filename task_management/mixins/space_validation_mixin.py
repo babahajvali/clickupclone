@@ -9,7 +9,7 @@ class SpaceValidationMixin:
 
     def __init__(self, space_storage: SpaceStorageInterface, **kwargs):
         self.space_storage = space_storage
-        super.__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def check_space_not_deleted(self, space_id: str):
 

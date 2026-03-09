@@ -7,7 +7,13 @@ from task_management.tests.api_tests.fields import BaseGetField
 
 def get_field_mock(mocker):
     return mocker.patch(
-        "task_management.storages.field_storage.FieldStorage.get_field")
+        "task_management.storages.field_storage.FieldStorage.get_fields")
+
+
+def get_existing_field_ids_mock(mocker):
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.get_existing_field_ids"
+    )
 
 
 def create_field_dto() -> FieldDTO:
@@ -30,9 +36,11 @@ class TestGetFieldAPI(BaseGetField):
 
     def test_get_field_successfully(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto()
+        existing_field_ids = get_existing_field_ids_mock(mocker)
+        existing_field_ids.return_value = ["field_1"]
+        field_data.return_value = [create_field_dto()]
 
-        variables = {"params": {"fieldId": "field_1"}}
+        variables = {"params": {"fieldIds": ["field_1"]}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -42,9 +50,11 @@ class TestGetFieldAPI(BaseGetField):
 
     def test_get_field_not_found(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = None
+        existing_field_ids = get_existing_field_ids_mock(mocker)
+        existing_field_ids.return_value = []
+        field_data.return_value = []
 
-        variables = {"params": {"fieldId": "field_404"}}
+        variables = {"params": {"fieldIds": ["field_404"]}}
 
         self.execute_schema(
             query=self.QUERY,
