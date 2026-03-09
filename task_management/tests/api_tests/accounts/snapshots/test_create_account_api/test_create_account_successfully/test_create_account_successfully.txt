@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "message": "An unknown error occurred.",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "createAccount"
+      ]
+    }
+  ],
+  "data": null
+}
