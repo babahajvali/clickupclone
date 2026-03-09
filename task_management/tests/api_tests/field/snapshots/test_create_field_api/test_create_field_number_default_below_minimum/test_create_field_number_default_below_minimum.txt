@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createField": {
+      "__typename": "NumberDefaultValueBelowMinimumType",
+      "numberMinDefaultMessage": "Default value 5 is less than minimum 10"
+    }
+  }
+}

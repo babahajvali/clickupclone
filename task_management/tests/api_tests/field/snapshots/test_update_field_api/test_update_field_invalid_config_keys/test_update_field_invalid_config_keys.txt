@@ -1,0 +1,12 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "InvalidFieldConfigType",
+      "fieldType": "TEXT",
+      "invalidKeys": [
+        "bad_key"
+      ],
+      "invalidConfigMessage": "Invalid config keys ['bad_key'] for field type 'TEXT'."
+    }
+  }
+}

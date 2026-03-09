@@ -1,7 +1,5 @@
 from typing import Optional
 
-from task_management.interactors.accounts.validator.account_validator import \
-    AccountValidator
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface
@@ -16,10 +14,6 @@ class UpdateAccountInteractor:
     @property
     def account_mixin(self) -> AccountValidationMixin:
         return AccountValidationMixin(account_storage=self.account_storage)
-
-    @property
-    def account_validator(self) -> AccountValidator:
-        return AccountValidator(account_storage=self.account_storage)
 
     def update_account(
             self, account_id: str, user_id: str, name: Optional[str],
@@ -65,7 +59,7 @@ class UpdateAccountInteractor:
             raise NothingToUpdateAccount(account_id=account_id)
 
         if is_name_provided:
-            self.account_validator.check_account_name_is_not_empty(
+            self.account_mixin.check_account_name_is_not_empty(
                 account_name=name)
-            self.account_validator.check_account_name_in_db(
+            self.account_mixin.check_account_name_in_db(
                 account_id=account_id, account_name=name)

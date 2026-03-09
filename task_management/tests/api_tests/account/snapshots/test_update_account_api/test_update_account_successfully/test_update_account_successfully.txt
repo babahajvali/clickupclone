@@ -1,0 +1,12 @@
+{
+  "data": {
+    "updateAccount": {
+      "__typename": "AccountType",
+      "accountId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "description": "Updated account description",
+      "isActive": true,
+      "ownerId": "49bb508e-c6d1-4882-95fd-1991d103f7dd",
+      "name": "Clickup Clone Updated"
+    }
+  }
+}

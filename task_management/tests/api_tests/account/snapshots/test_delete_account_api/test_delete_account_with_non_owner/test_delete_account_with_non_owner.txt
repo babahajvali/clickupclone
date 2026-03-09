@@ -1,0 +1,8 @@
+{
+  "data": {
+    "deleteAccount": {
+      "__typename": "UserNotAccountOwnerType",
+      "userId": "49bb508e-c6d1-4882-95fd-1991d103f7dd"
+    }
+  }
+}

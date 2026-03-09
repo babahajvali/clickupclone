@@ -1,0 +1,8 @@
+{
+  "data": {
+    "deleteField": {
+      "__typename": "FieldNotFoundType",
+      "fieldId": "field_404"
+    }
+  }
+}

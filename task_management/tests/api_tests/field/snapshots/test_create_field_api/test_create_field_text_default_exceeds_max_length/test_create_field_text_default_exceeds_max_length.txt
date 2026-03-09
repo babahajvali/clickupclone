@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createField": {
+      "__typename": "TextDefaultValueExceedsMaxLengthType",
+      "textDefaultMessage": "Default value length 4 exceeds max_length 3"
+    }
+  }
+}

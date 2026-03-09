@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "message": "NumberField.check_number_value_within_range() missing 1 required positional argument: 'self'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "updateFieldValue"
+      ]
+    }
+  ],
+  "data": null
+}

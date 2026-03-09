@@ -1,0 +1,8 @@
+{
+  "data": {
+    "deleteField": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "user_1"
+    }
+  }
+}

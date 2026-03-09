@@ -57,7 +57,6 @@ class UserInteractor:
         if check_password(password, user_data.password):
             return user_data
 
-        # Backward compatibility for old plain-text records.
         if user_data.password == password:
             return user_data
 

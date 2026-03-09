@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateAccount": {
+      "__typename": "InactiveAccountType",
+      "accountId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    }
+  }
+}

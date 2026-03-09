@@ -1,0 +1,33 @@
+{
+  "data": {
+    "getTemplateFields": {
+      "__typename": "FieldsType",
+      "fields": [
+        {
+          "fieldId": "field_1",
+          "fieldType": "TEXT",
+          "description": "Field description",
+          "templateId": "tpl_1",
+          "fieldName": "Priority",
+          "isDeleted": "false",
+          "order": 1,
+          "config": "{\"max_length\": 50}",
+          "isRequired": true,
+          "createdBy": "user_1"
+        },
+        {
+          "fieldId": "field_2",
+          "fieldType": "TEXT",
+          "description": "Field description",
+          "templateId": "tpl_1",
+          "fieldName": "Status",
+          "isDeleted": "false",
+          "order": 2,
+          "config": "{\"max_length\": 50}",
+          "isRequired": true,
+          "createdBy": "user_1"
+        }
+      ]
+    }
+  }
+}

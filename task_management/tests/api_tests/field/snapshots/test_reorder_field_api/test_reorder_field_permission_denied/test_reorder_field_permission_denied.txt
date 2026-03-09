@@ -1,0 +1,8 @@
+{
+  "data": {
+    "reorderField": {
+      "__typename": "ModificationNotAllowedType",
+      "userId": "user_1"
+    }
+  }
+}

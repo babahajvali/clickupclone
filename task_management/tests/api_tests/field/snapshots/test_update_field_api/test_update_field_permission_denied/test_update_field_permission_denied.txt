@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "ModificationNotAllowedType",
+      "userId": "user_1"
+    }
+  }
+}

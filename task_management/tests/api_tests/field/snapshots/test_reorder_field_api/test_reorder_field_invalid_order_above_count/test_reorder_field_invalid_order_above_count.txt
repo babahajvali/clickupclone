@@ -1,0 +1,8 @@
+{
+  "data": {
+    "reorderField": {
+      "__typename": "InvalidOrderType",
+      "order": 10
+    }
+  }
+}

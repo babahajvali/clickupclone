@@ -1,0 +1,9 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "MaxValueLessThanMinValueType",
+      "fieldType": "NUMBER",
+      "maxLessThanMinMessage": "max 2 must be greater than or equal to min 10"
+    }
+  }
+}

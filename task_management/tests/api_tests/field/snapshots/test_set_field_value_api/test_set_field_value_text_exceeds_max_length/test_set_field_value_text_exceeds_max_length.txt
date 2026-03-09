@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateFieldValue": {
+      "__typename": "TextValueExceedsMaxLengthType",
+      "message": "Text exceeds maximum length of 3 characters"
+    }
+  }
+}

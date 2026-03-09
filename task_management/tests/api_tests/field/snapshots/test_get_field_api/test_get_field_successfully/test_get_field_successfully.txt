@@ -1,0 +1,17 @@
+{
+  "data": {
+    "getFields": {
+      "__typename": "FieldType",
+      "fieldId": "field_1",
+      "fieldType": "TEXT",
+      "description": "Task priority",
+      "templateId": "tpl_1",
+      "fieldName": "Priority",
+      "isDeleted": "false",
+      "order": 2,
+      "config": "{\"max_length\": 10}",
+      "isRequired": true,
+      "createdBy": "user_1"
+    }
+  }
+}

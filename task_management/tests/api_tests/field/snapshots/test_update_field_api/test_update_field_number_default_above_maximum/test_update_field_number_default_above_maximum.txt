@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "NumberDefaultValueAboveMaximumType",
+      "numberMaxDefaultMessage": "Default value 10 is greater than maximum 5"
+    }
+  }
+}

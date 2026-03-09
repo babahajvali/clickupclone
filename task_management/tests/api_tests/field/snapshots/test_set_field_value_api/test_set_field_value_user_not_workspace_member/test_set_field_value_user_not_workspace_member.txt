@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateFieldValue": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "user_1"
+    }
+  }
+}

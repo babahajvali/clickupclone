@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getAccounts": {
+      "__typename": "AccountsType",
+      "accounts": []
+    }
+  }
+}

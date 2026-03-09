@@ -1,0 +1,10 @@
+{
+  "data": {
+    "getAccounts": {
+      "__typename": "InvalidAccountIdsType",
+      "accountIds": [
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "data": {
+    "updateFieldValue": {
+      "__typename": "FieldValueType",
+      "id": 1,
+      "taskId": "task_1",
+      "fieldId": "field_1",
+      "value": "P1"
+    }
+  }
+}

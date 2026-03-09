@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateFieldValue": {
+      "__typename": "DropdownOptionNotAllowedType",
+      "message": "Invalid option. Option must be one of: Low, Medium"
+    }
+  }
+}

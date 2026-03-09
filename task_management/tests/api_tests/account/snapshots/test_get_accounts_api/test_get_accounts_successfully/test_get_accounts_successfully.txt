@@ -1,0 +1,23 @@
+{
+  "data": {
+    "getAccounts": {
+      "__typename": "AccountsType",
+      "accounts": [
+        {
+          "accountId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "description": "This is first company",
+          "isActive": true,
+          "ownerId": "49bb508e-c6d1-4882-95fd-1991d103f7dd",
+          "name": "Clickup Clone 1"
+        },
+        {
+          "accountId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "description": "This is second company",
+          "isActive": true,
+          "ownerId": "59bb508e-c6d1-4882-95fd-1991d103f7dd",
+          "name": "Clickup Clone 2"
+        }
+      ]
+    }
+  }
+}

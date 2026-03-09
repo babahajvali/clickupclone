@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createField": {
+      "__typename": "DropdownDefaultValueNotInOptionsType",
+      "dropdownDefaultMessage": "Default value must be one of dropdown options"
+    }
+  }
+}

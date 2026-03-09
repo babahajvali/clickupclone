@@ -13,7 +13,8 @@ class GraphQLBaseTestCase:
         self.client = Client(schema)
         self.snapshot_name = request.node.name + ".txt"
 
-    def execute_schema(self, query: str, variables: dict, snapshot):
-        result = self.client.execute(query, variables=variables)
+    def execute_schema(self, query: str, variables: dict, snapshot, context=None):
+        result = self.client.execute(
+            query, variables=variables, context_value=context)
         json_result = json.dumps(result, indent=2)
         snapshot.assert_match(json_result, self.snapshot_name)

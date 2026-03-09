@@ -1,11 +1,9 @@
 from typing import Optional
 
-from task_management.interactors.accounts.validator.account_validator import \
-    AccountValidator
 from task_management.interactors.dtos import AccountDTO
 from task_management.interactors.storage_interfaces import \
     AccountStorageInterface, UserStorageInterface
-from task_management.mixins import UserValidationMixin
+from task_management.mixins import UserValidationMixin, AccountValidationMixin
 
 
 class CreateAccountInteractor:
@@ -21,8 +19,8 @@ class CreateAccountInteractor:
         return UserValidationMixin(user_storage=self.user_storage)
 
     @property
-    def account_validator(self) -> AccountValidator:
-        return AccountValidator(account_storage=self.account_storage)
+    def account_mixin(self) -> AccountValidationMixin:
+        return AccountValidationMixin(account_storage=self.account_storage)
 
     def create_account(
             self, name: str, created_by: str, description: Optional[str]) \
@@ -47,10 +45,10 @@ class CreateAccountInteractor:
             AccountNameAlreadyExistsException: If the accounts name is already taken.
         """
 
-        self.account_validator.check_account_name_is_not_empty(
+        self.account_mixin.check_account_name_is_not_empty(
             account_name=name)
         self.user_mixin.check_user_is_active(user_id=created_by)
-        self.account_validator.check_account_name_in_db(
+        self.account_mixin.check_account_name_in_db(
             account_name=name, account_id=None)
 
         return self.account_storage.create_account(
