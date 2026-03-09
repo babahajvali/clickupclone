@@ -32,6 +32,7 @@ class AddWorkspaceMemberInteractor:
         return WorkspaceValidator(workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
+    @invalidate_interactor_cache(cache_name="validate_permission")
     def add_member_to_workspace(
             self, workspace_member_data: AddMemberToWorkspaceDTO) \
             -> WorkspaceMemberDTO:

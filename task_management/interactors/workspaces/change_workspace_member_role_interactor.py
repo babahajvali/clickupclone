@@ -13,6 +13,7 @@ from task_management.mixins import WorkspaceValidationMixin, \
     UserValidationMixin
 
 
+@invalidate_interactor_cache(cache_name="validate_permission")
 class ChangeWorkspaceMemberRoleInteractor:
 
     def __init__(
