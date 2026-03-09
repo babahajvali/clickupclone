@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from task_management.tests.api_tests.account import BaseDeleteAccount
+from task_management.tests.api_tests.accounts import BaseDeleteAccount
 
 
 def get_account_data_mock(mocker):
@@ -42,13 +42,13 @@ class TestDeleteAccountAPI(BaseDeleteAccount):
                 'name': 'Clickup Clone',
                 'description': 'Account deleted',
                 'owner_id': owner_id,
-                'is_deleted': False,
+                'is_active': False,
             }
         )()
 
         variables = {
             'params': {
-                'accountId': [account_id],
+                'accountId': account_id,
             }
         }
 
@@ -68,7 +68,7 @@ class TestDeleteAccountAPI(BaseDeleteAccount):
 
         variables = {
             'params': {
-                'accountId': [account_id],
+                'accountId': account_id,
             }
         }
 
@@ -90,7 +90,7 @@ class TestDeleteAccountAPI(BaseDeleteAccount):
 
         variables = {
             'params': {
-                'accountId': [account_id],
+                'accountId': account_id,
             }
         }
 

@@ -5,7 +5,7 @@ import pytest
 
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.tests.api_tests.field import BaseUpdateField
+from task_management.tests.api_tests.fields import BaseUpdateField
 
 
 def get_field_mock(mocker):
@@ -324,7 +324,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_dropdown_missing_config(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.DROPDOWN)
+        field_data.return_value = create_field_dto(
+            field_type=FieldType.DROPDOWN)
 
         variables = {
             "params": {
@@ -342,7 +343,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_dropdown_options_missing(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.DROPDOWN)
+        field_data.return_value = create_field_dto(
+            field_type=FieldType.DROPDOWN)
 
         variables = {
             "params": {
@@ -361,7 +363,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_dropdown_default_not_in_options(
             self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(field_type=FieldType.DROPDOWN)
+        field_data.return_value = create_field_dto(
+            field_type=FieldType.DROPDOWN)
 
         variables = {
             "params": {

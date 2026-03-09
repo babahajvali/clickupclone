@@ -5,7 +5,7 @@ import pytest
 
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.tests.api_tests.field import BaseCreateField
+from task_management.tests.api_tests.fields import BaseCreateField
 
 
 def validate_template_exists_mock(mocker):

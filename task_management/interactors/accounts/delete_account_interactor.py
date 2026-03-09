@@ -13,20 +13,18 @@ class DeleteAccountInteractor:
         return AccountValidationMixin(account_storage=self.account_storage)
 
     def delete_account(self, account_id: str, deleted_by: str):
-        """ Delete accounts data after validation
+        """ Delete account after validation
         Validations:
-            1. validate accounts
-            2. validate accounts is active
-            3. validate user is owner of accounts
+            1. validate account
+            2. validate user is owner of account
 
         Args:
-            1.account_id: accounts id
-            2.deleted_by: accounts deleted by
+            1.account_id: account id
+            2.deleted_by: account deleted by
 
         Exceptions:
-            1.AccountDoesNotExistException: If the accounts does not exist.
-            2.UserNotOwnerOfAccountException: If the user is not owner of accounts.
-            3.InactiveAccountException: If the accounts is not active.
+            1.AccountDoesNotExistException: If the account does not exist.
+            2.UserNotOwnerOfAccountException: If the user is not owner of account.
         """
 
         self.account_mixin.check_account_exists(account_id=account_id)

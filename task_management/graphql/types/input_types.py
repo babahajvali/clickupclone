@@ -74,7 +74,7 @@ class GetWorkspaceInputParams(graphene.InputObjectType):
 
 
 class DeleteAccountInputParams(graphene.InputObjectType):
-    account_id = graphene.List(graphene.String, required=True)
+    account_id = graphene.String(required=True)
 
 
 class GetUserProfileInputParams(graphene.InputObjectType):

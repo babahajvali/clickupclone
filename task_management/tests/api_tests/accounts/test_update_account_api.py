@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from task_management.tests.api_tests.account import BaseUpdateAccount
+from task_management.tests.api_tests.accounts import BaseUpdateAccount
 from task_management.tests.factories.api_factory import AccountDTOFactory
 
 
@@ -25,7 +25,8 @@ def update_account_data_mock(mocker):
 
 
 def create_account_object(owner_id, is_active=True):
-    return type('Account', (), {'owner_id': owner_id, 'is_active': is_active})()
+    return type('Account', (),
+                {'owner_id': owner_id, 'is_active': is_active})()
 
 
 @pytest.mark.django_db
@@ -36,7 +37,8 @@ class TestUpdateAccountAPI(BaseUpdateAccount):
         owner_id = '49bb508e-c6d1-4882-95fd-1991d103f7dd'
 
         get_account_mock = get_account_data_mock(mocker=mocker)
-        get_account_mock.return_value = create_account_object(owner_id=owner_id)
+        get_account_mock.return_value = create_account_object(
+            owner_id=owner_id)
 
         name_exists_mock = is_account_name_exists_mock(mocker=mocker)
         name_exists_mock.return_value = False
@@ -120,12 +122,13 @@ class TestUpdateAccountAPI(BaseUpdateAccount):
         other_user_id = '49bb508e-c6d1-4882-95fd-1991d103f7dd'
 
         get_account_mock = get_account_data_mock(mocker=mocker)
-        get_account_mock.return_value = create_account_object(owner_id=owner_id)
+        get_account_mock.return_value = create_account_object(
+            owner_id=owner_id)
 
         variables = {
             'params': {
                 'accountId': account_id,
-                'description': 'Updated account description',
+                'description': 'Updated accounts description',
             }
         }
 
@@ -141,7 +144,8 @@ class TestUpdateAccountAPI(BaseUpdateAccount):
         owner_id = '49bb508e-c6d1-4882-95fd-1991d103f7dd'
 
         get_account_mock = get_account_data_mock(mocker=mocker)
-        get_account_mock.return_value = create_account_object(owner_id=owner_id)
+        get_account_mock.return_value = create_account_object(
+            owner_id=owner_id)
 
         name_exists_mock = is_account_name_exists_mock(mocker=mocker)
         name_exists_mock.return_value = True

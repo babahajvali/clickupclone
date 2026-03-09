@@ -4,7 +4,7 @@ import pytest
 
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.tests.api_tests.field import BaseReorderField
+from task_management.tests.api_tests.fields import BaseReorderField
 
 
 def validate_template_exists_mock(mocker):
@@ -26,7 +26,8 @@ def get_workspace_member_mock(mocker):
 
 
 def get_field_mock(mocker):
-    return mocker.patch("task_management.storages.field_storage.FieldStorage.get_field")
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.get_field")
 
 
 def template_fields_count_mock(mocker):
@@ -105,7 +106,8 @@ class TestReorderFieldAPI(BaseReorderField):
         updated = update_field_order_mock(mocker)
         updated.return_value = create_field_dto(order=3, is_deleted=False)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 3}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 3}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -119,7 +121,8 @@ class TestReorderFieldAPI(BaseReorderField):
         field_data = get_field_mock(mocker)
         field_data.return_value = None
 
-        variables = {"params": {"fieldId": "field_404", "templateId": "tpl_1", "newOrder": 2}}
+        variables = {"params": {"fieldId": "field_404", "templateId": "tpl_1",
+                                "newOrder": 2}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -133,7 +136,8 @@ class TestReorderFieldAPI(BaseReorderField):
         field_data = get_field_mock(mocker)
         field_data.return_value = create_field_dto(order=2, is_deleted=True)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 3}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 3}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -145,7 +149,8 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_template_not_found(self, snapshot, mocker):
         self._setup_common(mocker, template_exists=False)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_404", "newOrder": 2}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_404",
+                                "newOrder": 2}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -157,7 +162,8 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_invalid_order_below_one(self, snapshot, mocker):
         self._setup_common(mocker)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 0}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 0}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -169,7 +175,8 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_invalid_order_above_count(self, snapshot, mocker):
         self._setup_common(mocker)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 10}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 10}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -181,7 +188,8 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_permission_denied(self, snapshot, mocker):
         self._setup_common(mocker, role=Role.GUEST)
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 3}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 3}}
 
         self.execute_schema(
             query=self.QUERY,
@@ -195,7 +203,8 @@ class TestReorderFieldAPI(BaseReorderField):
         workspace_member = get_workspace_member_mock(mocker)
         workspace_member.return_value = None
 
-        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1", "newOrder": 3}}
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 3}}
 
         self.execute_schema(
             query=self.QUERY,

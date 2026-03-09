@@ -9,15 +9,17 @@ from task_management.interactors.dtos import (
     TaskFieldValueDTO,
     WorkspaceMemberDTO,
 )
-from task_management.tests.api_tests.field import BaseSetFieldValue
+from task_management.tests.api_tests.fields import BaseSetFieldValue
 
 
 def get_task_mock(mocker):
-    return mocker.patch("task_management.storages.task_storage.TaskStorage.get_task")
+    return mocker.patch(
+        "task_management.storages.task_storage.TaskStorage.get_task")
 
 
 def get_field_mock(mocker):
-    return mocker.patch("task_management.storages.field_storage.FieldStorage.get_field")
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.get_field")
 
 
 def get_workspace_id_from_field_id_mock(mocker):

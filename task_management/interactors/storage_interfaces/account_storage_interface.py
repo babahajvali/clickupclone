@@ -29,10 +29,6 @@ class AccountStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_user_accounts(self, user_id: str) -> List[AccountDTO]:
-        pass
-
-    @abstractmethod
     def update_account(
             self, account_id: str, name: Optional[str],
             description: Optional[str]) -> AccountDTO:

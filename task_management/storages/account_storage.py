@@ -8,6 +8,17 @@ from task_management.models import Account
 
 class AccountStorage(AccountStorageInterface):
 
+    @staticmethod
+    def _to_convert_account_dto(account_data: Account) -> AccountDTO:
+
+        return AccountDTO(
+            account_id=account_data.account_id,
+            name=account_data.name,
+            description=account_data.description,
+            owner_id=account_data.owner.user_id if account_data.owner else None,
+            is_active=account_data.is_active,
+        )
+
     def get_account(self, account_id: str) -> AccountDTO | None:
 
         account_data = Account.objects.filter(account_id=account_id).first()
@@ -15,13 +26,7 @@ class AccountStorage(AccountStorageInterface):
         if not account_data:
             return None
 
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+        return self._to_convert_account_dto(account_data=account_data)
 
     def create_account(
             self, name: str, description: Optional[str],
@@ -29,55 +34,27 @@ class AccountStorage(AccountStorageInterface):
 
         account_data = Account.objects.create(
             name=name, description=description, owner_id=created_by)
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+
+        return self._to_convert_account_dto(account_data=account_data)
 
     def delete_account(self, account_id: str) -> AccountDTO:
         account_data = Account.objects.get(account_id=account_id)
         account_data.is_active = False
         account_data.save()
 
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+        return self._to_convert_account_dto(account_data=account_data)
 
     def get_accounts(self, account_ids: List[str]) -> List[AccountDTO]:
         accounts_data = Account.objects.filter(account_id__in=account_ids)
 
-        return [AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        ) for account_data in accounts_data]
+        return [self._to_convert_account_dto(account_data=account_data) for
+                account_data in accounts_data]
 
     def get_existing_account_ids(self, account_ids: List[str]) -> List[str]:
         accounts_ids = Account.objects.filter(
             account_id__in=account_ids).values('account_id')
 
         return [str(each['account_id']) for each in accounts_ids]
-
-    def get_user_accounts(self, user_id: str) -> List[AccountDTO]:
-        accounts_data = Account.objects.filter(
-            owner_id=user_id, is_active=True)
-
-        return [AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        ) for account_data in accounts_data]
 
     def update_account(
             self, account_id: str, name: Optional[str],
@@ -96,13 +73,7 @@ class AccountStorage(AccountStorageInterface):
             **field_properties)
         account_data = Account.objects.get(account_id=account_id)
 
-        return AccountDTO(
-            account_id=account_data.account_id,
-            name=account_data.name,
-            description=account_data.description,
-            owner_id=account_data.owner.user_id,
-            is_active=account_data.is_active,
-        )
+        return self._to_convert_account_dto(account_data=account_data)
 
     def is_account_name_exists(
             self, account_name: str, account_id: Optional[str]) -> bool:

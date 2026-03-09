@@ -4,11 +4,12 @@ import pytest
 
 from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
-from task_management.tests.api_tests.field import BaseDeleteField
+from task_management.tests.api_tests.fields import BaseDeleteField
 
 
 def get_field_mock(mocker):
-    return mocker.patch("task_management.storages.field_storage.FieldStorage.get_field")
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.get_field")
 
 
 def get_workspace_id_from_field_id_mock(mocker):
@@ -24,7 +25,8 @@ def get_workspace_member_mock(mocker):
 
 
 def delete_field_mock(mocker):
-    return mocker.patch("task_management.storages.field_storage.FieldStorage.delete_field")
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.delete_field")
 
 
 def create_workspace_member_dto(role: Role) -> WorkspaceMemberDTO:
@@ -58,7 +60,8 @@ class TestDeleteFieldAPI(BaseDeleteField):
 
     def _setup_common(self, mocker, *, role=Role.MEMBER, field_exists=True):
         field_data = get_field_mock(mocker)
-        field_data.return_value = create_field_dto(is_deleted=False) if field_exists else None
+        field_data.return_value = create_field_dto(
+            is_deleted=False) if field_exists else None
 
         workspace_id = get_workspace_id_from_field_id_mock(mocker)
         workspace_id.return_value = "workspace_1"

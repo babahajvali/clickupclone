@@ -2,11 +2,12 @@ import pytest
 
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.tests.api_tests.field import BaseGetField
+from task_management.tests.api_tests.fields import BaseGetField
 
 
 def get_field_mock(mocker):
-    return mocker.patch("task_management.storages.field_storage.FieldStorage.get_field")
+    return mocker.patch(
+        "task_management.storages.field_storage.FieldStorage.get_field")
 
 
 def create_field_dto() -> FieldDTO:

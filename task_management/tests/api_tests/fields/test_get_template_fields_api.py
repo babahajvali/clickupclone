@@ -2,7 +2,7 @@ import pytest
 
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import FieldDTO
-from task_management.tests.api_tests.field import BaseGetTemplateFields
+from task_management.tests.api_tests.fields import BaseGetTemplateFields
 
 
 def get_template_id_by_list_id_mock(mocker):
@@ -23,7 +23,8 @@ def get_fields_for_template_mock(mocker):
     )
 
 
-def create_field_dto(*, field_id: str, field_name: str, order: int) -> FieldDTO:
+def create_field_dto(*, field_id: str, field_name: str,
+                     order: int) -> FieldDTO:
     return FieldDTO(
         field_id=field_id,
         field_type=FieldType.TEXT,
@@ -50,7 +51,8 @@ class TestGetTemplateFieldsAPI(BaseGetTemplateFields):
 
         fields = get_fields_for_template_mock(mocker)
         fields.return_value = [
-            create_field_dto(field_id="field_1", field_name="Priority", order=1),
+            create_field_dto(field_id="field_1", field_name="Priority",
+                             order=1),
             create_field_dto(field_id="field_2", field_name="Status", order=2),
         ]
 

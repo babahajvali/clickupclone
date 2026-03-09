@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.tests.api_tests.account import BaseCreateAccount
+from task_management.tests.api_tests.accounts import BaseCreateAccount
 from task_management.tests.factories.api_factory import AccountDTOFactory, \
     UserDTOFactory
 from task_management.tests.factories.storage_factory import UserFactory, \
@@ -50,13 +50,11 @@ class TestCreateAccountAPI(BaseCreateAccount):
             }
         }
         # Act
-        result = self.execute_schema(
+        self.execute_schema(
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
         )
-
-        print(result)
 
     def test_create_account_with_empty_name(self, snapshot, mocker):
         # Arrange

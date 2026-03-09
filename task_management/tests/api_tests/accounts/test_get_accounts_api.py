@@ -1,6 +1,6 @@
 import pytest
 
-from task_management.tests.api_tests.account import BaseGetAccounts
+from task_management.tests.api_tests.accounts import BaseGetAccounts
 from task_management.tests.factories.api_factory import AccountDTOFactory
 
 
