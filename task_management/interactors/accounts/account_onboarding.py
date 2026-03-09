@@ -42,13 +42,13 @@ class AccountOnboardingHandler:
     def handle_account_onboarding(
             self, name: str, created_by: str, description: Optional[str]) \
             -> AccountDTO:
-        account_data = self._create_account(
+        account_dto = self._create_account(
             name=name, created_by=created_by, description=description)
 
         self._create_default_workspace(
-            account_id=account_data.account_id, owner_id=created_by, name=name)
+            account_id=account_dto.account_id, owner_id=created_by, name=name)
 
-        return account_data
+        return account_dto
 
     def _create_account(self, name: str, created_by: str,
                         description: Optional[str]):
@@ -71,7 +71,7 @@ class AccountOnboardingHandler:
 
         from task_management.interactors.workspaces.workspace_handler import \
             WorkspaceHandler
-        workspace_onboarding = WorkspaceHandler(
+        workspace_handler = WorkspaceHandler(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage,
             space_storage=self.space_storage,
@@ -90,5 +90,5 @@ class AccountOnboardingHandler:
             account_id=account_id
         )
 
-        return workspace_onboarding.handle_workspace(
+        return workspace_handler.handle_workspace(
             workspace_data=workspace_input_data)

@@ -7,7 +7,7 @@ from task_management.mixins import WorkspaceValidationMixin, \
     FieldValidationMixin
 
 
-class DeleteFieldInteractor:
+class DeleteFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
     """
     Delete field interactor soft delete the custom field in template
 
@@ -25,23 +25,15 @@ class DeleteFieldInteractor:
     def __init__(
             self, field_storage: FieldStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super.__init__(field_storage=field_storage,
+                       workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
-
-    @property
-    def field_mixin(self) -> FieldValidationMixin:
-        return FieldValidationMixin(field_storage=self.field_storage)
 
     @invalidate_interactor_cache(cache_name="fields")
     def delete_field(self, field_id: str, user_id: str) -> FieldDTO:
         """Soft delete a field after existence and permission checks."""
-        self.field_mixin.check_field_exists(field_id=field_id)
-
+        self.check_field_exists(field_id=field_id)
         self._check_user_has_edit_access_to_template(
             field_id=field_id, user_id=user_id)
 
@@ -52,5 +44,5 @@ class DeleteFieldInteractor:
         workspace_id = self.field_storage.get_workspace_id_from_field_id(
             field_id=field_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

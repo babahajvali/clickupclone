@@ -1,8 +1,0 @@
-{
-  "data": {
-    "createAccount": {
-      "__typename": "EmptyAccountNameExistsType",
-      "accountName": ""
-    }
-  }
-}

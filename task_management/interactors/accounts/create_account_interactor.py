@@ -6,21 +6,15 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import UserValidationMixin, AccountValidationMixin
 
 
-class CreateAccountInteractor:
+class CreateAccountInteractor(UserValidationMixin, AccountValidationMixin):
 
     def __init__(
             self, account_storage: AccountStorageInterface,
             user_storage: UserStorageInterface):
+        super().__init__(account_storage=account_storage,
+                         user_storage=user_storage)
         self.account_storage = account_storage
         self.user_storage = user_storage
-
-    @property
-    def user_mixin(self) -> UserValidationMixin:
-        return UserValidationMixin(user_storage=self.user_storage)
-
-    @property
-    def account_mixin(self) -> AccountValidationMixin:
-        return AccountValidationMixin(account_storage=self.account_storage)
 
     def create_account(
             self, name: str, created_by: str, description: Optional[str]) \
@@ -44,12 +38,10 @@ class CreateAccountInteractor:
             EmptyAccountNameException: If the accounts name is empty.
             AccountNameAlreadyExistsException: If the accounts name is already taken.
         """
+        self.check_user_is_active(user_id=created_by)
 
-        self.account_mixin.check_account_name_is_not_empty(
-            account_name=name)
-        self.user_mixin.check_user_is_active(user_id=created_by)
-        self.account_mixin.check_account_name_in_db(
-            account_name=name, account_id=None)
+        self.check_account_name_is_not_empty(account_name=name)
+        self.check_account_name_in_db(account_name=name, account_id=None)
 
         return self.account_storage.create_account(
             name=name, description=description, created_by=created_by)

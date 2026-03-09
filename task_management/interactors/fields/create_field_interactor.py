@@ -13,7 +13,7 @@ from task_management.mixins import TemplateValidationMixin, \
     WorkspaceValidationMixin
 
 
-class CreateFieldInteractor:
+class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin):
     """
     Create Field Interactor create the custom field for template
 
@@ -34,18 +34,11 @@ class CreateFieldInteractor:
             self, field_storage: FieldStorageInterface,
             template_storage: TemplateStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(template_storage=template_storage,
+                         workspace_storage=workspace_storage)
         self.field_storage = field_storage
         self.template_storage = template_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def template_mixin(self) -> TemplateValidationMixin:
-        return TemplateValidationMixin(template_storage=self.template_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @property
     def field_config_validator(self) -> FieldConfigValidator:
@@ -83,7 +76,8 @@ class CreateFieldInteractor:
             template_id=field_data.template_id,
             field_id=None
         )
-        self.template_mixin.check_template_exists(
+
+        self.check_template_exists(
             template_id=field_data.template_id)
 
     def _check_user_has_edit_access_to_template(
@@ -91,7 +85,7 @@ class CreateFieldInteractor:
         workspace_id = self.template_storage.get_workspace_id_from_template_id(
             template_id=template_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod

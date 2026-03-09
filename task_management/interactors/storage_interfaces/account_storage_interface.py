@@ -36,5 +36,6 @@ class AccountStorageInterface(ABC):
 
     @abstractmethod
     def is_account_name_exists(
-            self, account_name: str, account_id: Optional[str]) -> bool:
+            self, account_name: str,
+            excluded_account_ids: Optional[List[str]]) -> bool:
         pass

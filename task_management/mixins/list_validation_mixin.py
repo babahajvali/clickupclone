@@ -6,8 +6,9 @@ from task_management.interactors.storage_interfaces import ListStorageInterface
 
 class ListValidationMixin:
 
-    def __init__(self, list_storage: ListStorageInterface):
+    def __init__(self, list_storage: ListStorageInterface, **kwargs):
         self.list_storage = list_storage
+        super.__init__(**kwargs)
 
     def check_list_not_deleted(self, list_id: str):
         list_data = self.check_list_exists(list_id=list_id)

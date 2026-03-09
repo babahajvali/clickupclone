@@ -7,8 +7,9 @@ from task_management.interactors.storage_interfaces import \
 
 class FolderValidationMixin:
 
-    def __init__(self, folder_storage: FolderStorageInterface):
+    def __init__(self, folder_storage: FolderStorageInterface, **kwargs):
         self.folder_storage = folder_storage
+        super().__init__(**kwargs)
 
     def check_folder_not_deleted(self, folder_id: str):
         folder_data = self.check_folder_exists(folder_id=folder_id)

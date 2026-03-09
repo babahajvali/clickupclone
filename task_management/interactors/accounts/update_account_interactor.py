@@ -6,14 +6,11 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import AccountValidationMixin
 
 
-class UpdateAccountInteractor:
+class UpdateAccountInteractor(AccountValidationMixin):
 
     def __init__(self, account_storage: AccountStorageInterface):
+        super().__init__(account_storage=account_storage)
         self.account_storage = account_storage
-
-    @property
-    def account_mixin(self) -> AccountValidationMixin:
-        return AccountValidationMixin(account_storage=self.account_storage)
 
     def update_account(
             self, account_id: str, user_id: str, name: Optional[str],
@@ -32,8 +29,9 @@ class UpdateAccountInteractor:
 
         self._check_update_account_field_properties(
             account_id=account_id, name=name, description=description)
-        self.account_mixin.check_account_is_active(account_id=account_id)
-        self.account_mixin.check_user_is_account_owner(
+        self.check_account_is_active(account_id=account_id)
+        
+        self.check_user_is_account_owner(
             user_id=user_id, account_id=account_id
         )
 
@@ -50,16 +48,12 @@ class UpdateAccountInteractor:
         is_name_provided = name is not None
         is_description_provided = description is not None
 
-        has_no_update_field_properties = not any([
-            is_description_provided,
-            is_name_provided
-        ])
+        has_no_properties_to_update = not (is_name_provided or is_description_provided)
 
-        if has_no_update_field_properties:
+        if has_no_properties_to_update:
             raise NothingToUpdateAccount(account_id=account_id)
 
         if is_name_provided:
-            self.account_mixin.check_account_name_is_not_empty(
-                account_name=name)
-            self.account_mixin.check_account_name_in_db(
+            self.check_account_name_is_not_empty(account_name=name)
+            self.check_account_name_in_db(
                 account_id=account_id, account_name=name)

@@ -6,8 +6,9 @@ from task_management.interactors.storage_interfaces import TaskStorageInterface
 
 class TaskValidationMixin:
 
-    def __init__(self, task_storage: TaskStorageInterface):
+    def __init__(self, task_storage: TaskStorageInterface, **kwargs):
         self.task_storage = task_storage
+        super.__init__(**kwargs)
 
     def check_task_not_deleted(self, task_id: str):
         task_data = self.check_task_exists(task_id=task_id)

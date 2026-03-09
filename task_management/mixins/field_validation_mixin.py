@@ -7,8 +7,9 @@ from task_management.interactors.storage_interfaces import \
 
 class FieldValidationMixin:
 
-    def __init__(self, field_storage: FieldStorageInterface):
+    def __init__(self, field_storage: FieldStorageInterface, **kwargs):
         self.field_storage = field_storage
+        super().__init__(**kwargs)
 
     def check_field_not_deleted(self, field_id: str):
         field_data = self.check_field_exists(

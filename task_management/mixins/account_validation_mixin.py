@@ -9,8 +9,9 @@ from task_management.interactors.storage_interfaces.account_storage_interface im
 
 
 class AccountValidationMixin:
-    def __init__(self, account_storage: AccountStorageInterface):
+    def __init__(self, account_storage: AccountStorageInterface, **kwargs):
         self.account_storage = account_storage
+        super().__init__(**kwargs)
 
     def check_account_is_active(self, account_id: str):
 
@@ -42,7 +43,7 @@ class AccountValidationMixin:
     def check_account_name_in_db(
             self, account_name: str, account_id: Optional[str]):
         is_account_name_exist = self.account_storage.is_account_name_exists(
-            account_name=account_name, account_id=account_id)
+            account_name=account_name, excluded_account_id=account_id)
 
         if is_account_name_exist:
             raise AccountNameAlreadyExists(name=account_name)
