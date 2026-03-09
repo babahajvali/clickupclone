@@ -1,0 +1,8 @@
+{
+  "data": {
+    "setSpaceVisibility": {
+      "__typename": "SpaceNotFoundType",
+      "spaceId": "space_404"
+    }
+  }
+}

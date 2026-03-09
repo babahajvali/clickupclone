@@ -1,7 +1,21 @@
+import pytest
+
+from task_management.decorators import caching_decorators
 from task_management.tests.test_utils import GraphQLBaseTestCase
 
 
-class BaseCreateAccount(GraphQLBaseTestCase):
+class BaseAccountGraphQLTestCase(GraphQLBaseTestCase):
+    @pytest.fixture(autouse=True)
+    def _stub_cache_backend(self, monkeypatch):
+        monkeypatch.setattr(caching_decorators.cache, "get",
+                            lambda *args, **kwargs: None)
+        monkeypatch.setattr(caching_decorators.cache, "set",
+                            lambda *args, **kwargs: True)
+        monkeypatch.setattr(caching_decorators.cache, "delete_pattern",
+                            lambda *args, **kwargs: True)
+
+
+class BaseCreateAccount(BaseAccountGraphQLTestCase):
     QUERY = """
     mutation CreateAccount($params: CreateAccountInputParams!) {
       createAccount(params: $params) {
@@ -34,7 +48,7 @@ class BaseCreateAccount(GraphQLBaseTestCase):
     """
 
 
-class BaseUpdateAccount(GraphQLBaseTestCase):
+class BaseUpdateAccount(BaseAccountGraphQLTestCase):
     QUERY = """
     mutation UpdateAccount($params: UpdateAccountInputParams!) {
       updateAccount(params: $params) {
@@ -75,7 +89,7 @@ class BaseUpdateAccount(GraphQLBaseTestCase):
     """
 
 
-class BaseDeleteAccount(GraphQLBaseTestCase):
+class BaseDeleteAccount(BaseAccountGraphQLTestCase):
     QUERY = """
     mutation DeleteAccount($params: DeleteAccountInputParams!) {
       deleteAccount(params: $params) {
@@ -100,7 +114,7 @@ class BaseDeleteAccount(GraphQLBaseTestCase):
     """
 
 
-class BaseGetAccounts(GraphQLBaseTestCase):
+class BaseGetAccounts(BaseAccountGraphQLTestCase):
     QUERY = """
     query GetAccounts($params: GetAccountsInputParams!) {
       getAccounts(params: $params) {

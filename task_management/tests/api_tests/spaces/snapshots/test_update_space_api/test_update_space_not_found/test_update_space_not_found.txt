@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateSpace": {
+      "__typename": "SpaceNotFoundType",
+      "spaceId": "space_404"
+    }
+  }
+}

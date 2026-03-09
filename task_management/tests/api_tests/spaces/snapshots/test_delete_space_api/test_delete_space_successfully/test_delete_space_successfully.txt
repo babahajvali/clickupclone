@@ -1,0 +1,15 @@
+{
+  "data": {
+    "deleteSpace": {
+      "__typename": "SpaceType",
+      "spaceId": "space_1",
+      "name": "Engineering",
+      "description": "Engineering space",
+      "workspaceId": "workspace_1",
+      "order": 1,
+      "isDeleted": true,
+      "isPrivate": false,
+      "createdBy": "user_1"
+    }
+  }
+}

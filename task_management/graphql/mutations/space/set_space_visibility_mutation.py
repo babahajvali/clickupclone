@@ -53,7 +53,7 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
                 order=result.order,
                 is_deleted=result.is_deleted,
                 is_private=result.is_private,
-                created_by=result.created_by_user_id
+                created_by=result.created_by
             )
 
         except custom_exceptions.SpaceNotFound as e:

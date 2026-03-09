@@ -21,14 +21,14 @@ class SpaceCreationHandler:
 
     @transaction.atomic
     def handle_space_creation(self, space_input: CreateSpaceDTO) -> SpaceDTO:
-        space_data = self._create_space(space_input=space_input)
+        space_dto = self._create_space(space_input=space_input)
 
-        if space_data.is_private:
+        if space_dto.is_private:
             self._create_space_permission_for_user(
-                space_id=space_data.space_id, user_id=space_data.created_by
+                space_id=space_dto.space_id, user_id=space_dto.created_by
             )
 
-        return space_data
+        return space_dto
 
     def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
         space_interactor = CreateSpaceInteractor(

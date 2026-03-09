@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createSpace": {
+      "__typename": "EmptySpaceNameType",
+      "spaceName": "   "
+    }
+  }
+}

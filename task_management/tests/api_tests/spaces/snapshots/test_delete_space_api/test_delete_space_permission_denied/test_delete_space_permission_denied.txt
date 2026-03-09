@@ -1,0 +1,8 @@
+{
+  "data": {
+    "deleteSpace": {
+      "__typename": "ModificationNotAllowedType",
+      "userId": "user_1"
+    }
+  }
+}

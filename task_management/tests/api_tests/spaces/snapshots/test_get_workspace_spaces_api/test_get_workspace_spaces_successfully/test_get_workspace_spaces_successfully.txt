@@ -1,0 +1,29 @@
+{
+  "data": {
+    "getWorkspaceSpaces": {
+      "__typename": "WorkspaceSpacesType",
+      "spaces": [
+        {
+          "spaceId": "space_1",
+          "name": "Engineering",
+          "description": "Engineering space",
+          "workspaceId": "workspace_1",
+          "order": 1,
+          "isDeleted": false,
+          "isPrivate": false,
+          "createdBy": "user_1"
+        },
+        {
+          "spaceId": "space_2",
+          "name": "Engineering",
+          "description": "Engineering space",
+          "workspaceId": "workspace_1",
+          "order": 2,
+          "isDeleted": false,
+          "isPrivate": false,
+          "createdBy": "user_1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "data": {
+    "reorderSpace": {
+      "__typename": "SpaceNotFoundType",
+      "spaceId": "space_404"
+    }
+  }
+}

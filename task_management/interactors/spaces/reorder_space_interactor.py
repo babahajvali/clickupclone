@@ -10,43 +10,35 @@ from task_management.mixins import SpaceValidationMixin, \
     WorkspaceValidationMixin
 
 
-class ReorderSpaceInteractor:
+class ReorderSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
     def __init__(
             self, space_storage: SpaceStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(space_storage=space_storage,
+                         workspace_storage=workspace_storage)
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def space_mixin(self) -> SpaceValidationMixin:
-        return SpaceValidationMixin(space_storage=self.space_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="spaces")
     def reorder_space(
             self, workspace_id: str, space_id: str, order: int, user_id: str) \
             -> SpaceDTO:
-        self._check_space_order_within_range(workspace_id=workspace_id,
-                                             order=order)
-        self.space_mixin.check_space_not_deleted(space_id=space_id)
-        self.workspace_mixin.check_workspace_not_deleted(
-            workspace_id=workspace_id
-        )
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+
+        self.check_workspace_not_deleted(workspace_id=workspace_id)
+        self.check_space_not_deleted(space_id=space_id)
+        self._check_space_order_within_range(
+            workspace_id=workspace_id, order=order)
+        self.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )
 
-        space_data = self.space_storage.get_space(space_id=space_id)
-        current_order = space_data.order
+        space_dto = self.space_storage.get_space(space_id=space_id)
+        current_order = space_dto.order
 
         if current_order == order:
-            return space_data
+            return space_dto
 
         return self._reorder_spaces_and_update_current(
             space_id=space_id,

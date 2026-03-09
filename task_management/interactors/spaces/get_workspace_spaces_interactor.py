@@ -5,22 +5,18 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import WorkspaceValidationMixin
 
 
-class GetWorkspaceSpacesInteractor:
+class GetWorkspaceSpacesInteractor(WorkspaceValidationMixin):
 
     def __init__(
             self, space_storage: SpaceStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(workspace_storage=workspace_storage)
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
-
     @interactor_cache(cache_name="spaces", timeout=30 * 60)
     def get_workspace_spaces(self, workspace_id: str) -> list[SpaceDTO]:
-        self.workspace_mixin.check_workspace_not_deleted(
+        self.check_workspace_not_deleted(
             workspace_id=workspace_id
         )
 

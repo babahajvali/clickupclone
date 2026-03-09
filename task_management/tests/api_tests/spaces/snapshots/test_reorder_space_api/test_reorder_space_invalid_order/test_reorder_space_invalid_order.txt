@@ -1,0 +1,8 @@
+{
+  "data": {
+    "reorderSpace": {
+      "__typename": "InvalidOrderType",
+      "order": 0
+    }
+  }
+}
