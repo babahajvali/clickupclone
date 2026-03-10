@@ -22,7 +22,7 @@ class TestFieldValueStorage:
                              created_by=user)
         FieldValueFactory(task=task, field=field, value={"text": "old value"},
                           created_by=user)
-        field_value_data = UpdateFieldValueDTO(
+        field_value_dto = UpdateFieldValueDTO(
             task_id=str(task_id),
             field_id=str(field_id),
             value="new value"
@@ -31,7 +31,7 @@ class TestFieldValueStorage:
 
         # Act
         result = storage.update_or_create_task_field_value(
-            field_value_data=field_value_data, user_id=user.user_id)
+            field_value_dto=field_value_dto, user_id=user.user_id)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -54,7 +54,7 @@ class TestFieldValueStorage:
                      created_by=user)
         FieldFactory(field_id=field_id_2, template=template,
                      created_by=user)
-        bulk_field_values = [
+        create_field_value_dtos = [
             CreateFieldValueDTO(
                 task_id=str(task_id_1),
                 field_id=str(field_id_1),
@@ -78,7 +78,7 @@ class TestFieldValueStorage:
 
         # Act
         storage.create_bulk_field_values(
-            create_bulk_field_values=bulk_field_values)
+            create_field_value_dtos=create_field_value_dtos)
 
         # Assert
         from task_management.models import TaskFieldValue
@@ -99,7 +99,7 @@ class TestFieldValueStorage:
         TaskFactory(task_id=task_id, list=list_obj, created_by=user)
         FieldFactory(field_id=field_id, template=template,
                      created_by=user)
-        bulk_field_values = [
+        create_field_value_dtos = [
             CreateFieldValueDTO(
                 task_id=str(task_id),
                 field_id=str(field_id),
@@ -111,7 +111,7 @@ class TestFieldValueStorage:
 
         # Act
         storage.create_bulk_field_values(
-            create_bulk_field_values=bulk_field_values)
+            create_field_value_dtos=create_field_value_dtos)
 
         # Assert
         from task_management.models import TaskFieldValue

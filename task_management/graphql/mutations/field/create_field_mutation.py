@@ -39,7 +39,7 @@ class CreateFieldMutation(graphene.Mutation):
 
         try:
             field_type = FieldTypeEnum(params.field_type)
-            create_field_data = CreateFieldDTO(
+            create_field_dto = CreateFieldDTO(
                 field_type=field_type,
                 field_name=params.field_name,
                 description=params.description,
@@ -50,7 +50,7 @@ class CreateFieldMutation(graphene.Mutation):
             )
 
             result = interactor.create_field(
-                field_data=create_field_data)
+                create_field_dto=create_field_dto)
 
             return FieldType(
                 field_id=result.field_id,

@@ -41,13 +41,13 @@ class TaskCreationHandler:
     def _create_default_field_values_at_task(
             self, task_id: str, list_id: str, created_by: str):
         template_fields = self._get_template_fields_by_list_id(list_id=list_id)
-        field_values = self._build_default_field_values(
+        field_value_dtos = self._build_default_field_values(
             task_id=task_id,
             created_by=created_by,
             template_fields=template_fields
         )
         return self.field_storage.create_bulk_field_values(
-            create_bulk_field_values=field_values)
+            create_field_value_dtos=field_value_dtos)
 
     def _get_template_fields_by_list_id(self, list_id: str):
         template_id = self.list_storage.get_template_id_by_list_id(

@@ -44,7 +44,9 @@ class SetFieldValueMutation(graphene.Mutation):
 
         try:
             result = interactor.set_task_field_response(
-                set_value_data=update_data, user_id=info.context.user_id)
+                update_field_value_dto=update_data,
+                user_id=info.context.user_id,
+            )
 
             return FieldValueType(
                 id=result.id,

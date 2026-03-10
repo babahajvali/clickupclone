@@ -55,4 +55,4 @@ class TemplateCreationHandler:
                 created_by_user_id=user_id
             )
             fixed_fields.append(create_field_dto)
-        self.field_storage.create_bulk_fields(fields_data=fixed_fields)
+        self.field_storage.create_bulk_fields(create_field_dtos=fixed_fields)

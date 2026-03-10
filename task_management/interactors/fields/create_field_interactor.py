@@ -47,36 +47,45 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
         return FieldConfigValidator()
 
     @invalidate_interactor_cache(cache_name="fields")
-    def create_field(self, field_data: CreateFieldDTO) -> FieldDTO:
+    def create_field(self, create_field_dto: CreateFieldDTO) -> FieldDTO:
         """Create a new custom field for the target template."""
-        self._check_create_field_input(field_data=field_data)
+        self._check_create_field_input(create_field_dto=create_field_dto)
         self._check_user_has_edit_access_to_template(
-            template_id=field_data.template_id,
-            user_id=field_data.created_by_user_id
+            template_id=create_field_dto.template_id,
+            user_id=create_field_dto.created_by_user_id,
         )
 
         last_field_order_in_template = (
             self.field_storage.get_last_field_order_in_template(
-                template_id=field_data.template_id))
+                template_id=create_field_dto.template_id
+            )
+        )
 
         return self.field_storage.create_field(
-            create_field_data=field_data,
-            order=last_field_order_in_template + 1)
+            create_field_dto=create_field_dto,
+            order=last_field_order_in_template + 1,
+        )
 
-    def _check_create_field_input(self, field_data: CreateFieldDTO):
+    def _check_create_field_input(self, create_field_dto: CreateFieldDTO):
         self.check_field_name_not_empty(
-            field_name=field_data.field_name)
-        self._check_invalid_field_type(field_type=field_data.field_type.value)
+            field_name=create_field_dto.field_name
+        )
+        self._check_invalid_field_type(
+            field_type=create_field_dto.field_type.value
+        )
         self.field_config_validator.check_field_config(
-            config=field_data.config, field_type=field_data.field_type)
+            config=create_field_dto.config,
+            field_type=create_field_dto.field_type,
+        )
         self.check_field_name_not_exist_in_template(
-            field_name=field_data.field_name,
-            template_id=field_data.template_id,
+            field_name=create_field_dto.field_name,
+            template_id=create_field_dto.template_id,
             field_id=None
         )
 
         self.check_template_exists(
-            template_id=field_data.template_id)
+            template_id=create_field_dto.template_id
+        )
 
     def _check_user_has_edit_access_to_template(
             self, template_id: str, user_id: str):

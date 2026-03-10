@@ -35,7 +35,7 @@ class UpdateFieldMutation(graphene.Mutation):
         )
 
         try:
-            update_field_data = UpdateFieldDTO(
+            update_field_dto = UpdateFieldDTO(
                 field_id=params.field_id,
                 description=params.description,
                 field_name=params.field_name,
@@ -44,7 +44,7 @@ class UpdateFieldMutation(graphene.Mutation):
             )
 
             result = interactor.update_field(
-                update_field_data=update_field_data,
+                update_field_dto=update_field_dto,
                 user_id=info.context.user_id
             )
 

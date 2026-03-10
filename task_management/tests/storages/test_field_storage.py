@@ -27,7 +27,7 @@ class TestFieldStorage:
         list_obj = ListFactory(list_id=list_id)
         TemplateFactory(template_id=template_id, list=list_obj)
         UserFactory(user_id=user_id)
-        create_field_data = CreateFieldDTO(
+        create_field_dto = CreateFieldDTO(
             field_name="Test Field",
             description="Test description",
             field_type=FieldType.TEXT,
@@ -39,7 +39,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.create_field(create_field_data=create_field_data,
+        result = storage.create_field(create_field_dto=create_field_dto,
                                       order=1)
 
         # Assert
@@ -76,7 +76,7 @@ class TestFieldStorage:
                      created_by=user)
         FieldFactory(field_id=field2_id, template=template, order=2,
                      created_by=user)
-        create_field_data = CreateFieldDTO(
+        create_field_dto = CreateFieldDTO(
             field_name="New Field",
             description="New fields description",
             field_type=FieldType.NUMBER,
@@ -88,7 +88,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.create_field(create_field_data=create_field_data,
+        result = storage.create_field(create_field_dto=create_field_dto,
                                       order=1)
 
         # Assert
@@ -204,7 +204,7 @@ class TestFieldStorage:
             field_name="Old Name",
             description="Old description"
         )
-        update_field_data = UpdateFieldDTO(
+        update_field_dto = UpdateFieldDTO(
             field_id=str(field_id),
             field_name="New Name",
             description="New description",
@@ -214,7 +214,7 @@ class TestFieldStorage:
         storage = FieldStorage()
 
         # Act
-        result = storage.update_field(update_field_data=update_field_data)
+        result = storage.update_field(update_field_dto=update_field_dto)
 
         # Assert
         snapshot.assert_match(repr(result), "test_update_field_success.txt")

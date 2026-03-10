@@ -10,7 +10,7 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def create_field(
-            self, create_field_data: CreateFieldDTO, order: int) -> FieldDTO:
+            self, create_field_dto: CreateFieldDTO, order: int) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -29,7 +29,7 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def update_field(
-            self, update_field_data: UpdateFieldDTO) -> FieldDTO:
+            self, update_field_dto: UpdateFieldDTO) -> FieldDTO:
         pass
 
     @abstractmethod
@@ -65,18 +65,18 @@ class FieldStorageInterface(ABC):
 
     @abstractmethod
     def create_bulk_fields(
-            self, fields_data: list[CreateFieldDTO]) -> list[FieldDTO]:
+            self, create_field_dtos: list[CreateFieldDTO]) -> list[FieldDTO]:
         pass
 
     @abstractmethod
     def update_or_create_task_field_value(
-            self, field_value_data: UpdateFieldValueDTO, user_id: str) \
+            self, field_value_dto: UpdateFieldValueDTO, user_id: str) \
             -> TaskFieldValueDTO:
         pass
 
     @abstractmethod
     def create_bulk_field_values(
-            self, create_bulk_field_values: list[CreateFieldValueDTO]):
+            self, create_field_value_dtos: list[CreateFieldValueDTO]):
         pass
 
     @abstractmethod
