@@ -85,13 +85,13 @@ class DeletedFieldType(graphene.ObjectType):
 class InvalidFieldConfigType(graphene.ObjectType):
     field_type = graphene.String(required=True)
     invalid_keys = graphene.List(graphene.String)
-    message = graphene.String()
+    message = graphene.String(required=True)
 
 
 class InvalidFieldDefaultValueType(graphene.ObjectType):
     field_type = graphene.String(required=True)
     default_value = graphene.String()
-    message = graphene.String()
+    message = graphene.String(required=True)
 
 
 class TextDefaultValueExceedsMaxLengthType(graphene.ObjectType):

@@ -78,7 +78,7 @@ class ReorderFieldInteractor(
     def _get_field_for_template(
             self, field_id: str, template_id: str) -> FieldDTO:
         field_dto = self.field_storage.get_fields(field_ids=[field_id])[0]
-        if field_dto.template_id != template_id:
+        if str(field_dto.template_id) != template_id:
             raise FieldNotBelongsToTemplate(
                 field_id=field_id, template_id=template_id)
         return field_dto
