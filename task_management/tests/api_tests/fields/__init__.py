@@ -92,6 +92,10 @@ class BaseCreateField(BaseFieldGraphQLTestCase):
           __typename
           fieldType
         }
+        ... on EmptyDropdownOptionsType {
+          __typename
+          emptyDropdownOptionsMessage: message
+        }
         ... on TextDefaultValueExceedsMaxLengthType {
           __typename
           textDefaultMessage: message
@@ -143,11 +147,6 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
           __typename
           fieldId
         }
-        ... on FieldNotBelongsToTemplateType {
-          __typename
-          fieldId
-          templateId
-        }
         ... on DeletedFieldType {
           __typename
           fieldId
@@ -167,6 +166,10 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
         ... on DropdownOptionsMissingType {
           __typename
           fieldType
+        }
+        ... on EmptyDropdownOptionsType {
+          __typename
+          emptyDropdownOptionsMessage: message
         }
         ... on InvalidFieldConfigType {
           __typename

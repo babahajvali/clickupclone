@@ -146,8 +146,8 @@ class MaxValueLessThanMinValue(Exception):
 
 
 class DropdownOptionsEmpty(Exception):
-    def __init__(self, field_type: str):
-        self.field_type = field_type
+    def __init__(self, message: str):
+        self.message = message
 
 
 class TextDefaultValueExceedsMaxLength(Exception):
@@ -183,6 +183,14 @@ class DropdownDefaultValueNotInOptions(Exception):
 
 
 class DuplicateDropdownOptions(Exception):
+    def __init__(self, message: str | None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class EmptyDropdownOptions(Exception):
     def __init__(self, message: str | None):
         self.message = message
 

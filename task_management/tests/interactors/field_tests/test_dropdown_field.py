@@ -6,6 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedFieldConfigKeys,
     DropdownOptionNotAllowed,
     EmptyDropdownConfig,
+    EmptyDropdownOptions,
     DropdownDefaultValueNotInOptions,
 )
 from task_management.exceptions.enums import FieldConfig
@@ -58,6 +59,24 @@ class TestDropdownField:
     def test_duplicate_options(self):
         config = {
             FieldConfig.OPTIONS.value: ["A", "A"],
+            FieldConfig.DEFAULT.value: "A"
+        }
+
+        with pytest.raises(DuplicateDropdownOptions):
+            self.dropdown.validate_config(config)
+
+    def test_empty_options(self):
+        config = {
+            FieldConfig.OPTIONS.value: ["A", "   "],
+            FieldConfig.DEFAULT.value: "A"
+        }
+
+        with pytest.raises(EmptyDropdownOptions):
+            self.dropdown.validate_config(config)
+
+    def test_normalized_duplicate_options(self):
+        config = {
+            FieldConfig.OPTIONS.value: ["  A  ", " A"],
             FieldConfig.DEFAULT.value: "A"
         }
 

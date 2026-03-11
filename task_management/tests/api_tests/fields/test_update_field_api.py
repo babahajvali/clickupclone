@@ -423,3 +423,26 @@ class TestUpdateFieldAPI(BaseUpdateField):
             snapshot=snapshot,
             context=SimpleNamespace(user_id=USER_ID),
         )
+
+    def test_update_field_dropdown_empty_option(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
+        field_data = get_field_mock(mocker)
+        field_data.return_value = [create_field_dto(
+            field_type=FieldType.DROPDOWN)]
+
+        variables = {
+            "params": {
+                "fieldId": FIELD_ID,
+                "config": json.dumps({
+                    "options": ["Low", "   "],
+                    "default": "Low",
+                }),
+            }
+        }
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id=USER_ID),
+        )

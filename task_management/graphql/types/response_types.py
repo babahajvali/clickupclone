@@ -20,7 +20,8 @@ from task_management.graphql.types.error_types import \
     EmptyAccountNameExistsType, NothingToUpdateAccountType, \
     InvalidAccountIdsType, UserHaveAlreadyListPermissionType, \
     NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
-    DropdownOptionsMissingType, UserNotWorkspaceMemberType, DeletedFieldType, \
+    DropdownOptionsMissingType, EmptyDropdownOptionsType, \
+    UserNotWorkspaceMemberType, DeletedFieldType, \
     FieldNotBelongsToTemplateType, \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
@@ -110,7 +111,8 @@ class CreateFieldResponse(graphene.Union):
             ModificationNotAllowedType,
             EmptyFieldNameType,
             MissingFieldConfigType,
-            DropdownOptionsMissingType
+            DropdownOptionsMissingType,
+            EmptyDropdownOptionsType,
         )
 
 
@@ -134,6 +136,7 @@ class UpdateFieldResponse(graphene.Union):
             EmptyFieldNameType,
             MissingFieldConfigType,
             DropdownOptionsMissingType,
+            EmptyDropdownOptionsType,
             UserNotWorkspaceMemberType
         )
 

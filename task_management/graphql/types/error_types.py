@@ -34,7 +34,11 @@ class MissingFieldConfigType(graphene.ObjectType):
 
 
 class DropdownOptionsMissingType(graphene.ObjectType):
-    field_type = graphene.String(required=True)
+    message = graphene.String(required=True)
+
+
+class EmptyDropdownOptionsType(graphene.ObjectType):
+    message = graphene.String(required=True)
 
 
 class ModificationNotAllowedType(graphene.ObjectType):

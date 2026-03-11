@@ -6,6 +6,7 @@ from task_management.graphql.types.error_types import FieldNotFoundType, \
     ModificationNotAllowedType, InvalidFieldConfigType, \
     NothingToUpdateFieldType, DeletedFieldType, \
     EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
+    EmptyDropdownOptionsType, \
     UserNotWorkspaceMemberType, TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
     DropdownDefaultValueNotInOptionsType, DuplicateDropdownOptionsType, \
@@ -78,7 +79,10 @@ class UpdateFieldMutation(graphene.Mutation):
             return MissingFieldConfigType(field_type=e.field_type)
 
         except custom_exceptions.DropdownOptionsEmpty as e:
-            return DropdownOptionsMissingType(field_type=e.field_type)
+            return DropdownOptionsMissingType(message=e.message)
+
+        except custom_exceptions.EmptyDropdownOptions as e:
+            return EmptyDropdownOptionsType(message=e.message)
 
         except custom_exceptions.UserNotWorkspaceMember as e:
             return UserNotWorkspaceMemberType(user_id=e.user_id)

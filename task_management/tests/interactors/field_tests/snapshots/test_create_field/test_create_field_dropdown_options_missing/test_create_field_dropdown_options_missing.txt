@@ -1,1 +1,1 @@
-DropdownOptionsEmpty()
+'Dropdown options must not be empty'

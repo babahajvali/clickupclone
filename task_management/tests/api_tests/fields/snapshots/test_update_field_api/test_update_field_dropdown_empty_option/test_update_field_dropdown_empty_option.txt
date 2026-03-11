@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "EmptyDropdownOptionsType",
+      "emptyDropdownOptionsMessage": "Dropdown options must not contain empty values"
+    }
+  }
+}

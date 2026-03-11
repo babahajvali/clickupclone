@@ -10,6 +10,7 @@ from task_management.exceptions.custom_exceptions import (
     FieldNotFound,
     DeletedFieldException,
     EmptyFieldName,
+    EmptyDropdownOptions,
     UnexpectedFieldConfigKeys,
 )
 from task_management.exceptions.enums import FieldType, Role
@@ -247,4 +248,26 @@ class TestUpdateFieldInteractor:
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_invalid_config_keys.txt",
+        )
+
+    def test_update_field_dropdown_empty_option(self, snapshot):
+        # Arrange
+        self._setup_update_field_dependencies()
+        self.field_storage.get_fields.return_value = [replace(
+            self._get_field_dto(),
+            field_type=FieldType.DROPDOWN,
+            config={"options": ["Low", "Medium"]},
+        )]
+        dto = self._get_update_dto(
+            config={"options": ["Low", "   "], "default": "Low"}
+        )
+
+        # Act
+        with pytest.raises(EmptyDropdownOptions) as exc:
+            self.interactor.update_field(dto, user_id="user_1")
+
+        self.field_storage.update_field.assert_not_called()
+        snapshot.assert_match(
+            repr(exc.value),
+            "test_update_field_dropdown_empty_option.txt",
         )

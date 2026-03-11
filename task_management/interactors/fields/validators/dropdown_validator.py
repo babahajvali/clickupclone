@@ -7,6 +7,7 @@ from task_management.exceptions.custom_exceptions import (
     DropdownOptionNotAllowed,
     DropdownOptionsEmpty,
     EmptyDropdownConfig,
+    EmptyDropdownOptions,
     UnexpectedFieldConfigKeys,
 )
 from task_management.exceptions.enums import FieldConfig, FieldType
@@ -19,6 +20,7 @@ class DropdownValidator:
         self._validate_unexpected_config_keys(config)
         options = self._validate_options_not_empty(config)
         self._validate_options_are_unique(options)
+        self._validate_empty_options(options)
         self._validate_default_value_in_options(config, options)
 
     @staticmethod
@@ -39,16 +41,28 @@ class DropdownValidator:
         options = config.get(FieldConfig.OPTIONS.value)
 
         if not options:
-            raise DropdownOptionsEmpty(field_type=FieldType.DROPDOWN.value)
+            raise DropdownOptionsEmpty(
+                message="Dropdown options must not be empty"
+            )
 
         return options
 
     @staticmethod
     def _validate_options_are_unique(options: list[Any]) -> None:
-        normalized_options = [str(option).strip() for option in options]
-        if len(normalized_options) != len(set(normalized_options)):
+        unique_options = [str(option).strip() for option in options]
+        if len(unique_options) != len(set(unique_options)):
             raise DuplicateDropdownOptions(
                 message="Dropdown options must be unique"
+            )
+
+    @staticmethod
+    def _validate_empty_options(options: list[Any]) -> None:
+        empty_options = [
+            option for option in options if str(option).strip() == ""
+        ]
+        if empty_options:
+            raise EmptyDropdownOptions(
+                message="Dropdown options must not contain empty values"
             )
 
     @staticmethod
