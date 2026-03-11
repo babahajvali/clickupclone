@@ -60,7 +60,7 @@ class FieldStorage(FieldStorageInterface):
 
         field_objs = Field.objects.filter(field_id__in=field_ids)
         if not field_objs:
-            return []
+            return None
         return [self._convert_to_field_dto(field_db_object=field_data) for
                 field_data in field_objs]
 

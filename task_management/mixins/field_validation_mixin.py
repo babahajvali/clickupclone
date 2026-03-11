@@ -23,12 +23,12 @@ class FieldValidationMixin:
             raise DeletedFieldException(field_id=field_id)
 
     def check_field_exists(self, field_id: str) -> FieldDTO:
-        field_dto = self.field_storage.get_fields(field_ids=[field_id])[0]
+        fields_dto = self.field_storage.get_fields(field_ids=[field_id])
 
-        if not field_dto:
+        if not fields_dto:
             raise FieldNotFound(field_id=field_id)
 
-        return field_dto
+        return fields_dto[0]
 
     def check_field_name_not_exist_in_template(
             self, field_name: str, template_id: str, field_id: Optional[str]):
