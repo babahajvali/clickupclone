@@ -191,7 +191,7 @@ class TestReorderFieldInteractor:
     def test_reorder_field_not_found(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True
-        self.field_storage.get_fields.return_value = [None]
+        self.field_storage.get_fields.return_value = []
 
         # Act
         with pytest.raises(FieldNotFound) as exc:

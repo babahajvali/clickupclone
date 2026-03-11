@@ -43,6 +43,10 @@ class BaseFieldGraphQLTestCase(GraphQLBaseTestCase):
             "task_management.interactors.fields.reorder_field_interactor.redis_lock",
             _dummy_redis_lock,
         )
+        monkeypatch.setattr(
+            "task_management.interactors.fields.delete_field_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
 
 
 class BaseCreateField(BaseFieldGraphQLTestCase):
@@ -74,6 +78,10 @@ class BaseCreateField(BaseFieldGraphQLTestCase):
           __typename
           userId
         }
+        ... on ResourceLockedType {
+          __typename
+          message
+        }
         ... on InvalidFieldConfigType {
           __typename
           fieldType
@@ -90,7 +98,7 @@ class BaseCreateField(BaseFieldGraphQLTestCase):
         }
         ... on DropdownOptionsMissingType {
           __typename
-          fieldType
+          dropdownOptionsMissingMessage: message
         }
         ... on EmptyDropdownOptionsType {
           __typename
@@ -165,7 +173,7 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
         }
         ... on DropdownOptionsMissingType {
           __typename
-          fieldType
+          dropdownOptionsMissingMessage: message
         }
         ... on EmptyDropdownOptionsType {
           __typename
@@ -210,6 +218,10 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
           __typename
           userId
         }
+        ... on ResourceLockedType {
+          __typename
+          message
+        }
         ... on UserNotWorkspaceMemberType {
           __typename
           userId
@@ -243,6 +255,10 @@ class BaseDeleteField(BaseFieldGraphQLTestCase):
         ... on ModificationNotAllowedType {
           __typename
           userId
+        }
+        ... on ResourceLockedType {
+          __typename
+          message
         }
         ... on UserNotWorkspaceMemberType {
           __typename
@@ -290,6 +306,10 @@ class BaseReorderField(BaseFieldGraphQLTestCase):
         ... on ModificationNotAllowedType {
           __typename
           userId
+        }
+        ... on ResourceLockedType {
+          __typename
+          message
         }
         ... on InvalidOrderType {
           __typename

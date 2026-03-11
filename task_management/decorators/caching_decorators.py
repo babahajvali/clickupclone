@@ -2,8 +2,11 @@ import uuid
 from contextlib import contextmanager
 from functools import wraps
 
-import redis
 from django.core.cache import cache
+from django_redis import get_redis_connection
+
+from task_management.exceptions.custom_exceptions import \
+    ResourceLockedException
 
 
 def interactor_cache(cache_name: str, timeout=60):
@@ -49,11 +52,20 @@ def invalidate_interactor_cache(cache_name: str):
     return decorator
 
 
-redis_client = redis.Redis(host="localhost", port=6379, db=0)
+# redis_client = redis.Redis(host="localhost", port=6379, db=0)
+
+unlock_script = """
+                if redis.call("get", KEYS[1]) == ARGV[1] then
+                    return redis.call("del", KEYS[1])
+                else
+                    return 0
+                end
+                """
 
 
 @contextmanager
 def redis_lock(lock_key: str, timeout: int = 10):
+    redis_client = get_redis_connection("default")
     lock_value = str(uuid.uuid4())
 
     acquired = redis_client.set(
@@ -64,11 +76,10 @@ def redis_lock(lock_key: str, timeout: int = 10):
     )
 
     if not acquired:
-        raise Exception("Resource is currently locked. Try again.")
+        raise ResourceLockedException(lock_key=lock_key)
 
     try:
         yield
     finally:
-        value = redis_client.get(lock_key)
-        if value and value.decode() == lock_value:
-            redis_client.delete(lock_key)
+
+        redis_client.eval(unlock_script, 1, lock_key, lock_value)

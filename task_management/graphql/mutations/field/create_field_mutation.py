@@ -4,7 +4,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.exceptions.enums import FieldType as FieldTypeEnum
 from task_management.graphql.types.error_types import TemplateNotFoundType, \
     UnsupportedFieldTypeType, FieldNameAlreadyExistsType, \
-    ModificationNotAllowedType, InvalidFieldConfigType, \
+    ModificationNotAllowedType, ResourceLockedType, InvalidFieldConfigType, \
     EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, EmptyDropdownOptionsType, \
     TextDefaultValueExceedsMaxLengthType, \
@@ -78,6 +78,9 @@ class CreateFieldMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.ResourceLockedException as e:
+            return ResourceLockedType(message=e.message)
 
         except custom_exceptions.UnexpectedFieldConfigKeys as e:
             return InvalidFieldConfigType(

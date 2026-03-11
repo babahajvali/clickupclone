@@ -140,7 +140,7 @@ class TestReorderFieldAPI(BaseReorderField):
     def test_reorder_field_not_found(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = [None]
+        field_data.return_value = []
 
         variables = {"params": {"fieldId": "field_404", "templateId": "tpl_1",
                                 "newOrder": 2}}

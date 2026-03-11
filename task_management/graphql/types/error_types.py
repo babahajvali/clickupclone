@@ -49,6 +49,10 @@ class UserNotWorkspaceMemberType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
+class ResourceLockedType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
 class NothingToUpdateFieldType(graphene.ObjectType):
     field_id = graphene.String(required=True)
 

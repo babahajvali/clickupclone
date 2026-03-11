@@ -3,7 +3,7 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
     FieldNameAlreadyExistsType, \
-    ModificationNotAllowedType, InvalidFieldConfigType, \
+    ModificationNotAllowedType, ResourceLockedType, InvalidFieldConfigType, \
     NothingToUpdateFieldType, DeletedFieldType, \
     EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
     EmptyDropdownOptionsType, \
@@ -89,6 +89,9 @@ class UpdateFieldMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.ResourceLockedException as e:
+            return ResourceLockedType(message=e.message)
 
         except custom_exceptions.UnexpectedFieldConfigKeys as e:
             return InvalidFieldConfigType(

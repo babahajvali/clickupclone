@@ -22,7 +22,7 @@ from task_management.graphql.types.error_types import \
     NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, EmptyDropdownOptionsType, \
     UserNotWorkspaceMemberType, DeletedFieldType, \
-    FieldNotBelongsToTemplateType, \
+    FieldNotBelongsToTemplateType, ResourceLockedType, \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
     EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
@@ -109,6 +109,7 @@ class CreateFieldResponse(graphene.Union):
             DuplicateDropdownOptionsType,
             MaxValueLessThanMinValueType,
             ModificationNotAllowedType,
+            ResourceLockedType,
             EmptyFieldNameType,
             MissingFieldConfigType,
             DropdownOptionsMissingType,
@@ -131,6 +132,7 @@ class UpdateFieldResponse(graphene.Union):
             DuplicateDropdownOptionsType,
             MaxValueLessThanMinValueType,
             NothingToUpdateFieldType,
+            ResourceLockedType,
             FieldNameAlreadyExistsType,
             DeletedFieldType,
             EmptyFieldNameType,
@@ -711,6 +713,7 @@ class ReorderFieldResponse(graphene.Union):
             FieldNotBelongsToTemplateType,
             TemplateNotFoundType,
             ModificationNotAllowedType,
+            ResourceLockedType,
             InvalidOrderType,
             UserNotWorkspaceMemberType,
             DeletedFieldType
@@ -723,6 +726,7 @@ class DeleteFieldResponse(graphene.Union):
             FieldType,
             FieldNotFoundType,
             ModificationNotAllowedType,
+            ResourceLockedType,
             UserNotWorkspaceMemberType
         )
 

@@ -517,3 +517,15 @@ class DropdownOptionNotAllowed(Exception):
 
     def __str__(self):
         return self.message
+
+
+class ResourceLockedException(Exception):
+    def __init__(self, lock_key: str):
+        self.lock_key = lock_key
+        self.message = (
+            "This resource is currently being modified. "
+            "Please try again in a moment."
+        )
+
+    def __str__(self):
+        return self.message

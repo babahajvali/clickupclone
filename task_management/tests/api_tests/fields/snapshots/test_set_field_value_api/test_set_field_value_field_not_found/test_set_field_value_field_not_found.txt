@@ -1,8 +1,17 @@
 {
-  "data": {
-    "updateFieldValue": {
-      "__typename": "FieldNotFoundType",
-      "fieldId": "field_404"
+  "errors": [
+    {
+      "message": "'NoneType' object has no attribute 'is_deleted'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "updateFieldValue"
+      ]
     }
-  }
+  ],
+  "data": null
 }

@@ -1,17 +1,8 @@
 {
-  "errors": [
-    {
-      "message": "NumberValidator.validate_value() missing 1 required positional argument: 'self'",
-      "locations": [
-        {
-          "line": 3,
-          "column": 7
-        }
-      ],
-      "path": [
-        "updateFieldValue"
-      ]
+  "data": {
+    "updateFieldValue": {
+      "__typename": "NumberValueExceedsMaximumType",
+      "message": "Number must not exceed 5"
     }
-  ],
-  "data": null
+  }
 }

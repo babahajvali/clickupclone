@@ -115,7 +115,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_not_found(self, snapshot, mocker):
         field_data = get_field_mock(mocker)
-        field_data.return_value = [None]
+        field_data.return_value = []
 
         variables = {
             "params": {

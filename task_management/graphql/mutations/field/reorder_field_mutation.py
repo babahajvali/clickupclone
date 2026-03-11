@@ -3,8 +3,8 @@ import graphene
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import FieldNotFoundType, \
     FieldNotBelongsToTemplateType, TemplateNotFoundType, \
-    ModificationNotAllowedType, InvalidOrderType, DeletedFieldType, \
-    UserNotWorkspaceMemberType
+    ModificationNotAllowedType, ResourceLockedType, InvalidOrderType, \
+    DeletedFieldType, UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import ReorderFieldInputParams
 from task_management.graphql.types.response_types import ReorderFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -70,6 +70,9 @@ class ReorderFieldMutation(graphene.Mutation):
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+
+        except custom_exceptions.ResourceLockedException as e:
+            return ResourceLockedType(message=e.message)
 
         except custom_exceptions.InvalidOrder as e:
             return InvalidOrderType(order=e.order)

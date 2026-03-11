@@ -89,7 +89,7 @@ class TestDeleteFieldInteractor:
     def test_delete_field_not_found(self, snapshot):
         # Arrange
         self._setup_delete_field_dependencies(field_data=None)
-        self.field_storage.get_fields.return_value = [None]
+        self.field_storage.get_fields.return_value = []
 
         # Act
         with pytest.raises(FieldNotFound) as exc:

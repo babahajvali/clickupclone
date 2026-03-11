@@ -2,7 +2,7 @@
   "data": {
     "createField": {
       "__typename": "DropdownOptionsMissingType",
-      "fieldType": "DROPDOWN"
+      "dropdownOptionsMissingMessage": "Dropdown options must not be empty"
     }
   }
 }
