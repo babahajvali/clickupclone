@@ -2,11 +2,11 @@ from unittest.mock import create_autospec, patch
 
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
+from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
+    AddSpacePermissionForUserInteractor,
+)
 from task_management.interactors.spaces.space_creation_handler import (
     SpaceCreationHandler,
-)
-from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
-    AddSpacePermissionForUser,
 )
 from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
@@ -52,12 +52,12 @@ class TestSpaceCreationHandler:
         ) as create_space, patch.object(
             self.handler, "_create_space_permission_for_user"
         ) as create_permission:
-            result = self.handler.handle_space_creation(space_input=dto)
+            result = self.handler.handle_space_creation(space_input_dto=dto)
 
         snapshot.assert_match(
             repr(result), "handle_space_creation_public_success.txt"
         )
-        create_space.assert_called_once_with(space_input=dto)
+        create_space.assert_called_once_with(create_space_dto=dto)
         create_permission.assert_not_called()
 
     def test_handle_space_creation_private_calls_permission(self, snapshot):
@@ -75,28 +75,29 @@ class TestSpaceCreationHandler:
         ) as create_space, patch.object(
             self.handler, "_create_space_permission_for_user"
         ) as create_permission:
-            result = self.handler.handle_space_creation(space_input=dto)
+            result = self.handler.handle_space_creation(space_input_dto=dto)
 
         snapshot.assert_match(
             repr(result), "handle_space_creation_private_success.txt"
         )
-        create_space.assert_called_once_with(space_input=dto)
+        create_space.assert_called_once_with(create_space_dto=dto)
         create_permission.assert_called_once_with(
             space_id="space_1", user_id="user_1"
         )
 
     def test_create_space_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-                AddSpacePermissionForUser,
+                AddSpacePermissionForUserInteractor,
                 "add_user_for_space_permission"
         ) as add_space_permission:
-
             self.handler._create_space_permission_for_user(
                 space_id="space_1", user_id="user_1"
             )
 
         add_space_permission.assert_called_once()
-        called_user_data = add_space_permission.call_args.kwargs["user_data"]
+        called_user_data = add_space_permission.call_args.kwargs[
+            "create_space_permission_dto"
+        ]
 
         snapshot.assert_match(
             repr(called_user_data),

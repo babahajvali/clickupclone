@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from contextlib import nullcontext
 
 import pytest
 
@@ -29,6 +30,14 @@ def get_last_order_mock(mocker):
 def create_space_mock(mocker):
     return mocker.patch(
         "task_management.storages.space_storage.SpaceStorage.create_space"
+    )
+
+
+def create_space_lock_mock(mocker):
+    return mocker.patch(
+        "task_management.interactors.spaces.create_space_interactor."
+        "CreateSpaceInteractor._get_create_space_lock",
+        return_value=nullcontext(),
     )
 
 
@@ -75,6 +84,7 @@ class TestCreateSpaceAPI(BaseCreateSpace):
 
         get_workspace_member = get_workspace_member_mock(mocker)
         get_workspace_member.return_value = make_workspace_member()
+        create_space_lock_mock(mocker)
 
     def test_create_space_successfully(self, snapshot, mocker):
         self._setup_common(mocker)

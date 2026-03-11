@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -63,19 +64,28 @@ class TestUpdateSpaceInteractor:
     def test_update_space_success(self, snapshot):
         self._setup_dependencies()
 
-        result = self.interactor.update_space(
-            space_id="space_1",
-            user_id="user_1",
-            name="Updated",
-            description="Updated Desc",
-        )
+        with patch.object(
+                UpdateSpaceInteractor,
+                "_get_update_space_lock",
+                return_value=nullcontext(),
+        ):
+            result = self.interactor.update_space(
+                space_id="space_1",
+                user_id="user_1",
+                name="Updated",
+                description="Updated Desc",
+            )
 
         snapshot.assert_match(repr(result), "update_space_success.txt")
 
     def test_update_space_nothing_to_update(self, snapshot):
         self._setup_dependencies()
 
-        with pytest.raises(NothingToUpdateSpace) as exc:
+        with patch.object(
+                UpdateSpaceInteractor,
+                "_get_update_space_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(NothingToUpdateSpace) as exc:
             self.interactor.update_space(
                 space_id="space_1",
                 user_id="user_1",
@@ -91,7 +101,11 @@ class TestUpdateSpaceInteractor:
         self._setup_dependencies()
         self.space_storage.get_space.return_value = None
 
-        with pytest.raises(SpaceNotFound) as exc:
+        with patch.object(
+                UpdateSpaceInteractor,
+                "_get_update_space_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(SpaceNotFound) as exc:
             self.interactor.update_space(
                 space_id="space_1",
                 user_id="user_1",
@@ -104,7 +118,11 @@ class TestUpdateSpaceInteractor:
     def test_update_space_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
 
-        with pytest.raises(ModificationNotAllowed) as exc:
+        with patch.object(
+                UpdateSpaceInteractor,
+                "_get_update_space_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.update_space(
                 space_id="space_1",
                 user_id="user_1",

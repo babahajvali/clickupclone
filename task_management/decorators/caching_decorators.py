@@ -52,8 +52,6 @@ def invalidate_interactor_cache(cache_name: str):
     return decorator
 
 
-# redis_client = redis.Redis(host="localhost", port=6379, db=0)
-
 unlock_script = """
                 if redis.call("get", KEYS[1]) == ARGV[1] then
                     return redis.call("del", KEYS[1])

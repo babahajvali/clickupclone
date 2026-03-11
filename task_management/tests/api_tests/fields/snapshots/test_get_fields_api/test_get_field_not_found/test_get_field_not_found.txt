@@ -1,0 +1,10 @@
+{
+  "data": {
+    "getFields": {
+      "__typename": "InvalidFieldIdsType",
+      "fieldIds": [
+        "field_404"
+      ]
+    }
+  }
+}

@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from types import SimpleNamespace
 
 import pytest
@@ -28,6 +29,14 @@ def get_workspace_member_mock(mocker):
 def update_space_mock(mocker):
     return mocker.patch(
         "task_management.storages.space_storage.SpaceStorage.update_space"
+    )
+
+
+def update_space_lock_mock(mocker):
+    return mocker.patch(
+        "task_management.interactors.spaces.update_space_interactor."
+        "UpdateSpaceInteractor._get_update_space_lock",
+        return_value=nullcontext(),
     )
 
 
@@ -66,6 +75,7 @@ class TestUpdateSpaceAPI(BaseUpdateSpace):
 
         get_workspace_member = get_workspace_member_mock(mocker)
         get_workspace_member.return_value = make_workspace_member()
+        update_space_lock_mock(mocker)
 
     def test_update_space_successfully(self, snapshot, mocker):
         self._setup_common(mocker)

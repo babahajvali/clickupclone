@@ -1,0 +1,9 @@
+{
+  "data": {
+    "reorderField": {
+      "__typename": "FieldNotBelongsToTemplateType",
+      "fieldId": "field_1",
+      "templateId": "tpl_1"
+    }
+  }
+}

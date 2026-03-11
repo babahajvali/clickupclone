@@ -14,7 +14,7 @@ from task_management.interactors.dtos import (
     WorkspaceMemberDTO,
 )
 from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
-    AddSpacePermissionForUser,
+    AddSpacePermissionForUserInteractor,
 )
 from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
@@ -66,7 +66,7 @@ class TestAddSpacePermissionForUser:
         self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = AddSpacePermissionForUser(
+        self.interactor = AddSpacePermissionForUserInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )
@@ -90,7 +90,8 @@ class TestAddSpacePermissionForUser:
             added_by="admin",
         )
 
-        result = self.interactor.add_user_for_space_permission(user_data=dto)
+        result = self.interactor.add_user_for_space_permission(
+            create_space_permission_dto=dto)
 
         snapshot.assert_match(repr(result), "add_space_permission_success.txt")
 
@@ -104,7 +105,8 @@ class TestAddSpacePermissionForUser:
         )
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.add_user_for_space_permission(user_data=dto)
+            self.interactor.add_user_for_space_permission(
+                create_space_permission_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "add_space_permission_permission_denied.txt"
@@ -120,7 +122,8 @@ class TestAddSpacePermissionForUser:
         )
 
         with pytest.raises(UnexpectedPermission) as exc:
-            self.interactor.add_user_for_space_permission(user_data=dto)
+            self.interactor.add_user_for_space_permission(
+                create_space_permission_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "add_space_permission_unexpected_permission.txt"

@@ -1,7 +1,8 @@
 from typing import Optional
+from contextlib import AbstractContextManager
 
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache
+    invalidate_interactor_cache, redis_lock
 from task_management.exceptions.custom_exceptions import NothingToUpdateSpace
 from task_management.interactors.dtos import SpaceDTO
 from task_management.interactors.storage_interfaces import \
@@ -11,6 +12,20 @@ from task_management.mixins import SpaceValidationMixin, \
 
 
 class UpdateSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
+    """
+    Update Space Interactor updates space metadata.
+
+    Handle the update space operation.
+    This interactor checks the business rules and permission validation
+     before updating the space.
+
+    Key Responsibility:
+     - Update the space
+
+    Dependencies:
+        - SpaceStorageInterface
+        - WorkspaceStorageInterface
+    """
 
     def __init__(
             self, space_storage: SpaceStorageInterface,
@@ -24,34 +39,53 @@ class UpdateSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
     def update_space(
             self, space_id: str, user_id: str, name: Optional[str],
             description: Optional[str]) -> SpaceDTO:
-        self._check_space_update_field_properties(
-            space_id=space_id, name=name, description=description
-        )
+        """Update space metadata for an existing space."""
+
         self.check_space_not_deleted(space_id=space_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id
+        self._check_update_space_properties_not_empty(
+            space_id=space_id,
+            name=name,
+            description=description,
         )
-        self.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id
+        self._check_user_has_edit_access_to_space(
+            space_id=space_id,
+            user_id=user_id,
         )
 
-        return self.space_storage.update_space(
-            space_id=space_id, name=name, description=description
-        )
+        with self._get_update_space_lock(space_id=space_id):
+            return self.space_storage.update_space(
+                space_id=space_id,
+                name=name,
+                description=description,
+            )
 
-    def _check_space_update_field_properties(
+    def _check_update_space_properties_not_empty(
             self, space_id: str, name: Optional[str],
             description: Optional[str]):
 
         is_description_provided = description is not None
         is_name_provided = name is not None
-        has_no_update_field_properties = not any([
-            is_description_provided,
-            is_name_provided
-        ])
+        has_no_update_space_properties = not (
+                is_description_provided or is_name_provided)
 
-        if has_no_update_field_properties:
+        if has_no_update_space_properties:
             raise NothingToUpdateSpace(space_id=space_id)
 
         if is_name_provided:
             self.check_space_name_not_empty(name=name)
+
+    def _check_user_has_edit_access_to_space(
+            self, space_id: str, user_id: str) -> None:
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id
+        )
+
+        self.check_user_has_edit_access_to_workspace(
+            user_id=user_id,
+            workspace_id=workspace_id,
+        )
+
+    @staticmethod
+    def _get_update_space_lock(space_id: str) -> AbstractContextManager:
+        lock_key = f"lock:update_space:{space_id}"
+        return redis_lock(lock_key, timeout=10)

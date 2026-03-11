@@ -30,7 +30,7 @@ class CreateSpaceMutation(graphene.Mutation):
         )
 
         try:
-            create_space_data = CreateSpaceDTO(
+            create_space_dto = CreateSpaceDTO(
                 name=params.name,
                 description=params.description,
                 workspace_id=params.workspace_id,
@@ -39,7 +39,7 @@ class CreateSpaceMutation(graphene.Mutation):
             )
 
             result = interactor.create_space(
-                space_data=create_space_data)
+                create_space_dto=create_space_dto)
 
             return SpaceType(
                 space_id=result.space_id,

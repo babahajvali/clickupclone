@@ -1,11 +1,10 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import \
-    UnsupportedVisibilityType
 from task_management.exceptions.enums import VisibilityType
 from task_management.graphql.types.error_types import SpaceNotFoundType, \
-    DeletedSpaceType, ModificationNotAllowedType, UnsupportedVisibilityType, \
+    DeletedSpaceType, ModificationNotAllowedType, \
+    UnsupportedVisibilityType as UnsupportedVisibilityTypeGQL, \
     UserNotWorkspaceMemberType
 from task_management.graphql.types.input_types import \
     SetSpaceVisibilityInputParams
@@ -35,8 +34,8 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
 
         try:
             visibility = VisibilityType(params.visibility)
-        except UnsupportedVisibilityType:
-            return UnsupportedVisibilityType(visibility=params.visibility)
+        except ValueError:
+            return UnsupportedVisibilityTypeGQL(visibility=params.visibility)
 
         try:
             result = interactor.set_space_visibility(
@@ -53,7 +52,11 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
                 order=result.order,
                 is_deleted=result.is_deleted,
                 is_private=result.is_private,
-                created_by=result.created_by
+                created_by=getattr(
+                    result,
+                    "created_by",
+                    getattr(result, "created_by_user_id", None),
+                )
             )
 
         except custom_exceptions.SpaceNotFound as e:
@@ -66,7 +69,7 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
             return ModificationNotAllowedType(user_id=e.user_id)
 
         except custom_exceptions.UnsupportedVisibilityType as e:
-            return UnsupportedVisibilityType(visibility=e.visibility_type)
+            return UnsupportedVisibilityTypeGQL(visibility=e.visibility_type)
 
         except custom_exceptions.UserNotWorkspaceMember as e:
-            return UserNotWorkspaceMemberType(uer_id=e.user_id)
+            return UserNotWorkspaceMemberType(user_id=e.user_id)

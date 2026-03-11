@@ -70,10 +70,10 @@ class ReorderFieldInteractor(
             if old_order == new_order:
                 return field_dto
 
-            field_dto = self._reorder_fields_and_update_current(
+            updated_field_dto = self._reorder_fields_and_update_current(
                 template_id=template_id, new_order=new_order,
                 old_order=old_order, field_id=field_id)
-        return field_dto
+        return updated_field_dto
 
     def _get_field_for_template(
             self, field_id: str, template_id: str) -> FieldDTO:

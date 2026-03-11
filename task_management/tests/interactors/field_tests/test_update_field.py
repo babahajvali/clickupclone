@@ -169,7 +169,7 @@ class TestUpdateFieldInteractor:
     def test_update_field_not_found(self, snapshot):
         # Arrange
         self._setup_update_field_dependencies()
-        self.field_storage.get_fields.return_value = [None]
+        self.field_storage.get_fields.return_value = None
         dto = self._get_update_dto()
 
         # Act

@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from types import SimpleNamespace
 
 import pytest
@@ -50,6 +51,14 @@ def update_space_order_mock(mocker):
     )
 
 
+def reorder_space_lock_mock(mocker):
+    return mocker.patch(
+        "task_management.interactors.spaces.reorder_space_interactor."
+        "ReorderSpaceInteractor._get_reorder_space_lock",
+        return_value=nullcontext(),
+    )
+
+
 def make_space(order=1, is_deleted=False) -> SpaceDTO:
     return SpaceDTO(
         space_id="space_1",
@@ -99,6 +108,7 @@ class TestReorderSpaceAPI(BaseReorderSpace):
 
         get_workspace_member = get_workspace_member_mock(mocker)
         get_workspace_member.return_value = make_workspace_member(role=role)
+        reorder_space_lock_mock(mocker)
 
     def test_reorder_space_successfully(self, snapshot, mocker):
         self._setup_common(mocker)

@@ -15,112 +15,105 @@ class SpaceStorage(SpaceStorageInterface):
 
     @staticmethod
     def _convert_space_permission_to_dto(
-            permission: SpacePermission) -> UserSpacePermissionDTO:
+            permission_obj: SpacePermission) -> UserSpacePermissionDTO:
         return UserSpacePermissionDTO(
-            id=permission.pk,
-            space_id=str(permission.space.space_id),
-            user_id=str(permission.user.user_id),
-            permission_type=permission.permission_type,
-            is_active=permission.is_active,
-            added_by=str(
-                permission.added_by.user_id) if permission.added_by else None,
-        )
+            id=permission_obj.pk,
+            space_id=str(permission_obj.space_id),
+            user_id=str(permission_obj.user_id),
+            permission_type=permission_obj.permission_type,
+            is_active=permission_obj.is_active,
+            added_by=str(permission_obj.added_by_id)
+            if permission_obj.added_by_id else None)
 
     @staticmethod
-    def _convert_space_to_dto(space_data: Space) -> SpaceDTO:
+    def _convert_to_space_dto(space_obj: Space) -> SpaceDTO:
         return SpaceDTO(
-            space_id=str(space_data.space_id),
-            name=space_data.name,
-            description=space_data.description,
-            workspace_id=str(space_data.workspace.workspace_id),
-            is_deleted=space_data.is_deleted,
-            order=space_data.order,
-            is_private=space_data.is_private,
-            created_by=str(space_data.created_by.user_id)
+            space_id=str(space_obj.space_id),
+            name=space_obj.name,
+            description=space_obj.description,
+            workspace_id=str(space_obj.workspace_id),
+            is_deleted=space_obj.is_deleted,
+            order=space_obj.order,
+            is_private=space_obj.is_private,
+            created_by=str(space_obj.created_by_id)
         )
 
     def get_space(self, space_id: str) -> SpaceDTO | None:
-        space_data = Space.objects.filter(space_id=space_id).first()
+        space_obj = Space.objects.filter(space_id=space_id).first()
 
-        if space_data is None:
+        if space_obj is None:
             return None
 
-        return self._convert_space_to_dto(space_data=space_data)
+        return self._convert_to_space_dto(space_obj=space_obj)
 
     def create_space(
-            self, space_data: CreateSpaceDTO, order: int) -> SpaceDTO:
+            self, create_space_dto: CreateSpaceDTO, order: int) -> SpaceDTO:
 
-        space = Space.objects.create(
-            name=space_data.name,
-            description=space_data.description,
-            workspace_id=space_data.workspace_id,
+        space_obj = Space.objects.create(
+            name=create_space_dto.name,
+            description=create_space_dto.description,
+            workspace_id=create_space_dto.workspace_id,
             order=order,
-            is_private=space_data.is_private,
-            created_by_id=space_data.created_by
+            is_private=create_space_dto.is_private,
+            created_by_id=create_space_dto.created_by
         )
 
-        return self._convert_space_to_dto(space)
+        return self._convert_to_space_dto(space_obj=space_obj)
 
     def get_last_space_order_in_workspace(self, workspace_id: str) -> int:
 
-        last_space = Space.objects.filter(
-            workspace_id=workspace_id, is_deleted=False).order_by(
-            '-order').first()
+        result = Space.objects.filter(
+            workspace_id=workspace_id, is_deleted=False
+        ).order_by('-order').values_list('order', flat=True).first()
 
-        order = 0
-        if last_space:
-            order = last_space.order
-
-        return order
+        return result or 0
 
     def update_space(
             self, space_id: str, name: Optional[str],
             description: Optional[str]) -> SpaceDTO:
 
-        space_data = Space.objects.get(space_id=space_id)
-
+        space_properties = {}
         if name is not None:
-            space_data.name = name
+            space_properties['name'] = name
 
         if description is not None:
-            space_data.description = description
+            space_properties['description'] = description
 
-        space_data.save()
+        Space.objects.filter(space_id=space_id).update(**space_properties)
 
-        return self._convert_space_to_dto(space_data)
+        return self.get_space(space_id=space_id)
 
+    @transaction.atomic
     def delete_space(self, space_id: str) -> SpaceDTO:
 
-        space = Space.objects.get(space_id=space_id)
-        space.is_deleted = True
-        space.save(update_fields=["is_deleted"])
+        Space.objects.filter(space_id=space_id).update(is_deleted=True)
 
-        current_order = space.order
-        workspace_id = space.workspace.workspace_id
+        space_dto = self.get_space(space_id=space_id)
 
         Space.objects.filter(
-            workspace_id=workspace_id, is_deleted=False,
-            order__gt=current_order).update(order=F('order') - 1)
+            workspace_id=space_dto.workspace_id, is_deleted=False,
+            order__gt=space_dto.order).update(order=F('order') - 1)
 
-        return self._convert_space_to_dto(space)
+        return space_dto
 
     def update_space_visibility(
             self, space_id: str, visibility: str) -> SpaceDTO:
+        visibility_bool = visibility == VisibilityType.PRIVATE.value
 
-        space = Space.objects.get(space_id=space_id)
-        space.is_private = visibility == VisibilityType.PRIVATE.value
-        space.save(update_fields=["is_private"])
+        Space.objects.filter(space_id=space_id).update(
+            is_private=visibility_bool)
 
-        return self._convert_space_to_dto(space)
+        return self.get_space(space_id=space_id)
 
     def get_workspace_spaces(self, workspace_id: str) -> List[SpaceDTO]:
 
-        spaces = Space.objects.filter(
+        space_objs = Space.objects.filter(
             workspace_id=workspace_id,
             is_deleted=False
         )
 
-        return [self._convert_space_to_dto(space) for space in spaces]
+        return [self._convert_to_space_dto(space_obj=space_obj) for
+                space_obj in space_objs]
 
     def get_workspace_spaces_count(self, workspace_id: str) -> int:
         return Space.objects.filter(
@@ -129,11 +122,9 @@ class SpaceStorage(SpaceStorageInterface):
     @transaction.atomic
     def update_space_order(self, space_id: str, new_order: int) -> SpaceDTO:
 
-        space = Space.objects.get(space_id=space_id)
-        space.order = new_order
-        space.save()
+        Space.objects.filter(space_id=space_id).update(order=new_order)
 
-        return self._convert_space_to_dto(space)
+        return self.get_space(space_id=space_id)
 
     def shift_spaces_down(
             self, workspace_id: str, current_order: int, new_order: int):
@@ -158,7 +149,7 @@ class SpaceStorage(SpaceStorageInterface):
     def get_space_workspace_id(self, space_id: str) -> str:
 
         return Space.objects.filter(space_id=space_id).values_list(
-            'workspace_id', flat=True)[0]
+            'workspace_id', flat=True).first()
 
     def create_user_space_permissions(
             self, permission_data: List[CreateUserSpacePermissionDTO]) \
@@ -181,5 +172,5 @@ class SpaceStorage(SpaceStorageInterface):
             ignore_conflicts=True
         )
 
-        return [self._convert_space_permission_to_dto(perm) for perm in
-                created_permissions]
+        return [self._convert_space_permission_to_dto(space_perm) for
+                space_perm in created_permissions]

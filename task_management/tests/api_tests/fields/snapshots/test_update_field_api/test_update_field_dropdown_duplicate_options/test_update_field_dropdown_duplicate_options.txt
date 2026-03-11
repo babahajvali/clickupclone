@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateField": {
+      "__typename": "DuplicateDropdownOptionsType",
+      "duplicateDropdownOptionsMessage": "Dropdown options must be unique"
+    }
+  }
+}

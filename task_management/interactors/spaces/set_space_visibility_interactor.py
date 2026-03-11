@@ -12,6 +12,20 @@ from task_management.mixins import SpaceValidationMixin, \
 
 class SetSpaceVisibilityInteractor(
     SpaceValidationMixin, WorkspaceValidationMixin):
+    """
+    Set Space Visibility Interactor updates the visibility of a space.
+
+    Handle the set space visibility operation.
+    This interactor checks the business rules and permission validation
+     before updating visibility.
+
+    Key Responsibility:
+     - Update the space visibility
+
+    Dependencies:
+        - SpaceStorageInterface
+        - WorkspaceStorageInterface
+    """
 
     def __init__(
             self, space_storage: SpaceStorageInterface,
@@ -25,24 +39,34 @@ class SetSpaceVisibilityInteractor(
     def set_space_visibility(
             self, space_id: str, user_id: str, visibility: VisibilityType) \
             -> SpaceDTO:
+        """Set visibility for a space after validation and access checks."""
         self._check_visibility_type(visibility=visibility.value)
         self.check_space_not_deleted(space_id=space_id)
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id
-        )
-        self.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id
+        self._check_user_has_edit_access_to_space(
+            space_id=space_id,
+            user_id=user_id,
         )
 
         return self.space_storage.update_space_visibility(
-            space_id=space_id, visibility=visibility.value
+            space_id=space_id,
+            visibility=visibility.value,
+        )
+
+    def _check_user_has_edit_access_to_space(
+            self, space_id: str, user_id: str) -> None:
+        workspace_id = self.space_storage.get_space_workspace_id(
+            space_id=space_id
+        )
+
+        self.check_user_has_edit_access_to_workspace(
+            user_id=user_id,
+            workspace_id=workspace_id,
         )
 
     @staticmethod
-    def _check_visibility_type(visibility: str):
+    def _check_visibility_type(visibility: str) -> None:
         existed_visibilities = [each.value for each in VisibilityType]
+        is_invalid_visibility_type = visibility not in existed_visibilities
 
-        is_visibility_invalid = visibility not in existed_visibilities
-        if is_visibility_invalid:
-            raise UnsupportedVisibilityType(
-                visibility_type=visibility)
+        if is_invalid_visibility_type:
+            raise UnsupportedVisibilityType(visibility_type=visibility)

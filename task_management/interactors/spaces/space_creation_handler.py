@@ -4,7 +4,7 @@ from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     CreateUserSpacePermissionDTO, UserSpacePermissionDTO
 from task_management.interactors.spaces.add_space_permission_for_user_interactor import \
-    AddSpacePermissionForUser
+    AddSpacePermissionForUserInteractor
 from task_management.interactors.spaces.create_space_interactor import \
     CreateSpaceInteractor
 from task_management.interactors.storage_interfaces import \
@@ -20,8 +20,9 @@ class SpaceCreationHandler:
         self.workspace_storage = workspace_storage
 
     @transaction.atomic
-    def handle_space_creation(self, space_input: CreateSpaceDTO) -> SpaceDTO:
-        space_dto = self._create_space(space_input=space_input)
+    def handle_space_creation(
+            self, space_input_dto: CreateSpaceDTO) -> SpaceDTO:
+        space_dto = self._create_space(create_space_dto=space_input_dto)
 
         if space_dto.is_private:
             self._create_space_permission_for_user(
@@ -30,16 +31,18 @@ class SpaceCreationHandler:
 
         return space_dto
 
-    def _create_space(self, space_input: CreateSpaceDTO) -> SpaceDTO:
+    def _create_space(self, create_space_dto: CreateSpaceDTO) -> SpaceDTO:
         space_interactor = CreateSpaceInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
-        return space_interactor.create_space(space_data=space_input)
+        return space_interactor.create_space(
+            create_space_dto=create_space_dto
+        )
 
     def _create_space_permission_for_user(
             self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
-        permission_interactor = AddSpacePermissionForUser(
+        permission_interactor = AddSpacePermissionForUserInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage
         )
@@ -52,4 +55,4 @@ class SpaceCreationHandler:
         )
 
         return permission_interactor.add_user_for_space_permission(
-            user_data=user_permission_data)
+            create_space_permission_dto=user_permission_data)
