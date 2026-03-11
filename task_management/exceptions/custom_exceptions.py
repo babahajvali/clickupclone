@@ -106,6 +106,12 @@ class FieldNotFound(Exception):
         self.field_id = field_id
 
 
+class FieldNotBelongsToTemplate(Exception):
+    def __init__(self, template_id: str, field_id: str):
+        self.template_id = template_id
+        self.field_id = field_id
+
+
 class UnexpectedFieldConfigKeys(Exception):
     def __init__(
             self,
@@ -442,7 +448,7 @@ class ResetTokenExpired(Exception):
         return f"Invalid or expired reset token: {self.token}"
 
 
-class EmptyFieldConfig(Exception):
+class EmptyDropdownConfig(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 

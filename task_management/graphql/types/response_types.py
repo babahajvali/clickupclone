@@ -21,6 +21,7 @@ from task_management.graphql.types.error_types import \
     InvalidAccountIdsType, UserHaveAlreadyListPermissionType, \
     NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, UserNotWorkspaceMemberType, DeletedFieldType, \
+    FieldNotBelongsToTemplateType, \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
     EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
@@ -704,6 +705,7 @@ class ReorderFieldResponse(graphene.Union):
         types = (
             FieldType,
             FieldNotFoundType,
+            FieldNotBelongsToTemplateType,
             TemplateNotFoundType,
             ModificationNotAllowedType,
             InvalidOrderType,

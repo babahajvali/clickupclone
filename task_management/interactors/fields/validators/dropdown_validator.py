@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     DropdownDefaultValueNotInOptions,
     DropdownOptionNotAllowed,
     DropdownOptionsEmpty,
-    EmptyFieldConfig,
+    EmptyDropdownConfig,
     UnexpectedFieldConfigKeys,
 )
 from task_management.exceptions.enums import FieldConfig, FieldType
@@ -78,4 +78,4 @@ class DropdownValidator:
     @staticmethod
     def _check_config_not_empty(config: Dict[str, Any]) -> None:
         if not config:
-            raise EmptyFieldConfig(field_type=FieldType.DROPDOWN.value)
+            raise EmptyDropdownConfig(field_type=FieldType.DROPDOWN.value)

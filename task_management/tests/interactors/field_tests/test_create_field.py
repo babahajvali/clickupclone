@@ -8,7 +8,7 @@ from task_management.exceptions.custom_exceptions import (
     InvalidFieldType,
     FieldNameAlreadyExists,
     ModificationNotAllowed,
-    EmptyFieldConfig,
+    EmptyDropdownConfig,
     DuplicateDropdownOptions,
     DropdownOptionsEmpty,
     UnexpectedFieldConfigKeys, EmptyFieldName,
@@ -270,7 +270,7 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(EmptyFieldConfig) as exc:
+        with pytest.raises(EmptyDropdownConfig) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(

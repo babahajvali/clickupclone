@@ -130,6 +130,9 @@ class TestUpdateFieldInteractor:
             repr(result),
             "test_update_field_successfully.txt",
         )
+        self.field_storage.update_field.assert_called_once_with(
+            update_field_dto=dto
+        )
 
     def test_update_field_permission_denied(self, snapshot):
         # Arrange
@@ -140,6 +143,8 @@ class TestUpdateFieldInteractor:
         with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
+        self.field_storage.is_field_name_exists.assert_not_called()
+        self.field_storage.update_field.assert_not_called()
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_permission_denied.txt",
@@ -154,6 +159,7 @@ class TestUpdateFieldInteractor:
         with pytest.raises(FieldNameAlreadyExists) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
+        self.field_storage.update_field.assert_not_called()
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_duplicate_name.txt",
@@ -188,6 +194,9 @@ class TestUpdateFieldInteractor:
         with pytest.raises(NothingToUpdateField) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
+        self.field_storage.get_workspace_id_from_field_id.assert_not_called()
+        self.field_storage.is_field_name_exists.assert_not_called()
+        self.field_storage.update_field.assert_not_called()
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_without_updates.txt",
@@ -219,6 +228,7 @@ class TestUpdateFieldInteractor:
         with pytest.raises(EmptyFieldName) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
+        self.field_storage.update_field.assert_not_called()
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_empty_name.txt",
@@ -233,6 +243,7 @@ class TestUpdateFieldInteractor:
         with pytest.raises(UnexpectedFieldConfigKeys) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
+        self.field_storage.update_field.assert_not_called()
         snapshot.assert_match(
             repr(exc.value),
             "test_update_field_invalid_config_keys.txt",

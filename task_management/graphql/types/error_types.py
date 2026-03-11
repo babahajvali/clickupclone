@@ -65,6 +65,11 @@ class FieldNotFoundType(graphene.ObjectType):
     field_id = graphene.String(required=True)
 
 
+class FieldNotBelongsToTemplateType(graphene.ObjectType):
+    field_id = graphene.String(required=True)
+    template_id = graphene.String(required=True)
+
+
 class InvalidFieldIdsType(graphene.ObjectType):
     field_ids = graphene.List(graphene.String, required=True)
 

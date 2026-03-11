@@ -1,8 +1,14 @@
 {
-  "data": {
-    "updateField": {
-      "__typename": "UserNotWorkspaceMemberType",
-      "userId": "user_1"
+  "errors": [
+    {
+      "message": "Fragment cannot be spread here as objects of type 'UpdateFieldResponse' can never be of type 'FieldNotBelongsToTemplateType'.",
+      "locations": [
+        {
+          "line": 21,
+          "column": 9
+        }
+      ]
     }
-  }
+  ],
+  "data": null
 }

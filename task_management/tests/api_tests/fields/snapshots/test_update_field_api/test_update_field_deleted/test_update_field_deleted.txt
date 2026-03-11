@@ -1,8 +1,14 @@
 {
-  "data": {
-    "updateField": {
-      "__typename": "DeletedFieldType",
-      "fieldId": "11111111-1111-4111-8111-111111111111"
+  "errors": [
+    {
+      "message": "Fragment cannot be spread here as objects of type 'UpdateFieldResponse' can never be of type 'FieldNotBelongsToTemplateType'.",
+      "locations": [
+        {
+          "line": 21,
+          "column": 9
+        }
+      ]
     }
-  }
+  ],
+  "data": null
 }

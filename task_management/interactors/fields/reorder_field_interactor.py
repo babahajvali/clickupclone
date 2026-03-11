@@ -3,7 +3,7 @@ from django.db import transaction
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache, redis_lock
 from task_management.exceptions.custom_exceptions import InvalidOrder, \
-    FieldNotFound
+    FieldNotBelongsToTemplate
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
@@ -51,9 +51,6 @@ class ReorderFieldInteractor(
         self.check_template_exists(template_id=template_id)
 
         self.check_field_not_deleted(field_id=field_id)
-        self._check_field_order_within_range(
-            template_id=template_id, order=new_order
-        )
         self._check_user_has_edit_access_to_template(
             template_id=template_id, user_id=user_id
         )
@@ -80,9 +77,10 @@ class ReorderFieldInteractor(
 
     def _get_field_for_template(
             self, field_id: str, template_id: str) -> FieldDTO:
-        field_dto = self.check_field_exists(field_id=field_id)
+        field_dto = self.field_storage.get_fields(field_ids=[field_id])[0]
         if field_dto.template_id != template_id:
-            raise FieldNotFound(field_id=field_id)
+            raise FieldNotBelongsToTemplate(
+                field_id=field_id, template_id=template_id)
         return field_dto
 
     def _check_user_has_edit_access_to_template(

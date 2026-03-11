@@ -5,7 +5,7 @@ from task_management.exceptions.custom_exceptions import (
     DropdownOptionsEmpty,
     UnexpectedFieldConfigKeys,
     DropdownOptionNotAllowed,
-    EmptyFieldConfig,
+    EmptyDropdownConfig,
     DropdownDefaultValueNotInOptions,
 )
 from task_management.exceptions.enums import FieldConfig
@@ -19,7 +19,7 @@ class TestDropdownField:
         self.dropdown = DropdownValidator()
 
     def test_empty_config(self):
-        with pytest.raises(EmptyFieldConfig):
+        with pytest.raises(EmptyDropdownConfig):
             self.dropdown.validate_config({})
 
     def test_invalid_keys(self):

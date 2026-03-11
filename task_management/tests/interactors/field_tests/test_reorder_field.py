@@ -5,6 +5,7 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFound,
     FieldNotFound,
+    FieldNotBelongsToTemplate,
     DeletedFieldException,
     ModificationNotAllowed,
     InvalidOrder,
@@ -109,8 +110,26 @@ class TestReorderFieldInteractor:
             field_id="field_1", new_order=3)
         snapshot.assert_match(repr(result), "reorder_field_success.txt")
 
-    def test_reorder_field_same_order_returns_early(self):
-        self._setup_dependencies(field_order=2)
+    def test_reorder_field_moves_down_shifts_other_fields(self):
+        self._setup_dependencies(field_order=1)
+
+        self.interactor.reorder_field(
+            field_id="field_1",
+            template_id="template_1",
+            new_order=3,
+            user_id="user_1"
+        )
+
+        self.field_storage.shift_fields_down.assert_called_once_with(
+            template_id="template_1",
+            old_order=1,
+            new_order=3,
+        )
+        self.field_storage.shift_fields_up.assert_not_called()
+
+    def test_reorder_field_moves_up_shifts_other_fields(self):
+        expected = self._setup_dependencies(field_order=4)
+        expected.order = 2
 
         self.interactor.reorder_field(
             field_id="field_1",
@@ -119,7 +138,39 @@ class TestReorderFieldInteractor:
             user_id="user_1"
         )
 
+        self.field_storage.shift_fields_up.assert_called_once_with(
+            template_id="template_1",
+            new_order=2,
+            old_order=4,
+        )
+        self.field_storage.shift_fields_down.assert_not_called()
+
+    def test_reorder_field_same_order_returns_early(self):
+        self._setup_dependencies(field_order=2)
+
+        result = self.interactor.reorder_field(
+            field_id="field_1",
+            template_id="template_1",
+            new_order=2,
+            user_id="user_1"
+        )
+
+        assert result.order == 2
+        self.field_storage.shift_fields_down.assert_not_called()
+        self.field_storage.shift_fields_up.assert_not_called()
         self.field_storage.update_field_order.assert_not_called()
+
+    def test_reorder_field_same_order_still_checks_bounds_once_locked(self):
+        self._setup_dependencies(field_order=2, fields_count=5)
+
+        self.interactor.reorder_field(
+            field_id="field_1",
+            template_id="template_1",
+            new_order=2,
+            user_id="user_1"
+        )
+
+        assert self.field_storage.template_fields_count.call_count == 1
 
     def test_reorder_field_template_not_found(self, snapshot):
         # Arrange
@@ -161,7 +212,7 @@ class TestReorderFieldInteractor:
         ]
 
         # Act
-        with pytest.raises(FieldNotFound) as exc:
+        with pytest.raises(FieldNotBelongsToTemplate) as exc:
             self.interactor.reorder_field(
                 field_id="field_1",
                 template_id="template_1",

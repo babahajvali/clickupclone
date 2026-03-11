@@ -31,7 +31,7 @@ class FieldStorage(FieldStorageInterface):
     def create_field(
             self, create_field_dto: CreateFieldDTO, order: int) -> FieldDTO:
 
-        field_data = Field.objects.create(
+        field_obj = Field.objects.create(
             field_name=create_field_dto.field_name,
             description=create_field_dto.description,
             field_type=create_field_dto.field_type.value,
@@ -42,27 +42,27 @@ class FieldStorage(FieldStorageInterface):
             created_by_id=create_field_dto.created_by_user_id
         )
 
-        return self._convert_to_field_dto(field_db_object=field_data)
+        return self._convert_to_field_dto(field_db_object=field_obj)
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
             excluded_field_id: Optional[str]) -> bool:
 
-        field_data = Field.objects.filter(
+        field_obj = Field.objects.filter(
             field_name=field_name, template_id=template_id)
 
         if excluded_field_id:
-            field_data = field_data.exclude(field_id=excluded_field_id)
+            field_obj = field_obj.exclude(field_id=excluded_field_id)
 
-        return field_data.exists()
+        return field_obj.exists()
 
     def get_fields(self, field_ids: List[str]) -> List[FieldDTO] | None:
 
-        fields_data = Field.objects.filter(field_id__in=field_ids)
-        if not fields_data:
+        field_objs = Field.objects.filter(field_id__in=field_ids)
+        if not field_objs:
             return []
         return [self._convert_to_field_dto(field_db_object=field_data) for
-                field_data in fields_data]
+                field_data in field_objs]
 
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
         existing_field_ids = Field.objects.filter(
@@ -90,12 +90,12 @@ class FieldStorage(FieldStorageInterface):
 
     def get_fields_for_template(self, template_id: str) -> List[FieldDTO]:
 
-        fields_data = Field.objects.filter(
+        fields_obj = Field.objects.filter(
             template_id=template_id, is_deleted=False
         )
         return [
-            self._convert_to_field_dto(field_db_object=field_data)
-            for field_data in fields_data
+            self._convert_to_field_dto(field_db_object=field_obj)
+            for field_obj in fields_obj
         ]
 
     def get_field_values_by_task_ids(
@@ -148,8 +148,8 @@ class FieldStorage(FieldStorageInterface):
 
     def update_field_order(self, field_id: str, new_order: int) -> FieldDTO:
 
-        Field.objects.filter(field_id=field_id).update(
-            order=new_order)
+        Field.objects.filter(field_id=field_id).update(order=new_order)
+
         return self.get_fields(field_ids=[field_id])[0]
 
     def template_fields_count(self, template_id: str) -> int:
@@ -226,13 +226,13 @@ class FieldStorage(FieldStorageInterface):
         TaskFieldValue.objects.bulk_create(field_values_to_create)
 
     def get_workspace_id_from_field_id(self, field_id: str) -> str:
-        list_data = Field.objects.select_related("template__list").values(
+        field_obj = Field.objects.select_related("template__list").values(
             "template__list__entity_type",
             "template__list__entity_id",
         ).get(field_id=field_id)
 
-        entity_type = list_data["template__list__entity_type"]
-        entity_id = list_data["template__list__entity_id"]
+        entity_type = field_obj["template__list__entity_type"]
+        entity_id = field_obj["template__list__entity_id"]
 
         if entity_type == ListEntityType.SPACE.value:
             return str(Space.objects.values_list(
@@ -244,8 +244,8 @@ class FieldStorage(FieldStorageInterface):
         ).get(folder_id=entity_id))
 
     def get_last_field_order_in_template(self, template_id: str) -> int:
-        last_field = Field.objects.filter(
+        last_field_obj = Field.objects.filter(
             template_id=template_id,
             is_deleted=False).order_by('-order').first()
 
-        return last_field.order if last_field else 0
+        return last_field_obj.order if last_field_obj else 0

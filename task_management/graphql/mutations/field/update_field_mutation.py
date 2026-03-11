@@ -74,7 +74,7 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.EmptyFieldName as e:
             return EmptyFieldNameType(field_name=e.field_name)
 
-        except custom_exceptions.EmptyFieldConfig as e:
+        except custom_exceptions.EmptyDropdownConfig as e:
             return MissingFieldConfigType(field_type=e.field_type)
 
         except custom_exceptions.DropdownOptionsEmpty as e:

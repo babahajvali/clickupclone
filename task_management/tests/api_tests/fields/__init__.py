@@ -143,6 +143,11 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
           __typename
           fieldId
         }
+        ... on FieldNotBelongsToTemplateType {
+          __typename
+          fieldId
+          templateId
+        }
         ... on DeletedFieldType {
           __typename
           fieldId
@@ -265,6 +270,11 @@ class BaseReorderField(BaseFieldGraphQLTestCase):
         ... on FieldNotFoundType {
           __typename
           fieldId
+        }
+        ... on FieldNotBelongsToTemplateType {
+          __typename
+          fieldId
+          templateId
         }
         ... on DeletedFieldType {
           __typename

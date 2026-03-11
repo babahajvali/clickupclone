@@ -187,6 +187,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_without_updates(self, snapshot, mocker):
         self._setup_common_success_path(mocker)
+        name_exists = is_field_name_exists_mock(mocker)
+        updated = update_field_mock(mocker)
 
         variables = {
             "params": {
@@ -203,6 +205,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_permission_denied(self, snapshot, mocker):
         self._setup_common_success_path(mocker, role=Role.GUEST)
+        name_exists = is_field_name_exists_mock(mocker)
+        updated = update_field_mock(mocker)
 
         variables = {
             "params": {
@@ -239,6 +243,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_invalid_config_keys(self, snapshot, mocker):
         self._setup_common_success_path(mocker)
+        updated = update_field_mock(mocker)
 
         variables = {
             "params": {
@@ -275,7 +280,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_number_default_below_minimum(self, snapshot, mocker):
         self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
+        field_data.return_value = [
+            create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
@@ -294,7 +300,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_number_default_above_maximum(self, snapshot, mocker):
         self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
+        field_data.return_value = [
+            create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
@@ -313,7 +320,8 @@ class TestUpdateFieldAPI(BaseUpdateField):
     def test_update_field_with_max_less_than_min(self, snapshot, mocker):
         self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
-        field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
+        field_data.return_value = [
+            create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {

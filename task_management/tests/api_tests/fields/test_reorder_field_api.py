@@ -116,6 +116,27 @@ class TestReorderFieldAPI(BaseReorderField):
             context=SimpleNamespace(user_id="user_1"),
         )
 
+    def test_reorder_field_same_order_returns_current_field(
+            self, snapshot, mocker):
+        self._setup_common(mocker)
+        shift_down = shift_fields_down_mock(mocker)
+        shift_up = shift_fields_up_mock(mocker)
+        updated = update_field_order_mock(mocker)
+
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 2}}
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id="user_1"),
+        )
+
+        shift_down.assert_not_called()
+        shift_up.assert_not_called()
+        updated.assert_not_called()
+
     def test_reorder_field_not_found(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)
@@ -178,6 +199,9 @@ class TestReorderFieldAPI(BaseReorderField):
 
     def test_reorder_field_invalid_order_below_one(self, snapshot, mocker):
         self._setup_common(mocker)
+        shift_down = shift_fields_down_mock(mocker)
+        shift_up = shift_fields_up_mock(mocker)
+        updated = update_field_order_mock(mocker)
 
         variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
                                 "newOrder": 0}}
@@ -189,8 +213,15 @@ class TestReorderFieldAPI(BaseReorderField):
             context=SimpleNamespace(user_id="user_1"),
         )
 
+        shift_down.assert_not_called()
+        shift_up.assert_not_called()
+        updated.assert_not_called()
+
     def test_reorder_field_invalid_order_above_count(self, snapshot, mocker):
         self._setup_common(mocker)
+        shift_down = shift_fields_down_mock(mocker)
+        shift_up = shift_fields_up_mock(mocker)
+        updated = update_field_order_mock(mocker)
 
         variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
                                 "newOrder": 10}}
@@ -202,8 +233,16 @@ class TestReorderFieldAPI(BaseReorderField):
             context=SimpleNamespace(user_id="user_1"),
         )
 
+        shift_down.assert_not_called()
+        shift_up.assert_not_called()
+        updated.assert_not_called()
+
     def test_reorder_field_permission_denied(self, snapshot, mocker):
         self._setup_common(mocker, role=Role.GUEST)
+        count = template_fields_count_mock(mocker)
+        shift_down = shift_fields_down_mock(mocker)
+        shift_up = shift_fields_up_mock(mocker)
+        updated = update_field_order_mock(mocker)
 
         variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
                                 "newOrder": 3}}
@@ -214,6 +253,11 @@ class TestReorderFieldAPI(BaseReorderField):
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
+
+        count.assert_not_called()
+        shift_down.assert_not_called()
+        shift_up.assert_not_called()
+        updated.assert_not_called()
 
     def test_reorder_field_user_not_workspace_member(self, snapshot, mocker):
         self._setup_common(mocker)
