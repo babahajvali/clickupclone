@@ -28,7 +28,8 @@ from task_management.graphql.types.error_types import \
     TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, \
     NumberDefaultValueAboveMaximumType, \
-    DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType, \
+    DropdownDefaultValueNotInOptionsType, DuplicateDropdownOptionsType, \
+    MaxValueLessThanMinValueType, \
     TextValueExceedsMaxLengthType, InvalidNumberFieldValueType, \
     NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
     DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType
@@ -103,6 +104,7 @@ class CreateFieldResponse(graphene.Union):
             NumberDefaultValueBelowMinimumType,
             NumberDefaultValueAboveMaximumType,
             DropdownDefaultValueNotInOptionsType,
+            DuplicateDropdownOptionsType,
             MaxValueLessThanMinValueType,
             ModificationNotAllowedType,
             EmptyFieldNameType,
@@ -123,6 +125,7 @@ class UpdateFieldResponse(graphene.Union):
             NumberDefaultValueBelowMinimumType,
             NumberDefaultValueAboveMaximumType,
             DropdownDefaultValueNotInOptionsType,
+            DuplicateDropdownOptionsType,
             MaxValueLessThanMinValueType,
             NothingToUpdateFieldType,
             FieldNameAlreadyExistsType,

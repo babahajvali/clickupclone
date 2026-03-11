@@ -1,18 +1,48 @@
 import pytest
+from contextlib import contextmanager
 
 from task_management.decorators import caching_decorators
 from task_management.tests.test_utils import GraphQLBaseTestCase
 
 
+class _DummyCache:
+    @staticmethod
+    def get(*args, **kwargs):
+        return None
+
+    @staticmethod
+    def set(*args, **kwargs):
+        return True
+
+    @staticmethod
+    def delete_pattern(*args, **kwargs):
+        return True
+
+
+@contextmanager
+def _dummy_redis_lock(*args, **kwargs):
+    yield
+
+
 class BaseFieldGraphQLTestCase(GraphQLBaseTestCase):
     @pytest.fixture(autouse=True)
     def _stub_cache_backend(self, monkeypatch):
-        monkeypatch.setattr(caching_decorators.cache, "get",
-                            lambda *args, **kwargs: None)
-        monkeypatch.setattr(caching_decorators.cache, "set",
-                            lambda *args, **kwargs: True)
-        monkeypatch.setattr(caching_decorators.cache, "delete_pattern",
-                            lambda *args, **kwargs: True)
+        monkeypatch.setattr(caching_decorators, "cache", _DummyCache())
+        monkeypatch.setattr(
+            caching_decorators, "redis_lock", _dummy_redis_lock
+        )
+        monkeypatch.setattr(
+            "task_management.interactors.fields.create_field_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
+        monkeypatch.setattr(
+            "task_management.interactors.fields.update_field_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
+        monkeypatch.setattr(
+            "task_management.interactors.fields.reorder_field_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
 
 
 class BaseCreateField(BaseFieldGraphQLTestCase):
@@ -77,6 +107,10 @@ class BaseCreateField(BaseFieldGraphQLTestCase):
         ... on DropdownDefaultValueNotInOptionsType {
           __typename
           dropdownDefaultMessage: message
+        }
+        ... on DuplicateDropdownOptionsType {
+          __typename
+          duplicateDropdownOptionsMessage: message
         }
         ... on MaxValueLessThanMinValueType {
           __typename
@@ -150,6 +184,10 @@ class BaseUpdateField(BaseFieldGraphQLTestCase):
         ... on DropdownDefaultValueNotInOptionsType {
           __typename
           dropdownDefaultMessage: message
+        }
+        ... on DuplicateDropdownOptionsType {
+          __typename
+          duplicateDropdownOptionsMessage: message
         }
         ... on MaxValueLessThanMinValueType {
           __typename

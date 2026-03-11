@@ -1,6 +1,7 @@
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
+    DuplicateDropdownOptions,
     DropdownOptionsEmpty,
     UnexpectedFieldConfigKeys,
     DropdownOptionNotAllowed,
@@ -9,17 +10,17 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.fields.validators.dropdown_validator import \
-    DropdownField
+    DropdownValidator
 
 
 class TestDropdownField:
 
     def setup_method(self):
-        self.dropdown = DropdownField()
+        self.dropdown = DropdownValidator()
 
     def test_empty_config(self):
         with pytest.raises(EmptyFieldConfig):
-            self.dropdown.check_dropdown_config({})
+            self.dropdown.validate_config({})
 
     def test_invalid_keys(self):
         config = {
@@ -27,7 +28,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(UnexpectedFieldConfigKeys):
-            self.dropdown.check_dropdown_config(config)
+            self.dropdown.validate_config(config)
 
     def test_options_missing(self):
         config = {
@@ -35,7 +36,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionsEmpty):
-            self.dropdown.check_dropdown_config(config)
+            self.dropdown.validate_config(config)
 
     def test_options_empty_list(self):
         config = {
@@ -43,7 +44,7 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionsEmpty):
-            self.dropdown.check_dropdown_config(config)
+            self.dropdown.validate_config(config)
 
     def test_invalid_default_value(self):
         config = {
@@ -52,7 +53,16 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownDefaultValueNotInOptions):
-            self.dropdown.check_dropdown_config(config)
+            self.dropdown.validate_config(config)
+
+    def test_duplicate_options(self):
+        config = {
+            FieldConfig.OPTIONS.value: ["A", "A"],
+            FieldConfig.DEFAULT.value: "A"
+        }
+
+        with pytest.raises(DuplicateDropdownOptions):
+            self.dropdown.validate_config(config)
 
     def test_valid_config(self):
         config = {
@@ -60,7 +70,7 @@ class TestDropdownField:
             FieldConfig.DEFAULT.value: "A"
         }
 
-        self.dropdown.check_dropdown_config(config)
+        self.dropdown.validate_config(config)
 
     def test_invalid_dropdown_value(self):
         config = {
@@ -68,11 +78,11 @@ class TestDropdownField:
         }
 
         with pytest.raises(DropdownOptionNotAllowed):
-            DropdownField.validate_value("C", config)
+            self.dropdown.validate_value("C", config)
 
     def test_valid_dropdown_value(self):
         config = {
             FieldConfig.OPTIONS.value: ["A", "B"]
         }
 
-        DropdownField.validate_value("A", config)
+        self.dropdown.validate_value("A", config)

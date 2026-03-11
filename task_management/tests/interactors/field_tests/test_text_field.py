@@ -7,13 +7,13 @@ from task_management.exceptions.custom_exceptions import (
 )
 from task_management.exceptions.enums import FieldConfig
 from task_management.interactors.fields.validators.text_validator import \
-    TextField
+    TextValidator
 
 
 class TestTextField:
 
     def setup_method(self):
-        self.text_field = TextField()
+        self.text_field = TextValidator()
 
     def test_invalid_config_keys(self):
         config = {
@@ -53,18 +53,16 @@ class TestTextField:
         }
 
         with pytest.raises(TextValueExceedsMaxLength):
-            TextField.validate_value("TooLongText",
-                                     config)
+            self.text_field.validate_value("TooLongText", config)
 
     def test_valid_text_value(self):
         config = {
             FieldConfig.MAX_LENGTH.value: 10
         }
 
-        TextField.validate_value("Hello", config)
+        self.text_field.validate_value("Hello", config)
 
     def test_no_max_length_provided(self):
         config = {}
 
-        TextField.validate_value("AnyLengthIsFine",
-                                 config)
+        self.text_field.validate_value("AnyLengthIsFine", config)

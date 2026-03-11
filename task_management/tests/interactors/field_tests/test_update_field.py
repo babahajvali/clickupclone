@@ -21,13 +21,13 @@ from task_management.interactors.dtos import (
 from task_management.interactors.fields.update_field_interactor import \
     UpdateFieldInteractor
 from task_management.interactors.fields.validators.dropdown_validator import \
-    DropdownField
+    DropdownValidator
 from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
 from task_management.interactors.fields.validators.number_validator import \
     NumberValidator
 from task_management.interactors.fields.validators.text_validator import \
-    TextField
+    TextValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
 
@@ -81,13 +81,13 @@ class TestUpdateFieldInteractor:
     @staticmethod
     def _patched_check_field_config(field_type: FieldType, config: dict):
         validation_handlers = {
-            FieldType.DROPDOWN: DropdownField().check_dropdown_config,
-            FieldType.TEXT: TextField().validate_config,
-            FieldType.NUMBER: NumberValidator().check_number_config,
+            FieldType.DROPDOWN: DropdownValidator().validate_config,
+            FieldType.TEXT: TextValidator().validate_config,
+            FieldType.NUMBER: NumberValidator().validate_config,
         }
         handler = validation_handlers.get(field_type)
         if handler:
-            handler(config)
+            handler(config=config)
 
     def _setup_update_field_dependencies(
             self,

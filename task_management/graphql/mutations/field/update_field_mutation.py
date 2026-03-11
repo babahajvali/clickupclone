@@ -8,7 +8,8 @@ from task_management.graphql.types.error_types import FieldNotFoundType, \
     EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
     UserNotWorkspaceMemberType, TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
-    DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType
+    DropdownDefaultValueNotInOptionsType, DuplicateDropdownOptionsType, \
+    MaxValueLessThanMinValueType
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -98,11 +99,20 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.NumberDefaultValueBelowMinimum as e:
             return NumberDefaultValueBelowMinimumType(message=e.message)
 
+        except custom_exceptions.NumberValueBelowMinimum as e:
+            return NumberDefaultValueBelowMinimumType(message=e.message)
+
         except custom_exceptions.NumberDefaultValueAboveMaximum as e:
+            return NumberDefaultValueAboveMaximumType(message=e.message)
+
+        except custom_exceptions.NumberValueExceedsMaximum as e:
             return NumberDefaultValueAboveMaximumType(message=e.message)
 
         except custom_exceptions.DropdownDefaultValueNotInOptions as e:
             return DropdownDefaultValueNotInOptionsType(message=e.message)
+
+        except custom_exceptions.DuplicateDropdownOptions as e:
+            return DuplicateDropdownOptionsType(message=e.message)
 
         except custom_exceptions.NothingToUpdateField as e:
             return NothingToUpdateFieldType(field_id=e.field_id)

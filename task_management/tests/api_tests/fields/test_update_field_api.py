@@ -7,6 +7,11 @@ from task_management.exceptions.enums import FieldType, Role
 from task_management.interactors.dtos import FieldDTO, WorkspaceMemberDTO
 from task_management.tests.api_tests.fields import BaseUpdateField
 
+FIELD_ID = "11111111-1111-4111-8111-111111111111"
+TEMPLATE_ID = "22222222-2222-4222-8222-222222222222"
+WORKSPACE_ID = "33333333-3333-4333-8333-333333333333"
+USER_ID = "49bb508e-c6d1-4882-95fd-1991d103f7dd"
+
 
 def get_field_mock(mocker):
     return mocker.patch(
@@ -41,11 +46,11 @@ def update_field_mock(mocker):
 def create_workspace_member_dto(role: Role) -> WorkspaceMemberDTO:
     return WorkspaceMemberDTO(
         id=1,
-        workspace_id="workspace_1",
+        workspace_id=WORKSPACE_ID,
         role=role,
-        user_id="user_1",
+        user_id=USER_ID,
         is_active=True,
-        added_by="admin_1",
+        added_by=USER_ID,
     )
 
 
@@ -57,16 +62,16 @@ def create_field_dto(
     if config is None:
         config = {"max_length": 10, "default": "P1"}
     return FieldDTO(
-        field_id="field_1",
+        field_id=FIELD_ID,
         field_type=field_type,
         description="Task priority",
-        template_id="tpl_1",
+        template_id=TEMPLATE_ID,
         field_name="Priority",
         is_deleted=is_deleted,
         order=2,
         config=config,
         is_required=True,
-        created_by="49bb508e-c6d1-4882-95fd-1991d103f7dd",
+        created_by=USER_ID,
     )
 
 
@@ -81,7 +86,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
         name_exists.return_value = False
 
         workspace_id = get_workspace_id_from_field_id_mock(mocker)
-        workspace_id.return_value = "workspace_1"
+        workspace_id.return_value = WORKSPACE_ID
 
         workspace_member = get_workspace_member_mock(mocker)
         workspace_member.return_value = create_workspace_member_dto(role=role)
@@ -93,7 +98,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
                 "description": "Task priority",
                 "config": json.dumps({"max_length": 10, "default": "P1"}),
@@ -105,7 +110,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_not_found(self, snapshot, mocker):
@@ -114,7 +119,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
             }
         }
@@ -132,7 +137,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
             }
         }
@@ -151,7 +156,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
             }
         }
@@ -168,7 +173,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "",
             }
         }
@@ -185,7 +190,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
             }
         }
 
@@ -201,7 +206,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
             }
         }
@@ -220,7 +225,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "fieldName": "Priority",
             }
         }
@@ -237,7 +242,7 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"bad_key": 1}),
             }
         }
@@ -251,12 +256,11 @@ class TestUpdateFieldAPI(BaseUpdateField):
 
     def test_update_field_text_default_exceeds_max_length(
             self, snapshot, mocker):
-        field_data = get_field_mock(mocker)
-        field_data.return_value = [create_field_dto(field_type=FieldType.TEXT)]
+        self._setup_common_success_path(mocker)
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"max_length": 3, "default": "HIGH"}),
             }
         }
@@ -265,16 +269,17 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_number_default_below_minimum(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"min": 10, "default": 5}),
             }
         }
@@ -283,16 +288,17 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_number_default_above_maximum(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"max": 5, "default": 10}),
             }
         }
@@ -301,16 +307,17 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_with_max_less_than_min(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(field_type=FieldType.NUMBER)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"min": 10, "max": 2}),
             }
         }
@@ -319,17 +326,18 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_dropdown_missing_config(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(
             field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({}),
             }
         }
@@ -338,17 +346,18 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_dropdown_options_missing(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(
             field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({"default": "High"}),
             }
         }
@@ -357,18 +366,19 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
         )
 
     def test_update_field_dropdown_default_not_in_options(
             self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
         field_data = get_field_mock(mocker)
         field_data.return_value = [create_field_dto(
             field_type=FieldType.DROPDOWN)]
 
         variables = {
             "params": {
-                "fieldId": "field_1",
+                "fieldId": FIELD_ID,
                 "config": json.dumps({
                     "options": ["Low", "Medium"],
                     "default": "High",
@@ -380,5 +390,28 @@ class TestUpdateFieldAPI(BaseUpdateField):
             query=self.QUERY,
             variables=variables,
             snapshot=snapshot,
-            context=SimpleNamespace(user_id="user_1"),
+            context=SimpleNamespace(user_id=USER_ID),
+        )
+
+    def test_update_field_dropdown_duplicate_options(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
+        field_data = get_field_mock(mocker)
+        field_data.return_value = [create_field_dto(
+            field_type=FieldType.DROPDOWN)]
+
+        variables = {
+            "params": {
+                "fieldId": FIELD_ID,
+                "config": json.dumps({
+                    "options": ["Low", "Low"],
+                    "default": "Low",
+                }),
+            }
+        }
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id=USER_ID),
         )

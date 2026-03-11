@@ -81,7 +81,7 @@ class InvalidFieldIdsFound(Exception):
         self.field_ids = field_ids
 
 
-class UnsupportedFieldType(Exception):
+class InvalidFieldType(Exception):
     def __init__(self, field_type: str):
         self.field_type = field_type
 
@@ -169,6 +169,14 @@ class NumberDefaultValueAboveMaximum(Exception):
 
 
 class DropdownDefaultValueNotInOptions(Exception):
+    def __init__(self, message: str | None):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class DuplicateDropdownOptions(Exception):
     def __init__(self, message: str | None):
         self.message = message
 

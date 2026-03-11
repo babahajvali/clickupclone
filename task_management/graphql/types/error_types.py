@@ -101,6 +101,10 @@ class DropdownDefaultValueNotInOptionsType(graphene.ObjectType):
     message = graphene.String(required=True)
 
 
+class DuplicateDropdownOptionsType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
 class MaxValueLessThanMinValueType(graphene.ObjectType):
     field_type = graphene.String(required=True)
     message = graphene.String(required=True)

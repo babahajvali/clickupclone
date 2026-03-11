@@ -1,8 +1,9 @@
 from django.db import transaction
 
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache
-from task_management.exceptions.custom_exceptions import InvalidOrder
+    invalidate_interactor_cache, redis_lock
+from task_management.exceptions.custom_exceptions import InvalidOrder, \
+    FieldNotFound
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
@@ -57,16 +58,32 @@ class ReorderFieldInteractor(
             template_id=template_id, user_id=user_id
         )
 
-        field_dto = self.field_storage.get_fields(field_ids=[field_id])[0]
-        old_order = field_dto.order
+        lock_key = f"lock:reorder_field:template:{template_id}"
 
-        if old_order == new_order:
-            return field_dto
+        with redis_lock(lock_key, timeout=10):
+            self._check_field_order_within_range(
+                template_id=template_id, order=new_order)
 
-        return self._reorder_fields_and_update_current(
-            template_id=template_id, new_order=new_order, old_order=old_order,
-            field_id=field_id
-        )
+            field_dto = self._get_field_for_template(
+                field_id=field_id,
+                template_id=template_id,
+            )
+            old_order = field_dto.order
+
+            if old_order == new_order:
+                return field_dto
+
+            field_dto = self._reorder_fields_and_update_current(
+                template_id=template_id, new_order=new_order,
+                old_order=old_order, field_id=field_id)
+        return field_dto
+
+    def _get_field_for_template(
+            self, field_id: str, template_id: str) -> FieldDTO:
+        field_dto = self.check_field_exists(field_id=field_id)
+        if field_dto.template_id != template_id:
+            raise FieldNotFound(field_id=field_id)
+        return field_dto
 
     def _check_user_has_edit_access_to_template(
             self, template_id: str, user_id: str):
@@ -89,7 +106,7 @@ class ReorderFieldInteractor(
 
     def _reorder_fields_and_update_current(
             self, template_id: str, new_order: int, old_order: int,
-            field_id: str):
+            field_id: str) -> FieldDTO:
 
         self._shift_other_fields(
             template_id=template_id,

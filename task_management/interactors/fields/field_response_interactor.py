@@ -3,15 +3,8 @@ from task_management.interactors.dtos import (
     TaskFieldValueDTO,
     UpdateFieldValueDTO,
 )
-from task_management.interactors.fields.validators.dropdown_validator import (
-    DropdownValidator,
-)
-from task_management.interactors.fields.validators.number_validator import (
-    NumberValidator,
-)
-from task_management.interactors.fields.validators.text_validator import (
-    TextValidator,
-)
+from task_management.interactors.fields.validators.field_config_validator import \
+    FieldConfigValidator
 from task_management.interactors.storage_interfaces import (
     FieldStorageInterface,
     TaskStorageInterface,
@@ -56,7 +49,7 @@ class FieldResponseInteractor(
         self.workspace_storage = workspace_storage
 
     def set_task_field_response(
-        self, update_field_value_dto: UpdateFieldValueDTO, user_id: str
+            self, update_field_value_dto: UpdateFieldValueDTO, user_id: str
     ) -> TaskFieldValueDTO:
         """Set or update a task's value for a specific custom field."""
         self.check_task_not_deleted(task_id=update_field_value_dto.task_id)
@@ -88,12 +81,8 @@ class FieldResponseInteractor(
 
     @staticmethod
     def _check_field_value_by_type(field_type: str, value: str, config: dict):
-        validation_handlers = {
-            FieldType.TEXT.value: TextValidator.validate_value,
-            FieldType.NUMBER.value: NumberValidator.validate_value,
-            FieldType.DROPDOWN.value: DropdownValidator.validate_value,
-        }
-
-        handler = validation_handlers.get(field_type)
+        handler = FieldConfigValidator.get_value_validation_handler(
+            field_type=FieldType(field_type)
+        )
         if handler:
             handler(value=value, config=config)

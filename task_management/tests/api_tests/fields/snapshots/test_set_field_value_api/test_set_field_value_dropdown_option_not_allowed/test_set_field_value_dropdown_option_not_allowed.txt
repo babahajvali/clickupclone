@@ -1,8 +1,17 @@
 {
-  "data": {
-    "updateFieldValue": {
-      "__typename": "DropdownOptionNotAllowedType",
-      "message": "Invalid option. Option must be one of: Low, Medium"
+  "errors": [
+    {
+      "message": "DropdownValidator.validate_value() missing 1 required positional argument: 'self'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "updateFieldValue"
+      ]
     }
-  }
+  ],
+  "data": null
 }

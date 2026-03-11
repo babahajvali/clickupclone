@@ -3,8 +3,6 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     UnexpectedFieldConfigKeys,
     MaxValueLessThanMinValue,
-    NumberDefaultValueBelowMinimum,
-    NumberDefaultValueAboveMaximum,
     InvalidNumberFieldValue,
     NumberValueBelowMinimum,
     NumberValueExceedsMaximum,
@@ -25,7 +23,7 @@ class TestNumberField:
         }
 
         with pytest.raises(UnexpectedFieldConfigKeys):
-            self.number_field.check_number_config(config)
+            self.number_field.validate_config(config)
 
     def test_max_less_than_min(self):
         config = {
@@ -34,7 +32,7 @@ class TestNumberField:
         }
 
         with pytest.raises(MaxValueLessThanMinValue):
-            self.number_field.check_number_config(config)
+            self.number_field.validate_config(config)
 
     def test_default_less_than_min(self):
         config = {
@@ -43,8 +41,8 @@ class TestNumberField:
             FieldConfig.DEFAULT.value: 2
         }
 
-        with pytest.raises(NumberDefaultValueBelowMinimum):
-            self.number_field.check_number_config(config)
+        with pytest.raises(NumberValueBelowMinimum):
+            self.number_field.validate_config(config)
 
     def test_default_greater_than_max(self):
         config = {
@@ -53,8 +51,8 @@ class TestNumberField:
             FieldConfig.DEFAULT.value: 25
         }
 
-        with pytest.raises(NumberDefaultValueAboveMaximum):
-            self.number_field.check_number_config(config)
+        with pytest.raises(NumberValueExceedsMaximum):
+            self.number_field.validate_config(config)
 
     def test_default_value_exact_min(self):
         config = {
@@ -63,7 +61,7 @@ class TestNumberField:
             FieldConfig.DEFAULT.value: 5
         }
 
-        self.number_field.check_number_config(config)
+        self.number_field.validate_config(config)
 
     def test_valid_number_config(self):
         config = {
@@ -72,13 +70,13 @@ class TestNumberField:
             FieldConfig.DEFAULT.value: 10
         }
 
-        self.number_field.check_number_config(config)
+        self.number_field.validate_config(config)
 
     def test_invalid_number_value_not_numeric(self):
         config = {}
 
         with pytest.raises(InvalidNumberFieldValue):
-            self.number_field.check_number_value_within_range("abc", config)
+            self.number_field.validate_value("abc", config)
 
     def test_number_below_min(self):
         config = {
@@ -86,7 +84,7 @@ class TestNumberField:
         }
 
         with pytest.raises(NumberValueBelowMinimum):
-            self.number_field.check_number_value_within_range("5", config)
+            self.number_field.validate_value("5", config)
 
     def test_number_above_max(self):
         config = {
@@ -94,7 +92,7 @@ class TestNumberField:
         }
 
         with pytest.raises(NumberValueExceedsMaximum):
-            self.number_field.check_number_value_within_range("150", config)
+            self.number_field.validate_value("150", config)
 
     def test_valid_number_value(self):
         config = {
@@ -102,4 +100,4 @@ class TestNumberField:
             FieldConfig.MAX.value: 20
         }
 
-        self.number_field.check_number_value_within_range("10", config)
+        self.number_field.validate_value("10", config)

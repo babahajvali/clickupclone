@@ -375,3 +375,27 @@ class TestCreateFieldAPI(BaseCreateField):
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
+
+    def test_create_field_dropdown_duplicate_options(self, snapshot, mocker):
+        self._setup_common_success_path(mocker)
+
+        variables = {
+            "params": {
+                "fieldType": "DROPDOWN",
+                "fieldName": "Priority",
+                "description": "Task priority",
+                "templateId": "tpl_1",
+                "config": json.dumps({
+                    "options": ["Low", "Low"],
+                    "default": "Low",
+                }),
+                "isRequired": True,
+            }
+        }
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id="user_1"),
+        )

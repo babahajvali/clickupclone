@@ -153,6 +153,27 @@ class TestReorderFieldInteractor:
 
         snapshot.assert_match(repr(exc.value), "reorder_field_not_found.txt")
 
+    def test_reorder_field_template_mismatch(self, snapshot):
+        # Arrange
+        self._setup_dependencies()
+        self.field_storage.get_fields.return_value = [
+            make_field(order=2, is_deleted=False, template_id="other_template")
+        ]
+
+        # Act
+        with pytest.raises(FieldNotFound) as exc:
+            self.interactor.reorder_field(
+                field_id="field_1",
+                template_id="template_1",
+                new_order=2,
+                user_id="user_1"
+            )
+
+        snapshot.assert_match(
+            repr(exc.value),
+            "reorder_field_template_mismatch.txt"
+        )
+
     def test_reorder_field_inactive(self, snapshot):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True

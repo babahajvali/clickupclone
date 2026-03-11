@@ -5,8 +5,7 @@ from task_management.exceptions.custom_exceptions import (
     InvalidNumberFieldValue,
     MaxValueLessThanMinValue,
     NumberValueBelowMinimum,
-    NumberValueExceedsMaximum,
-    UnexpectedFieldConfigKeys,
+    NumberValueExceedsMaximum, UnexpectedFieldConfigKeys,
 )
 from task_management.exceptions.enums import FieldConfig, FieldType
 
@@ -19,19 +18,20 @@ class NumberValidator:
         min_val = config.get(FieldConfig.MIN.value)
         max_val = config.get(FieldConfig.MAX.value)
 
-        self._validate_max_not_less_than_min(min_val, max_val)
-        self._validate_default_value(config, min_val, max_val)
+        self._validate_max_not_less_than_min(min_val=min_val, max_val=max_val)
+        self._validate_default_value(
+            config=config, min_val=min_val, max_val=max_val)
 
     def _validate_default_value(
-        self, config: Dict[str, Any], min_val: Any, max_val: Any
+            self, config: Dict[str, Any], min_val: Any, max_val: Any
     ) -> None:
         default_value = config.get(FieldConfig.DEFAULT.value)
 
         if default_value is None:
             return
 
-        self._validate_not_below_min(default_value, min_val)
-        self._validate_not_above_max(default_value, max_val)
+        self._validate_not_below_min(value=default_value, min_val=min_val)
+        self._validate_not_above_max(value=default_value, max_val=max_val)
 
     @staticmethod
     def _validate_max_not_less_than_min(min_val: Any, max_val: Any) -> None:

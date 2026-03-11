@@ -131,6 +131,23 @@ class TestReorderFieldAPI(BaseReorderField):
             context=SimpleNamespace(user_id="user_1"),
         )
 
+    def test_reorder_field_template_mismatch(self, snapshot, mocker):
+        self._setup_common(mocker)
+        field_data = get_field_mock(mocker)
+        field = create_field_dto(order=2, is_deleted=False)
+        field.template_id = "other_template"
+        field_data.return_value = [field]
+
+        variables = {"params": {"fieldId": "field_1", "templateId": "tpl_1",
+                                "newOrder": 2}}
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id="user_1"),
+        )
+
     def test_reorder_field_deleted(self, snapshot, mocker):
         self._setup_common(mocker)
         field_data = get_field_mock(mocker)

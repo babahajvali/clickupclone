@@ -2,7 +2,7 @@
   "data": {
     "createField": {
       "__typename": "NumberDefaultValueAboveMaximumType",
-      "numberMaxDefaultMessage": "Default value 10 is greater than maximum 5"
+      "numberMaxDefaultMessage": "Number must not exceed 5"
     }
   }
 }

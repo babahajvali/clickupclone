@@ -8,7 +8,8 @@ from task_management.graphql.types.error_types import TemplateNotFoundType, \
     EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
-    DropdownDefaultValueNotInOptionsType, MaxValueLessThanMinValueType
+    DropdownDefaultValueNotInOptionsType, DuplicateDropdownOptionsType, \
+    MaxValueLessThanMinValueType
 from task_management.graphql.types.input_types import CreateFieldInputParams
 from task_management.graphql.types.response_types import CreateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -68,7 +69,7 @@ class CreateFieldMutation(graphene.Mutation):
         except custom_exceptions.TemplateNotFound as e:
             return TemplateNotFoundType(template_id=e.template_id)
 
-        except custom_exceptions.UnsupportedFieldType as e:
+        except custom_exceptions.InvalidFieldType as e:
             return UnsupportedFieldTypeType(field_type=e.field_type)
 
         except custom_exceptions.FieldNameAlreadyExists as e:
@@ -90,11 +91,20 @@ class CreateFieldMutation(graphene.Mutation):
         except custom_exceptions.NumberDefaultValueBelowMinimum as e:
             return NumberDefaultValueBelowMinimumType(message=e.message)
 
+        except custom_exceptions.NumberValueBelowMinimum as e:
+            return NumberDefaultValueBelowMinimumType(message=e.message)
+
         except custom_exceptions.NumberDefaultValueAboveMaximum as e:
+            return NumberDefaultValueAboveMaximumType(message=e.message)
+
+        except custom_exceptions.NumberValueExceedsMaximum as e:
             return NumberDefaultValueAboveMaximumType(message=e.message)
 
         except custom_exceptions.DropdownDefaultValueNotInOptions as e:
             return DropdownDefaultValueNotInOptionsType(message=e.message)
+
+        except custom_exceptions.DuplicateDropdownOptions as e:
+            return DuplicateDropdownOptionsType(message=e.message)
 
         except custom_exceptions.EmptyFieldName as e:
             return EmptyFieldNameType(field_name=e.field_name)

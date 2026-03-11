@@ -1,5 +1,8 @@
+import uuid
+from contextlib import contextmanager
 from functools import wraps
 
+import redis
 from django.core.cache import cache
 
 
@@ -44,3 +47,28 @@ def invalidate_interactor_cache(cache_name: str):
         return wrapper
 
     return decorator
+
+
+redis_client = redis.Redis(host="localhost", port=6379, db=0)
+
+
+@contextmanager
+def redis_lock(lock_key: str, timeout: int = 10):
+    lock_value = str(uuid.uuid4())
+
+    acquired = redis_client.set(
+        lock_key,
+        lock_value,
+        nx=True,
+        ex=timeout
+    )
+
+    if not acquired:
+        raise Exception("Resource is currently locked. Try again.")
+
+    try:
+        yield
+    finally:
+        value = redis_client.get(lock_key)
+        if value and value.decode() == lock_value:
+            redis_client.delete(lock_key)

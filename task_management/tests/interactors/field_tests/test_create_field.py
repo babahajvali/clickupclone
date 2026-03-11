@@ -5,10 +5,11 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     TemplateNotFound,
-    UnsupportedFieldType,
+    InvalidFieldType,
     FieldNameAlreadyExists,
     ModificationNotAllowed,
     EmptyFieldConfig,
+    DuplicateDropdownOptions,
     DropdownOptionsEmpty,
     UnexpectedFieldConfigKeys, EmptyFieldName,
 )
@@ -21,13 +22,13 @@ from task_management.interactors.dtos import (
 from task_management.interactors.fields.create_field_interactor import \
     CreateFieldInteractor
 from task_management.interactors.fields.validators.dropdown_validator import \
-    DropdownField
+    DropdownValidator
 from task_management.interactors.fields.validators.field_config_validator import \
     FieldConfigValidator
 from task_management.interactors.fields.validators.number_validator import \
     NumberValidator
 from task_management.interactors.fields.validators.text_validator import \
-    TextField
+    TextValidator
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 
@@ -86,9 +87,9 @@ class TestCreateFieldInteractor:
     @staticmethod
     def _patched_check_field_config(field_type: FieldType, config: dict):
         validation_handlers = {
-            FieldType.DROPDOWN: DropdownField().check_dropdown_config,
-            FieldType.TEXT: TextField().validate_config,
-            FieldType.NUMBER: NumberValidator().check_number_config,
+            FieldType.DROPDOWN: DropdownValidator().validate_config,
+            FieldType.TEXT: TextValidator().validate_config,
+            FieldType.NUMBER: NumberValidator().validate_config,
         }
         handler = validation_handlers.get(field_type)
         if handler:
@@ -177,7 +178,7 @@ class TestCreateFieldInteractor:
         )
 
         # Act
-        with pytest.raises(UnsupportedFieldType) as exc:
+        with pytest.raises(InvalidFieldType) as exc:
             self.interactor.create_field(dto)
 
         snapshot.assert_match(
@@ -298,6 +299,29 @@ class TestCreateFieldInteractor:
         snapshot.assert_match(
             repr(exc.value),
             "test_create_field_dropdown_options_missing.txt"
+        )
+
+    def test_create_field_dropdown_duplicate_options(self, snapshot):
+        # Arrange
+        self._setup_create_field_dependencies()
+
+        dto = CreateFieldDTO(
+            field_type=FieldType.DROPDOWN,
+            field_name="Priority",
+            description="",
+            template_id="tpl_1",
+            config={"options": ["High", "High"], "default": "High"},
+            is_required=False,
+            created_by_user_id="user_1",
+        )
+
+        # Act
+        with pytest.raises(DuplicateDropdownOptions) as exc:
+            self.interactor.create_field(dto)
+
+        snapshot.assert_match(
+            repr(exc.value),
+            "test_create_field_dropdown_duplicate_options.txt"
         )
 
     def test_create_field_invalid_config_keys(self, snapshot):

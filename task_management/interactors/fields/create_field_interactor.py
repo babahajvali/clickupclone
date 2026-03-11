@@ -1,6 +1,6 @@
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache
-from task_management.exceptions.custom_exceptions import UnsupportedFieldType
+    invalidate_interactor_cache, redis_lock
+from task_management.exceptions.custom_exceptions import InvalidFieldType
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import CreateFieldDTO, FieldDTO
 from task_management.interactors.fields.validators.field_config_validator import \
@@ -55,32 +55,37 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             user_id=create_field_dto.created_by_user_id,
         )
 
-        last_field_order_in_template = (
-            self.field_storage.get_last_field_order_in_template(
-                template_id=create_field_dto.template_id
-            )
-        )
+        lock_key = f"lock:create_field:template:{create_field_dto.template_id}"
 
-        return self.field_storage.create_field(
-            create_field_dto=create_field_dto,
-            order=last_field_order_in_template + 1,
-        )
+        with redis_lock(lock_key, timeout=10):
+            self.check_field_name_not_exist_in_template(
+                field_name=create_field_dto.field_name,
+                template_id=create_field_dto.template_id,
+                field_id=None
+            )
+
+            last_field_order_in_template = (
+                self.field_storage.get_last_field_order_in_template(
+                    template_id=create_field_dto.template_id
+                )
+            )
+
+            field_dto = self.field_storage.create_field(
+                create_field_dto=create_field_dto,
+                order=last_field_order_in_template + 1,
+            )
+        return field_dto
 
     def _check_create_field_input(self, create_field_dto: CreateFieldDTO):
         self.check_field_name_not_empty(
             field_name=create_field_dto.field_name
         )
-        self._check_invalid_field_type(
+        self._check_field_type_is_valid(
             field_type=create_field_dto.field_type.value
         )
         self.field_config_validator.check_field_config(
             config=create_field_dto.config,
             field_type=create_field_dto.field_type,
-        )
-        self.check_field_name_not_exist_in_template(
-            field_name=create_field_dto.field_name,
-            template_id=create_field_dto.template_id,
-            field_id=None
         )
 
         self.check_template_exists(
@@ -96,9 +101,9 @@ class CreateFieldInteractor(TemplateValidationMixin, WorkspaceValidationMixin,
             workspace_id=workspace_id, user_id=user_id)
 
     @staticmethod
-    def _check_invalid_field_type(field_type: str):
+    def _check_field_type_is_valid(field_type: str):
         existed_field_types = FieldType.get_values()
         is_invalid_field_type = field_type not in existed_field_types
 
         if is_invalid_field_type:
-            raise UnsupportedFieldType(field_type=field_type)
+            raise InvalidFieldType(field_type=field_type)
