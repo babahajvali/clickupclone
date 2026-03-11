@@ -102,7 +102,7 @@ class FieldStorage(FieldStorageInterface):
             self, task_ids: List[str]) -> List[TaskFieldValuesDTO]:
         field_values = TaskFieldValue.objects.filter(
             task_id__in=task_ids
-        ).select_related('field', 'task')
+        ).select_related('field', 'task').prefetch_related('field__template')
 
         task_values_map = {}
         for fv in field_values:

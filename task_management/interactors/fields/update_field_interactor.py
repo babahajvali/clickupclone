@@ -52,7 +52,7 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         field_dto = self.check_field_exists(
             field_id=update_field_dto.field_id)
 
-        self._validate_update_field_properties_not_empty(
+        self._check_update_field_properties_not_empty(
             update_field_dto=update_field_dto)
         self._check_user_has_edit_access_to_field(
             field_id=field_dto.field_id, user_id=user_id
@@ -61,11 +61,11 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         lock_key = f"lock:update_field:{update_field_dto.field_id}"
 
         with redis_lock(lock_key, timeout=10):
-            self._validate_update_field_name(
+            self._check_update_field_name(
                 field_name=update_field_dto.field_name,
                 field_id=update_field_dto.field_id,
                 template_id=field_dto.template_id)
-            self._validate_update_field_config(
+            self._check_update_field_config(
                 field_type=field_dto.field_type,
                 config=update_field_dto.config)
 
@@ -74,7 +74,7 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         return field_dto
 
     @staticmethod
-    def _validate_update_field_properties_not_empty(
+    def _check_update_field_properties_not_empty(
             update_field_dto: UpdateFieldDTO):
 
         is_field_properties_empty = not any([
@@ -86,7 +86,7 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         if is_field_properties_empty:
             raise NothingToUpdateField(field_id=update_field_dto.field_id)
 
-    def _validate_update_field_name(
+    def _check_update_field_name(
             self, field_name: Optional[str], field_id: str, template_id: str):
         is_field_name_provided = field_name is not None
         if not is_field_name_provided:
@@ -98,7 +98,7 @@ class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
             field_name=field_name,
             template_id=template_id)
 
-    def _validate_update_field_config(
+    def _check_update_field_config(
             self, field_type: FieldType, config: Optional[Dict]):
         is_config_provided = config is not None
         if not is_config_provided:
