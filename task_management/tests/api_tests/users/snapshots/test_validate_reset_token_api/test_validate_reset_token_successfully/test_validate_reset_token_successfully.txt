@@ -1,0 +1,19 @@
+{
+  "errors": [
+    {
+      "message": "can't compare offset-naive and offset-aware datetimes",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "validateResetToken"
+      ]
+    }
+  ],
+  "data": {
+    "validateResetToken": null
+  }
+}

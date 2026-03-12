@@ -11,8 +11,8 @@ from task_management.interactors.dtos import UserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.interactors.user.user_interactor import (
-    UserInteractor,
+from task_management.interactors.user.block_user_interactor import (
+    BlockUserInteractor,
 )
 
 
@@ -40,7 +40,7 @@ class TestBlockUser:
         user_storage.get_user.return_value = active_user
         user_storage.block_user.return_value = blocked_user
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = BlockUserInteractor(user_storage=user_storage)
 
         result = interactor.block_user(user_id="user123")
 
@@ -55,7 +55,7 @@ class TestBlockUser:
         user_storage = create_autospec(UserStorageInterface)
         user_storage.get_user.return_value = None
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = BlockUserInteractor(user_storage=user_storage)
 
         with pytest.raises(UserNotFound) as exc:
             interactor.block_user(user_id="user123")
@@ -82,7 +82,7 @@ class TestBlockUser:
 
         user_storage.get_user.return_value = inactive_user
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = BlockUserInteractor(user_storage=user_storage)
 
         with pytest.raises(InactiveUser) as exc:
             interactor.block_user(user_id="user123")

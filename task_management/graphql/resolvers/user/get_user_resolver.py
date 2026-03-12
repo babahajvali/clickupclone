@@ -1,5 +1,6 @@
 from task_management.exceptions import custom_exceptions
-from task_management.interactors.user.user_interactor import UserInteractor
+from task_management.interactors.user.get_user_profile_interactor import \
+    GetUserProfileInteractor
 from task_management.graphql.types.error_types import UserNotFoundType, InactiveUserType
 from task_management.graphql.types.types import UserType
 from task_management.storages import UserStorage
@@ -9,7 +10,7 @@ def get_user_profile_resolver(root, info, params):
     user_id = params.user_id
 
     user_storage = UserStorage()
-    interactor = UserInteractor(user_storage=user_storage)
+    interactor = GetUserProfileInteractor(user_storage=user_storage)
 
     try:
         user_data = interactor.get_user_profile(user_id=user_id)

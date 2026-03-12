@@ -7,8 +7,8 @@ from task_management.graphql.types.input_types import UpdateUserInputParams
 from task_management.graphql.types.response_types import UpdateUserResponse
 from task_management.graphql.types.types import UserType
 from task_management.interactors.dtos import UpdateUserDTO
-from task_management.interactors.user.user_interactor import \
-    UserInteractor
+from task_management.interactors.user.update_user_interactor import \
+    UpdateUserInteractor
 from task_management.storages import UserStorage
 
 
@@ -21,7 +21,7 @@ class UpdateUserMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         user_storage = UserStorage()
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UpdateUserInteractor(user_storage=user_storage)
 
         try:
             user_update_data = UpdateUserDTO(
@@ -34,7 +34,7 @@ class UpdateUserMutation(graphene.Mutation):
                 image_url=params.image_url if params.image_url else None,
             )
 
-            result = interactor.update_user(user_update_data=user_update_data)
+            result = interactor.update_user(update_user_dto=user_update_data)
 
             return UserType(
                 user_id=result.user_id,

@@ -1,0 +1,15 @@
+{
+  "data": {
+    "getUserProfile": {
+      "__typename": "UserType",
+      "userId": "user_1",
+      "username": "testuser",
+      "email": "test@example.com",
+      "fullName": "Test User",
+      "phoneNumber": "9999999999",
+      "imageUrl": "https://example.com/image.png",
+      "isActive": true,
+      "gender": "Gender.MALE"
+    }
+  }
+}

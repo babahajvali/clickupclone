@@ -1,0 +1,8 @@
+{
+  "data": {
+    "createUser": {
+      "__typename": "UsernameAlreadyExists",
+      "username": "testuser"
+    }
+  }
+}

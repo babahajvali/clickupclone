@@ -11,8 +11,8 @@ from task_management.interactors.dtos import UserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.interactors.user.user_interactor import (
-    UserInteractor,
+from task_management.interactors.user.get_user_profile_interactor import (
+    GetUserProfileInteractor,
 )
 
 
@@ -35,7 +35,7 @@ class TestGetUserProfile:
 
         user_storage.get_user.return_value = user
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = GetUserProfileInteractor(user_storage=user_storage)
 
         result = interactor.get_user_profile(user_id="user123")
 
@@ -51,7 +51,7 @@ class TestGetUserProfile:
 
         user_storage.get_user.return_value = None
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = GetUserProfileInteractor(user_storage=user_storage)
 
         with pytest.raises(UserNotFound) as exc:
             interactor.get_user_profile(user_id="user123")
@@ -78,7 +78,7 @@ class TestGetUserProfile:
 
         user_storage.get_user.return_value = inactive_user
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = GetUserProfileInteractor(user_storage=user_storage)
 
         with pytest.raises(InactiveUser) as exc:
             interactor.get_user_profile(user_id="user123")

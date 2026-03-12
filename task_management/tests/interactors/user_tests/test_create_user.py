@@ -11,8 +11,8 @@ from task_management.interactors.dtos import CreateUserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.interactors.user.user_interactor import (
-    UserInteractor,
+from task_management.interactors.user.create_user_interactor import (
+    CreateUserInteractor,
 )
 
 
@@ -32,7 +32,7 @@ class TestCreateUser:
             "User", (), {"email": "babahajvali@gmail.com"}
         )()
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = CreateUserInteractor(user_storage=user_storage)
 
         user_input_data = CreateUserDTO(
             full_name="full_name",
@@ -44,7 +44,7 @@ class TestCreateUser:
             image_url="https://example.com/image.png",
         )
 
-        result = interactor.create_user(user_input_data)
+        result = interactor.create_user(create_user_dto=user_input_data)
 
         snapshot.assert_match(
             repr(result.email),
@@ -63,7 +63,7 @@ class TestCreateUser:
 
         user_storage.check_username_exists.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = CreateUserInteractor(user_storage=user_storage)
 
         user_input_data = CreateUserDTO(
             full_name="full_name",
@@ -76,7 +76,7 @@ class TestCreateUser:
         )
 
         with pytest.raises(UsernameAlreadyExists) as exc:
-            interactor.create_user(user_input_data)
+            interactor.create_user(create_user_dto=user_input_data)
 
         snapshot.assert_match(
             repr(exc.value.username),
@@ -91,7 +91,7 @@ class TestCreateUser:
 
         user_storage.check_email_exists.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = CreateUserInteractor(user_storage=user_storage)
 
         user_input_data = CreateUserDTO(
             full_name="full_name",
@@ -104,7 +104,7 @@ class TestCreateUser:
         )
 
         with pytest.raises(EmailAlreadyExists) as exc:
-            interactor.create_user(user_input_data)
+            interactor.create_user(create_user_dto=user_input_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -119,7 +119,7 @@ class TestCreateUser:
 
         user_storage.check_phone_number_exists.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = CreateUserInteractor(user_storage=user_storage)
 
         user_input_data = CreateUserDTO(
             full_name="full_name",
@@ -132,7 +132,7 @@ class TestCreateUser:
         )
 
         with pytest.raises(PhoneNumberAlreadyExists) as exc:
-            interactor.create_user(user_input_data)
+            interactor.create_user(create_user_dto=user_input_data)
 
         snapshot.assert_match(
             repr(exc.value),

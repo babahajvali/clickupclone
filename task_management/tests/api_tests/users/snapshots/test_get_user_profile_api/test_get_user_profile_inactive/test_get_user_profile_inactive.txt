@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getUserProfile": {
+      "__typename": "InactiveUserType",
+      "userId": "user_1"
+    }
+  }
+}

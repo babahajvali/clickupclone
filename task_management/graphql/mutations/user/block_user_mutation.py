@@ -6,8 +6,8 @@ from task_management.graphql.types.error_types import UserNotFoundType, \
 from task_management.graphql.types.input_types import BlockUserInputParams
 from task_management.graphql.types.response_types import BlockUserResponse
 from task_management.graphql.types.types import UserType
-from task_management.interactors.user.user_interactor import \
-    UserInteractor
+from task_management.interactors.user.block_user_interactor import \
+    BlockUserInteractor
 from task_management.storages import UserStorage
 
 
@@ -20,7 +20,7 @@ class BlockUserMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         user_storage = UserStorage()
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = BlockUserInteractor(user_storage=user_storage)
 
         try:
             result = interactor.block_user(user_id=params.user_id)

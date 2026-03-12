@@ -8,8 +8,8 @@ from task_management.graphql.types.input_types import CreateUserInputParams
 from task_management.graphql.types.response_types import CreateUserResponse
 from task_management.graphql.types.types import UserType
 from task_management.interactors.dtos import CreateUserDTO
-from task_management.interactors.user.user_interactor import \
-    UserInteractor
+from task_management.interactors.user.create_user_interactor import \
+    CreateUserInteractor
 from task_management.storages import UserStorage
 
 
@@ -22,7 +22,7 @@ class CreateUserMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         user_storage = UserStorage()
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = CreateUserInteractor(user_storage=user_storage)
 
         try:
             gender = Gender(params.gender)
@@ -36,7 +36,7 @@ class CreateUserMutation(graphene.Mutation):
                 image_url=params.image_url,
             )
 
-            result = interactor.create_user(user_details=user_input_data)
+            result = interactor.create_user(create_user_dto=user_input_data)
 
             return UserType(
                 user_id=result.user_id,

@@ -12,8 +12,8 @@ from task_management.interactors.dtos import UserDTO
 from task_management.interactors.storage_interfaces.user_storage_interface import (
     UserStorageInterface,
 )
-from task_management.interactors.user.user_interactor import (
-    UserInteractor,
+from task_management.interactors.user.update_user_interactor import (
+    UpdateUserInteractor,
 )
 
 
@@ -51,9 +51,9 @@ class TestUpdateUser:
 
         user_storage.update_user.return_value = updated_user
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UpdateUserInteractor(user_storage=user_storage)
 
-        result = interactor.update_user(updated_user)
+        result = interactor.update_user(update_user_dto=updated_user)
 
         snapshot.assert_match(
             repr(result.username),
@@ -70,7 +70,7 @@ class TestUpdateUser:
 
         user_storage.check_username_except_current_user.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UpdateUserInteractor(user_storage=user_storage)
 
         user_data = UserDTO(
             user_id="user123",
@@ -85,7 +85,7 @@ class TestUpdateUser:
         )
 
         with pytest.raises(UsernameAlreadyExists) as exc:
-            interactor.update_user(user_data)
+            interactor.update_user(update_user_dto=user_data)
 
         snapshot.assert_match(
             repr(exc.value.username),
@@ -98,7 +98,7 @@ class TestUpdateUser:
 
         user_storage.check_email_exists_except_current_user.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UpdateUserInteractor(user_storage=user_storage)
 
         user_data = UserDTO(
             user_id="user123",
@@ -113,7 +113,7 @@ class TestUpdateUser:
         )
 
         with pytest.raises(EmailAlreadyExists) as exc:
-            interactor.update_user(user_data)
+            interactor.update_user(update_user_dto=user_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -126,7 +126,7 @@ class TestUpdateUser:
 
         user_storage.check_phone_number_except_current_user.return_value = True
 
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UpdateUserInteractor(user_storage=user_storage)
 
         user_data = UserDTO(
             user_id="user123",
@@ -141,7 +141,7 @@ class TestUpdateUser:
         )
 
         with pytest.raises(PhoneNumberAlreadyExists) as exc:
-            interactor.update_user(user_data)
+            interactor.update_user(update_user_dto=user_data)
 
         snapshot.assert_match(
             repr(exc.value),

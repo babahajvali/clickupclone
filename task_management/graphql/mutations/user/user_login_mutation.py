@@ -9,8 +9,8 @@ from task_management.graphql.types.error_types import EmailNotFound, \
 from task_management.graphql.types.input_types import UserLoginInputParams
 from task_management.graphql.types.response_types import UserLoginResponse
 from task_management.graphql.types.types import UserType
-from task_management.interactors.user.user_interactor import \
-    UserInteractor
+from task_management.interactors.user.user_login_interactor import \
+    UserLoginInteractor
 from task_management.storages import UserStorage
 
 
@@ -23,7 +23,7 @@ class UserLoginMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         user_storage = UserStorage()
-        interactor = UserInteractor(user_storage=user_storage)
+        interactor = UserLoginInteractor(user_storage=user_storage)
 
         try:
             result = interactor.user_login(
