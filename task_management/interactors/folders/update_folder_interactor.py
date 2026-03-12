@@ -9,7 +9,6 @@ from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
     FolderValidationMixin
-from task_management.utils.redis_utils import redis_lock
 
 
 class UpdateFolderInteractor(
@@ -44,13 +43,11 @@ class UpdateFolderInteractor(
             space_id=space_id, user_id=user_id
         )
 
-        with self._get_update_folder_lock(folder_id=folder_id):
-            folder_dto = self.folder_storage.update_folder(
-                folder_id=folder_id,
-                name=name,
-                description=description,
-            )
-        return folder_dto
+        return self.folder_storage.update_folder(
+            folder_id=folder_id,
+            name=name,
+            description=description,
+        )
 
     def _check_folder_update_field_properties(
             self, folder_id: str, name: Optional[str],
@@ -75,8 +72,3 @@ class UpdateFolderInteractor(
         self.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )
-
-    @staticmethod
-    def _get_update_folder_lock(folder_id: str):
-        lock_key = f"lock:update_folder:folder:{folder_id}"
-        return redis_lock(lock_key, timeout=10)

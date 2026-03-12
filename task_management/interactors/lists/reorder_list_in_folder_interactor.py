@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from task_management.decorators.caching_decorators import (
     invalidate_interactor_cache,
 )
@@ -14,60 +16,60 @@ from task_management.mixins import (
     WorkspaceValidationMixin,
     FolderValidationMixin,
 )
+from task_management.utils.redis_utils import redis_lock
 
 
-class ReorderListInFolderInteractor:
+class ReorderListInFolderInteractor(
+        ListValidationMixin,
+        WorkspaceValidationMixin,
+        FolderValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
             folder_storage: FolderStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            list_storage=list_storage,
+            folder_storage=folder_storage,
+            workspace_storage=workspace_storage,
+        )
         self.list_storage = list_storage
         self.folder_storage = folder_storage
         self.workspace_storage = workspace_storage
 
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
-
-    @property
-    def folder_mixin(self) -> FolderValidationMixin:
-        return FolderValidationMixin(folder_storage=self.folder_storage)
-
+    @transaction.atomic
     @invalidate_interactor_cache(cache_name="folder_lists")
     def reorder_list_in_folder(
             self, folder_id: str, list_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self.list_mixin.check_list_not_deleted(list_id=list_id)
-        self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
-        self._check_list_order_within_range(folder_id=folder_id, order=order)
+        self.check_list_not_deleted(list_id=list_id)
+        self.check_folder_not_deleted(folder_id=folder_id)
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id)
 
-        list_data = self.list_storage.get_list(list_id=list_id)
+        lock_key = f"lock:reorder_list:folder:{folder_id}"
+        with redis_lock(lock_key, timeout=10):
+            self._check_list_order_within_range(folder_id=folder_id, order=order)
+            list_data = self.list_storage.get_list(list_id=list_id)
 
-        old_order = list_data.order
+            old_order = list_data.order
 
-        if old_order == order:
-            return list_data
+            if old_order == order:
+                return list_data
 
-        return self._reorder_lists_and_update_current_in_folder(
-            list_id=list_id,
-            old_order=old_order,
-            new_order=order,
-            folder_id=folder_id,
-        )
+            updated_list_dto = self._reorder_lists_and_update_current_in_folder(
+                list_id=list_id,
+                old_order=old_order,
+                new_order=order,
+                folder_id=folder_id,
+            )
+        return updated_list_dto
 
     def _check_user_has_edit_access_for_list(self, list_id: str, user_id: str):
 
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id)
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )
 

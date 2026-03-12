@@ -10,9 +10,6 @@ from task_management.interactors.dtos import (
     ListViewDTO,
     TemplateDTO,
 )
-from task_management.interactors.lists.add_list_permission_for_user_interactor import (
-    AddListPermissionForUserInteractor,
-)
 from task_management.interactors.lists.create_list_interactor import (
     CreateListInteractor,
 )
@@ -51,29 +48,29 @@ class ListCreationHandler:
         self.view_storage = view_storage
 
     @transaction.atomic
-    def handle_list_creation(self, list_data: CreateListDTO) -> ListDTO:
-        list_obj = self._create_list(list_data=list_data)
+    def handle_list_creation(self, create_list_dto: CreateListDTO) -> ListDTO:
+        list_dto = self._create_list(create_list_dto=create_list_dto)
 
-        if list_obj.is_private:
+        if list_dto.is_private:
             self._create_list_permission_for_created_by_user(
-                list_id=list_obj.list_id, user_id=list_obj.created_by
+                list_id=list_dto.list_id, user_id=list_dto.created_by
             )
 
         self._create_default_template(
-            name=list_obj.name, list_id=list_obj.list_id,
-            user_id=list_obj.created_by)
+            name=list_dto.name, list_id=list_dto.list_id,
+            user_id=list_dto.created_by)
         view_id = self.view_storage.get_list_view_id(
             view_type=ViewType.LIST.value)
 
         self._create_default_list_view(
-            list_id=list_obj.list_id,
+            list_id=list_dto.list_id,
             view_id=view_id,
-            user_id=list_obj.created_by,
+            user_id=list_dto.created_by,
         )
 
-        return list_obj
+        return list_dto
 
-    def _create_list(self, list_data: CreateListDTO) -> ListDTO:
+    def _create_list(self, create_list_dto: CreateListDTO) -> ListDTO:
         list_interactor = CreateListInteractor(
             list_storage=self.list_storage,
             space_storage=self.space_storage,
@@ -81,23 +78,20 @@ class ListCreationHandler:
             workspace_storage=self.workspace_storage,
         )
 
-        return list_interactor.create_list(list_data=list_data)
+        return list_interactor.create_list(create_list_dto=create_list_dto)
 
     def _create_list_permission_for_created_by_user(
             self, list_id: str, user_id: str) -> UserListPermissionDTO:
-        permission_interactor = AddListPermissionForUserInteractor(
-            list_storage=self.list_storage,
-            workspace_storage=self.workspace_storage,
-        )
-        permission_data = CreateListPermissionDTO(
+        user_permission_dto = CreateListPermissionDTO(
             list_id=list_id,
             user_id=user_id,
             permission_type=PermissionType.FULL_EDIT,
             added_by=user_id,
         )
-        return permission_interactor.add_user_in_list_permission(
-            user_permission_data=permission_data
-        )
+
+        return self.list_storage.create_list_users_permission(
+            user_permissions=[user_permission_dto]
+        )[0]
 
     def _create_default_template(
             self, name: str, list_id: str, user_id: str) -> TemplateDTO:

@@ -54,7 +54,7 @@ class CreateListMutation(graphene.Mutation):
             )
 
             result = interactor.handle_list_creation(
-                list_data=create_list_data)
+                create_list_dto=create_list_data)
 
             return ListType(
                 list_id=result.list_id,

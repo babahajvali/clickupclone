@@ -44,7 +44,8 @@ class ReorderFolderInteractor(
             space_id=space_id, user_id=user_id
         )
 
-        with self._get_reorder_folder_lock(space_id=space_id):
+        lock_key = f"lock:reorder_folder:space:{space_id}"
+        with redis_lock(lock_key, timeout=10):
             folder_dto = self.folder_storage.get_folder(folder_id=folder_id)
             current_order = folder_dto.order
 
@@ -104,8 +105,3 @@ class ReorderFolderInteractor(
                 current_order=current_order,
                 new_order=new_order,
             )
-
-    @staticmethod
-    def _get_reorder_folder_lock(space_id: str):
-        lock_key = f"lock:reorder_folder:space:{space_id}"
-        return redis_lock(lock_key, timeout=10)

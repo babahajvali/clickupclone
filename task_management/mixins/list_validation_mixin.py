@@ -1,5 +1,7 @@
 from task_management.exceptions.custom_exceptions import ListNotFound, \
-    DeletedListFound, EmptyListName
+    DeletedListFound, EmptyListName, ModificationNotAllowed, \
+    UserNotListMember
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import ListDTO
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
@@ -33,3 +35,19 @@ class ListValidationMixin:
 
         if is_name_empty:
             raise EmptyListName(list_name=list_name)
+
+    def check_user_has_edit_access_list_permission(
+            self, list_id: str, user_id: str):
+        list_permission_dto = self.list_storage.get_user_permission_for_list(
+            list_id=list_id,
+            user_id=user_id,
+        )
+
+        if not list_permission_dto:
+            raise UserNotListMember(user_id=user_id, list_id=list_id)
+
+        is_not_full_edit = (
+            list_permission_dto.permission_type != PermissionType.FULL_EDIT
+        )
+        if is_not_full_edit:
+            raise ModificationNotAllowed(user_id=user_id)

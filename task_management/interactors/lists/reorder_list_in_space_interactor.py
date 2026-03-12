@@ -15,60 +15,59 @@ from task_management.mixins import (
     SpaceValidationMixin,
     WorkspaceValidationMixin,
 )
+from task_management.utils.redis_utils import redis_lock
 
 
-class ReorderListInSpaceInteractor:
+class ReorderListInSpaceInteractor(
+        ListValidationMixin,
+        SpaceValidationMixin,
+        WorkspaceValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
             space_storage: SpaceStorageInterface):
+        super().__init__(
+            list_storage=list_storage,
+            workspace_storage=workspace_storage,
+            space_storage=space_storage,
+        )
         self.list_storage = list_storage
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
-
-    @property
-    def space_mixin(self) -> SpaceValidationMixin:
-        return SpaceValidationMixin(space_storage=self.space_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="space_lists")
     def reorder_list_in_space(
             self, list_id: str, space_id: str, order: int, user_id: str) \
             -> ListDTO:
-        self.list_mixin.check_list_not_deleted(list_id=list_id)
-        self.space_mixin.check_space_not_deleted(space_id=space_id)
-        self._check_list_order_within_range(space_id=space_id, order=order)
+        self.check_list_not_deleted(list_id=list_id)
+        self.check_space_not_deleted(space_id=space_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id)
 
-        list_data = self.list_storage.get_list(list_id=list_id)
+        lock_key = f"lock:reorder_list:space:{space_id}"
+        with redis_lock(lock_key, timeout=10):
+            self._check_list_order_within_range(space_id=space_id, order=order)
+            list_data = self.list_storage.get_list(list_id=list_id)
 
-        old_order = list_data.order
-        if old_order == order:
-            return list_data
+            old_order = list_data.order
+            if old_order == order:
+                return list_data
 
-        return self._reorder_lists_and_update_current_in_space(
-            list_id=list_id,
-            old_order=old_order,
-            new_order=order,
-            space_id=space_id,
-        )
+            updated_list_dto = self._reorder_lists_and_update_current_in_space(
+                list_id=list_id,
+                old_order=old_order,
+                new_order=order,
+                space_id=space_id,
+            )
+        return updated_list_dto
 
     def _check_user_has_edit_access_for_space(
             self, space_id: str, user_id: str):
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )
 

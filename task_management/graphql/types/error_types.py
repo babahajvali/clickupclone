@@ -61,6 +61,10 @@ class UserHaveAlreadyListPermissionType(graphene.ObjectType):
     user_id = graphene.String(required=True)
 
 
+class UserNotListMemberType(graphene.ObjectType):
+    user_id = graphene.String(required=True)
+
+
 class InvalidFieldValue(graphene.ObjectType):
     message = graphene.String(required=True)
 

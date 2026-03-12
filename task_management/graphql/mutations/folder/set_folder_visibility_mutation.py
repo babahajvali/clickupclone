@@ -50,11 +50,7 @@ class SetFolderVisibilityMutation(graphene.Mutation):
                 space_id=folder_dto.space_id,
                 order=folder_dto.order,
                 is_deleted=folder_dto.is_deleted,
-                created_by=getattr(
-                    folder_dto,
-                    "created_by",
-                    getattr(folder_dto, "created_by_user_id", None),
-                ),
+                created_by=folder_dto.created_by,
                 is_private=folder_dto.is_private
             )
 

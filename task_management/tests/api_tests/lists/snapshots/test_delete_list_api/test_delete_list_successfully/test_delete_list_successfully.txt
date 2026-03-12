@@ -1,0 +1,16 @@
+{
+  "data": {
+    "deleteList": {
+      "__typename": "ListType",
+      "listId": "list_1",
+      "name": "Sprint Board",
+      "description": "List description",
+      "entityType": "SPACE",
+      "entityId": "space_1",
+      "isDeleted": true,
+      "order": 1,
+      "isPrivate": false,
+      "createdBy": "user_1"
+    }
+  }
+}

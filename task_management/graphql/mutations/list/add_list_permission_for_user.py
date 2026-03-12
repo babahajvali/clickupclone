@@ -5,6 +5,7 @@ from task_management.exceptions.enums import PermissionType
 from task_management.graphql.types.error_types import (
     DeletedListType,
     ModificationNotAllowedType,
+    UserNotListMemberType,
     UserHaveAlreadyListPermissionType,
 )
 from task_management.graphql.types.input_types import (
@@ -18,12 +19,7 @@ from task_management.interactors.dtos import CreateListPermissionDTO
 from task_management.interactors.lists.add_list_permission_for_user_interactor import (
     AddListPermissionForUserInteractor,
 )
-from task_management.storages import (
-    ListStorage,
-    FolderStorage,
-    SpaceStorage,
-    WorkspaceStorage,
-)
+from task_management.storages import ListStorage
 
 
 class AddListPermissionForUserMutation(graphene.Mutation):
@@ -40,15 +36,8 @@ class AddListPermissionForUserMutation(graphene.Mutation):
         list_id = params.list_id
 
         list_storage = ListStorage()
-        folder_storage = FolderStorage()
-        space_storage = SpaceStorage()
-        workspace_storage = WorkspaceStorage()
-
         interactor = AddListPermissionForUserInteractor(
             list_storage=list_storage,
-            folder_storage=folder_storage,
-            space_storage=space_storage,
-            workspace_storage=workspace_storage,
         )
 
         try:
@@ -59,7 +48,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 added_by=added_by,
             )
             result = interactor.add_user_in_list_permission(
-                user_permission_data=input_data
+                user_permission_dto=input_data
             )
 
             return UserListPermissionType(
@@ -75,5 +64,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
             return DeletedListType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
+        except custom_exceptions.UserNotListMember as e:
+            return UserNotListMemberType(user_id=e.user_id)
         except custom_exceptions.UserHaveAlreadyListPermission as e:
             return UserHaveAlreadyListPermissionType(user_id=e.user_id)

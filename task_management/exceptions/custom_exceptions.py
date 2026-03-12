@@ -208,6 +208,12 @@ class UserHaveAlreadyListPermission(Exception):
         self.user_id = user_id
 
 
+class UserNotListMember(Exception):
+    def __init__(self, user_id: str, list_id: str):
+        self.user_id = user_id
+        self.list_id = list_id
+
+
 class TaskNotFound(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id

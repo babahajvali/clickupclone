@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "message": "\u201c%(value)s\u201d is not a valid UUID.",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "createList"
+      ]
+    }
+  ],
+  "data": null
+}

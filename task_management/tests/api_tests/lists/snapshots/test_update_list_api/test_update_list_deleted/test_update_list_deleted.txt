@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateList": {
+      "__typename": "DeletedListType",
+      "listId": "list_1"
+    }
+  }
+}

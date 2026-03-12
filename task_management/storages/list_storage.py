@@ -1,5 +1,6 @@
 from typing import Optional, List as ListType
 
+from django.db import transaction
 from django.db.models import F
 
 from task_management.exceptions.enums import VisibilityType, \
@@ -15,18 +16,18 @@ from task_management.models import ListPermission, List, Template, Folder, \
 class ListStorage(ListStorageInterface):
 
     @staticmethod
-    def _convert_list_to_dto(list_data: List) -> ListDTO:
+    def _convert_list_to_dto(list_obj: List) -> ListDTO:
 
         return ListDTO(
-            list_id=str(list_data.list_id),
-            name=list_data.name,
-            description=list_data.description,
-            entity_type=ListEntityType(list_data.entity_type),
-            entity_id=str(list_data.entity_id),
-            is_deleted=list_data.is_deleted,
-            order=list_data.order,
-            created_by=list_data.created_by.user_id,
-            is_private=list_data.is_private,
+            list_id=str(list_obj.list_id),
+            name=list_obj.name,
+            description=list_obj.description,
+            entity_type=ListEntityType(list_obj.entity_type),
+            entity_id=str(list_obj.entity_id),
+            is_deleted=list_obj.is_deleted,
+            order=list_obj.order,
+            created_by=list_obj.created_by_id,
+            is_private=list_obj.is_private,
         )
 
     @staticmethod
@@ -34,23 +35,23 @@ class ListStorage(ListStorageInterface):
             permission_data: ListPermission) -> UserListPermissionDTO:
         return UserListPermissionDTO(
             id=permission_data.pk,
-            list_id=permission_data.list.list_id,
-            user_id=permission_data.user.user_id,
+            list_id=permission_data.list_id,
+            user_id=permission_data.user_id,
             permission_type=permission_data.permission_type,
             is_active=permission_data.is_active,
-            added_by=permission_data.added_by.user_id,
+            added_by=permission_data.added_by_id,
         )
 
     def get_template_id_by_list_id(self, list_id: str) -> str:
         return Template.objects.get(list_id=list_id).template_id
 
     def get_list(self, list_id: str) -> ListDTO | None:
-        list_data = List.objects.filter(list_id=list_id).first()
+        list_obj = List.objects.filter(list_id=list_id).first()
 
-        if list_data is None:
+        if list_obj is None:
             return None
 
-        return self._convert_list_to_dto(list_data=list_data)
+        return self._convert_list_to_dto(list_obj=list_obj)
 
     def create_list(self, list_data: CreateListDTO, order: int) -> ListDTO:
 
@@ -64,106 +65,86 @@ class ListStorage(ListStorageInterface):
             created_by_id=list_data.created_by
         )
 
-        return self._convert_list_to_dto(list_data=list_obj)
+        return self._convert_list_to_dto(list_obj=list_obj)
 
     def get_last_list_order(
             self, entity_type: str, entity_id: str) -> int:
 
-        list_data = List.objects.filter(
+        last_order = List.objects.filter(
             entity_type=entity_type,
             entity_id=entity_id,
             is_deleted=False,
-        ).order_by("-order").first()
+        ).order_by("-order").values_list('order', flat=True).first()
 
-        return list_data.order if list_data else 0
+        return last_order or 0
 
     def get_workspace_id_by_list_id(self, list_id: str) -> str:
-        list_data = List.objects.get(list_id=list_id)
-        if list_data.entity_type == ListEntityType.SPACE.value:
+        list_obj = List.objects.get(list_id=list_id)
+        if list_obj.entity_type == ListEntityType.SPACE.value:
             return Space.objects.values_list(
-                "workspace_id", flat=True).get(space_id=list_data.entity_id)
+                "workspace_id", flat=True).get(space_id=list_obj.entity_id)
 
         return Folder.objects.values_list(
             "space__workspace_id", flat=True).get(
-            folder_id=list_data.entity_id)
+            folder_id=list_obj.entity_id)
 
     def update_list(
             self, list_id: str, name: Optional[str],
             description: Optional[str]) -> ListDTO:
 
-        list_data = List.objects.get(list_id=list_id)
-        is_name_provided = name is not None
-        is_description_provided = description is not None
+        list_properties = {}
+        if name is not None:
+            list_properties['name'] = name
+        if description is not None:
+            list_properties['description'] = description
 
-        if is_name_provided:
-            list_data.name = name
-
-        if is_description_provided:
-            list_data.description = description
-
-        list_data.save()
-
-        return self._convert_list_to_dto(list_data=list_data)
+        List.objects.filter(list_id=list_id).update(**list_properties)
+        return self.get_list(list_id=list_id)
 
     def get_folder_lists(self, folder_ids: ListType[str]) -> ListType[ListDTO]:
-        folder_lists = List.objects.filter(
+        list_objs = List.objects.filter(
             entity_type=ListEntityType.FOLDER.value,
             entity_id__in=folder_ids,
             is_deleted=False)
 
-        return [self._convert_list_to_dto(list_data=data) for data in
-                folder_lists]
+        return [self._convert_list_to_dto(list_obj=list_obj) for list_obj in
+                list_objs]
 
     def get_space_lists(self, space_ids: ListType[str]) -> ListType[ListDTO]:
-        space_lists = List.objects.filter(
+        list_objs = List.objects.filter(
             entity_type=ListEntityType.SPACE.value,
             entity_id__in=space_ids,
             is_deleted=False)
 
-        return [self._convert_list_to_dto(list_data=data) for data in
-                space_lists]
+        return [self._convert_list_to_dto(list_obj=list_obj) for list_obj in
+                list_objs]
 
+    @transaction.atomic
     def delete_list(self, list_id: str) -> ListDTO:
 
-        list_data = List.objects.get(list_id=list_id)
-        list_data.is_deleted = True
-        list_data.save(update_fields=["is_deleted"])
+        List.objects.filter(list_id=list_id).update(is_deleted=True)
+        list_dto = self.get_list(list_id=list_id)
 
-        current_order = list_data.order
-        if list_data.entity_type == ListEntityType.FOLDER.value:
-            List.objects.filter(
-                entity_type=ListEntityType.FOLDER.value,
-                entity_id=list_data.entity_id,
-                is_deleted=False,
-                order__gt=current_order).update(order=F('order') - 1)
-        else:
-            List.objects.filter(
-                entity_type=ListEntityType.SPACE.value,
-                entity_id=list_data.entity_id,
-                is_deleted=False,
-                order__gt=current_order).update(
-                order=F('order') - 1)
+        List.objects.filter(
+            entity_type=list_dto.entity_type.value,
+            entity_id=list_dto.entity_id,
+            is_deleted=False,
+            order__gt=list_dto.order
+        ).update(order=F('order') - 1)
 
-        return self._convert_list_to_dto(list_data=list_data)
+        return list_dto
 
     def update_list_visibility(self, list_id: str, visibility: str) -> ListDTO:
-        # set is_private false
-        list_data = List.objects.get(list_id=list_id)
-        list_data.is_private = visibility == VisibilityType.PRIVATE.value
+        is_private = visibility == VisibilityType.PRIVATE.value
+        List.objects.filter(list_id=list_id).update(is_private=is_private)
 
-        list_data.save(update_fields=["is_private"])
-
-        return self._convert_list_to_dto(list_data=list_data)
+        return self.get_list(list_id=list_id)
 
     def update_list_order_in_folder(
             self, folder_id: str, list_id: str, order: int) -> ListDTO:
 
-        list_data = List.objects.get(list_id=list_id)
-
-        list_data.order = order
-        list_data.save()
-
-        return self._convert_list_to_dto(list_data=list_data)
+        List.objects.filter(list_id=list_id).update(order=order)
+        return self.get_list(list_id=list_id)
 
     def shift_lists_down_in_folder(
             self, folder_id: str, old_order: int, new_order: int):
@@ -190,16 +171,8 @@ class ListStorage(ListStorageInterface):
     def update_list_order_in_space(
             self, space_id: str, list_id: str, order: int) -> ListDTO:
 
-        list_data = List.objects.get(
-            list_id=list_id,
-            entity_type=ListEntityType.SPACE.value,
-            entity_id=space_id,
-        )
-
-        list_data.order = order
-        list_data.save(update_fields=["order"])
-
-        return self._convert_list_to_dto(list_data=list_data)
+        List.objects.filter(list_id=list_id).update(order=order)
+        return self.get_list(list_id=list_id)
 
     def shift_lists_down_in_space(
             self, space_id: str, old_order: int, new_order: int):

@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -20,6 +21,13 @@ from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
+
+
+def reorder_list_in_space_lock_mock():
+    return patch(
+        "task_management.interactors.lists.reorder_list_in_space_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
 
 
 def make_permission(role: Role):
@@ -88,12 +96,13 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_success(self):
         interactor = self._get_interactor()
 
-        result = interactor.reorder_list_in_space(
-            list_id="list_1",
-            space_id="space_1",
-            order=2,
-            user_id="user_id",
-        )
+        with reorder_list_in_space_lock_mock():
+            result = interactor.reorder_list_in_space(
+                list_id="list_1",
+                space_id="space_1",
+                order=2,
+                user_id="user_id",
+            )
 
         assert result.list_id == "list_1"
         interactor.list_storage.shift_lists_down_in_space.assert_called_once_with(
@@ -106,12 +115,13 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_same_order_noop(self):
         interactor = self._get_interactor()
 
-        result = interactor.reorder_list_in_space(
-            list_id="list_1",
-            space_id="space_1",
-            order=1,
-            user_id="user_id",
-        )
+        with reorder_list_in_space_lock_mock():
+            result = interactor.reorder_list_in_space(
+                list_id="list_1",
+                space_id="space_1",
+                order=1,
+                user_id="user_id",
+            )
 
         assert result.order == 1
         interactor.list_storage.update_list_order_in_space.assert_not_called()
@@ -121,7 +131,8 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_invalid_order_low(self):
         interactor = self._get_interactor(space_lists_count=3)
 
-        with pytest.raises(InvalidOrder) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                InvalidOrder) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -134,7 +145,8 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_invalid_order_high(self):
         interactor = self._get_interactor(space_lists_count=3)
 
-        with pytest.raises(InvalidOrder) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                InvalidOrder) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -148,7 +160,8 @@ class TestReorderListInSpace:
         interactor = self._get_interactor(list_data=None)
         interactor.list_storage.get_list.return_value = None
 
-        with pytest.raises(ListNotFound) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                ListNotFound) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -163,7 +176,8 @@ class TestReorderListInSpace:
         list_data.is_deleted = True
         interactor = self._get_interactor(list_data=list_data)
 
-        with pytest.raises(DeletedListFound) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                DeletedListFound) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -176,7 +190,8 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_space_not_found(self):
         interactor = self._get_interactor(space_exists=False)
 
-        with pytest.raises(SpaceNotFound) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                SpaceNotFound) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -189,7 +204,8 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_space_inactive(self):
         interactor = self._get_interactor(space_active=False)
 
-        with pytest.raises(DeletedSpaceFound) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                DeletedSpaceFound) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -202,7 +218,8 @@ class TestReorderListInSpace:
     def test_reorder_list_in_space_permission_denied(self):
         interactor = self._get_interactor(role=Role.GUEST)
 
-        with pytest.raises(ModificationNotAllowed) as exc:
+        with reorder_list_in_space_lock_mock(), pytest.raises(
+                ModificationNotAllowed) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",

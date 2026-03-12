@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -21,6 +22,13 @@ from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
     WorkspaceStorageInterface,
 )
+
+
+def create_list_lock_mock():
+    return patch(
+        "task_management.interactors.lists.create_list_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
 
 
 def make_permission(role: Role):
@@ -107,7 +115,8 @@ class TestCreateList:
         )
 
         # Act
-        result = self.interactor.create_list(dto)
+        with create_list_lock_mock():
+            result = self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(result), "create_list_success.json")
@@ -127,8 +136,8 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(EmptyListName) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(EmptyListName) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value),
@@ -148,8 +157,8 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(SpaceNotFound) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(SpaceNotFound) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
@@ -168,8 +177,8 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(DeletedSpaceFound) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(DeletedSpaceFound) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value), "space_inactive.txt")
@@ -188,8 +197,8 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(FolderNotFound) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(FolderNotFound) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value), "folder_not_found.txt")
@@ -208,8 +217,9 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(DeletedFolderException) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(
+                DeletedFolderException) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value), "folder_inactive.txt")
@@ -228,8 +238,9 @@ class TestCreateList:
         )
 
         # Act
-        with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.create_list(dto)
+        with create_list_lock_mock(), pytest.raises(
+                ModificationNotAllowed) as exc:
+            self.interactor.create_list(create_list_dto=dto)
 
         # Assert
         snapshot.assert_match(repr(exc.value), "permission_denied.txt")

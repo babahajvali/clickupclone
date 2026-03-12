@@ -1,0 +1,20 @@
+{
+  "data": {
+    "getSpaceLists": {
+      "__typename": "ListsType",
+      "lists": [
+        {
+          "listId": "list_1",
+          "name": "Sprint Board",
+          "description": "List description",
+          "entityType": "SPACE",
+          "entityId": "space_1",
+          "isDeleted": false,
+          "order": 1,
+          "isPrivate": false,
+          "createdBy": "user_1"
+        }
+      ]
+    }
+  }
+}

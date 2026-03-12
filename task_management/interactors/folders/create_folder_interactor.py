@@ -37,7 +37,8 @@ class CreateFolderInteractor(
             space_id=create_folder_dto.space_id,
             user_id=create_folder_dto.created_by)
 
-        with self._get_create_folder_lock(space_id=create_folder_dto.space_id):
+        lock_key = f"lock:create_folder:space:{create_folder_dto.space_id}"
+        with redis_lock(lock_key, timeout=10):
             last_folder_order_in_space = (
                 self.folder_storage.get_last_folder_order_in_space(
                     space_id=create_folder_dto.space_id
@@ -58,8 +59,3 @@ class CreateFolderInteractor(
         self.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )
-
-    @staticmethod
-    def _get_create_folder_lock(space_id: str):
-        lock_key = f"lock:create_folder:space:{space_id}"
-        return redis_lock(lock_key, timeout=10)

@@ -11,28 +11,22 @@ from task_management.mixins import (
 )
 
 
-class DeleteListInteractor:
+class DeleteListInteractor(ListValidationMixin, WorkspaceValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            list_storage=list_storage,
+            workspace_storage=workspace_storage,
+        )
         self.list_storage = list_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage
-        )
 
     @invalidate_interactor_cache(cache_name="space_lists")
     @invalidate_interactor_cache(cache_name="folder_lists")
     def delete_list(self, list_id: str, user_id: str):
-        self.list_mixin.check_list_exists(list_id=list_id)
+        self.check_list_exists(list_id=list_id)
 
         self._check_user_has_edit_access_for_list(
             list_id=list_id, user_id=user_id
@@ -44,6 +38,6 @@ class DeleteListInteractor:
         workspace_id = self.list_storage.get_workspace_id_by_list_id(
             list_id=list_id
         )
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id
         )

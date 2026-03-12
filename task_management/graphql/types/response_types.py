@@ -19,6 +19,7 @@ from task_management.graphql.types.error_types import \
     InvalidResetToken, ResetTokenExpired, InvalidFieldValue, \
     EmptyAccountNameExistsType, NothingToUpdateAccountType, \
     InvalidAccountIdsType, UserHaveAlreadyListPermissionType, \
+    UserNotListMemberType, \
     NothingToUpdateFieldType, EmptyFieldNameType, MissingFieldConfigType, \
     DropdownOptionsMissingType, EmptyDropdownOptionsType, \
     UserNotWorkspaceMemberType, DeletedFieldType, \
@@ -874,4 +875,5 @@ class AddListPermissionForUserResponse(graphene.Union):
         types = (UserListPermissionType,
                  DeletedListType,
                  UserHaveAlreadyListPermissionType,
+                 UserNotListMemberType,
                  ModificationNotAllowedType)
