@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from task_management.interactors.dtos import FolderDTO, CreateFolderDTO, \
     UserFolderPermissionDTO, CreateFolderPermissionDTO
@@ -13,7 +13,7 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def create_folder(
-            self, create_folder_data: CreateFolderDTO,
+            self, create_folder_dto: CreateFolderDTO,
             order: int) -> FolderDTO:
         pass
 
@@ -33,11 +33,12 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def shift_folders_down(
-            self, space_id: str, old_order: int, new_order: int):
+            self, space_id: str, current_order: int, new_order: int):
         pass
 
     @abstractmethod
-    def shift_folders_up(self, space_id: str, old_order: int, new_order: int):
+    def shift_folders_up(
+            self, space_id: str, current_order: int, new_order: int):
         pass
 
     @abstractmethod
@@ -49,7 +50,7 @@ class FolderStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_space_folders(self, space_ids: list[str]) -> list[FolderDTO]:
+    def get_space_folders(self, space_ids: List[str]) -> List[FolderDTO]:
         # get the spaces active folders
         pass
 
@@ -69,6 +70,6 @@ class FolderStorageInterface(ABC):
 
     @abstractmethod
     def create_folder_users_permissions(
-            self, users_permission_data: list[CreateFolderPermissionDTO]) -> \
-            list[UserFolderPermissionDTO]:
+            self, users_permission_data: List[CreateFolderPermissionDTO]) -> \
+            List[UserFolderPermissionDTO]:
         pass

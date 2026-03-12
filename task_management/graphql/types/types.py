@@ -67,7 +67,7 @@ class WorkspaceSpacesType(graphene.ObjectType):
 
 
 class FolderType(graphene.ObjectType):
-    folder_id = graphene.String()
+    folder_id = graphene.String(required=True)
     name = graphene.String(required=True)
     description = graphene.String(required=True)
     space_id = graphene.String(required=True)

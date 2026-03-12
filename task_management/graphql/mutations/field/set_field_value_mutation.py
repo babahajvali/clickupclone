@@ -43,16 +43,16 @@ class SetFieldValueMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.set_task_field_response(
+            task_field_value_dto = interactor.set_task_field_response(
                 update_field_value_dto=update_data,
                 user_id=info.context.user_id,
             )
 
             return FieldValueType(
-                id=result.id,
-                task_id=result.task_id,
-                field_id=result.field_id,
-                value=result.value
+                id=task_field_value_dto.id,
+                task_id=task_field_value_dto.task_id,
+                field_id=task_field_value_dto.field_id,
+                value=task_field_value_dto.value
             )
 
         except custom_exceptions.TaskNotFound as e:

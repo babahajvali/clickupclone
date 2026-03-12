@@ -19,20 +19,20 @@ def get_workspace_spaces_resolver(root, info, params):
     )
 
     try:
-        spaces_data = interactor.get_workspace_spaces(
+        spaces_dto = interactor.get_workspace_spaces(
             workspace_id=workspace_id)
 
         spaces_output = [
             SpaceType(
-                space_id=space.space_id,
-                name=space.name,
-                description=space.description,
-                workspace_id=space.workspace_id,
-                order=space.order,
-                is_deleted=space.is_deleted,
-                is_private=space.is_private,
-                created_by=space.created_by
-            ) for space in spaces_data
+                space_id=space_dto.space_id,
+                name=space_dto.name,
+                description=space_dto.description,
+                workspace_id=space_dto.workspace_id,
+                order=space_dto.order,
+                is_deleted=space_dto.is_deleted,
+                is_private=space_dto.is_private,
+                created_by=space_dto.created_by
+            ) for space_dto in spaces_dto
         ]
 
         return WorkspaceSpacesType(spaces=spaces_output)

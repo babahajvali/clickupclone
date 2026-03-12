@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -80,7 +81,12 @@ class TestCreateFolderInteractor:
             is_private=False,
         )
 
-        result = self.interactor.create_folder(folder_data=dto)
+        with patch.object(
+                CreateFolderInteractor,
+                "_get_create_folder_lock",
+                return_value=nullcontext(),
+        ):
+            result = self.interactor.create_folder(create_folder_dto=dto)
 
         snapshot.assert_match(repr(result), "create_folder_success.txt")
 
@@ -94,8 +100,12 @@ class TestCreateFolderInteractor:
             is_private=False,
         )
 
-        with pytest.raises(EmptyFolderName) as exc:
-            self.interactor.create_folder(folder_data=dto)
+        with patch.object(
+                CreateFolderInteractor,
+                "_get_create_folder_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(EmptyFolderName) as exc:
+            self.interactor.create_folder(create_folder_dto=dto)
 
         snapshot.assert_match(repr(exc.value), "create_folder_empty_name.txt")
 
@@ -110,8 +120,12 @@ class TestCreateFolderInteractor:
             is_private=False,
         )
 
-        with pytest.raises(SpaceNotFound) as exc:
-            self.interactor.create_folder(folder_data=dto)
+        with patch.object(
+                CreateFolderInteractor,
+                "_get_create_folder_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(SpaceNotFound) as exc:
+            self.interactor.create_folder(create_folder_dto=dto)
 
         snapshot.assert_match(repr(exc.value), "create_folder_space_not_found.txt")
 
@@ -125,8 +139,12 @@ class TestCreateFolderInteractor:
             is_private=False,
         )
 
-        with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.create_folder(folder_data=dto)
+        with patch.object(
+                CreateFolderInteractor,
+                "_get_create_folder_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(ModificationNotAllowed) as exc:
+            self.interactor.create_folder(create_folder_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "create_folder_permission_denied.txt"

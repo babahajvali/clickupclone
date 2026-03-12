@@ -38,24 +38,24 @@ class SetSpaceVisibilityMutation(graphene.Mutation):
             return UnsupportedVisibilityTypeGQL(visibility=params.visibility)
 
         try:
-            result = interactor.set_space_visibility(
+            space_dto = interactor.set_space_visibility(
                 space_id=params.space_id,
                 user_id=info.context.user_id,
                 visibility=visibility
             )
 
             return SpaceType(
-                space_id=result.space_id,
-                name=result.name,
-                description=result.description,
-                workspace_id=result.workspace_id,
-                order=result.order,
-                is_deleted=result.is_deleted,
-                is_private=result.is_private,
+                space_id=space_dto.space_id,
+                name=space_dto.name,
+                description=space_dto.description,
+                workspace_id=space_dto.workspace_id,
+                order=space_dto.order,
+                is_deleted=space_dto.is_deleted,
+                is_private=space_dto.is_private,
                 created_by=getattr(
-                    result,
+                    space_dto,
                     "created_by",
-                    getattr(result, "created_by_user_id", None),
+                    getattr(space_dto, "created_by_user_id", None),
                 )
             )
 

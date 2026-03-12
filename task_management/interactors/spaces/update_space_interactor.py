@@ -1,4 +1,3 @@
-from contextlib import AbstractContextManager
 from typing import Optional
 
 from task_management.decorators.caching_decorators import \
@@ -9,7 +8,6 @@ from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
     WorkspaceValidationMixin
-from task_management.utils.redis_utils import redis_lock
 
 
 class UpdateSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
@@ -53,12 +51,11 @@ class UpdateSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
             user_id=user_id,
         )
 
-        with self._get_update_space_lock(space_id=space_id):
-            return self.space_storage.update_space(
-                space_id=space_id,
-                name=name,
-                description=description,
-            )
+        return self.space_storage.update_space(
+            space_id=space_id,
+            name=name,
+            description=description,
+        )
 
     def _check_update_space_properties_not_empty(
             self, space_id: str, name: Optional[str],
@@ -85,8 +82,3 @@ class UpdateSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
             user_id=user_id,
             workspace_id=workspace_id,
         )
-
-    @staticmethod
-    def _get_update_space_lock(space_id: str) -> AbstractContextManager:
-        lock_key = f"lock:update_space:{space_id}"
-        return redis_lock(lock_key, timeout=10)

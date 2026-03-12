@@ -28,20 +28,20 @@ class DeleteFolderMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.delete_folder(
+            folder_dto = interactor.delete_folder(
                 folder_id=params.folder_id,
                 user_id=info.context.user_id
             )
 
             return FolderType(
-                folder_id=result.folder_id,
-                name=result.name,
-                description=result.description,
-                space_id=result.space_id,
-                order=result.order,
-                is_active=result.is_deleted,
-                created_by=result.created_by,
-                is_private=result.is_private
+                folder_id=folder_dto.folder_id,
+                name=folder_dto.name,
+                description=folder_dto.description,
+                space_id=folder_dto.space_id,
+                order=folder_dto.order,
+                is_deleted=folder_dto.is_deleted,
+                created_by=folder_dto.created_by,
+                is_private=folder_dto.is_private
             )
 
         except custom_exceptions.FolderNotFound as e:

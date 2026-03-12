@@ -46,7 +46,7 @@ class TestSpacePermissionStorage:
 
         # Act
         result = storage.create_user_space_permissions(
-            permission_data=permission_data)
+            permission_dtos=permission_data)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -73,7 +73,7 @@ class TestSpacePermissionStorage:
 
         # Act
         result = storage.create_user_space_permissions(
-            permission_data=permission_data)
+            permission_dtos=permission_data)
 
         # Assert
         snapshot.assert_match(repr(result),

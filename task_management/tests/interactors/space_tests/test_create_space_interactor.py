@@ -47,6 +47,13 @@ def make_space(order: int = 1) -> SpaceDTO:
     )
 
 
+def create_space_lock_mock():
+    return patch(
+        "task_management.interactors.spaces.create_space_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
+
+
 class TestCreateSpaceInteractor:
     def setup_method(self):
         self.space_storage = create_autospec(SpaceStorageInterface)
@@ -77,11 +84,7 @@ class TestCreateSpaceInteractor:
             created_by="user_1",
         )
 
-        with patch.object(
-                CreateSpaceInteractor,
-                "_get_create_space_lock",
-                return_value=nullcontext(),
-        ):
+        with create_space_lock_mock():
             result = self.interactor.create_space(create_space_dto=dto)
 
         snapshot.assert_match(repr(result), "create_space_success.txt")
@@ -96,11 +99,7 @@ class TestCreateSpaceInteractor:
             created_by="user_1",
         )
 
-        with patch.object(
-                CreateSpaceInteractor,
-                "_get_create_space_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(EmptySpaceName) as exc:
+        with create_space_lock_mock(), pytest.raises(EmptySpaceName) as exc:
             self.interactor.create_space(create_space_dto=dto)
 
         snapshot.assert_match(repr(exc.value), "create_space_empty_name.txt")
@@ -116,11 +115,7 @@ class TestCreateSpaceInteractor:
             created_by="user_1",
         )
 
-        with patch.object(
-                CreateSpaceInteractor,
-                "_get_create_space_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(WorkspaceNotFound) as exc:
+        with create_space_lock_mock(), pytest.raises(WorkspaceNotFound) as exc:
             self.interactor.create_space(create_space_dto=dto)
 
         snapshot.assert_match(
@@ -137,11 +132,8 @@ class TestCreateSpaceInteractor:
             created_by="user_1",
         )
 
-        with patch.object(
-                CreateSpaceInteractor,
-                "_get_create_space_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(ModificationNotAllowed) as exc:
+        with create_space_lock_mock(), pytest.raises(
+                ModificationNotAllowed) as exc:
             self.interactor.create_space(create_space_dto=dto)
 
         snapshot.assert_match(

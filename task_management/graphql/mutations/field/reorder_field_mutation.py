@@ -33,7 +33,7 @@ class ReorderFieldMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.reorder_field(
+            field_dto = interactor.reorder_field(
                 field_id=params.field_id,
                 template_id=params.template_id,
                 new_order=params.new_order,
@@ -41,16 +41,16 @@ class ReorderFieldMutation(graphene.Mutation):
             )
 
             return FieldType(
-                field_id=result.field_id,
-                field_type=result.field_type.value,
-                description=result.description,
-                template_id=result.template_id,
-                field_name=result.field_name,
-                is_deleted=result.is_deleted,
-                order=result.order,
-                config=result.config,
-                is_required=result.is_required,
-                created_by=result.created_by
+                field_id=field_dto.field_id,
+                field_type=field_dto.field_type.value,
+                description=field_dto.description,
+                template_id=field_dto.template_id,
+                field_name=field_dto.field_name,
+                is_deleted=field_dto.is_deleted,
+                order=field_dto.order,
+                config=field_dto.config,
+                is_required=field_dto.is_required,
+                created_by=field_dto.created_by
             )
 
         except custom_exceptions.FieldNotFound as e:

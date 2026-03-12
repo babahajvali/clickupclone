@@ -54,11 +54,13 @@ class TestFolderCreationHandler:
         ) as create_folder, patch.object(
             self.handler, "_create_folder_permission_for_user"
         ) as create_permission:
-            result = self.handler.handle_folder_creation(folder_data=dto)
+            result = self.handler.handle_folder_creation(
+                create_folder_dto=dto
+            )
 
         snapshot.assert_match(repr(result),
                               "handle_folder_creation_success.txt")
-        create_folder.assert_called_once_with(folder_data=dto)
+        create_folder.assert_called_once_with(create_folder_dto=dto)
         create_permission.assert_not_called()
 
     def test_create_folder_permission_for_user_builds_dto(self, snapshot):

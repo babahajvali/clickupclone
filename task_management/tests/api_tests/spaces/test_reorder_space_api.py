@@ -54,7 +54,7 @@ def update_space_order_mock(mocker):
 def reorder_space_lock_mock(mocker):
     return mocker.patch(
         "task_management.interactors.spaces.reorder_space_interactor."
-        "ReorderSpaceInteractor._get_reorder_space_lock",
+        "redis_lock",
         return_value=nullcontext(),
     )
 

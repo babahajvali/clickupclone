@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -69,31 +70,45 @@ class TestReorderFolderInteractor:
     def test_reorder_folder_success(self, snapshot):
         self._setup_dependencies(order=1)
 
-        result = self.interactor.reorder_folder(
-            space_id="space_1",
-            folder_id="folder_1",
-            user_id="user_1",
-            order=2,
-        )
+        with patch.object(
+                ReorderFolderInteractor,
+                "_get_reorder_folder_lock",
+                return_value=nullcontext(),
+        ):
+            result = self.interactor.reorder_folder(
+                space_id="space_1",
+                folder_id="folder_1",
+                user_id="user_1",
+                order=2,
+            )
 
         snapshot.assert_match(repr(result), "reorder_folder_success.txt")
 
     def test_reorder_folder_same_order_noop(self, snapshot):
         self._setup_dependencies(order=2)
 
-        result = self.interactor.reorder_folder(
-            space_id="space_1",
-            folder_id="folder_1",
-            user_id="user_1",
-            order=2,
-        )
+        with patch.object(
+                ReorderFolderInteractor,
+                "_get_reorder_folder_lock",
+                return_value=nullcontext(),
+        ):
+            result = self.interactor.reorder_folder(
+                space_id="space_1",
+                folder_id="folder_1",
+                user_id="user_1",
+                order=2,
+            )
 
         snapshot.assert_match(repr(result), "reorder_folder_same_order.txt")
 
     def test_reorder_folder_invalid_order(self, snapshot):
         self._setup_dependencies()
 
-        with pytest.raises(InvalidOrder) as exc:
+        with patch.object(
+                ReorderFolderInteractor,
+                "_get_reorder_folder_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(InvalidOrder) as exc:
             self.interactor.reorder_folder(
                 space_id="space_1",
                 folder_id="folder_1",
@@ -106,7 +121,11 @@ class TestReorderFolderInteractor:
     def test_reorder_folder_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
 
-        with pytest.raises(ModificationNotAllowed) as exc:
+        with patch.object(
+                ReorderFolderInteractor,
+                "_get_reorder_folder_lock",
+                return_value=nullcontext(),
+        ), pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.reorder_folder(
                 space_id="space_1",
                 folder_id="folder_1",

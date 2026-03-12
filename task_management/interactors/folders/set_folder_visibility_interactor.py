@@ -8,28 +8,26 @@ from task_management.mixins import FolderValidationMixin, \
     WorkspaceValidationMixin
 
 
-class SetFolderVisibilityInteractor:
+class SetFolderVisibilityInteractor(
+    FolderValidationMixin,
+    WorkspaceValidationMixin,
+):
 
     def __init__(
             self, folder_storage: FolderStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            folder_storage=folder_storage,
+            workspace_storage=workspace_storage,
+        )
         self.folder_storage = folder_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def folder_mixin(self) -> FolderValidationMixin:
-        return FolderValidationMixin(folder_storage=self.folder_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="folders")
     def set_folder_visibility(
             self, folder_id: str, user_id: str, visibility: VisibilityType) \
             -> FolderDTO:
-        self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
+        self.check_folder_not_deleted(folder_id=folder_id)
         self._check_user_has_edit_access_for_folder(
             folder_id=folder_id, user_id=user_id
         )
@@ -42,6 +40,6 @@ class SetFolderVisibilityInteractor:
         workspace_id = self.folder_storage.get_workspace_id_from_folder_id(
             folder_id=folder_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )

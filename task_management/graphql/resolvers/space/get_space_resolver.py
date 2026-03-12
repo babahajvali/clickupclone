@@ -17,17 +17,17 @@ def get_space_resolver(root, info, params):
     )
 
     try:
-        space_data = interactor.get_space(space_id=space_id)
+        space_dto = interactor.get_space(space_id=space_id)
 
         space_output = SpaceType(
-            space_id=space_data.space_id,
-            name=space_data.name,
-            description=space_data.description,
-            workspace_id=space_data.workspace_id,
-            order=space_data.order,
-            is_deleted=space_data.is_deleted,
-            is_private=space_data.is_private,
-            created_by=space_data.created_by
+            space_id=space_dto.space_id,
+            name=space_dto.name,
+            description=space_dto.description,
+            workspace_id=space_dto.workspace_id,
+            order=space_dto.order,
+            is_deleted=space_dto.is_deleted,
+            is_private=space_dto.is_private,
+            created_by=space_dto.created_by
         )
 
         return space_output

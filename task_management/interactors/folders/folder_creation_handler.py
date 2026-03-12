@@ -23,23 +23,26 @@ class FolderCreationHandler:
 
     @transaction.atomic
     def handle_folder_creation(
-            self, folder_data: CreateFolderDTO) -> FolderDTO:
-        folder_obj = self._create_folder(folder_data=folder_data)
+            self, create_folder_dto: CreateFolderDTO) -> FolderDTO:
+        folder_dto = self._create_folder(create_folder_dto=create_folder_dto)
 
-        if folder_obj.is_private:
+        if folder_dto.is_private:
             self._create_folder_permission_for_user(
-                folder_id=folder_obj.folder_id, user_id=folder_data.created_by
+                folder_id=folder_dto.folder_id,
+                user_id=create_folder_dto.created_by,
             )
 
-        return folder_obj
+        return folder_dto
 
-    def _create_folder(self, folder_data: CreateFolderDTO) -> FolderDTO:
+    def _create_folder(self, create_folder_dto: CreateFolderDTO) -> FolderDTO:
         folder_interactor = CreateFolderInteractor(
             folder_storage=self.folder_storage,
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage)
 
-        return folder_interactor.create_folder(folder_data=folder_data)
+        return folder_interactor.create_folder(
+            create_folder_dto=create_folder_dto
+        )
 
     def _create_folder_permission_for_user(self, folder_id: str, user_id: str):
         folder_interactor = AddFolderPermissionForUserInteractor(

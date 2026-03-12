@@ -8,30 +8,27 @@ from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
 from task_management.mixins import FolderValidationMixin, SpaceValidationMixin, \
     WorkspaceValidationMixin
+from task_management.utils.redis_utils import redis_lock
 
 
-class ReorderFolderInteractor:
+class ReorderFolderInteractor(
+    FolderValidationMixin,
+    SpaceValidationMixin,
+    WorkspaceValidationMixin,
+):
 
     def __init__(
             self, folder_storage: FolderStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
             space_storage: SpaceStorageInterface):
+        super().__init__(
+            folder_storage=folder_storage,
+            workspace_storage=workspace_storage,
+            space_storage=space_storage,
+        )
         self.folder_storage = folder_storage
         self.workspace_storage = workspace_storage
         self.space_storage = space_storage
-
-    @property
-    def folder_mixin(self) -> FolderValidationMixin:
-        return FolderValidationMixin(folder_storage=self.folder_storage)
-
-    @property
-    def space_mixin(self) -> SpaceValidationMixin:
-        return SpaceValidationMixin(space_storage=self.space_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @transaction.atomic
     @invalidate_interactor_cache(cache_name="folders")
@@ -41,28 +38,33 @@ class ReorderFolderInteractor:
         self._check_folder_order_within_range(
             space_id=space_id, order=order
         )
-        self.folder_mixin.check_folder_not_deleted(folder_id=folder_id)
-        self.space_mixin.check_space_not_deleted(space_id=space_id)
+        self.check_folder_not_deleted(folder_id=folder_id)
+        self.check_space_not_deleted(space_id=space_id)
         self._check_user_has_edit_access_for_space(
             space_id=space_id, user_id=user_id
         )
 
-        folder_data = self.folder_storage.get_folder(folder_id=folder_id)
-        old_order = folder_data.order
+        with self._get_reorder_folder_lock(space_id=space_id):
+            folder_dto = self.folder_storage.get_folder(folder_id=folder_id)
+            current_order = folder_dto.order
 
-        if old_order == order:
-            return folder_data
+            if current_order == order:
+                return folder_dto
 
-        return self._reorder_folders_and_update_current(
-            space_id=space_id, old_order=old_order, new_order=order,
-            folder_id=folder_id)
+            updated_folder_dto = self._reorder_folders_and_update_current(
+                space_id=space_id,
+                current_order=current_order,
+                new_order=order,
+                folder_id=folder_id,
+            )
+        return updated_folder_dto
 
     def _check_user_has_edit_access_for_space(
             self, space_id: str, user_id: str):
         workspace_id = self.space_storage.get_space_workspace_id(
             space_id=space_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             user_id=user_id, workspace_id=workspace_id
         )
 
@@ -76,23 +78,34 @@ class ReorderFolderInteractor:
             raise InvalidOrder(order=order)
 
     def _reorder_folders_and_update_current(
-            self, space_id: str, old_order: int, new_order: int,
-            folder_id: str):
+            self, space_id: str, current_order: int, new_order: int,
+            folder_id: str) -> FolderDTO:
         self._shift_other_folders(
-            space_id=space_id, old_order=old_order, new_order=new_order
+            space_id=space_id,
+            current_order=current_order,
+            new_order=new_order,
         )
 
         return self.folder_storage.update_folder_order(
             folder_id=folder_id, new_order=new_order)
 
     def _shift_other_folders(
-            self, space_id: str, old_order: int, new_order: int):
+            self, space_id: str, current_order: int, new_order: int):
 
-        if new_order > old_order:
+        if new_order > current_order:
             self.folder_storage.shift_folders_down(
-                space_id=space_id, old_order=old_order, new_order=new_order
+                space_id=space_id,
+                current_order=current_order,
+                new_order=new_order,
             )
         else:
             self.folder_storage.shift_folders_up(
-                space_id=space_id, old_order=old_order, new_order=new_order
+                space_id=space_id,
+                current_order=current_order,
+                new_order=new_order,
             )
+
+    @staticmethod
+    def _get_reorder_folder_lock(space_id: str):
+        lock_key = f"lock:reorder_folder:space:{space_id}"
+        return redis_lock(lock_key, timeout=10)

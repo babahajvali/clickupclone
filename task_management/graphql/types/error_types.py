@@ -200,7 +200,7 @@ class DeletedSpaceType(graphene.ObjectType):
 
 
 class FolderNotFoundType(graphene.ObjectType):
-    folder_id = graphene.String()
+    folder_id = graphene.String(required=True)
 
 
 class EmptyFolderNameType(graphene.ObjectType):

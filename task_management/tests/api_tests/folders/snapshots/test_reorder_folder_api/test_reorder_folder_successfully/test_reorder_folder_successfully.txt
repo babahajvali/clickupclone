@@ -1,0 +1,15 @@
+{
+  "data": {
+    "reorderFolder": {
+      "__typename": "FolderType",
+      "folderId": "folder_1",
+      "name": "Product",
+      "description": "Product folder",
+      "spaceId": "space_1",
+      "order": 2,
+      "isDeleted": false,
+      "isPrivate": false,
+      "createdBy": "user_1"
+    }
+  }
+}

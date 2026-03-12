@@ -1,5 +1,3 @@
-from contextlib import AbstractContextManager
-
 from django.db import transaction
 
 from task_management.decorators.caching_decorators import \
@@ -46,12 +44,13 @@ class ReorderSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
 
         self.check_workspace_not_deleted(workspace_id=workspace_id)
         self.check_space_not_deleted(space_id=space_id)
-        self._check_user_has_edit_access_to_workspace_for_space(
-            workspace_id=workspace_id,
+        self.check_user_has_edit_access_to_workspace(
             user_id=user_id,
+            workspace_id=workspace_id,
         )
 
-        with self._get_reorder_space_lock(workspace_id=workspace_id):
+        lock_key = f"lock:reorder_space:workspace:{workspace_id}"
+        with redis_lock(lock_key, timeout=10):
             self._check_space_order_within_range(
                 workspace_id=workspace_id,
                 order=order,
@@ -105,15 +104,3 @@ class ReorderSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):
                 workspace_id=workspace_id, current_order=current_order,
                 new_order=new_order
             )
-
-    def _check_user_has_edit_access_to_workspace_for_space(
-            self, workspace_id: str, user_id: str) -> None:
-        self.check_user_has_edit_access_to_workspace(
-            user_id=user_id,
-            workspace_id=workspace_id,
-        )
-
-    @staticmethod
-    def _get_reorder_space_lock(workspace_id: str) -> AbstractContextManager:
-        lock_key = f"lock:reorder_space:workspace:{workspace_id}"
-        return redis_lock(lock_key, timeout=10)

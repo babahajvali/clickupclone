@@ -33,7 +33,7 @@ class CreateFolderMutation(graphene.Mutation):
         )
 
         try:
-            create_folder_data = CreateFolderDTO(
+            create_folder_dto = CreateFolderDTO(
                 name=params.name,
                 description=params.description,
                 space_id=params.space_id,
@@ -41,18 +41,18 @@ class CreateFolderMutation(graphene.Mutation):
                 is_private=params.is_private
             )
 
-            result = interactor.create_folder(
-                folder_data=create_folder_data)
+            folder_dto = interactor.create_folder(
+                create_folder_dto=create_folder_dto)
 
             return FolderType(
-                folder_id=result.folder_id,
-                name=result.name,
-                description=result.description,
-                space_id=result.space_id,
-                order=result.order,
-                is_active=result.is_deleted,
-                created_by=result.created_by,
-                is_private=result.is_private
+                folder_id=folder_dto.folder_id,
+                name=folder_dto.name,
+                description=folder_dto.description,
+                space_id=folder_dto.space_id,
+                order=folder_dto.order,
+                is_deleted=folder_dto.is_deleted,
+                created_by=folder_dto.created_by,
+                is_private=folder_dto.is_private
             )
 
         except custom_exceptions.EmptyFolderName as e:

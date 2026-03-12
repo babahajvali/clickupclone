@@ -19,7 +19,7 @@ def get_space_folders_resolver(root, info, params):
     )
 
     try:
-        folders_data = interactor.get_space_folders(space_id=space_id)
+        folder_dtos = interactor.get_space_folders(space_id=space_id)
 
         folders_output = [
             FolderType(
@@ -28,10 +28,10 @@ def get_space_folders_resolver(root, info, params):
                 description=folder.description,
                 space_id=folder.space_id,
                 order=folder.order,
-                is_active=folder.is_deleted,
+                is_deleted=folder.is_deleted,
                 created_by=folder.created_by,
                 is_private=folder.is_private
-            ) for folder in folders_data
+            ) for folder in folder_dtos
         ]
 
         return SpaceFoldersType(folders=folders_output)

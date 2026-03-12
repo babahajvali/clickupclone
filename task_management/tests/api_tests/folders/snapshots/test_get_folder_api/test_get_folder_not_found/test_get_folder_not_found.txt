@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getFolder": {
+      "__typename": "FolderNotFoundType",
+      "folderId": "folder_404"
+    }
+  }
+}

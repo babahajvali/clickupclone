@@ -18,17 +18,17 @@ def get_fields_resolver(root, info, params):
         fields_dto = interactor.get_fields(field_ids=field_ids)
 
         result = [FieldType(
-            field_id=field_data.field_id,
-            field_type=field_data.field_type.value,
-            description=field_data.description,
-            template_id=field_data.template_id,
-            field_name=field_data.field_name,
-            order=field_data.order,
-            config=field_data.config,
-            is_deleted=field_data.is_deleted,
-            is_required=field_data.is_required,
-            created_by=field_data.created_by
-        ) for field_data in fields_dto]
+            field_id=field_dto.field_id,
+            field_type=field_dto.field_type.value,
+            description=field_dto.description,
+            template_id=field_dto.template_id,
+            field_name=field_dto.field_name,
+            order=field_dto.order,
+            config=field_dto.config,
+            is_deleted=field_dto.is_deleted,
+            is_required=field_dto.is_required,
+            created_by=field_dto.created_by
+        ) for field_dto in fields_dto]
 
         return FieldsType(fields=result)
 

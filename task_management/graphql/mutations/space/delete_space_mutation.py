@@ -28,20 +28,20 @@ class DeleteSpaceMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.delete_space(
+            space_dto = interactor.delete_space(
                 space_id=params.space_id,
                 deleted_by=info.context.user_id
             )
 
             return SpaceType(
-                space_id=result.space_id,
-                name=result.name,
-                description=result.description,
-                workspace_id=result.workspace_id,
-                order=result.order,
-                is_deleted=result.is_deleted,
-                is_private=result.is_private,
-                created_by=result.created_by
+                space_id=space_dto.space_id,
+                name=space_dto.name,
+                description=space_dto.description,
+                workspace_id=space_dto.workspace_id,
+                order=space_dto.order,
+                is_deleted=space_dto.is_deleted,
+                is_private=space_dto.is_private,
+                created_by=space_dto.created_by
             )
 
         except custom_exceptions.SpaceNotFound as e:

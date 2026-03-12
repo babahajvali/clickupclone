@@ -36,7 +36,7 @@ def create_space_mock(mocker):
 def create_space_lock_mock(mocker):
     return mocker.patch(
         "task_management.interactors.spaces.create_space_interactor."
-        "CreateSpaceInteractor._get_create_space_lock",
+        "redis_lock",
         return_value=nullcontext(),
     )
 

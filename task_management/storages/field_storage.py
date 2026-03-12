@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+from django.db import transaction
 from django.db.models import F
 
 from task_management.exceptions.enums import FieldType, ListEntityType
@@ -14,18 +15,18 @@ from task_management.models import Field, TaskFieldValue, Space, Folder
 class FieldStorage(FieldStorageInterface):
 
     @staticmethod
-    def _convert_to_field_dto(field_db_object: Field) -> FieldDTO:
+    def _convert_to_field_dto(field_obj: Field) -> FieldDTO:
         return FieldDTO(
-            field_id=field_db_object.field_id,
-            field_name=field_db_object.field_name,
-            description=field_db_object.description,
-            field_type=FieldType(field_db_object.field_type),
-            template_id=field_db_object.template.template_id,
-            is_deleted=field_db_object.is_deleted,
-            order=field_db_object.order,
-            config=field_db_object.config,
-            is_required=field_db_object.is_required,
-            created_by=field_db_object.created_by.user_id,
+            field_id=field_obj.field_id,
+            field_name=field_obj.field_name,
+            description=field_obj.description,
+            field_type=FieldType(field_obj.field_type),
+            template_id=field_obj.template_id,
+            is_deleted=field_obj.is_deleted,
+            order=field_obj.order,
+            config=field_obj.config,
+            is_required=field_obj.is_required,
+            created_by=field_obj.created_by_id,
         )
 
     def create_field(
@@ -42,7 +43,7 @@ class FieldStorage(FieldStorageInterface):
             created_by_id=create_field_dto.created_by_user_id
         )
 
-        return self._convert_to_field_dto(field_db_object=field_obj)
+        return self._convert_to_field_dto(field_obj=field_obj)
 
     def is_field_name_exists(
             self, field_name: str, template_id: str,
@@ -61,7 +62,7 @@ class FieldStorage(FieldStorageInterface):
         field_objs = Field.objects.filter(field_id__in=field_ids)
         if not field_objs:
             return None
-        return [self._convert_to_field_dto(field_db_object=field_data) for
+        return [self._convert_to_field_dto(field_obj=field_data) for
                 field_data in field_objs]
 
     def get_existing_field_ids(self, field_ids: List[str]) -> List[str]:
@@ -94,27 +95,25 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id, is_deleted=False
         )
         return [
-            self._convert_to_field_dto(field_db_object=field_obj)
+            self._convert_to_field_dto(field_obj=field_obj)
             for field_obj in fields_obj
         ]
 
     def get_field_values_by_task_ids(
             self, task_ids: List[str]) -> List[TaskFieldValuesDTO]:
-        field_values = TaskFieldValue.objects.filter(
-            task_id__in=task_ids
-        ).select_related('field', 'task').prefetch_related('field__template')
+        field_values = TaskFieldValue.objects.filter(task_id__in=task_ids)
 
         task_values_map = {}
         for fv in field_values:
             if fv.value is None:
                 continue
-            task_id = str(fv.task.task_id)
+            task_id = str(fv.task_id)
             if task_id not in task_values_map:
                 task_values_map[task_id] = []
 
-            task_values_map[str(task_id)].append(
+            task_values_map[task_id].append(
                 FieldValueDTO(
-                    field_id=str(fv.field.field_id),
+                    field_id=str(fv.field_id),
                     value=fv.value
                 )
             )
@@ -122,8 +121,8 @@ class FieldStorage(FieldStorageInterface):
         for task_id in task_ids:
             result.append(
                 TaskFieldValuesDTO(
-                    task_id=str(task_id),
-                    values=task_values_map.get(str(task_id), [])
+                    task_id=task_id,
+                    values=task_values_map.get(task_id, [])
                 )
             )
         return result
@@ -157,6 +156,7 @@ class FieldStorage(FieldStorageInterface):
         return Field.objects.filter(
             template_id=template_id, is_deleted=False).count()
 
+    @transaction.atomic
     def delete_field(self, field_id: str):
         Field.objects.filter(field_id=field_id).update(is_deleted=True)
 
@@ -206,8 +206,8 @@ class FieldStorage(FieldStorageInterface):
 
         return TaskFieldValueDTO(
             id=obj.pk,
-            task_id=obj.task.task_id,
-            field_id=obj.field.field_id,
+            task_id=obj.task_id,
+            field_id=obj.field_id,
             value=obj.value,
         )
 
@@ -244,8 +244,8 @@ class FieldStorage(FieldStorageInterface):
         ).get(folder_id=entity_id))
 
     def get_last_field_order_in_template(self, template_id: str) -> int:
-        last_field_obj = Field.objects.filter(
-            template_id=template_id,
-            is_deleted=False).order_by('-order').first()
+        last_order = Field.objects.filter(
+            template_id=template_id, is_deleted=False
+        ).order_by('-order').values_list('order', flat=True).first()
 
-        return last_field_obj.order if last_field_obj else 0
+        return last_order or 0

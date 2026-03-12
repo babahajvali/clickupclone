@@ -42,6 +42,13 @@ def make_space(order: int = 1) -> SpaceDTO:
     )
 
 
+def reorder_space_lock_mock():
+    return patch(
+        "task_management.interactors.spaces.reorder_space_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
+
+
 class TestReorderSpaceInteractor:
     def setup_method(self):
         self.space_storage = create_autospec(SpaceStorageInterface)
@@ -66,11 +73,7 @@ class TestReorderSpaceInteractor:
     def test_reorder_space_success(self, snapshot):
         self._setup_dependencies(order=1)
 
-        with patch.object(
-                ReorderSpaceInteractor,
-                "_get_reorder_space_lock",
-                return_value=nullcontext(),
-        ):
+        with reorder_space_lock_mock():
             result = self.interactor.reorder_space(
                 workspace_id="workspace_1",
                 space_id="space_1",
@@ -83,11 +86,7 @@ class TestReorderSpaceInteractor:
     def test_reorder_space_same_order_noop(self, snapshot):
         self._setup_dependencies(order=2)
 
-        with patch.object(
-                ReorderSpaceInteractor,
-                "_get_reorder_space_lock",
-                return_value=nullcontext(),
-        ):
+        with reorder_space_lock_mock():
             result = self.interactor.reorder_space(
                 workspace_id="workspace_1",
                 space_id="space_1",
@@ -100,11 +99,7 @@ class TestReorderSpaceInteractor:
     def test_reorder_space_invalid_order(self, snapshot):
         self._setup_dependencies()
 
-        with patch.object(
-                ReorderSpaceInteractor,
-                "_get_reorder_space_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(InvalidOrder) as exc:
+        with reorder_space_lock_mock(), pytest.raises(InvalidOrder) as exc:
             self.interactor.reorder_space(
                 workspace_id="workspace_1",
                 space_id="space_1",
@@ -117,11 +112,8 @@ class TestReorderSpaceInteractor:
     def test_reorder_space_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
 
-        with patch.object(
-                ReorderSpaceInteractor,
-                "_get_reorder_space_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(ModificationNotAllowed) as exc:
+        with reorder_space_lock_mock(), pytest.raises(
+                ModificationNotAllowed) as exc:
             self.interactor.reorder_space(
                 workspace_id="workspace_1",
                 space_id="space_1",

@@ -22,22 +22,22 @@ def get_fields_for_template_resolver(root, info, params):
 
     try:
         template_id = list_storage.get_template_id_by_list_id(list_id=list_id)
-        fields_data = interactor.get_template_fields(
+        fields_dto = interactor.get_template_fields(
             template_id=template_id)
 
         fields_output = [
             FieldType(
-                field_id=field.field_id,
-                field_type=field.field_type.value,
-                description=field.description,
-                template_id=field.template_id,
-                field_name=field.field_name,
-                order=field.order,
-                config=field.config,
-                is_deleted=field.is_deleted,
-                is_required=field.is_required,
-                created_by=field.created_by
-            ) for field in fields_data
+                field_id=field_dto.field_id,
+                field_type=field_dto.field_type.value,
+                description=field_dto.description,
+                template_id=field_dto.template_id,
+                field_name=field_dto.field_name,
+                order=field_dto.order,
+                config=field_dto.config,
+                is_deleted=field_dto.is_deleted,
+                is_required=field_dto.is_required,
+                created_by=field_dto.created_by
+            ) for field_dto in fields_dto
         ]
 
         return FieldsType(fields=fields_output)

@@ -19,7 +19,15 @@ class TestFolderStorage:
 
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(folder_id=folder_id, space=space, created_by=user)
+        FolderFactory(
+            folder_id=folder_id,
+            space=space,
+            created_by=user,
+            name="Folder Name",
+            description="Folder description",
+            order=1,
+            is_deleted=False,
+        )
         storage = FolderStorage()
 
         # Act
@@ -57,7 +65,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.create_folder(create_folder_data=create_folder_data,
+        result = storage.create_folder(create_folder_dto=create_folder_data,
                                        order=1)
 
         # Assert
@@ -95,7 +103,7 @@ class TestFolderStorage:
         storage = FolderStorage()
 
         # Act
-        result = storage.create_folder(create_folder_data=create_folder_data,
+        result = storage.create_folder(create_folder_dto=create_folder_data,
                                        order=1)
 
         # Assert
@@ -123,7 +131,8 @@ class TestFolderStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      name="Old Name", description="Old description")
+                      name="Old Name", description="Old description",
+                      order=1, is_deleted=False)
         folder_id = str(folder_id)
         name = "New Name"
         description = "New description"
@@ -146,9 +155,12 @@ class TestFolderStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      order=1)
-        FolderFactory(space=space, created_by=user, order=2)
-        FolderFactory(space=space, created_by=user, order=3)
+                      name="Folder 1", description="Desc 1",
+                      order=1, is_deleted=False)
+        FolderFactory(space=space, created_by=user, name="Folder 2",
+                      description="Desc 2", order=2, is_deleted=False)
+        FolderFactory(space=space, created_by=user, name="Folder 3",
+                      description="Desc 3", order=3, is_deleted=False)
         storage = FolderStorage()
 
         # Act
@@ -167,10 +179,13 @@ class TestFolderStorage:
         user_id = "12345678-1234-5678-1234-567812345679"
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
-        FolderFactory(space=space, created_by=user, order=1)
-        FolderFactory(space=space, created_by=user, order=2)
+        FolderFactory(space=space, created_by=user, name="Folder 1",
+                      description="Desc 1", order=1, is_deleted=False)
+        FolderFactory(space=space, created_by=user, name="Folder 2",
+                      description="Desc 2", order=2, is_deleted=False)
         FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      order=3)
+                      name="Folder 3", description="Desc 3",
+                      order=3, is_deleted=False)
         storage = FolderStorage()
 
         # Act
@@ -190,7 +205,8 @@ class TestFolderStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      order=2)
+                      name="Folder Name", description="Folder description",
+                      order=2, is_deleted=False)
         storage = FolderStorage()
 
         # Act
@@ -230,10 +246,14 @@ class TestFolderStorage:
         space1 = SpaceFactory(space_id=space_id_1)
         space2 = SpaceFactory(space_id=space_id_2)
         user = UserFactory(user_id=user_id)
-        FolderFactory(space=space1, created_by=user, is_deleted=False)
-        FolderFactory(space=space1, created_by=user, is_deleted=False)
-        FolderFactory(space=space2, created_by=user, is_deleted=False)
-        FolderFactory(space=space1, created_by=user, is_deleted=True)
+        FolderFactory(space=space1, created_by=user, name="Folder 1",
+                      description="Desc 1", order=1, is_deleted=False)
+        FolderFactory(space=space1, created_by=user, name="Folder 2",
+                      description="Desc 2", order=2, is_deleted=False)
+        FolderFactory(space=space2, created_by=user, name="Folder 3",
+                      description="Desc 3", order=1, is_deleted=False)
+        FolderFactory(space=space1, created_by=user, name="Folder 4",
+                      description="Desc 4", order=3, is_deleted=True)
         space_ids = [str(space_id_1), str(space_id_2)]
         storage = FolderStorage()
 
@@ -282,7 +302,8 @@ class TestFolderStorage:
         space = SpaceFactory(space_id=space_id)
         user = UserFactory(user_id=user_id)
         FolderFactory(folder_id=folder_id, space=space, created_by=user,
-                      is_private=True)
+                      name="Folder Name", description="Folder description",
+                      order=1, is_deleted=False, is_private=True)
         storage = FolderStorage()
 
         # Act

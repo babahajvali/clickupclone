@@ -16,17 +16,17 @@ def get_folder_resolver(root, info, params):
     )
 
     try:
-        folder_data = interactor.get_folder(folder_id=folder_id)
+        folder_dto = interactor.get_folder(folder_id=folder_id)
 
         folder_output = FolderType(
-            folder_id=folder_data.folder_id,
-            name=folder_data.name,
-            description=folder_data.description,
-            space_id=folder_data.space_id,
-            order=folder_data.order,
-            is_active=folder_data.is_deleted,
-            created_by=folder_data.created_by,
-            is_private=folder_data.is_private
+            folder_id=folder_dto.folder_id,
+            name=folder_dto.name,
+            description=folder_dto.description,
+            space_id=folder_dto.space_id,
+            order=folder_dto.order,
+            is_deleted=folder_dto.is_deleted,
+            created_by=folder_dto.created_by,
+            is_private=folder_dto.is_private
         )
 
         return folder_output

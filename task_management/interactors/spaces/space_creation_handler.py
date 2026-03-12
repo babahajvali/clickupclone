@@ -47,7 +47,7 @@ class SpaceCreationHandler:
             workspace_storage=self.workspace_storage
         )
 
-        user_permission_data = CreateUserSpacePermissionDTO(
+        user_permission_dto = CreateUserSpacePermissionDTO(
             space_id=space_id,
             user_id=user_id,
             permission_type=PermissionType.FULL_EDIT,
@@ -55,4 +55,4 @@ class SpaceCreationHandler:
         )
 
         return permission_interactor.add_user_for_space_permission(
-            create_space_permission_dto=user_permission_data)
+            create_space_permission_dto=user_permission_dto)

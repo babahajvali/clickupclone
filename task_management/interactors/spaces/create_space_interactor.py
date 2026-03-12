@@ -1,5 +1,3 @@
-from contextlib import AbstractContextManager
-
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
@@ -37,14 +35,17 @@ class CreateSpaceInteractor(WorkspaceValidationMixin, SpaceValidationMixin):
     @invalidate_interactor_cache(cache_name="spaces")
     def create_space(self, create_space_dto: CreateSpaceDTO) -> SpaceDTO:
         """Create a new space for the target workspace."""
-        self._check_create_space_input(create_space_dto=create_space_dto)
-        self._check_user_has_edit_access_to_workspace_for_space(
-            workspace_id=create_space_dto.workspace_id,
+        self.check_space_name_not_empty(name=create_space_dto.name)
+        self.check_workspace_not_deleted(
+            workspace_id=create_space_dto.workspace_id
+        )
+        self.check_user_has_edit_access_to_workspace(
             user_id=create_space_dto.created_by,
+            workspace_id=create_space_dto.workspace_id,
         )
 
-        with self._get_create_space_lock(
-                workspace_id=create_space_dto.workspace_id):
+        lock_key = f"lock:create_space:workspace:{create_space_dto.workspace_id}"
+        with redis_lock(lock_key, timeout=10):
             last_space_order_in_workspace = (
                 self.space_storage.get_last_space_order_in_workspace(
                     workspace_id=create_space_dto.workspace_id
@@ -56,22 +57,3 @@ class CreateSpaceInteractor(WorkspaceValidationMixin, SpaceValidationMixin):
                 order=last_space_order_in_workspace + 1,
             )
         return space_dto
-
-    def _check_create_space_input(
-            self, create_space_dto: CreateSpaceDTO) -> None:
-        self.check_space_name_not_empty(name=create_space_dto.name)
-        self.check_workspace_not_deleted(
-            workspace_id=create_space_dto.workspace_id
-        )
-
-    def _check_user_has_edit_access_to_workspace_for_space(
-            self, workspace_id: str, user_id: str) -> None:
-        self.check_user_has_edit_access_to_workspace(
-            user_id=user_id,
-            workspace_id=workspace_id,
-        )
-
-    @staticmethod
-    def _get_create_space_lock(workspace_id: str) -> AbstractContextManager:
-        lock_key = f"lock:create_space:workspace:{workspace_id}"
-        return redis_lock(lock_key, timeout=10)
