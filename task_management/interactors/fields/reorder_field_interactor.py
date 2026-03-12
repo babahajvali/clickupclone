@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache, redis_lock
+    invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import InvalidOrder, \
     FieldNotBelongsToTemplate
 from task_management.interactors.dtos import FieldDTO
@@ -9,6 +9,7 @@ from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import TemplateValidationMixin, \
     WorkspaceValidationMixin, FieldValidationMixin
+from task_management.utils.redis_utils import redis_lock
 
 
 class ReorderFieldInteractor(

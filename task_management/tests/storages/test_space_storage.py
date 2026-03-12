@@ -9,7 +9,7 @@ from task_management.tests.factories.storage_factory import SpaceFactory, \
 class TestSpaceStorage:
 
     @pytest.mark.django_db
-    def test_get_space_success(self, snapshot):
+    def test_get_space_success(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -38,7 +38,7 @@ class TestSpaceStorage:
         assert result.order == 1
 
     @pytest.mark.django_db
-    def test_get_space_failure(self, snapshot):
+    def test_get_space_failure(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         storage = SpaceStorage()
@@ -66,8 +66,8 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(create_space_dto=create_space_data,
-                                      order=1)
+        result = storage.create_space(
+            create_space_dto=create_space_data, order=1)
 
         # Assert
         snapshot.assert_match(
@@ -104,8 +104,8 @@ class TestSpaceStorage:
         storage = SpaceStorage()
 
         # Act
-        result = storage.create_space(create_space_dto=create_space_data,
-                                      order=1)
+        result = storage.create_space(
+            create_space_dto=create_space_data, order=1)
 
         # Assert
         snapshot.assert_match(
@@ -124,7 +124,7 @@ class TestSpaceStorage:
         )
 
     @pytest.mark.django_db
-    def test_update_space_success(self, snapshot):
+    def test_update_space_success(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -149,7 +149,7 @@ class TestSpaceStorage:
         assert result.description == description
 
     @pytest.mark.django_db
-    def test_remove_space_success(self, snapshot):
+    def test_remove_space_success(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -173,7 +173,7 @@ class TestSpaceStorage:
         assert result.order == 1
 
     @pytest.mark.django_db
-    def test_update_space_public_success(self, snapshot):
+    def test_update_space_public_success(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -193,7 +193,7 @@ class TestSpaceStorage:
         assert result.is_private is False
 
     @pytest.mark.django_db
-    def test_update_space_private_success(self, snapshot):
+    def test_update_space_private_success(self):
         # Arrange
         space_id = "12345678-1234-5678-1234-567812345678"
         user_id = "12345678-1234-5678-1234-567812345679"
@@ -213,7 +213,7 @@ class TestSpaceStorage:
         assert result.is_private is True
 
     @pytest.mark.django_db
-    def test_get_workspace_spaces_success(self, snapshot):
+    def test_get_workspace_spaces_success(self):
         # Arrange
         space_id1 = "12345678-1234-5678-1234-567812345679"
         space_id2 = "12345678-1234-5678-1234-567812345680"

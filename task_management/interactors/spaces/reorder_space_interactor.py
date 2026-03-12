@@ -1,14 +1,16 @@
-from django.db import transaction
 from contextlib import AbstractContextManager
 
+from django.db import transaction
+
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache, redis_lock
+    invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import InvalidOrder
 from task_management.interactors.dtos import SpaceDTO
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import SpaceValidationMixin, \
     WorkspaceValidationMixin
+from task_management.utils.redis_utils import redis_lock
 
 
 class ReorderSpaceInteractor(SpaceValidationMixin, WorkspaceValidationMixin):

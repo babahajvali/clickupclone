@@ -1,5 +1,5 @@
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache, redis_lock
+    invalidate_interactor_cache
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
@@ -37,10 +37,7 @@ class DeleteFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):
         self._check_user_has_edit_access_to_field(
             field_id=field_id, user_id=user_id)
 
-        lock_key = f"lock:delete_field:{field_id}"
-
-        with redis_lock(lock_key, timeout=10):
-            return self.field_storage.delete_field(field_id=field_id)
+        return self.field_storage.delete_field(field_id=field_id)
 
     def _check_user_has_edit_access_to_field(
             self, field_id: str, user_id: str):

@@ -1,7 +1,7 @@
 from typing import Optional, Dict
 
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache, redis_lock
+    invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import NothingToUpdateField
 from task_management.exceptions.enums import FieldType
 from task_management.interactors.dtos import UpdateFieldDTO, FieldDTO
@@ -11,6 +11,7 @@ from task_management.interactors.storage_interfaces import \
     FieldStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
     FieldValidationMixin
+from task_management.utils.redis_utils import redis_lock
 
 
 class UpdateFieldInteractor(FieldValidationMixin, WorkspaceValidationMixin):

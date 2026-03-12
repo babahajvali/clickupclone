@@ -1,12 +1,13 @@
 from contextlib import AbstractContextManager
 
 from task_management.decorators.caching_decorators import \
-    invalidate_interactor_cache, redis_lock
+    invalidate_interactor_cache
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
 from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
     SpaceValidationMixin
+from task_management.utils.redis_utils import redis_lock
 
 
 class CreateSpaceInteractor(WorkspaceValidationMixin, SpaceValidationMixin):

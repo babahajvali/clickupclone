@@ -22,9 +22,9 @@ class FieldConfigValidator:
     @staticmethod
     def get_config_validation_handler(field_type: FieldType):
         validation_handlers = {
-            FieldType.DROPDOWN: DropdownValidator().validate_config,
             FieldType.TEXT: TextValidator().validate_config,
             FieldType.NUMBER: NumberValidator().validate_config,
+            FieldType.DROPDOWN: DropdownValidator().validate_config,
         }
         return validation_handlers.get(field_type)
 
