@@ -46,8 +46,7 @@ class FolderCreationHandler:
 
     def _create_folder_permission_for_user(self, folder_id: str, user_id: str):
         folder_interactor = AddFolderPermissionForUserInteractor(
-            folder_storage=self.folder_storage,
-            workspace_storage=self.workspace_storage
+            folder_storage=self.folder_storage
         )
 
         user_permission = CreateFolderPermissionDTO(

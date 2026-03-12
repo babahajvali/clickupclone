@@ -33,7 +33,7 @@ class ReorderSpaceMutation(graphene.Mutation):
                 workspace_id=params.workspace_id,
                 space_id=params.space_id,
                 order=params.order,
-                user_id=params.user_id
+                user_id=info.context.user_id
             )
 
             return SpaceType(

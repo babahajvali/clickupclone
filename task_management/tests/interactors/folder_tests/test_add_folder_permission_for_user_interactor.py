@@ -2,32 +2,18 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import ModificationNotAllowed
-from task_management.exceptions.enums import PermissionType, Role
+from task_management.exceptions.custom_exceptions import ModificationNotAllowed, \
+    UnexpectedPermission, UserNotFolderMember
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
     CreateFolderPermissionDTO,
     FolderDTO,
     UserFolderPermissionDTO,
-    WorkspaceMemberDTO,
 )
 from task_management.interactors.folders.add_folder_permission_for_user_interactor import (
     AddFolderPermissionForUserInteractor,
 )
-from task_management.interactors.storage_interfaces import (
-    FolderStorageInterface,
-    WorkspaceStorageInterface,
-)
-
-
-def make_permission(role: Role) -> WorkspaceMemberDTO:
-    return WorkspaceMemberDTO(
-        id=1,
-        workspace_id="workspace_1",
-        user_id="user_1",
-        role=role,
-        is_active=True,
-        added_by="admin",
-    )
+from task_management.interactors.storage_interfaces import FolderStorageInterface
 
 
 def make_folder() -> FolderDTO:
@@ -54,23 +40,34 @@ def make_user_permission() -> UserFolderPermissionDTO:
     )
 
 
+def make_editor_permission(permission_type=PermissionType.FULL_EDIT):
+    return UserFolderPermissionDTO(
+        id=9,
+        folder_id="folder_1",
+        permission_type=permission_type,
+        user_id="admin",
+        is_active=True,
+        added_by="owner_1",
+    )
+
+
+class InvalidPermission:
+    value = "INVALID"
+
+
 class TestAddFolderPermissionForUserInteractor:
     def setup_method(self):
         self.folder_storage = create_autospec(FolderStorageInterface)
-        self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = AddFolderPermissionForUserInteractor(
             folder_storage=self.folder_storage,
-            workspace_storage=self.workspace_storage,
         )
 
-    def _setup_dependencies(self, role: Role = Role.MEMBER):
+    def _setup_dependencies(
+            self, permission_type=PermissionType.FULL_EDIT):
         self.folder_storage.get_folder.return_value = make_folder()
-        self.folder_storage.get_workspace_id_from_folder_id.return_value = (
-            "workspace_1"
-        )
-        self.workspace_storage.get_workspace_member.return_value = make_permission(
-            role
+        self.folder_storage.get_user_folder_permission.return_value = (
+            make_editor_permission(permission_type=permission_type)
         )
         self.folder_storage.create_folder_users_permissions.return_value = [
             make_user_permission()
@@ -93,7 +90,7 @@ class TestAddFolderPermissionForUserInteractor:
                               "add_folder_permission_success.txt")
 
     def test_add_folder_permission_permission_denied(self, snapshot):
-        self._setup_dependencies(role=Role.GUEST)
+        self._setup_dependencies(permission_type=PermissionType.VIEW)
         dto = CreateFolderPermissionDTO(
             folder_id="folder_1",
             user_id="user_1",
@@ -106,4 +103,37 @@ class TestAddFolderPermissionForUserInteractor:
 
         snapshot.assert_match(
             repr(exc.value), "add_folder_permission_permission_denied.txt"
+        )
+
+    def test_add_folder_permission_actor_not_member(self, snapshot):
+        self._setup_dependencies()
+        self.folder_storage.get_user_folder_permission.return_value = None
+        dto = CreateFolderPermissionDTO(
+            folder_id="folder_1",
+            user_id="user_1",
+            permission_type=PermissionType.FULL_EDIT,
+            added_by="admin",
+        )
+
+        with pytest.raises(UserNotFolderMember) as exc:
+            self.interactor.add_user_for_folder_permission(permission_data=dto)
+
+        snapshot.assert_match(
+            repr(exc.value), "add_folder_permission_actor_not_member.txt"
+        )
+
+    def test_add_folder_permission_unexpected_permission(self, snapshot):
+        self._setup_dependencies()
+        dto = CreateFolderPermissionDTO(
+            folder_id="folder_1",
+            user_id="user_1",
+            permission_type=InvalidPermission,
+            added_by="admin",
+        )
+
+        with pytest.raises(UnexpectedPermission) as exc:
+            self.interactor.add_user_for_folder_permission(permission_data=dto)
+
+        snapshot.assert_match(
+            repr(exc.value), "add_folder_permission_unexpected_permission.txt"
         )

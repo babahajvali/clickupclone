@@ -3,8 +3,6 @@ from django.db import transaction
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
     CreateUserSpacePermissionDTO, UserSpacePermissionDTO
-from task_management.interactors.spaces.add_space_permission_for_user_interactor import \
-    AddSpacePermissionForUserInteractor
 from task_management.interactors.spaces.create_space_interactor import \
     CreateSpaceInteractor
 from task_management.interactors.storage_interfaces import \
@@ -42,11 +40,6 @@ class SpaceCreationHandler:
 
     def _create_space_permission_for_user(
             self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
-        permission_interactor = AddSpacePermissionForUserInteractor(
-            space_storage=self.space_storage,
-            workspace_storage=self.workspace_storage
-        )
-
         user_permission_dto = CreateUserSpacePermissionDTO(
             space_id=space_id,
             user_id=user_id,
@@ -54,5 +47,5 @@ class SpaceCreationHandler:
             added_by=user_id
         )
 
-        return permission_interactor.add_user_for_space_permission(
-            create_space_permission_dto=user_permission_dto)
+        return self.space_storage.create_user_space_permissions(
+            permission_dtos=[user_permission_dto])[0]

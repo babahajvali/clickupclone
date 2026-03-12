@@ -1,8 +1,17 @@
 {
-  "data": {
-    "createSpace": {
-      "__typename": "EmptySpaceNameType",
-      "spaceName": "   "
+  "errors": [
+    {
+      "message": "SpaceCreationHandler.handle_space_creation() got an unexpected keyword argument 'create_space_dto'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "createSpace"
+      ]
     }
-  }
+  ],
+  "data": null
 }

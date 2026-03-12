@@ -64,6 +64,11 @@ class SpaceStorageInterface(ABC):
 
     @abstractmethod
     def create_user_space_permissions(
-            self, permission_data: list[CreateUserSpacePermissionDTO]) \
+            self, permission_dtos: list[CreateUserSpacePermissionDTO]) \
             -> list[UserSpacePermissionDTO]:
+        pass
+
+    @abstractmethod
+    def get_user_space_permission(
+            self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
         pass

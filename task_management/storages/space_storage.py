@@ -173,3 +173,11 @@ class SpaceStorage(SpaceStorageInterface):
 
         return [self._convert_space_permission_to_dto(space_perm) for
                 space_perm in created_permissions]
+
+    def get_user_space_permission(
+            self, space_id: str, user_id: str) -> UserSpacePermissionDTO:
+        permission_obj = SpacePermission.objects.filter(
+            space_id=space_id, user_id=user_id).first()
+
+        return self._convert_space_permission_to_dto(
+            permission_obj=permission_obj)

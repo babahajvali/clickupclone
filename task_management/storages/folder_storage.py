@@ -160,3 +160,23 @@ class FolderStorage(FolderStorageInterface):
             is_active=permission_obj.is_active,
             added_by=permission_obj.added_by_id,
         ) for permission_obj in created_permissions]
+
+    def get_user_folder_permission(
+            self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
+        permission_obj = FolderPermission.objects.filter(
+            folder_id=folder_id,
+            user_id=user_id,
+            is_active=True,
+        ).first()
+
+        if permission_obj is None:
+            return None
+
+        return UserFolderPermissionDTO(
+            id=permission_obj.pk,
+            folder_id=permission_obj.folder_id,
+            user_id=permission_obj.user_id,
+            permission_type=permission_obj.permission_type,
+            is_active=permission_obj.is_active,
+            added_by=permission_obj.added_by_id,
+        )

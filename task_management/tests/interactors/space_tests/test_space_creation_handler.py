@@ -1,10 +1,8 @@
 from unittest.mock import create_autospec, patch
 
 from task_management.exceptions.enums import PermissionType
-from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO
-from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
-    AddSpacePermissionForUserInteractor,
-)
+from task_management.interactors.dtos import CreateSpaceDTO, SpaceDTO, \
+    UserSpacePermissionDTO
 from task_management.interactors.spaces.space_creation_handler import (
     SpaceCreationHandler,
 )
@@ -24,6 +22,17 @@ def make_space(is_private: bool = False) -> SpaceDTO:
         is_deleted=False,
         is_private=is_private,
         created_by="user_1",
+    )
+
+
+def make_user_permission() -> UserSpacePermissionDTO:
+    return UserSpacePermissionDTO(
+        id=1,
+        space_id="space_1",
+        permission_type=PermissionType.FULL_EDIT,
+        user_id="user_1",
+        is_active=True,
+        added_by="user_1",
     )
 
 
@@ -86,18 +95,23 @@ class TestSpaceCreationHandler:
         )
 
     def test_create_space_permission_for_user_builds_dto(self, snapshot):
+        self.space_storage.create_user_space_permissions.return_value = [
+            make_user_permission()
+        ]
+
         with patch.object(
-                AddSpacePermissionForUserInteractor,
-                "add_user_for_space_permission"
-        ) as add_space_permission:
+                self.space_storage,
+                "create_user_space_permissions",
+                wraps=self.space_storage.create_user_space_permissions,
+        ) as create_user_space_permissions:
             self.handler._create_space_permission_for_user(
                 space_id="space_1", user_id="user_1"
             )
 
-        add_space_permission.assert_called_once()
-        called_user_data = add_space_permission.call_args.kwargs[
-            "create_space_permission_dto"
-        ]
+        create_user_space_permissions.assert_called_once()
+        called_user_data = create_user_space_permissions.call_args.kwargs[
+            "permission_dtos"
+        ][0]
 
         snapshot.assert_match(
             repr(called_user_data),

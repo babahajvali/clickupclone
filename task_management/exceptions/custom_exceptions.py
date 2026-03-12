@@ -243,6 +243,18 @@ class DeletedSpaceFound(Exception):
         self.space_id = space_id
 
 
+class UserNotSpaceMember(Exception):
+    def __init__(self, user_id: str, space_id: str):
+        self.user_id = user_id
+        self.space_id = space_id
+
+
+class UserNotFolderMember(Exception):
+    def __init__(self, user_id: str, folder_id: str):
+        self.user_id = user_id
+        self.folder_id = folder_id
+
+
 class FolderNotFound(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id

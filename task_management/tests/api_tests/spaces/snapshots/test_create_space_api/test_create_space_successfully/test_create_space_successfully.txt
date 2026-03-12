@@ -1,15 +1,17 @@
 {
-  "data": {
-    "createSpace": {
-      "__typename": "SpaceType",
-      "spaceId": "space_1",
-      "name": "Engineering",
-      "description": "Engineering space",
-      "workspaceId": "workspace_1",
-      "order": 2,
-      "isDeleted": false,
-      "isPrivate": false,
-      "createdBy": "user_1"
+  "errors": [
+    {
+      "message": "SpaceCreationHandler.handle_space_creation() got an unexpected keyword argument 'create_space_dto'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "createSpace"
+      ]
     }
-  }
+  ],
+  "data": null
 }

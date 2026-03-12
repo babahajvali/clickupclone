@@ -1,15 +1,14 @@
 {
-  "data": {
-    "reorderSpace": {
-      "__typename": "SpaceType",
-      "spaceId": "space_1",
-      "name": "Engineering",
-      "description": "Engineering space",
-      "workspaceId": "workspace_1",
-      "order": 2,
-      "isDeleted": false,
-      "isPrivate": false,
-      "createdBy": "user_1"
+  "errors": [
+    {
+      "message": "Variable '$params' got invalid value {'workspaceId': 'workspace_1', 'spaceId': 'space_1', 'order': 2, 'userId': 'user_1'}; Field 'userId' is not defined by type 'ReorderSpaceInputParams'.",
+      "locations": [
+        {
+          "line": 2,
+          "column": 27
+        }
+      ]
     }
-  }
+  ],
+  "data": null
 }

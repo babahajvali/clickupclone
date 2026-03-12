@@ -8,8 +8,8 @@ from task_management.graphql.types.input_types import CreateSpaceInputParams
 from task_management.graphql.types.response_types import CreateSpaceResponse
 from task_management.graphql.types.types import SpaceType
 from task_management.interactors.dtos import CreateSpaceDTO
-from task_management.interactors.spaces.create_space_interactor import \
-    CreateSpaceInteractor
+from task_management.interactors.spaces.space_creation_handler import \
+    SpaceCreationHandler
 from task_management.storages import SpaceStorage, WorkspaceStorage
 
 
@@ -24,7 +24,7 @@ class CreateSpaceMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = CreateSpaceInteractor(
+        space_handler = SpaceCreationHandler(
             space_storage=space_storage,
             workspace_storage=workspace_storage,
         )
@@ -38,7 +38,7 @@ class CreateSpaceMutation(graphene.Mutation):
                 created_by=info.context.user_id
             )
 
-            space_dto = interactor.create_space(
+            space_dto = space_handler.handle_space_creation(
                 create_space_dto=create_space_dto)
 
             return SpaceType(

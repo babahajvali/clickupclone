@@ -1,5 +1,7 @@
 from task_management.exceptions.custom_exceptions import \
-    FolderNotFound, DeletedFolderException, EmptyFolderName
+    FolderNotFound, DeletedFolderException, EmptyFolderName, \
+    ModificationNotAllowed, UserNotFolderMember
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import FolderDTO
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface
@@ -35,3 +37,19 @@ class FolderValidationMixin:
 
         if is_name_empty:
             raise EmptyFolderName(folder_name=name)
+
+    def check_user_has_edit_access_folder_permission(
+            self, folder_id: str, user_id: str):
+        folder_permission_dto = self.folder_storage.get_user_folder_permission(
+            folder_id=folder_id,
+            user_id=user_id,
+        )
+
+        if not folder_permission_dto:
+            raise UserNotFolderMember(user_id=user_id, folder_id=folder_id)
+
+        is_not_full_edit = (
+            folder_permission_dto.permission_type != PermissionType.FULL_EDIT
+        )
+        if is_not_full_edit:
+            raise ModificationNotAllowed(user_id=user_id)

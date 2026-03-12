@@ -73,3 +73,8 @@ class FolderStorageInterface(ABC):
             self, users_permission_data: List[CreateFolderPermissionDTO]) -> \
             List[UserFolderPermissionDTO]:
         pass
+
+    @abstractmethod
+    def get_user_folder_permission(
+            self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
+        pass

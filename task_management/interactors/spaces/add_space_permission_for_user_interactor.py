@@ -41,14 +41,14 @@ class AddSpacePermissionForUserInteractor(
         """Grant a space permission entry for a user."""
         self.check_space_not_deleted(
             space_id=create_space_permission_dto.space_id)
-        self._check_user_has_edit_access_to_space(
-            user_id=create_space_permission_dto.user_id,
-            space_id=create_space_permission_dto.space_id)
+        self.check_user_has_edit_access_space_permission(
+            space_id=create_space_permission_dto.space_id,
+            user_id=create_space_permission_dto.added_by)
         self._check_permission_type_is_valid(
             permission=create_space_permission_dto.permission_type.value)
 
         return self.space_storage.create_user_space_permissions(
-            permission_data=[create_space_permission_dto])[0]
+            permission_dtos=[create_space_permission_dto])[0]
 
     @staticmethod
     def _check_permission_type_is_valid(permission: str):
@@ -57,10 +57,3 @@ class AddSpacePermissionForUserInteractor(
 
         if is_invalid_permission_type:
             raise UnexpectedPermission(permission=permission)
-
-    def _check_user_has_edit_access_to_space(
-            self, space_id: str, user_id: str):
-        workspace_id = self.space_storage.get_space_workspace_id(
-            space_id=space_id)
-        self.check_user_has_edit_access_to_workspace(
-            user_id=user_id, workspace_id=workspace_id)

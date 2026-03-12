@@ -202,7 +202,6 @@ class ReorderSpaceInputParams(graphene.InputObjectType):
     workspace_id = graphene.String(required=True)
     space_id = graphene.String(required=True)
     order = graphene.Int(required=True)
-    user_id = graphene.String(required=True)
 
 
 class CreateFieldValueInputParams(graphene.InputObjectType):

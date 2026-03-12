@@ -4,14 +4,14 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
+    UserNotSpaceMember,
     UnexpectedPermission,
 )
-from task_management.exceptions.enums import PermissionType, Role
+from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
     CreateUserSpacePermissionDTO,
     SpaceDTO,
     UserSpacePermissionDTO,
-    WorkspaceMemberDTO,
 )
 from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
     AddSpacePermissionForUserInteractor,
@@ -24,17 +24,6 @@ from task_management.interactors.storage_interfaces import (
 
 class InvalidPermission:
     value = "INVALID"
-
-
-def make_permission(role: Role) -> WorkspaceMemberDTO:
-    return WorkspaceMemberDTO(
-        id=1,
-        workspace_id="workspace_1",
-        user_id="user_1",
-        role=role,
-        is_active=True,
-        added_by="admin",
-    )
 
 
 def make_space(order: int = 1) -> SpaceDTO:
@@ -61,6 +50,17 @@ def make_user_permission() -> UserSpacePermissionDTO:
     )
 
 
+def make_editor_permission(permission_type=PermissionType.FULL_EDIT):
+    return UserSpacePermissionDTO(
+        id=9,
+        space_id="space_1",
+        permission_type=permission_type,
+        user_id="admin",
+        is_active=True,
+        added_by="owner_1",
+    )
+
+
 class TestAddSpacePermissionForUser:
     def setup_method(self):
         self.space_storage = create_autospec(SpaceStorageInterface)
@@ -71,11 +71,11 @@ class TestAddSpacePermissionForUser:
             workspace_storage=self.workspace_storage,
         )
 
-    def _setup_dependencies(self, role: Role = Role.MEMBER):
+    def _setup_dependencies(
+            self, permission_type=PermissionType.FULL_EDIT):
         self.space_storage.get_space.return_value = make_space()
-        self.space_storage.get_space_workspace_id.return_value = "workspace_1"
-        self.workspace_storage.get_workspace_member.return_value = make_permission(
-            role
+        self.space_storage.get_user_space_permission.return_value = (
+            make_editor_permission(permission_type=permission_type)
         )
         self.space_storage.create_user_space_permissions.return_value = [
             make_user_permission()
@@ -96,7 +96,7 @@ class TestAddSpacePermissionForUser:
         snapshot.assert_match(repr(result), "add_space_permission_success.txt")
 
     def test_add_space_permission_permission_denied(self, snapshot):
-        self._setup_dependencies(role=Role.GUEST)
+        self._setup_dependencies(permission_type=PermissionType.VIEW)
         dto = CreateUserSpacePermissionDTO(
             space_id="space_1",
             user_id="user_1",
@@ -110,6 +110,24 @@ class TestAddSpacePermissionForUser:
 
         snapshot.assert_match(
             repr(exc.value), "add_space_permission_permission_denied.txt"
+        )
+
+    def test_add_space_permission_actor_not_member(self, snapshot):
+        self._setup_dependencies()
+        self.space_storage.get_user_space_permission.return_value = None
+        dto = CreateUserSpacePermissionDTO(
+            space_id="space_1",
+            user_id="user_1",
+            permission_type=PermissionType.FULL_EDIT,
+            added_by="admin",
+        )
+
+        with pytest.raises(UserNotSpaceMember) as exc:
+            self.interactor.add_user_for_space_permission(
+                create_space_permission_dto=dto)
+
+        snapshot.assert_match(
+            repr(exc.value), "add_space_permission_actor_not_member.txt"
         )
 
     def test_add_space_permission_unexpected_permission(self, snapshot):
