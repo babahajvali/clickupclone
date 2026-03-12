@@ -1,0 +1,8 @@
+{
+  "data": {
+    "updateWorkspace": {
+      "__typename": "DeletedWorkspaceType",
+      "workspaceId": "workspace_1"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "data": {
+    "getUserWorkspaces": {
+      "__typename": "WorkspaceMembersType",
+      "members": [
+        {
+          "id": 1,
+          "workspaceId": "workspace_1",
+          "userId": "user_1",
+          "role": "ADMIN",
+          "isActive": true,
+          "addedBy": "owner_1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "data": {
+    "changeWorkspaceMemberRole": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "owner_1"
+    }
+  }
+}

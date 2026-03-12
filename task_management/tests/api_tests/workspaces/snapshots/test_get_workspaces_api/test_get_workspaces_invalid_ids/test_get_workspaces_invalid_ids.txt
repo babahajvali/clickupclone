@@ -1,0 +1,10 @@
+{
+  "data": {
+    "getWorkspaces": {
+      "__typename": "InvalidWorkspaceIdsFoundType",
+      "workspaceIds": [
+        "workspace_2"
+      ]
+    }
+  }
+}

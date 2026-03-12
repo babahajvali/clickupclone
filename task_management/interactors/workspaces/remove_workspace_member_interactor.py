@@ -8,30 +8,23 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import WorkspaceValidationMixin
 
 
-class RemoveWorkspaceMemberInteractor:
+class RemoveWorkspaceMemberInteractor(WorkspaceValidationMixin):
 
     def __init__(self, workspace_storage: WorkspaceStorageInterface):
+        super().__init__(workspace_storage=workspace_storage)
         self.workspace_storage = workspace_storage
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     @invalidate_interactor_cache(cache_name='validate_permission')
     def remove_member_from_workspace(
             self, workspace_member_id: int, removed_by: str) \
             -> WorkspaceMemberDTO:
-        self._check_workspace_member_is_active_by_id(
+        workspace_member_dto = self._check_workspace_member_is_active_by_id(
             workspace_member_id=workspace_member_id
         )
-        workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
-            workspace_member_id=workspace_member_id
-        )
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             user_id=removed_by,
-            workspace_id=workspace_member_data.workspace_id
+            workspace_id=workspace_member_dto.workspace_id
         )
 
         return self.workspace_storage.remove_member_from_workspace(
@@ -39,7 +32,7 @@ class RemoveWorkspaceMemberInteractor:
         )
 
     def _check_workspace_member_is_active_by_id(
-            self, workspace_member_id: int):
+            self, workspace_member_id: int) -> WorkspaceMemberDTO:
         workspace_member_data = self.workspace_storage.get_workspace_member_by_id(
             workspace_member_id=workspace_member_id)
 
@@ -52,3 +45,4 @@ class RemoveWorkspaceMemberInteractor:
         if not workspace_member_data.is_active:
             raise InactiveWorkspaceMember(
                 workspace_member_id=workspace_member_id)
+        return workspace_member_data

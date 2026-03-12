@@ -1,0 +1,13 @@
+{
+  "data": {
+    "removeMemberFromWorkspace": {
+      "__typename": "WorkspaceMemberType",
+      "id": 1,
+      "workspaceId": "workspace_1",
+      "userId": "user_2",
+      "role": "ADMIN",
+      "isActive": false,
+      "addedBy": "owner_1"
+    }
+  }
+}

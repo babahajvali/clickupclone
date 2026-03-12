@@ -7,7 +7,7 @@ from task_management.exceptions.custom_exceptions import (
     UserNotWorkspaceOwner,
     WorkspaceNotFound,
 )
-from task_management.interactors.dtos import WorkspaceDTO
+from task_management.interactors.dtos import WorkspaceDTO, UpdateWorkspaceDTO
 from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
 from task_management.interactors.workspaces.update_workspace_interactor import (
     UpdateWorkspaceInteractor,
@@ -47,23 +47,29 @@ class TestUpdateWorkspaceInteractor:
 
     def test_update_workspace_success(self, snapshot):
         self._setup_dependencies()
-
-        result = self.interactor.update_workspace(
+        update_workspace_dto = UpdateWorkspaceDTO(
             workspace_id="workspace_1",
-            user_id="user_1",
             name="Updated Workspace",
             description="Updated Description",
+        )
+
+        result = self.interactor.update_workspace(
+            update_workspace_dto=update_workspace_dto,
+            user_id="user_1",
         )
 
         snapshot.assert_match(repr(result), "update_workspace_success.txt")
 
     def test_update_workspace_nothing_to_update(self, snapshot):
+        update_workspace_dto = UpdateWorkspaceDTO(
+            workspace_id="workspace_1",
+            name=None,
+            description=None,
+        )
         with pytest.raises(NothingToUpdateWorkspace) as exc:
             self.interactor.update_workspace(
-                workspace_id="workspace_1",
+                update_workspace_dto=update_workspace_dto,
                 user_id="user_1",
-                name=None,
-                description=None,
             )
 
         snapshot.assert_match(
@@ -73,26 +79,32 @@ class TestUpdateWorkspaceInteractor:
     def test_update_workspace_not_found(self, snapshot):
         self._setup_dependencies()
         self.workspace_storage.get_workspace.return_value = None
+        update_workspace_dto = UpdateWorkspaceDTO(
+            workspace_id="workspace_1",
+            name="Updated Workspace",
+            description=None,
+        )
 
         with pytest.raises(WorkspaceNotFound) as exc:
             self.interactor.update_workspace(
-                workspace_id="workspace_1",
+                update_workspace_dto=update_workspace_dto,
                 user_id="user_1",
-                name="Updated Workspace",
-                description=None,
             )
 
         snapshot.assert_match(repr(exc.value), "update_workspace_not_found.txt")
 
     def test_update_workspace_permission_denied(self, snapshot):
         self._setup_dependencies(is_owner=False)
+        update_workspace_dto = UpdateWorkspaceDTO(
+            workspace_id="workspace_1",
+            name="Updated Workspace",
+            description=None,
+        )
 
         with pytest.raises(UserNotWorkspaceOwner) as exc:
             self.interactor.update_workspace(
-                workspace_id="workspace_1",
+                update_workspace_dto=update_workspace_dto,
                 user_id="user_1",
-                name="Updated Workspace",
-                description=None,
             )
 
         snapshot.assert_match(

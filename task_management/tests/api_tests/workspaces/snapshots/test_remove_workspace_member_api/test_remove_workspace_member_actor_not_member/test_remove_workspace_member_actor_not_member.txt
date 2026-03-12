@@ -1,0 +1,8 @@
+{
+  "data": {
+    "removeMemberFromWorkspace": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "owner_1"
+    }
+  }
+}

@@ -1,11 +1,9 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
-from task_management.exceptions.custom_exceptions import \
-    WorkspaceMemberIdNotFound
 from task_management.graphql.types.error_types import \
-    ModificationNotAllowedType, \
-    InactiveWorkspaceMemberType, UserNotWorkspaceMemberType
+    ModificationNotAllowedType, InactiveWorkspaceMemberType, \
+    UserNotWorkspaceMemberType, WorkspaceMemberIdNotFoundType
 from task_management.graphql.types.input_types import \
     RemoveWorkspaceMemberInputParams
 from task_management.graphql.types.response_types import \
@@ -40,18 +38,20 @@ class RemoveMemberFromWorkspaceMutation(graphene.Mutation):
                 id=result.id,
                 workspace_id=result.workspace_id,
                 user_id=result.user_id,
-                role=result.role,
+                role=result.role.value,
                 is_active=result.is_active,
                 added_by=result.added_by
             )
 
         except custom_exceptions.WorkspaceMemberIdNotFound as e:
-            return WorkspaceMemberIdNotFound(
-                InactiveWorkspaceMember=e.workspace_member_id)
+            return WorkspaceMemberIdNotFoundType(
+                workspace_member_id=e.workspace_member_id
+            )
 
         except custom_exceptions.InactiveWorkspaceMember as e:
             return InactiveWorkspaceMemberType(
-                InactiveWorkspaceMember=e.workspace_member_id)
+                workspace_member_id=e.workspace_member_id
+            )
 
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

@@ -1,0 +1,8 @@
+{
+  "data": {
+    "addMemberToWorkspace": {
+      "__typename": "UnexpectedRoleType",
+      "role": "INVALID"
+    }
+  }
+}

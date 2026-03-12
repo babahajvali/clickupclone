@@ -36,7 +36,7 @@ class UpdateWorkspaceMutation(graphene.Mutation):
             )
 
             result = interactor.update_workspace(
-                workspace_data=update_workspace_data,
+                update_workspace_dto=update_workspace_data,
                 user_id=info.context.user_id
             )
 
@@ -46,7 +46,7 @@ class UpdateWorkspaceMutation(graphene.Mutation):
                 description=result.description,
                 user_id=result.user_id,
                 account_id=result.account_id,
-                is_active=result.is_deleted
+                is_deleted=result.is_deleted
             )
 
         except custom_exceptions.WorkspaceNotFound as e:

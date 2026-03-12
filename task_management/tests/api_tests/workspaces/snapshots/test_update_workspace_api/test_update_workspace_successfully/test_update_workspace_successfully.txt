@@ -1,0 +1,13 @@
+{
+  "data": {
+    "updateWorkspace": {
+      "__typename": "WorkspaceType",
+      "workspaceId": "workspace_1",
+      "name": "Updated Workspace",
+      "description": "Updated description",
+      "userId": "user_1",
+      "accountId": "account_1",
+      "isDeleted": false
+    }
+  }
+}

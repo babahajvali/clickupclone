@@ -1,0 +1,17 @@
+{
+  "data": {
+    "getWorkspaces": {
+      "__typename": "WorkspacesType",
+      "workspaces": [
+        {
+          "workspaceId": "workspace_1",
+          "name": "Workspace",
+          "description": "Main workspace",
+          "userId": "user_1",
+          "accountId": "account_1",
+          "isDeleted": false
+        }
+      ]
+    }
+  }
+}

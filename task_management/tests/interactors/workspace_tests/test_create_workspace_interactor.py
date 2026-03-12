@@ -63,7 +63,9 @@ class TestCreateWorkspaceInteractor:
         self.workspace_storage.create_workspace.return_value = make_workspace()
         input_data = self._make_input()
 
-        result = self.interactor.create_workspace(workspace_data=input_data)
+        result = self.interactor.create_workspace(
+            create_workspace_dto=input_data
+        )
 
         snapshot.assert_match(repr(result), "create_workspace_success.txt")
 
@@ -71,7 +73,7 @@ class TestCreateWorkspaceInteractor:
         input_data = self._make_input(name="   ")
 
         with pytest.raises(EmptyWorkspaceName) as exc:
-            self.interactor.create_workspace(workspace_data=input_data)
+            self.interactor.create_workspace(create_workspace_dto=input_data)
 
         snapshot.assert_match(repr(exc.value),
                               "create_workspace_empty_name.txt")
@@ -81,7 +83,7 @@ class TestCreateWorkspaceInteractor:
         input_data = self._make_input()
 
         with pytest.raises(AccountNotFound) as exc:
-            self.interactor.create_workspace(workspace_data=input_data)
+            self.interactor.create_workspace(create_workspace_dto=input_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -95,7 +97,7 @@ class TestCreateWorkspaceInteractor:
         input_data = self._make_input()
 
         with pytest.raises(UserNotAccountOwner) as exc:
-            self.interactor.create_workspace(workspace_data=input_data)
+            self.interactor.create_workspace(create_workspace_dto=input_data)
 
         snapshot.assert_match(
             repr(exc.value),

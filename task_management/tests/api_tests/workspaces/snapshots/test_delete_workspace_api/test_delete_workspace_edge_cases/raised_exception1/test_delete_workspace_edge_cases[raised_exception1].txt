@@ -1,0 +1,8 @@
+{
+  "data": {
+    "deleteWorkspace": {
+      "__typename": "UserNotWorkspaceOwnerType",
+      "userId": "user_2"
+    }
+  }
+}

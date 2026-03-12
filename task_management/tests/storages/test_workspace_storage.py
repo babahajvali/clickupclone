@@ -75,7 +75,7 @@ class TestWorkspaceStorage:
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.create_workspace(workspace_data=dto)
+        result = storage.create_workspace(create_workspace_dto=dto)
 
         # Assert
         snapshot.assert_match(

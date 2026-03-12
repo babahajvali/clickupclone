@@ -9,7 +9,7 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
     CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
     CreateSpaceDTO, SpaceDTO, CreateWorkspaceDTO, WorkspaceDTO, \
-    AddMemberToWorkspaceDTO, WorkspaceMemberDTO, AccountDTO, \
+    CreateWorkspaceMemberDTO, WorkspaceMemberDTO, AccountDTO, \
     CreateAccountMemberDTO, AccountMemberDTO, FolderDTO
 
 
@@ -297,7 +297,7 @@ WorkspaceDTOFactory = WorkspaceDTOFactory
 
 class AddMemberToWorkspaceDTOFactory(factory.Factory):
     class Meta:
-        model = AddMemberToWorkspaceDTO
+        model = CreateWorkspaceMemberDTO
 
     workspace_id = factory.LazyFunction(lambda: str(uuid.uuid4()))
     user_id = factory.LazyFunction(lambda: str(uuid.uuid4()))

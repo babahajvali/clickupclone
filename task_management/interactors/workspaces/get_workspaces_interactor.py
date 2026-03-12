@@ -1,3 +1,5 @@
+from typing import List
+
 from task_management.exceptions.custom_exceptions import \
     InvalidWorkspaceIdsFound
 from task_management.interactors.dtos import WorkspaceDTO
@@ -5,7 +7,7 @@ from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 
 
-class WorkspaceInteractor:
+class GetWorkspacesInteractor:
     """Retrieve Workspace Management Business Logic Interactor.
     
     Handles retrieval of workspaces. This interactor validates workspace-ids before
@@ -25,10 +27,8 @@ class WorkspaceInteractor:
         self.workspace_storage = workspace_storage
 
     def get_workspaces(
-            self, workspace_ids: list[str]) -> list[WorkspaceDTO]:
-        self._check_workspace_ids(
-            workspace_ids=workspace_ids
-        )
+            self, workspace_ids: List[str]) -> List[WorkspaceDTO]:
+        self._check_workspace_ids(workspace_ids=workspace_ids)
 
         return self.workspace_storage.get_workspaces(
             workspace_ids=workspace_ids

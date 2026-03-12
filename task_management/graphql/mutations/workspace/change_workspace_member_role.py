@@ -1,6 +1,7 @@
 import graphene
 
 from task_management.exceptions import custom_exceptions
+from task_management.exceptions.enums import Role
 from task_management.graphql.types.error_types import \
     ModificationNotAllowedType, UnexpectedRoleType, InactiveUserType, \
     UserNotFoundType, DeletedWorkspaceType, WorkspaceNotFoundType, \
@@ -33,10 +34,15 @@ class ChangeMemberRoleMutation(graphene.Mutation):
         )
 
         try:
+            try:
+                role = Role(params.role)
+            except ValueError:
+                return UnexpectedRoleType(role=params.role)
+
             result = interactor.change_member_role(
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,
-                role=params.role,
+                role=role,
                 changed_by=info.context.user_id
             )
 

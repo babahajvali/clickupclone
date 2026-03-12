@@ -1,0 +1,13 @@
+{
+  "data": {
+    "addMemberToWorkspace": {
+      "__typename": "WorkspaceMemberType",
+      "id": 1,
+      "workspaceId": "workspace_1",
+      "userId": "user_2",
+      "role": "MEMBER",
+      "isActive": true,
+      "addedBy": "owner_1"
+    }
+  }
+}

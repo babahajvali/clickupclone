@@ -3,37 +3,35 @@ from task_management.decorators.caching_decorators import \
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, AccountStorageInterface
-from task_management.interactors.workspaces.validators.workspace_validator import \
-    WorkspaceValidator
-from task_management.mixins import AccountValidationMixin
+from task_management.mixins import AccountValidationMixin, \
+    WorkspaceValidationMixin
 
 
-class CreateWorkspaceInteractor:
+class CreateWorkspaceInteractor(
+    AccountValidationMixin, WorkspaceValidationMixin):
 
     def __init__(
             self, workspace_storage: WorkspaceStorageInterface,
             account_storage: AccountStorageInterface):
+        super().__init__(
+            account_storage=account_storage,
+            workspace_storage=workspace_storage)
         self.workspace_storage = workspace_storage
         self.account_storage = account_storage
 
-    @property
-    def account_mixin(self) -> AccountValidationMixin:
-        return AccountValidationMixin(account_storage=self.account_storage)
-
-    @property
-    def workspace_validator(self) -> WorkspaceValidator:
-        return WorkspaceValidator(workspace_storage=self.workspace_storage)
-
     @invalidate_interactor_cache(cache_name="user_workspaces")
     def create_workspace(
-            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
-        self.workspace_validator.check_workspace_name_not_empty(
-            workspace_name=workspace_data.name
+            self, create_workspace_dto: CreateWorkspaceDTO) -> WorkspaceDTO:
+        self.check_workspace_name_not_empty(
+            workspace_name=create_workspace_dto.name
         )
-        self.account_mixin.check_account_is_active(workspace_data.account_id)
-        self.account_mixin.check_user_is_account_owner(
-            workspace_data.user_id, account_id=workspace_data.account_id
+        self.check_account_is_active(
+            account_id=create_workspace_dto.account_id)
+        self.check_user_is_account_owner(
+            user_id=create_workspace_dto.user_id,
+            account_id=create_workspace_dto.account_id,
         )
 
         return self.workspace_storage.create_workspace(
-            workspace_data=workspace_data)
+            create_workspace_sto=create_workspace_dto
+        )

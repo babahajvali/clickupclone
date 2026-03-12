@@ -1,0 +1,13 @@
+{
+  "data": {
+    "transferWorkspace": {
+      "__typename": "WorkspaceType",
+      "workspaceId": "workspace_1",
+      "name": "Workspace",
+      "description": "Main workspace",
+      "userId": "user_2",
+      "accountId": "account_1",
+      "isDeleted": false
+    }
+  }
+}

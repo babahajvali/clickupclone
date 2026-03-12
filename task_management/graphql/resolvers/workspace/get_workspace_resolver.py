@@ -3,7 +3,7 @@ from task_management.graphql.types.error_types import \
     InvalidWorkspaceIdsFoundType
 from task_management.graphql.types.types import WorkspaceType, WorkspacesType
 from task_management.interactors.workspaces.get_workspaces_interactor import \
-    WorkspaceInteractor
+    GetWorkspacesInteractor
 from task_management.storages import WorkspaceStorage
 
 
@@ -12,7 +12,7 @@ def get_workspace_resolver(root, info, params):
 
     workspace_storage = WorkspaceStorage()
 
-    interactor = WorkspaceInteractor(
+    interactor = GetWorkspacesInteractor(
         workspace_storage=workspace_storage,
     )
 

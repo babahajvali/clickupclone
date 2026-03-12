@@ -27,7 +27,7 @@ def get_user_workspace_resolver(root, info, params):
             id=result.id,
             workspace_id=result.workspace_id,
             user_id=result.user_id,
-            role=result.role,
+            role=result.role.value,
             is_active=result.is_active,
             added_by=result.added_by
         ) for result in workspace_data]

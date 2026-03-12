@@ -1,7 +1,7 @@
 import pytest
 
 from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import AddMemberToWorkspaceDTO
+from task_management.interactors.dtos import CreateWorkspaceMemberDTO
 from task_management.storages.workspace_storage import WorkspaceStorage
 from task_management.tests.factories.storage_factory import \
     WorkspaceMemberFactory, WorkspaceFactory, UserFactory
@@ -18,7 +18,7 @@ class TestWorkspaceMemberStorage:
         WorkspaceFactory(workspace_id=workspace_id)
         UserFactory(user_id=user_id)
         UserFactory(user_id=added_by_id)
-        workspace_member_data = AddMemberToWorkspaceDTO(
+        workspace_member_data = CreateWorkspaceMemberDTO(
             workspace_id=str(workspace_id),
             user_id=str(user_id),
             added_by=str(added_by_id),
@@ -27,8 +27,8 @@ class TestWorkspaceMemberStorage:
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.add_member_to_workspace(
-            workspace_member_data=workspace_member_data)
+        result = storage.create_workspace_member(
+            workspace_member_dto=workspace_member_data)
 
         # Assert
         snapshot.assert_match(repr(result),

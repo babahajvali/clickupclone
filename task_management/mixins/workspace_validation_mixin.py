@@ -1,7 +1,8 @@
 from task_management.decorators.caching_decorators import interactor_cache
 from task_management.exceptions.custom_exceptions import \
     DeletedWorkspaceFound, ModificationNotAllowed, \
-    UserNotWorkspaceOwner, WorkspaceNotFound, UserNotWorkspaceMember
+    UserNotWorkspaceOwner, WorkspaceNotFound, UserNotWorkspaceMember, \
+    EmptyWorkspaceName, UnexpectedRole
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import WorkspaceDTO
 from task_management.interactors.storage_interfaces import \
@@ -57,3 +58,19 @@ class WorkspaceValidationMixin:
                 workspace_member_data.role in Role.get_write_roles())
         if not has_write_permission:
             raise ModificationNotAllowed(user_id=user_id)
+
+    @staticmethod
+    def check_workspace_name_not_empty(workspace_name: str):
+        is_name_empty = not workspace_name or not workspace_name.strip()
+
+        if is_name_empty:
+            raise EmptyWorkspaceName(workspace_name=workspace_name)
+
+    @staticmethod
+    def check_role(role: str):
+
+        existed_roles = Role.get_values()
+        is_role_invalid = role not in existed_roles
+
+        if is_role_invalid:
+            raise UnexpectedRole(role=role)

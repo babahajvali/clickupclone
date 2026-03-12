@@ -48,7 +48,7 @@ class DeleteWorkspaceMutation(graphene.Mutation):
         )
 
         try:
-            result = workspace_onboarding.delete_workspace_handle(
+            result = workspace_onboarding.handle_workspace_deletion(
                 workspace_id=params.workspace_id,
                 user_id=info.context.user_id
             )

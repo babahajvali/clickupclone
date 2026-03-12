@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from task_management.interactors.dtos import CreateWorkspaceDTO, WorkspaceDTO, \
-    AddMemberToWorkspaceDTO, WorkspaceMemberDTO
+    CreateWorkspaceMemberDTO, WorkspaceMemberDTO
 
 
 class WorkspaceStorageInterface(ABC):
@@ -17,7 +17,7 @@ class WorkspaceStorageInterface(ABC):
 
     @abstractmethod
     def create_workspace(
-            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
+            self, create_workspace_sto: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass
 
     @abstractmethod
@@ -38,7 +38,6 @@ class WorkspaceStorageInterface(ABC):
     @abstractmethod
     def transfer_workspace(
             self, workspace_id: str, new_user_id: str) -> WorkspaceDTO:
-        # change the owner id with new_user_id
         pass
 
     @abstractmethod
@@ -52,8 +51,8 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def add_member_to_workspace(
-            self, workspace_member_data: AddMemberToWorkspaceDTO) \
+    def create_workspace_member(
+            self, workspace_member_dto: CreateWorkspaceMemberDTO) \
             -> WorkspaceMemberDTO:
         pass
 
@@ -92,7 +91,7 @@ class WorkspaceStorageInterface(ABC):
 
     @abstractmethod
     def re_add_member_to_workspace(
-            self, workspace_member_data: AddMemberToWorkspaceDTO) -> \
+            self, workspace_member_data: CreateWorkspaceMemberDTO) -> \
             WorkspaceMemberDTO:
         pass
 

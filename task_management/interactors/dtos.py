@@ -287,7 +287,7 @@ class CreateWorkspaceDTO:
 
 
 @dataclass
-class AddMemberToWorkspaceDTO:
+class CreateWorkspaceMemberDTO:
     workspace_id: str
     user_id: str
     role: Role

@@ -47,7 +47,7 @@ class TransferWorkspaceMutation(graphene.Mutation):
         )
 
         try:
-            result = workspace_onboarding.transfer_the_workspace(
+            result = workspace_onboarding.handle_workspace_transfer(
                 workspace_id=params.workspace_id,
                 current_user_id=info.context.user_id,
                 new_user_id=params.new_user_id

@@ -3,7 +3,7 @@ from django.db import transaction
 from task_management.exceptions.enums import Role, ListEntityType
 from task_management.interactors.dtos import CreateListDTO, \
     CreateSpaceDTO, \
-    CreateWorkspaceDTO, WorkspaceDTO, AddMemberToWorkspaceDTO
+    CreateWorkspaceDTO, WorkspaceDTO, CreateWorkspaceMemberDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
 from task_management.interactors.spaces.create_space_interactor import \
@@ -43,36 +43,38 @@ class WorkspaceHandler:
         self.view_storage = view_storage
 
     @transaction.atomic
-    def handle_workspace(
-            self, workspace_data: CreateWorkspaceDTO) -> WorkspaceDTO:
+    def handle_workspace_creation(
+            self, create_workspace_dto: CreateWorkspaceDTO) -> WorkspaceDTO:
         workspace_interactor = CreateWorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             account_storage=self.account_storage
         )
-        workspace_data = workspace_interactor.create_workspace(
-            workspace_data)
-
-        workspace_member_input = AddMemberToWorkspaceDTO(
-            workspace_id=workspace_data.workspace_id,
-            user_id=workspace_data.user_id,
-            role=Role.OWNER,
-            added_by=workspace_data.user_id
+        workspace_dto = workspace_interactor.create_workspace(
+            create_workspace_dto=create_workspace_dto
         )
 
-        self.workspace_storage.add_member_to_workspace(
-            workspace_member_data=workspace_member_input
+        create_workspace_member_dto = CreateWorkspaceMemberDTO(
+            workspace_id=workspace_dto.workspace_id,
+            user_id=workspace_dto.user_id,
+            role=Role.OWNER,
+            added_by=workspace_dto.user_id
+        )
+
+        self.workspace_storage.create_workspace_member(
+            workspace_member_dto=create_workspace_member_dto
         )
 
         space_data = self._create_space(
-            workspace_id=workspace_data.workspace_id,
-            user_id=workspace_data.user_id
+            workspace_id=workspace_dto.workspace_id,
+            user_id=workspace_dto.user_id
         )
 
         self._create_list(
-            space_id=space_data.space_id, user_id=workspace_data.user_id
+            space_id=space_data.space_id,
+            user_id=workspace_dto.user_id
         )
 
-        return workspace_data
+        return workspace_dto
 
     def _create_space(self, user_id: str, workspace_id: str):
         space_interactor = CreateSpaceInteractor(
@@ -87,10 +89,12 @@ class WorkspaceHandler:
             workspace_id=workspace_id,
             is_private=False
         )
-        return space_interactor.create_space(space_input_data)
+        return space_interactor.create_space(
+            create_space_dto=space_input_data
+        )
 
     def _create_list(self, space_id: str, user_id: str):
-        list_handler = ListCreationHandler(
+        list_creation_handler = ListCreationHandler(
             list_storage=self.list_storage,
             template_storage=self.template_storage,
             folder_storage=self.folder_storage,
@@ -100,7 +104,7 @@ class WorkspaceHandler:
             view_storage=self.view_storage
         )
 
-        list_input_data = CreateListDTO(
+        create_list_dto = CreateListDTO(
             name=f"List 1",
             description=f"Default list",
             entity_type=ListEntityType.SPACE,
@@ -109,17 +113,19 @@ class WorkspaceHandler:
             is_private=False,
         )
 
-        return list_handler.handle_list_creation(list_input_data)
+        return list_creation_handler.handle_list_creation(
+            create_list_dto=create_list_dto
+        )
 
-    def transfer_the_workspace(
+    def handle_workspace_transfer(
             self, workspace_id: str, current_user_id: str, new_user_id: str) \
             -> WorkspaceDTO:
-        workspace_interactor = TransferWorkspaceInteractor(
+        transfer_workspace_interactor = TransferWorkspaceInteractor(
             workspace_storage=self.workspace_storage,
             user_storage=self.user_storage
         )
 
-        workspace_data = workspace_interactor.transfer_workspace(
+        workspace_dto = transfer_workspace_interactor.transfer_workspace(
             workspace_id=workspace_id, user_id=current_user_id,
             new_user_id=new_user_id)
 
@@ -127,7 +133,7 @@ class WorkspaceHandler:
             workspace_id=workspace_id, user_id=current_user_id,
             new_user_id=new_user_id)
 
-        return workspace_data
+        return workspace_dto
 
     def change_permissions_for_user_in_transfer(
             self, workspace_id: str, user_id: str, new_user_id: str):
@@ -138,19 +144,19 @@ class WorkspaceHandler:
         return self.workspace_storage.update_the_member_role(
             workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)
 
-    def delete_workspace_handle(
+    def handle_workspace_deletion(
             self, workspace_id: str, user_id: str) -> WorkspaceDTO:
-        workspace_interactor = DeleteWorkspaceInteractor(
+        delete_workspace_interactor = DeleteWorkspaceInteractor(
             workspace_storage=self.workspace_storage,
         )
-        workspace_data = workspace_interactor.delete_workspace(
+        workspace_dto = delete_workspace_interactor.delete_workspace(
             workspace_id=workspace_id, user_id=user_id)
-        workspace_members = self.workspace_storage.get_workspace_members(
+        workspace_member_dtos = self.workspace_storage.get_workspace_members(
             workspace_id=workspace_id)
 
-        workspace_member_ids = [obj.id for obj in workspace_members]
+        workspace_member_ids = [obj.id for obj in workspace_member_dtos]
 
         self.workspace_storage.deactivate_workspace_members(
             member_ids=workspace_member_ids)
 
-        return workspace_data
+        return workspace_dto

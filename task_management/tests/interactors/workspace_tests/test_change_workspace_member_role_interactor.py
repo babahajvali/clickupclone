@@ -81,7 +81,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         result = self.interactor.change_member_role(
             workspace_id="workspace123",
             user_id="user123",
-            role=Role.ADMIN.value,
+            role=Role.ADMIN,
             changed_by="admin123"
         )
 
@@ -96,7 +96,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role=Role.ADMIN.value,
+                role=Role.ADMIN,
                 changed_by="admin123"
             )
 
@@ -117,7 +117,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role=Role.ADMIN.value,
+                role=Role.ADMIN,
                 changed_by="admin123"
             )
 
@@ -142,7 +142,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role=Role.ADMIN.value,
+                role=Role.ADMIN,
                 changed_by="admin123"
             )
 
@@ -168,7 +168,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role=Role.ADMIN.value,
+                role=Role.ADMIN,
                 changed_by="admin123"
             )
 
@@ -193,7 +193,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role=Role.ADMIN.value,
+                role=Role.ADMIN,
                 changed_by="member123"
             )
 
@@ -218,7 +218,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
-                role="INVALID",
+                role=type("Role", (), {"value": "INVALID"})(),
                 changed_by="admin123"
             )
 

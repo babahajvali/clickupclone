@@ -90,5 +90,6 @@ class AccountOnboardingHandler:
             account_id=account_id
         )
 
-        return workspace_handler.handle_workspace(
-            workspace_data=workspace_input_data)
+        return workspace_handler.handle_workspace_creation(
+            create_workspace_dto=workspace_input_data
+        )
