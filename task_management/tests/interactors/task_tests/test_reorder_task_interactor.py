@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -17,6 +18,13 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.reorder_task_interactor import (
     ReorderTaskInteractor,
 )
+
+
+def reorder_task_lock_mock():
+    return patch(
+        "task_management.interactors.tasks.reorder_task_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
 
 
 def make_task(order: int = 1, is_deleted: bool = False) -> TaskDTO:
@@ -66,11 +74,12 @@ class TestReorderTaskInteractor:
     def test_reorder_task_move_down_success(self):
         self._setup_dependencies(current_order=1, new_order=3)
 
-        result = self.interactor.reorder_task(
-            task_id="task_1",
-            order=3,
-            user_id="user_1",
-        )
+        with reorder_task_lock_mock():
+            result = self.interactor.reorder_task(
+                task_id="task_1",
+                order=3,
+                user_id="user_1",
+            )
 
         self.task_storage.shift_tasks_down.assert_called_once_with(
             list_id="list_1",
@@ -82,11 +91,12 @@ class TestReorderTaskInteractor:
     def test_reorder_task_move_up_success(self):
         self._setup_dependencies(current_order=3, new_order=1)
 
-        result = self.interactor.reorder_task(
-            task_id="task_1",
-            order=1,
-            user_id="user_1",
-        )
+        with reorder_task_lock_mock():
+            result = self.interactor.reorder_task(
+                task_id="task_1",
+                order=1,
+                user_id="user_1",
+            )
 
         self.task_storage.shift_tasks_up.assert_called_once_with(
             list_id="list_1",
@@ -102,11 +112,12 @@ class TestReorderTaskInteractor:
         self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
         self.workspace_storage.get_workspace_member.return_value = make_permission()
 
-        result = self.interactor.reorder_task(
-            task_id="task_1",
-            order=2,
-            user_id="user_1",
-        )
+        with reorder_task_lock_mock():
+            result = self.interactor.reorder_task(
+                task_id="task_1",
+                order=2,
+                user_id="user_1",
+            )
 
         self.task_storage.shift_tasks_up.assert_not_called()
         self.task_storage.shift_tasks_down.assert_not_called()
@@ -117,11 +128,12 @@ class TestReorderTaskInteractor:
         self.task_storage.get_task.return_value = None
 
         with pytest.raises(TaskNotFound):
-            self.interactor.reorder_task(
-                task_id="task_1",
-                order=1,
-                user_id="user_1",
-            )
+            with reorder_task_lock_mock():
+                self.interactor.reorder_task(
+                    task_id="task_1",
+                    order=1,
+                    user_id="user_1",
+                )
 
     def test_reorder_task_deleted_task(self):
         self.task_storage.get_task.return_value = make_task(
@@ -129,39 +141,47 @@ class TestReorderTaskInteractor:
         )
 
         with pytest.raises(DeletedTaskFound):
-            self.interactor.reorder_task(
-                task_id="task_1",
-                order=1,
-                user_id="user_1",
-            )
+            with reorder_task_lock_mock():
+                self.interactor.reorder_task(
+                    task_id="task_1",
+                    order=1,
+                    user_id="user_1",
+                )
 
     def test_reorder_task_invalid_order_less_than_one(self):
         self.task_storage.get_task.return_value = make_task(order=1)
+        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
+        self.workspace_storage.get_workspace_member.return_value = make_permission()
 
         with pytest.raises(InvalidOrder):
-            self.interactor.reorder_task(
-                task_id="task_1",
-                order=0,
-                user_id="user_1",
-            )
+            with reorder_task_lock_mock():
+                self.interactor.reorder_task(
+                    task_id="task_1",
+                    order=0,
+                    user_id="user_1",
+                )
 
     def test_reorder_task_invalid_order_greater_than_task_count(self):
         self.task_storage.get_task.return_value = make_task(order=1)
         self.task_storage.get_tasks_count.return_value = 2
+        self.task_storage.get_workspace_id_from_task_id.return_value = "workspace_1"
+        self.workspace_storage.get_workspace_member.return_value = make_permission()
 
         with pytest.raises(InvalidOrder):
-            self.interactor.reorder_task(
-                task_id="task_1",
-                order=3,
-                user_id="user_1",
-            )
+            with reorder_task_lock_mock():
+                self.interactor.reorder_task(
+                    task_id="task_1",
+                    order=3,
+                    user_id="user_1",
+                )
 
     def test_reorder_task_permission_denied(self):
         self._setup_dependencies(current_order=1, new_order=2, role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed):
-            self.interactor.reorder_task(
-                task_id="task_1",
-                order=2,
-                user_id="user_1",
-            )
+            with reorder_task_lock_mock():
+                self.interactor.reorder_task(
+                    task_id="task_1",
+                    order=2,
+                    user_id="user_1",
+                )

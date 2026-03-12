@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getTaskAssignees": {
+      "__typename": "TaskNotFoundType",
+      "taskId": "task_404"
+    }
+  }
+}

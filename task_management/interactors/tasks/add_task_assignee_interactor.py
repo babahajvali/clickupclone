@@ -7,35 +7,30 @@ from task_management.mixins import TaskValidationMixin, UserValidationMixin, \
     WorkspaceValidationMixin
 
 
-class AddTaskAssigneeInteractor:
+class AddTaskAssigneeInteractor(
+        TaskValidationMixin,
+        UserValidationMixin,
+        WorkspaceValidationMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
             user_storage: UserStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(
+            task_storage=task_storage,
+            user_storage=user_storage,
+            workspace_storage=workspace_storage,
+        )
         self.task_storage = task_storage
         self.user_storage = user_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def task_mixin(self) -> TaskValidationMixin:
-        return TaskValidationMixin(task_storage=self.task_storage)
-
-    @property
-    def user_mixin(self) -> UserValidationMixin:
-        return UserValidationMixin(user_storage=self.user_storage)
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="list_task_assignees")
     def add_task_assignee(
             self, task_id: str, user_id: str, assigned_by: str) \
             -> TaskAssigneeDTO:
-        self.task_mixin.check_task_not_deleted(task_id=task_id)
-        self.user_mixin.check_user_is_active(user_id=user_id)
+        self.check_task_not_deleted(task_id=task_id)
+        self.check_user_is_active(user_id=user_id)
 
         self._check_user_has_edit_access_for_task(
             task_id=task_id, user_id=assigned_by)
@@ -55,5 +50,5 @@ class AddTaskAssigneeInteractor:
         workspace_id = self.task_storage.get_workspace_id_from_task_id(
             task_id=task_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

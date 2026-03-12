@@ -42,7 +42,9 @@ class CreateTaskMutation(graphene.Mutation):
         )
 
         try:
-            result = handler.handle_task_creation(create_task_dto)
+            result = handler.handle_task_creation(
+                create_task_dto=create_task_dto,
+            )
 
             return TaskType(
                 task_id=result.task_id,
@@ -67,5 +69,4 @@ class CreateTaskMutation(graphene.Mutation):
 
         except custom_exceptions.UserNotWorkspaceMember as e:
             return UserNotWorkspaceMemberType(user_id=e.user_id)
-
 

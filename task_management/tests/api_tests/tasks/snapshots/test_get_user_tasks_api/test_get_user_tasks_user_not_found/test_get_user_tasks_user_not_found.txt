@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getUserTasks": {
+      "__typename": "UserNotFoundType",
+      "userId": "user_404"
+    }
+  }
+}

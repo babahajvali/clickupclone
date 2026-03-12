@@ -1,0 +1,12 @@
+{
+  "data": {
+    "taskAssignee": {
+      "__typename": "TaskAssigneeType",
+      "assignId": "assign_1",
+      "userId": "user_2",
+      "taskId": "task_1",
+      "assignedBy": "user_1",
+      "isActive": true
+    }
+  }
+}

@@ -38,7 +38,7 @@ class UpdateTaskMutation(graphene.Mutation):
                 description=result.description,
                 order=result.order,
                 list_id=result.list_id,
-                is_delete=result.is_deleted,
+                is_deleted=result.is_deleted,
                 created_by=result.created_by
             )
 

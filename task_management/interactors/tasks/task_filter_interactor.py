@@ -6,23 +6,20 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import ListValidationMixin
 
 
-class TaskFilterInteractor:
+class TaskFilterInteractor(ListValidationMixin):
     def __init__(
             self, task_storage: TaskStorageInterface,
             list_storage: ListStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(list_storage=list_storage)
         self.list_storage = list_storage
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
 
-    @property
-    def list_mixin(self) -> ListValidationMixin:
-        return ListValidationMixin(list_storage=self.list_storage)
-
     def task_filter(self, task_filter_data: FilterDTO):
         self._check_filter_parameters(
             filter_data=task_filter_data)
-        self.list_mixin.check_list_not_deleted(
+        self.check_list_not_deleted(
             list_id=task_filter_data.list_id)
 
         return self.task_storage.task_filter_data(filter_data=task_filter_data)

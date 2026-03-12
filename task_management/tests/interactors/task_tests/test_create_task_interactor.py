@@ -1,4 +1,5 @@
-from unittest.mock import create_autospec
+from contextlib import nullcontext
+from unittest.mock import create_autospec, patch
 
 import pytest
 
@@ -20,6 +21,13 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.tasks.create_task_interactor import (
     CreateTaskInteractor,
 )
+
+
+def create_task_lock_mock():
+    return patch(
+        "task_management.interactors.tasks.create_task_interactor.redis_lock",
+        return_value=nullcontext(),
+    )
 
 
 def make_create_task_dto(name: str = "New Task") -> CreateTaskDTO:
@@ -79,7 +87,8 @@ class TestCreateTaskInteractor:
         self._setup_dependencies()
         task_data = make_create_task_dto()
 
-        result = self.interactor.create_task(task_data=task_data)
+        with create_task_lock_mock():
+            result = self.interactor.create_task(create_task_dto=task_data)
 
         snapshot.assert_match(repr(result), "test_create_task_success.txt")
 
@@ -88,7 +97,8 @@ class TestCreateTaskInteractor:
         task_data = make_create_task_dto()
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.create_task(task_data=task_data)
+            with create_task_lock_mock():
+                self.interactor.create_task(create_task_dto=task_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -100,7 +110,8 @@ class TestCreateTaskInteractor:
         self.list_storage.get_list.return_value = None
 
         with pytest.raises(ListNotFound) as exc:
-            self.interactor.create_task(task_data=task_data)
+            with create_task_lock_mock():
+                self.interactor.create_task(create_task_dto=task_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -114,7 +125,8 @@ class TestCreateTaskInteractor:
         )()
 
         with pytest.raises(DeletedListFound) as exc:
-            self.interactor.create_task(task_data=task_data)
+            with create_task_lock_mock():
+                self.interactor.create_task(create_task_dto=task_data)
 
         snapshot.assert_match(
             repr(exc.value),
@@ -125,7 +137,8 @@ class TestCreateTaskInteractor:
         task_data = make_create_task_dto(name="   ")
 
         with pytest.raises(EmptyTaskTitle):
-            self.interactor.create_task(task_data=task_data)
+            with create_task_lock_mock():
+                self.interactor.create_task(create_task_dto=task_data)
 
     def test_create_task_user_not_workspace_member(self):
         self._setup_dependencies()
@@ -133,4 +146,5 @@ class TestCreateTaskInteractor:
         self.workspace_storage.get_workspace_member.return_value = None
 
         with pytest.raises(UserNotWorkspaceMember):
-            self.interactor.create_task(task_data=task_data)
+            with create_task_lock_mock():
+                self.interactor.create_task(create_task_dto=task_data)

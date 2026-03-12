@@ -21,22 +21,22 @@ class TaskCreationHandler:
         self.workspace_storage = workspace_storage
         self.field_storage = field_storage
 
-    def handle_task_creation(self, task_data: CreateTaskDTO) -> TaskDTO:
-        task = self._create_task(task_data=task_data)
+    def handle_task_creation(self, create_task_dto: CreateTaskDTO) -> TaskDTO:
+        task_dto = self._create_task(create_task_dto=create_task_dto)
 
         self._create_default_field_values_at_task(
-            task_id=task.task_id, list_id=task.list_id,
-            created_by=task.created_by)
+            task_id=task_dto.task_id, list_id=task_dto.list_id,
+            created_by=task_dto.created_by)
 
-        return task
+        return task_dto
 
-    def _create_task(self, task_data: CreateTaskDTO) -> TaskDTO:
+    def _create_task(self, create_task_dto: CreateTaskDTO) -> TaskDTO:
         task_interactor = CreateTaskInteractor(
             list_storage=self.list_storage,
             task_storage=self.task_storage,
             workspace_storage=self.workspace_storage)
 
-        return task_interactor.create_task(task_data=task_data)
+        return task_interactor.create_task(create_task_dto=create_task_dto)
 
     def _create_default_field_values_at_task(
             self, task_id: str, list_id: str, created_by: str):

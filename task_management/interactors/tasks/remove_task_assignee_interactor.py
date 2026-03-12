@@ -8,18 +8,14 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import WorkspaceValidationMixin
 
 
-class RemoveTaskAssigneeInteractor:
+class RemoveTaskAssigneeInteractor(WorkspaceValidationMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
+        super().__init__(workspace_storage=workspace_storage)
         self.task_storage = task_storage
         self.workspace_storage = workspace_storage
-
-    @property
-    def workspace_mixin(self) -> WorkspaceValidationMixin:
-        return WorkspaceValidationMixin(
-            workspace_storage=self.workspace_storage)
 
     @invalidate_interactor_cache(cache_name="list_task_assignees")
     def remove_task_assignee(
@@ -51,5 +47,5 @@ class RemoveTaskAssigneeInteractor:
         workspace_id = self.task_storage.get_workspace_id_from_task_id(
             task_id=task_id)
 
-        self.workspace_mixin.check_user_has_edit_access_to_workspace(
+        self.check_user_has_edit_access_to_workspace(
             workspace_id=workspace_id, user_id=user_id)

@@ -5,7 +5,7 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import UserValidationMixin
 
 
-class GetUserTasksInteractor:
+class GetUserTasksInteractor(UserValidationMixin):
     """Get Task Assignees Interactor.
     
     Handles retrieving assignment information. This interactor
@@ -26,14 +26,11 @@ class GetUserTasksInteractor:
     def __init__(
             self, task_storage: TaskStorageInterface,
             user_storage: UserStorageInterface):
+        super().__init__(user_storage=user_storage)
         self.task_storage = task_storage
         self.user_storage = user_storage
 
-    @property
-    def user_mixin(self) -> UserValidationMixin:
-        return UserValidationMixin(user_storage=self.user_storage)
-
     def get_user_assigned_tasks(self, user_id: str) -> UserTasksDTO:
-        self.user_mixin.check_user_is_active(user_id=user_id)
+        self.check_user_is_active(user_id=user_id)
 
         return self.task_storage.get_user_assigned_tasks(user_id=user_id)

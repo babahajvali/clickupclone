@@ -1,0 +1,8 @@
+{
+  "data": {
+    "getTask": {
+      "__typename": "TaskNotFoundType",
+      "taskId": "task_404"
+    }
+  }
+}

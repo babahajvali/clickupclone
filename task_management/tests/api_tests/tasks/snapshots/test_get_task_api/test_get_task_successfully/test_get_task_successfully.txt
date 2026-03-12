@@ -1,0 +1,14 @@
+{
+  "data": {
+    "getTask": {
+      "__typename": "TaskType",
+      "taskId": "task_1",
+      "title": "Task title",
+      "description": "Task description",
+      "listId": "list_1",
+      "order": 1,
+      "createdBy": "user_1",
+      "isDeleted": false
+    }
+  }
+}
