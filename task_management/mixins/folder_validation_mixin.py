@@ -14,22 +14,21 @@ class FolderValidationMixin:
         super().__init__(**kwargs)
 
     def check_folder_not_deleted(self, folder_id: str):
-        folder_data = self.check_folder_exists(folder_id=folder_id)
+        folder_dto = self.check_folder_exists(folder_id=folder_id)
 
-        is_folder_delete = folder_data.is_deleted
+        is_folder_delete = folder_dto.is_deleted
         if is_folder_delete:
             raise DeletedFolderException(folder_id=folder_id)
 
     def check_folder_exists(self, folder_id: str) -> FolderDTO:
 
-        folder_data = self.folder_storage.get_folder(
+        folder_dto = self.folder_storage.get_folder(
             folder_id=folder_id)
 
-        is_folder_not_found = not folder_data
-        if is_folder_not_found:
+        if not folder_dto:
             raise FolderNotFound(folder_id=folder_id)
 
-        return folder_data
+        return folder_dto
 
     @staticmethod
     def check_folder_name_not_empty(name: str):
@@ -49,7 +48,7 @@ class FolderValidationMixin:
             raise UserNotFolderMember(user_id=user_id, folder_id=folder_id)
 
         is_not_full_edit = (
-            folder_permission_dto.permission_type != PermissionType.FULL_EDIT
+                folder_permission_dto.permission_type != PermissionType.FULL_EDIT
         )
         if is_not_full_edit:
             raise ModificationNotAllowed(user_id=user_id)

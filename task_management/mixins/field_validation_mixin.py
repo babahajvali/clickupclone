@@ -15,10 +15,10 @@ class FieldValidationMixin:
         super().__init__(**kwargs)
 
     def check_field_not_deleted(self, field_id: str):
-        field_data = self.check_field_exists(
+        field_dto = self.check_field_exists(
             field_id=field_id)
 
-        is_field_deleted = field_data.is_deleted
+        is_field_deleted = field_dto.is_deleted
         if is_field_deleted:
             raise DeletedFieldException(field_id=field_id)
 

@@ -15,20 +15,19 @@ class SpaceValidationMixin:
 
     def check_space_not_deleted(self, space_id: str):
 
-        space_data = self.check_space_exists(space_id=space_id)
+        space_dto = self.check_space_exists(space_id=space_id)
 
-        is_space_deleted = space_data.is_deleted
+        is_space_deleted = space_dto.is_deleted
         if is_space_deleted:
             raise DeletedSpaceFound(space_id=space_id)
 
     def check_space_exists(self, space_id: str) -> SpaceDTO:
-        space_data = self.space_storage.get_space(space_id=space_id)
+        space_dto = self.space_storage.get_space(space_id=space_id)
 
-        is_space_not_found = not space_data
-        if is_space_not_found:
+        if not space_dto:
             raise SpaceNotFound(space_id=space_id)
 
-        return space_data
+        return space_dto
 
     @staticmethod
     def check_space_name_not_empty(name: str):
