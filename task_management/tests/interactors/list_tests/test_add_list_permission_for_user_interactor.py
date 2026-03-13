@@ -4,8 +4,8 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
-    UnexpectedPermission,
-    UserHaveAlreadyListPermission,
+    InvalidPermission,
+    UserAlreadyHasListPermission,
     UserNotListMember,
 )
 from task_management.exceptions.enums import PermissionType, ListEntityType
@@ -14,8 +14,8 @@ from task_management.interactors.dtos import (
     ListDTO,
     UserListPermissionDTO,
 )
-from task_management.interactors.lists.add_list_permission_for_user_interactor import (
-    AddListPermissionForUserInteractor,
+from task_management.interactors.lists.create_list_permission_interactor import (
+    CreateListPermissionInteractor,
 )
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
@@ -55,7 +55,7 @@ class TestAddListPermissionForUserInteractor:
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
 
-        self.interactor = AddListPermissionForUserInteractor(
+        self.interactor = CreateListPermissionInteractor(
             list_storage=self.list_storage,
         )
 
@@ -79,8 +79,8 @@ class TestAddListPermissionForUserInteractor:
             added_by="admin",
         )
 
-        result = self.interactor.add_user_in_list_permission(
-            user_permission_dto=dto
+        result = self.interactor.create_list_permission(
+            list_permission_dto=dto
         )
 
         assert result.user_id == "user_1"
@@ -97,8 +97,8 @@ class TestAddListPermissionForUserInteractor:
         )
 
         with pytest.raises(UserNotListMember):
-            self.interactor.add_user_in_list_permission(
-                user_permission_dto=dto)
+            self.interactor.create_list_permission(
+                list_permission_dto=dto)
 
     def test_add_list_permission_permission_denied(self):
         self._setup_dependencies(actor_permission_type=PermissionType.VIEW)
@@ -110,8 +110,8 @@ class TestAddListPermissionForUserInteractor:
         )
 
         with pytest.raises(ModificationNotAllowed):
-            self.interactor.add_user_in_list_permission(
-                user_permission_dto=dto)
+            self.interactor.create_list_permission(
+                list_permission_dto=dto)
 
     def test_add_list_permission_duplicate(self):
         self.list_storage.get_list.return_value = make_list()
@@ -125,9 +125,9 @@ class TestAddListPermissionForUserInteractor:
             added_by="admin",
         )
 
-        with pytest.raises(UserHaveAlreadyListPermission):
-            self.interactor.add_user_in_list_permission(
-                user_permission_dto=dto)
+        with pytest.raises(UserAlreadyHasListPermission):
+            self.interactor.create_list_permission(
+                list_permission_dto=dto)
 
     def test_add_list_permission_invalid_permission(self):
         self._setup_dependencies()
@@ -138,6 +138,6 @@ class TestAddListPermissionForUserInteractor:
             added_by="admin",
         )
 
-        with pytest.raises(UnexpectedPermission):
-            self.interactor.add_user_in_list_permission(
-                user_permission_dto=dto)
+        with pytest.raises(InvalidPermission):
+            self.interactor.create_list_permission(
+                list_permission_dto=dto)

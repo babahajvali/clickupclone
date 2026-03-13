@@ -4,9 +4,9 @@ from unittest.mock import create_autospec, patch
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedSpaceFound,
+    SpaceIsDeleted,
     InvalidOrder,
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
     ModificationNotAllowed,
     SpaceNotFound,
@@ -57,13 +57,13 @@ class TestReorderListInSpace:
         )
 
     def _get_interactor(
-        self,
-        *,
-        role: Role = Role.MEMBER,
-        list_data=None,
-        space_exists=True,
-        space_active=True,
-        space_lists_count=3,
+            self,
+            *,
+            role: Role = Role.MEMBER,
+            list_data=None,
+            space_exists=True,
+            space_active=True,
+            space_lists_count=3,
     ):
         list_storage = create_autospec(ListStorageInterface)
         space_storage = create_autospec(SpaceStorageInterface)
@@ -177,7 +177,7 @@ class TestReorderListInSpace:
         interactor = self._get_interactor(list_data=list_data)
 
         with reorder_list_in_space_lock_mock(), pytest.raises(
-                DeletedListFound) as exc:
+                ListIsDeleted) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",
@@ -205,7 +205,7 @@ class TestReorderListInSpace:
         interactor = self._get_interactor(space_active=False)
 
         with reorder_list_in_space_lock_mock(), pytest.raises(
-                DeletedSpaceFound) as exc:
+                SpaceIsDeleted) as exc:
             interactor.reorder_list_in_space(
                 list_id="list_1",
                 space_id="space_1",

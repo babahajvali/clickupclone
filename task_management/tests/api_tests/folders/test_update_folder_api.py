@@ -1,4 +1,3 @@
-from contextlib import nullcontext
 from types import SimpleNamespace
 
 import pytest
@@ -36,15 +35,6 @@ def update_folder_mock(mocker):
     return mocker.patch(
         "task_management.storages.folder_storage.FolderStorage.update_folder"
     )
-
-
-def update_folder_lock_mock(mocker):
-    return mocker.patch(
-        "task_management.interactors.folders.update_folder_interactor."
-        "UpdateFolderInteractor._get_update_folder_lock",
-        return_value=nullcontext(),
-    )
-
 
 def make_folder(is_deleted=False) -> FolderDTO:
     return FolderDTO(
@@ -84,7 +74,6 @@ class TestUpdateFolderAPI(BaseUpdateFolder):
 
         get_workspace_member = get_workspace_member_mock(mocker)
         get_workspace_member.return_value = make_workspace_member()
-        update_folder_lock_mock(mocker)
 
     def test_update_folder_successfully(self, snapshot, mocker):
         self._setup_common(mocker)
@@ -110,7 +99,6 @@ class TestUpdateFolderAPI(BaseUpdateFolder):
     def test_update_folder_not_found(self, snapshot, mocker):
         get_folder = get_folder_mock(mocker)
         get_folder.return_value = None
-        update_folder_lock_mock(mocker)
 
         variables = {
             "params": {
@@ -129,7 +117,6 @@ class TestUpdateFolderAPI(BaseUpdateFolder):
     def test_update_folder_deleted(self, snapshot, mocker):
         get_folder = get_folder_mock(mocker)
         get_folder.return_value = make_folder(is_deleted=True)
-        update_folder_lock_mock(mocker)
 
         variables = {
             "params": {

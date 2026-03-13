@@ -2,8 +2,9 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import ModificationNotAllowed, \
-    UnexpectedPermission, UserNotFolderMember
+from task_management.exceptions.custom_exceptions import \
+    ModificationNotAllowed, \
+    InvalidPermission, UserNotFolderMember
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
     CreateFolderPermissionDTO,
@@ -13,7 +14,8 @@ from task_management.interactors.dtos import (
 from task_management.interactors.folders.add_folder_permission_for_user_interactor import (
     AddFolderPermissionForUserInteractor,
 )
-from task_management.interactors.storage_interfaces import FolderStorageInterface
+from task_management.interactors.storage_interfaces import \
+    FolderStorageInterface
 
 
 def make_folder() -> FolderDTO:
@@ -131,7 +133,7 @@ class TestAddFolderPermissionForUserInteractor:
             added_by="admin",
         )
 
-        with pytest.raises(UnexpectedPermission) as exc:
+        with pytest.raises(InvalidPermission) as exc:
             self.interactor.add_user_for_folder_permission(permission_data=dto)
 
         snapshot.assert_match(

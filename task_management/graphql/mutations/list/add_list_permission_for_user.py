@@ -16,8 +16,8 @@ from task_management.graphql.types.response_types import (
 )
 from task_management.graphql.types.types import UserListPermissionType
 from task_management.interactors.dtos import CreateListPermissionDTO
-from task_management.interactors.lists.add_list_permission_for_user_interactor import (
-    AddListPermissionForUserInteractor,
+from task_management.interactors.lists.create_list_permission_interactor import (
+    CreateListPermissionInteractor,
 )
 from task_management.storages import ListStorage
 
@@ -36,7 +36,7 @@ class AddListPermissionForUserMutation(graphene.Mutation):
         list_id = params.list_id
 
         list_storage = ListStorage()
-        interactor = AddListPermissionForUserInteractor(
+        interactor = CreateListPermissionInteractor(
             list_storage=list_storage,
         )
 
@@ -47,8 +47,8 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 permission_type=permission,
                 added_by=added_by,
             )
-            result = interactor.add_user_in_list_permission(
-                user_permission_dto=input_data
+            result = interactor.create_list_permission(
+                list_permission_dto=input_data
             )
 
             return UserListPermissionType(
@@ -60,11 +60,11 @@ class AddListPermissionForUserMutation(graphene.Mutation):
                 permission_type=result.permission_type,
             )
 
-        except custom_exceptions.DeletedListFound as e:
+        except custom_exceptions.ListIsDeleted as e:
             return DeletedListType(list_id=e.list_id)
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
         except custom_exceptions.UserNotListMember as e:
             return UserNotListMemberType(user_id=e.user_id)
-        except custom_exceptions.UserHaveAlreadyListPermission as e:
+        except custom_exceptions.UserAlreadyHasListPermission as e:
             return UserHaveAlreadyListPermissionType(user_id=e.user_id)

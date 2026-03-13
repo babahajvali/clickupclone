@@ -5,10 +5,10 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     EmptyListName,
-    DeletedFolderException,
+    FolderIsDeleted,
     FolderNotFound,
     ModificationNotAllowed,
-    DeletedSpaceFound,
+    SpaceIsDeleted,
     SpaceNotFound,
 )
 from task_management.exceptions.enums import Role, ListEntityType
@@ -177,7 +177,7 @@ class TestCreateList:
         )
 
         # Act
-        with create_list_lock_mock(), pytest.raises(DeletedSpaceFound) as exc:
+        with create_list_lock_mock(), pytest.raises(SpaceIsDeleted) as exc:
             self.interactor.create_list(create_list_dto=dto)
 
         # Assert
@@ -218,7 +218,7 @@ class TestCreateList:
 
         # Act
         with create_list_lock_mock(), pytest.raises(
-                DeletedFolderException) as exc:
+                FolderIsDeleted) as exc:
             self.interactor.create_list(create_list_dto=dto)
 
         # Assert

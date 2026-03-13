@@ -59,8 +59,7 @@ def update_folder_order_mock(mocker):
 
 def reorder_folder_lock_mock(mocker):
     return mocker.patch(
-        "task_management.interactors.folders.reorder_folder_interactor."
-        "ReorderFolderInteractor._get_reorder_folder_lock",
+        "task_management.interactors.folders.reorder_folder_interactor.redis_lock",
         return_value=nullcontext(),
     )
 

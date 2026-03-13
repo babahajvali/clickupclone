@@ -53,13 +53,13 @@ class ReorderSpaceMutation(graphene.Mutation):
         except custom_exceptions.UserNotWorkspaceMember as e:
             return UserNotWorkspaceMemberType(user_id=e.user_id)
 
-        except custom_exceptions.DeletedSpaceFound as e:
+        except custom_exceptions.SpaceIsDeleted as e:
             return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.WorkspaceNotFound as e:
             return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-        except custom_exceptions.DeletedWorkspaceFound as e:
+        except custom_exceptions.WorkspaceIsDeleted as e:
             return DeletedWorkspaceType(workspace_id=e.workspace_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

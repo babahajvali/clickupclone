@@ -1,7 +1,7 @@
 from typing import Optional
 
 from task_management.exceptions.custom_exceptions import \
-    FieldNotFound, DeletedFieldException, FieldNameAlreadyExists, \
+    FieldNotFound, FieldIsDeleted, FieldNameAlreadyExists, \
     EmptyFieldName
 from task_management.interactors.dtos import FieldDTO
 from task_management.interactors.storage_interfaces import \
@@ -20,7 +20,7 @@ class FieldValidationMixin:
 
         is_field_deleted = field_dto.is_deleted
         if is_field_deleted:
-            raise DeletedFieldException(field_id=field_id)
+            raise FieldIsDeleted(field_id=field_id)
 
     def check_field_exists(self, field_id: str) -> FieldDTO:
         fields_dto = self.field_storage.get_fields(field_ids=[field_id])

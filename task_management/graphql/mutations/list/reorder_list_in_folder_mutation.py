@@ -69,13 +69,13 @@ class ReorderListInFolderMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.DeletedListFound as e:
+        except custom_exceptions.ListIsDeleted as e:
             return DeletedListType(list_id=e.list_id)
 
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.DeletedFolderException as e:
+        except custom_exceptions.FolderIsDeleted as e:
             return DeletedFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

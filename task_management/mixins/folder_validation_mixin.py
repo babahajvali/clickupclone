@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    FolderNotFound, DeletedFolderException, EmptyFolderName, \
+    FolderNotFound, FolderIsDeleted, EmptyFolderName, \
     ModificationNotAllowed, UserNotFolderMember
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import FolderDTO
@@ -18,7 +18,7 @@ class FolderValidationMixin:
 
         is_folder_delete = folder_dto.is_deleted
         if is_folder_delete:
-            raise DeletedFolderException(folder_id=folder_id)
+            raise FolderIsDeleted(folder_id=folder_id)
 
     def check_folder_exists(self, folder_id: str) -> FolderDTO:
 

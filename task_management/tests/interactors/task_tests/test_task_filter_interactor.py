@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
+    ListIsDeleted,
     InvalidLimit,
     InvalidOffset,
     ListNotFound,
@@ -79,5 +79,5 @@ class TestTaskFilterInteractor:
         filter_data = make_filter_data()
         self.list_storage.get_list.return_value = make_list(is_deleted=True)
 
-        with pytest.raises(DeletedListFound):
+        with pytest.raises(ListIsDeleted):
             self.interactor.task_filter(task_filter_data=filter_data)

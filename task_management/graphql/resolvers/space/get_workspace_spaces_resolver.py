@@ -40,5 +40,5 @@ def get_workspace_spaces_resolver(root, info, params):
     except custom_exceptions.WorkspaceNotFound as e:
         return WorkspaceNotFoundType(workspace_id=e.workspace_id)
 
-    except custom_exceptions.DeletedWorkspaceFound as e:
+    except custom_exceptions.WorkspaceIsDeleted as e:
         return DeletedWorkspaceType(workspace_id=e.workspace_id)

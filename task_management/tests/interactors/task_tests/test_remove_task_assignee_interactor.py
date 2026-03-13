@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    InActiveTaskAssigneeFound,
+    TaskAssigneeIsInactive,
     ModificationNotAllowed,
     TaskAssigneeNotFound,
 )
@@ -84,7 +84,7 @@ class TestRemoveTaskAssigneeInteractor:
             is_active=False
         )
 
-        with pytest.raises(InActiveTaskAssigneeFound):
+        with pytest.raises(TaskAssigneeIsInactive):
             self.interactor.remove_task_assignee(
                 assign_id="assign_1",
                 user_id="user_1",

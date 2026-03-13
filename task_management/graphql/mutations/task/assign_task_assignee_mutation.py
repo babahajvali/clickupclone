@@ -49,7 +49,7 @@ class AddTaskAssigneeMutation(graphene.Mutation):
             return UserNotFoundType(user_id=e.user_id)
         except custom_exceptions.TaskNotFound as e:
             return TaskNotFoundType(task_id=e.task_id)
-        except custom_exceptions.DeletedTaskFound as e:
+        except custom_exceptions.TaskIsDeleted as e:
             return DeletedTaskType(task_id=e.task_id)
         except custom_exceptions.InactiveUser as e:
             return InactiveUserType(user_id=e.user_id)

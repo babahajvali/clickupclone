@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedTaskFound,
+    TaskIsDeleted,
     InactiveUser,
     ModificationNotAllowed,
     TaskNotFound,
@@ -136,7 +136,7 @@ class TestAddTaskAssigneeInteractor:
             "Task", (), {"is_deleted": True, "list_id": "list_1"}
         )()
 
-        with pytest.raises(DeletedTaskFound) as e:
+        with pytest.raises(TaskIsDeleted) as e:
             self.interactor.add_task_assignee(
                 task_id="task_1",
                 user_id="user_2",

@@ -43,7 +43,7 @@ class RemoveTaskAssigneeMutation(graphene.Mutation):
 
         except custom_exceptions.TaskNotFound as e:
             return TaskNotFoundType(task_id=e.task_id)
-        except custom_exceptions.DeletedTaskFound as e:
+        except custom_exceptions.TaskIsDeleted as e:
             return DeletedTaskType(task_id=e.task_id)
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)

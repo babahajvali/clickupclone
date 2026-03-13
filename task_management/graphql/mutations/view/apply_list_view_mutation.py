@@ -52,7 +52,7 @@ class ApplyListViewMutation(graphene.Mutation):
         except custom_exceptions.ViewNotFound as e:
             return ViewNotFoundType(view_id=e.view_id)
 
-        except custom_exceptions.DeletedListFound as e:
+        except custom_exceptions.ListIsDeleted as e:
             return DeletedListType(list_id=e.list_id)
 
         except custom_exceptions.UserNotWorkspaceMember as e:

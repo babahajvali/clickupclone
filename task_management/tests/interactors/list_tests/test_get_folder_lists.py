@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedFolderException,
+    FolderIsDeleted,
     FolderNotFound,
 )
 from task_management.exceptions.enums import ListEntityType
@@ -80,7 +80,7 @@ class TestGetFolderLists:
         self._setup_folder_lists_dependencies(folder_active=False)
 
         # Act
-        with pytest.raises(DeletedFolderException) as exc:
+        with pytest.raises(FolderIsDeleted) as exc:
             self.interactor.get_folder_lists(folder_id="folder_1")
 
         # Assert

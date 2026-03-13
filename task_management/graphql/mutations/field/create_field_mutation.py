@@ -79,7 +79,7 @@ class CreateFieldMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.ResourceLockedException as e:
+        except custom_exceptions.ResourceLocked as e:
             return ResourceLockedType(message=e.message)
 
         except custom_exceptions.UnexpectedFieldConfigKeys as e:

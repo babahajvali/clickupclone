@@ -57,7 +57,7 @@ class SetFolderVisibilityMutation(graphene.Mutation):
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.DeletedFolderException as e:
+        except custom_exceptions.FolderIsDeleted as e:
             return DeletedFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

@@ -19,9 +19,9 @@ from task_management.utils.redis_utils import redis_lock
 
 
 class ReorderListInSpaceInteractor(
-        ListValidationMixin,
-        SpaceValidationMixin,
-        WorkspaceValidationMixin):
+    ListValidationMixin,
+    SpaceValidationMixin,
+    WorkspaceValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
@@ -41,6 +41,7 @@ class ReorderListInSpaceInteractor(
     def reorder_list_in_space(
             self, list_id: str, space_id: str, order: int, user_id: str) \
             -> ListDTO:
+
         self.check_list_not_deleted(list_id=list_id)
         self.check_space_not_deleted(space_id=space_id)
         self._check_user_has_edit_access_for_space(

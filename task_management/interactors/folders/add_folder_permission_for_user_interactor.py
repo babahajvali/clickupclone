@@ -1,8 +1,9 @@
-from task_management.exceptions.custom_exceptions import UnexpectedPermission
+from task_management.exceptions.custom_exceptions import InvalidPermission
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import UserFolderPermissionDTO, \
     CreateFolderPermissionDTO
-from task_management.interactors.storage_interfaces import FolderStorageInterface
+from task_management.interactors.storage_interfaces import \
+    FolderStorageInterface
 from task_management.mixins import FolderValidationMixin
 
 
@@ -40,4 +41,4 @@ class AddFolderPermissionForUserInteractor(
         is_invalid_permission_type = permission not in existed_permissions
 
         if is_invalid_permission_type:
-            raise UnexpectedPermission(permission=permission)
+            raise InvalidPermission(permission=permission)

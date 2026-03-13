@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import \
-    SpaceNotFound, DeletedSpaceFound, EmptySpaceName, ModificationNotAllowed, \
+    SpaceNotFound, SpaceIsDeleted, EmptySpaceName, ModificationNotAllowed, \
     UserNotSpaceMember
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import SpaceDTO
@@ -19,7 +19,7 @@ class SpaceValidationMixin:
 
         is_space_deleted = space_dto.is_deleted
         if is_space_deleted:
-            raise DeletedSpaceFound(space_id=space_id)
+            raise SpaceIsDeleted(space_id=space_id)
 
     def check_space_exists(self, space_id: str) -> SpaceDTO:
         space_dto = self.space_storage.get_space(space_id=space_id)

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from django_redis import get_redis_connection
 
 from task_management.exceptions.custom_exceptions import \
-    ResourceLockedException
+    ResourceLocked
 
 unlock_script = """
                 if redis.call("get", KEYS[1]) == ARGV[1] then
@@ -28,7 +28,7 @@ def redis_lock(lock_key: str, timeout: int = 10):
     )
 
     if not acquired:
-        raise ResourceLockedException(lock_key=lock_key)
+        raise ResourceLocked(lock_key=lock_key)
 
     try:
         yield

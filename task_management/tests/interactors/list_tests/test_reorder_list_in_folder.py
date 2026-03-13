@@ -5,9 +5,9 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
-    DeletedFolderException,
+    FolderIsDeleted,
     InvalidOrder,
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -57,13 +57,13 @@ class TestReorderListInFolder:
         )
 
     def _get_interactor(
-        self,
-        *,
-        role: Role = Role.MEMBER,
-        list_data=None,
-        folder_exists=True,
-        folder_active=True,
-        folder_lists_count=3,
+            self,
+            *,
+            role: Role = Role.MEMBER,
+            list_data=None,
+            folder_exists=True,
+            folder_active=True,
+            folder_lists_count=3,
     ):
         list_storage = create_autospec(ListStorageInterface)
         folder_storage = create_autospec(FolderStorageInterface)
@@ -177,7 +177,7 @@ class TestReorderListInFolder:
         interactor = self._get_interactor(list_data=list_data)
 
         with reorder_list_in_folder_lock_mock(), pytest.raises(
-                DeletedListFound) as exc:
+                ListIsDeleted) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",
@@ -205,7 +205,7 @@ class TestReorderListInFolder:
         interactor = self._get_interactor(folder_active=False)
 
         with reorder_list_in_folder_lock_mock(), pytest.raises(
-                DeletedFolderException) as exc:
+                FolderIsDeleted) as exc:
             interactor.reorder_list_in_folder(
                 folder_id="folder_1",
                 list_id="list_1",

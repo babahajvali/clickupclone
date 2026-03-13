@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedTaskFound,
+    TaskIsDeleted,
     EmptyTaskTitle,
     ModificationNotAllowed,
     NothingToUpdateTask,
@@ -111,7 +111,7 @@ class TestUpdateTaskInteractor:
     def test_update_task_deleted(self):
         self.task_storage.get_task.return_value = make_task(is_deleted=True)
 
-        with pytest.raises(DeletedTaskFound):
+        with pytest.raises(TaskIsDeleted):
             self.interactor.update_task(
                 task_id="task_1",
                 user_id="user_1",

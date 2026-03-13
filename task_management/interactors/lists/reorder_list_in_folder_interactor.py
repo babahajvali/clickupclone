@@ -5,7 +5,6 @@ from task_management.decorators.caching_decorators import (
 )
 from task_management.exceptions.custom_exceptions import InvalidOrder
 from task_management.interactors.dtos import ListDTO
-
 from task_management.interactors.storage_interfaces import (
     ListStorageInterface,
     FolderStorageInterface,
@@ -20,9 +19,9 @@ from task_management.utils.redis_utils import redis_lock
 
 
 class ReorderListInFolderInteractor(
-        ListValidationMixin,
-        WorkspaceValidationMixin,
-        FolderValidationMixin):
+    ListValidationMixin,
+    WorkspaceValidationMixin,
+    FolderValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
@@ -42,6 +41,7 @@ class ReorderListInFolderInteractor(
     def reorder_list_in_folder(
             self, folder_id: str, list_id: str, order: int, user_id: str) \
             -> ListDTO:
+
         self.check_list_not_deleted(list_id=list_id)
         self.check_folder_not_deleted(folder_id=folder_id)
         self._check_user_has_edit_access_for_list(
@@ -49,7 +49,8 @@ class ReorderListInFolderInteractor(
 
         lock_key = f"lock:reorder_list:folder:{folder_id}"
         with redis_lock(lock_key, timeout=10):
-            self._check_list_order_within_range(folder_id=folder_id, order=order)
+            self._check_list_order_within_range(folder_id=folder_id,
+                                                order=order)
             list_data = self.list_storage.get_list(list_id=list_id)
 
             old_order = list_data.order

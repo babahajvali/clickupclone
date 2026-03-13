@@ -4,7 +4,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     UnexpectedRole,
-    ModificationNotAllowed, InactiveUser, DeletedWorkspaceFound,
+    ModificationNotAllowed, InactiveUser, WorkspaceIsDeleted,
 )
 from task_management.exceptions.enums import Role
 from task_management.interactors.storage_interfaces.user_storage_interface import (
@@ -96,7 +96,7 @@ class TestAddWorkspaceMemberInteractor:
             self._mock_deleted_workspace()
         )
 
-        with pytest.raises(DeletedWorkspaceFound) as exc:
+        with pytest.raises(WorkspaceIsDeleted) as exc:
             self.interactor.create_workspace_member(dto)
 
         snapshot.assert_match(

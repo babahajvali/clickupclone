@@ -51,8 +51,8 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.is_account_name_exists(account_name=name,
-                                                excluded_account_id=None)
+        result = storage.is_account_name_exists(
+            account_name=name, excluded_account_ids=None)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -65,8 +65,8 @@ class TestAccountStorage:
         storage = AccountStorage()
 
         # Act
-        result = storage.is_account_name_exists(account_name=name,
-                                                excluded_account_id=None)
+        result = storage.is_account_name_exists(
+            account_name=name, excluded_account_ids=None)
 
         # Assert
         snapshot.assert_match(repr(result),

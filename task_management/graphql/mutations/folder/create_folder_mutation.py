@@ -61,7 +61,7 @@ class CreateFolderMutation(graphene.Mutation):
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.DeletedSpaceFound as e:
+        except custom_exceptions.SpaceIsDeleted as e:
             return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
     ModificationNotAllowed,
 )
@@ -112,7 +112,7 @@ class TestSetListPrivate:
         self._setup_visibility_dependencies(list_data=list_data)
 
         # Act
-        with pytest.raises(DeletedListFound) as exc:
+        with pytest.raises(ListIsDeleted) as exc:
             self.interactor.set_list_visibility(
                 list_id="list_1",
                 visibility=VisibilityType.PRIVATE,

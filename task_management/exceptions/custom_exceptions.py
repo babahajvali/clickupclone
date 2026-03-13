@@ -40,7 +40,7 @@ class EmptyListName(Exception):
         self.list_name = list_name
 
     def __str__(self):
-        return f"Empty List name fount '{self.list_name}'"
+        return f"Empty List name found '{self.list_name}'"
 
 
 class EmptyFolderName(Exception):
@@ -91,7 +91,7 @@ class FieldNameAlreadyExists(Exception):
         self.field_name = field_name
 
 
-class DeletedFieldException(Exception):
+class FieldIsDeleted(Exception):
     def __init__(self, field_id: str):
         self.field_id = field_id
 
@@ -203,7 +203,7 @@ class ListNotFound(Exception):
         self.list_id = list_id
 
 
-class UserHaveAlreadyListPermission(Exception):
+class UserAlreadyHasListPermission(Exception):
     def __init__(self, user_id: str):
         self.user_id = user_id
 
@@ -224,17 +224,17 @@ class TaskAssigneeNotFound(Exception):
         self.assign_id = assign_id
 
 
-class InActiveTaskAssigneeFound(Exception):
+class TaskAssigneeIsInactive(Exception):
     def __init__(self, assign_id: str):
         self.assign_id = assign_id
 
 
-class DeletedTaskFound(Exception):
+class TaskIsDeleted(Exception):
     def __init__(self, task_id: str):
         self.task_id = task_id
 
 
-class DeletedListFound(Exception):
+class ListIsDeleted(Exception):
     def __init__(self, list_id: str):
         self.list_id = list_id
 
@@ -244,7 +244,7 @@ class SpaceNotFound(Exception):
         self.space_id = space_id
 
 
-class DeletedSpaceFound(Exception):
+class SpaceIsDeleted(Exception):
     def __init__(self, space_id: str):
         self.space_id = space_id
 
@@ -266,7 +266,7 @@ class FolderNotFound(Exception):
         self.folder_id = folder_id
 
 
-class DeletedFolderException(Exception):
+class FolderIsDeleted(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 
@@ -291,7 +291,7 @@ class InvalidWorkspaceIdsFound(Exception):
         self.workspace_ids = workspace_ids
 
 
-class DeletedWorkspaceFound(Exception):
+class WorkspaceIsDeleted(Exception):
     def __init__(self, workspace_id: str):
         self.workspace_id = workspace_id
 
@@ -311,7 +311,7 @@ class UnexpectedRole(Exception):
         self.role = role
 
 
-class UnexpectedPermission(Exception):
+class InvalidPermission(Exception):
     def __init__(self, permission: str):
         self.permission = permission
 
@@ -412,7 +412,7 @@ class NothingToUpdateList(Exception):
         self.list_id = list_id
 
 
-class NothingToUpdateFolderException(Exception):
+class NothingToUpdateFolder(Exception):
     def __init__(self, folder_id: str):
         self.folder_id = folder_id
 
@@ -537,7 +537,7 @@ class DropdownOptionNotAllowed(Exception):
         return self.message
 
 
-class ResourceLockedException(Exception):
+class ResourceLocked(Exception):
     def __init__(self, lock_key: str):
         self.lock_key = lock_key
         self.message = (

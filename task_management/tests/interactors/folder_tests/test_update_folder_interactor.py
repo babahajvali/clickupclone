@@ -1,12 +1,11 @@
-from contextlib import nullcontext
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec
 
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
     FolderNotFound,
     ModificationNotAllowed,
-    NothingToUpdateFolderException,
+    NothingToUpdateFolder,
 )
 from task_management.exceptions.enums import Role
 from task_management.interactors.dtos import FolderDTO, WorkspaceMemberDTO
@@ -68,28 +67,19 @@ class TestUpdateFolderInteractor:
     def test_update_folder_success(self, snapshot):
         self._setup_dependencies()
 
-        with patch.object(
-                UpdateFolderInteractor,
-                "_get_update_folder_lock",
-                return_value=nullcontext(),
-        ):
-            result = self.interactor.update_folder(
-                folder_id="folder_1",
-                user_id="user_1",
-                name="Updated",
-                description="Updated Desc",
-            )
+        result = self.interactor.update_folder(
+            folder_id="folder_1",
+            user_id="user_1",
+            name="Updated",
+            description="Updated Desc",
+        )
 
         snapshot.assert_match(repr(result), "update_folder_success.txt")
 
     def test_update_folder_nothing_to_update(self, snapshot):
         self._setup_dependencies()
 
-        with patch.object(
-                UpdateFolderInteractor,
-                "_get_update_folder_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(NothingToUpdateFolderException) as exc:
+        with pytest.raises(NothingToUpdateFolder) as exc:
             self.interactor.update_folder(
                 folder_id="folder_1",
                 user_id="user_1",
@@ -105,11 +95,7 @@ class TestUpdateFolderInteractor:
         self._setup_dependencies()
         self.folder_storage.get_folder.return_value = None
 
-        with patch.object(
-                UpdateFolderInteractor,
-                "_get_update_folder_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(FolderNotFound) as exc:
+        with pytest.raises(FolderNotFound) as exc:
             self.interactor.update_folder(
                 folder_id="folder_1",
                 user_id="user_1",
@@ -122,11 +108,7 @@ class TestUpdateFolderInteractor:
     def test_update_folder_permission_denied(self, snapshot):
         self._setup_dependencies(role=Role.GUEST)
 
-        with patch.object(
-                UpdateFolderInteractor,
-                "_get_update_folder_lock",
-                return_value=nullcontext(),
-        ), pytest.raises(ModificationNotAllowed) as exc:
+        with pytest.raises(ModificationNotAllowed) as exc:
             self.interactor.update_folder(
                 folder_id="folder_1",
                 user_id="user_1",

@@ -1,7 +1,7 @@
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import TaskAssigneeNotFound, \
-    InActiveTaskAssigneeFound
+    TaskAssigneeIsInactive
 from task_management.interactors.dtos import TaskAssigneeDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, TaskStorageInterface
@@ -39,7 +39,7 @@ class RemoveTaskAssigneeInteractor(WorkspaceValidationMixin):
             raise TaskAssigneeNotFound(assign_id=assign_id)
 
         if not assignee_data.is_active:
-            raise InActiveTaskAssigneeFound(assign_id=assign_id)
+            raise TaskAssigneeIsInactive(assign_id=assign_id)
 
         return assignee_data
 

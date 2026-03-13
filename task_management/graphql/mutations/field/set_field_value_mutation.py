@@ -58,13 +58,13 @@ class SetFieldValueMutation(graphene.Mutation):
         except custom_exceptions.TaskNotFound as e:
             return TaskNotFoundType(task_id=e.task_id)
 
-        except custom_exceptions.DeletedTaskFound as e:
+        except custom_exceptions.TaskIsDeleted as e:
             return DeletedTaskType(task_id=e.task_id)
 
         except custom_exceptions.FieldNotFound as e:
             return FieldNotFoundType(field_id=e.field_id)
 
-        except custom_exceptions.DeletedFieldException as e:
+        except custom_exceptions.FieldIsDeleted as e:
             return DeletedFieldType(field_id=e.field_id)
 
         except custom_exceptions.UserNotWorkspaceMember as e:

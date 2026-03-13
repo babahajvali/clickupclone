@@ -1,16 +1,33 @@
+from contextlib import contextmanager
+
+import pytest
+
 from task_management.decorators import caching_decorators
 from task_management.tests.test_utils import GraphQLBaseTestCase
 
 
+@contextmanager
+def _dummy_redis_lock(*args, **kwargs):
+    yield
+
+
 class BaseTaskGraphQLTestCase(GraphQLBaseTestCase):
-    @staticmethod
-    def _stub_cache_backend(monkeypatch):
+    @pytest.fixture(autouse=True)
+    def _stub_cache_backend(self, monkeypatch):
         monkeypatch.setattr(caching_decorators.cache, "get",
                             lambda *args, **kwargs: None)
         monkeypatch.setattr(caching_decorators.cache, "set",
                             lambda *args, **kwargs: True)
         monkeypatch.setattr(caching_decorators.cache, "delete_pattern",
                             lambda *args, **kwargs: True)
+        monkeypatch.setattr(
+            "task_management.interactors.tasks.create_task_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
+        monkeypatch.setattr(
+            "task_management.interactors.tasks.reorder_task_interactor.redis_lock",
+            _dummy_redis_lock,
+        )
 
 
 class BaseCreateTask(BaseTaskGraphQLTestCase):

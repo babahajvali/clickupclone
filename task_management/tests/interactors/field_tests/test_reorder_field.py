@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     TemplateNotFound,
     FieldNotFound,
     FieldNotBelongsToTemplate,
-    DeletedFieldException,
+    FieldIsDeleted,
     ModificationNotAllowed,
     InvalidOrder,
 )
@@ -233,7 +233,7 @@ class TestReorderFieldInteractor:
         ]
 
         # Act
-        with pytest.raises(DeletedFieldException) as exc:
+        with pytest.raises(FieldIsDeleted) as exc:
             self.interactor.reorder_field(
                 field_id="field_1",
                 template_id="template_1",

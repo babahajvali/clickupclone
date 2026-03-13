@@ -5,7 +5,7 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UserNotSpaceMember,
-    UnexpectedPermission,
+    InvalidPermission,
 )
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
@@ -139,7 +139,7 @@ class TestAddSpacePermissionForUser:
             added_by="admin",
         )
 
-        with pytest.raises(UnexpectedPermission) as exc:
+        with pytest.raises(InvalidPermission) as exc:
             self.interactor.add_user_for_space_permission(
                 create_space_permission_dto=dto)
 

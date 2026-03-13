@@ -87,13 +87,13 @@ class TestUpdateWorkspaceAPI(BaseUpdateWorkspace):
     @pytest.mark.parametrize(
         "raised_exception",
         [
-            custom_exceptions.DeletedWorkspaceFound(workspace_id="workspace_1"),
+            custom_exceptions.WorkspaceIsDeleted(workspace_id="workspace_1"),
             custom_exceptions.UserNotWorkspaceOwner(user_id="user_2"),
         ],
     )
     def test_update_workspace_edge_cases(
             self, snapshot, mocker, raised_exception):
-        if isinstance(raised_exception, custom_exceptions.DeletedWorkspaceFound):
+        if isinstance(raised_exception, custom_exceptions.WorkspaceIsDeleted):
             get_workspace_mock(mocker).return_value = make_workspace_dto(
                 is_deleted=True
             )

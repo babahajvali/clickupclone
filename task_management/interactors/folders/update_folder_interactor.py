@@ -3,7 +3,7 @@ from typing import Optional
 from task_management.decorators.caching_decorators import \
     invalidate_interactor_cache
 from task_management.exceptions.custom_exceptions import \
-    NothingToUpdateFolderException
+    NothingToUpdateFolder
 from task_management.interactors.dtos import FolderDTO
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface, WorkspaceStorageInterface, SpaceStorageInterface
@@ -59,7 +59,7 @@ class UpdateFolderInteractor(
                 is_description_provided or is_name_provided)
 
         if has_no_update_field_properties:
-            raise NothingToUpdateFolderException(folder_id=folder_id)
+            raise NothingToUpdateFolder(folder_id=folder_id)
 
         if is_name_provided:
             self.check_folder_name_not_empty(name=name)

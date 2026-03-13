@@ -66,7 +66,7 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.FieldNotFound as e:
             return FieldNotFoundType(field_id=e.field_id)
 
-        except custom_exceptions.DeletedFieldException as e:
+        except custom_exceptions.FieldIsDeleted as e:
             return DeletedFieldType(field_id=e.field_id)
 
         except custom_exceptions.FieldNameAlreadyExists as e:
@@ -90,7 +90,7 @@ class UpdateFieldMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.ResourceLockedException as e:
+        except custom_exceptions.ResourceLocked as e:
             return ResourceLockedType(message=e.message)
 
         except custom_exceptions.UnexpectedFieldConfigKeys as e:

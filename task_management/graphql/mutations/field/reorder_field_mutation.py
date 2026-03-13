@@ -62,7 +62,7 @@ class ReorderFieldMutation(graphene.Mutation):
                 template_id=e.template_id,
             )
 
-        except custom_exceptions.DeletedFieldException as e:
+        except custom_exceptions.FieldIsDeleted as e:
             return DeletedFieldType(field_id=e.field_id)
 
         except custom_exceptions.TemplateNotFound as e:
@@ -71,7 +71,7 @@ class ReorderFieldMutation(graphene.Mutation):
         except custom_exceptions.ModificationNotAllowed as e:
             return ModificationNotAllowedType(user_id=e.user_id)
 
-        except custom_exceptions.ResourceLockedException as e:
+        except custom_exceptions.ResourceLocked as e:
             return ResourceLockedType(message=e.message)
 
         except custom_exceptions.InvalidOrder as e:

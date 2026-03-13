@@ -8,7 +8,7 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     NothingToUpdateField,
     FieldNotFound,
-    DeletedFieldException,
+    FieldIsDeleted,
     EmptyFieldName,
     EmptyDropdownOptions,
     UnexpectedFieldConfigKeys,
@@ -212,7 +212,7 @@ class TestUpdateFieldInteractor:
         dto = self._get_update_dto()
 
         # Act
-        with pytest.raises(DeletedFieldException) as exc:
+        with pytest.raises(FieldIsDeleted) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
         snapshot.assert_match(

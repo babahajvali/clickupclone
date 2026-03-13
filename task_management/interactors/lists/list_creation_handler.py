@@ -25,8 +25,6 @@ from task_management.interactors.storage_interfaces import (
 from task_management.interactors.templates.template_creation_handler import (
     TemplateCreationHandler,
 )
-from task_management.interactors.views.create_list_view_interactor import \
-    CreateListViewInteractor
 
 
 class ListCreationHandler:
@@ -115,12 +113,6 @@ class ListCreationHandler:
 
     def _create_default_list_view(
             self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
-        list_view_interactor = CreateListViewInteractor(
-            list_storage=self.list_storage,
-            view_storage=self.view_storage,
-            workspace_storage=self.workspace_storage,
-        )
-
-        return list_view_interactor.create_list_view(
+        return self.view_storage.create_list_view(
             list_id=list_id, view_id=view_id, user_id=user_id
         )

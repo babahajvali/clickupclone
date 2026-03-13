@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
     ModificationNotAllowed,
     ViewNotFound,
@@ -116,5 +116,5 @@ class TestAddListViewInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFound):
+        with pytest.raises(ListIsDeleted):
             self.interactor.create_list_view("view_id", "list_id", "user_id")

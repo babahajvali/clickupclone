@@ -67,7 +67,7 @@ class SetListVisibilityMutation(graphene.Mutation):
         except custom_exceptions.ListNotFound as e:
             return ListNotFoundType(list_id=e.list_id)
 
-        except custom_exceptions.DeletedListFound as e:
+        except custom_exceptions.ListIsDeleted as e:
             return DeletedListType(list_id=e.list_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

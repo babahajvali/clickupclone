@@ -4,7 +4,7 @@ from unittest.mock import create_autospec, patch
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedTaskFound,
+    TaskIsDeleted,
     InvalidOrder,
     ModificationNotAllowed,
     TaskNotFound,
@@ -140,7 +140,7 @@ class TestReorderTaskInteractor:
             order=1, is_deleted=True
         )
 
-        with pytest.raises(DeletedTaskFound):
+        with pytest.raises(TaskIsDeleted):
             with reorder_task_lock_mock():
                 self.interactor.reorder_task(
                     task_id="task_1",

@@ -1,5 +1,5 @@
 from task_management.exceptions.custom_exceptions import ListNotFound, \
-    DeletedListFound, EmptyListName, ModificationNotAllowed, \
+    ListIsDeleted, EmptyListName, ModificationNotAllowed, \
     UserNotListMember
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import ListDTO
@@ -17,7 +17,7 @@ class ListValidationMixin:
 
         is_list_deleted = list_data.is_deleted
         if is_list_deleted:
-            raise DeletedListFound(list_id=list_id)
+            raise ListIsDeleted(list_id=list_id)
 
     def check_list_exists(self, list_id: str) -> ListDTO:
 
@@ -47,7 +47,7 @@ class ListValidationMixin:
             raise UserNotListMember(user_id=user_id, list_id=list_id)
 
         is_not_full_edit = (
-            list_permission_dto.permission_type != PermissionType.FULL_EDIT
+                list_permission_dto.permission_type != PermissionType.FULL_EDIT
         )
         if is_not_full_edit:
             raise ModificationNotAllowed(user_id=user_id)

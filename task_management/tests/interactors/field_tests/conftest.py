@@ -24,7 +24,6 @@ def _dummy_redis_lock(*args, **kwargs):
 @pytest.fixture(autouse=True)
 def patch_interactor_cache(monkeypatch):
     monkeypatch.setattr(caching_decorators, "cache", _DummyCache())
-    monkeypatch.setattr(caching_decorators, "redis_lock", _dummy_redis_lock)
     monkeypatch.setattr(
         "task_management.interactors.fields.create_field_interactor.redis_lock",
         _dummy_redis_lock,
@@ -35,10 +34,6 @@ def patch_interactor_cache(monkeypatch):
     )
     monkeypatch.setattr(
         "task_management.interactors.fields.reorder_field_interactor.redis_lock",
-        _dummy_redis_lock,
-    )
-    monkeypatch.setattr(
-        "task_management.interactors.fields.delete_field_interactor.redis_lock",
         _dummy_redis_lock,
     )
 

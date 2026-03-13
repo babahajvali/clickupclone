@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedWorkspaceFound,
+    WorkspaceIsDeleted,
     UserNotWorkspaceOwner,
     InactiveUser,
     UserNotFound,
@@ -87,7 +87,7 @@ class TestTransferWorkspaceInteractor:
             make_workspace_model(is_deleted=True)
         )
 
-        with pytest.raises(DeletedWorkspaceFound) as exc:
+        with pytest.raises(WorkspaceIsDeleted) as exc:
             self.interactor.transfer_workspace(
                 workspace_id="workspace_1",
                 user_id="user_1",

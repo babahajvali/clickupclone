@@ -4,7 +4,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     EmptyListName,
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
     ModificationNotAllowed,
     NothingToUpdateList,
@@ -148,7 +148,7 @@ class TestUpdateList:
         self._setup_update_list_dependencies(list_data=list_data)
 
         # Act
-        with pytest.raises(DeletedListFound) as exc:
+        with pytest.raises(ListIsDeleted) as exc:
             self.interactor.update_list(
                 list_id="list_1",
                 user_id="user_id",

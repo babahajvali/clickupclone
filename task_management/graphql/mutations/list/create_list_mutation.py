@@ -74,13 +74,13 @@ class CreateListMutation(graphene.Mutation):
         except custom_exceptions.SpaceNotFound as e:
             return SpaceNotFoundType(space_id=e.space_id)
 
-        except custom_exceptions.DeletedSpaceFound as e:
+        except custom_exceptions.SpaceIsDeleted as e:
             return DeletedSpaceType(space_id=e.space_id)
 
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.DeletedFolderException as e:
+        except custom_exceptions.FolderIsDeleted as e:
             return DeletedFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:

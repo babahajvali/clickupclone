@@ -28,7 +28,8 @@ def make_workspace_dto(owner_id="user_2") -> WorkspaceDTO:
 @pytest.mark.django_db
 class TestTransferWorkspaceAPI(BaseTransferWorkspace):
     def test_transfer_workspace_successfully(self, snapshot, mocker):
-        handle_workspace_transfer_mock(mocker).return_value = make_workspace_dto()
+        handle_workspace_transfer_mock(
+            mocker).return_value = make_workspace_dto()
 
         variables = {
             "params": {
@@ -48,7 +49,7 @@ class TestTransferWorkspaceAPI(BaseTransferWorkspace):
         "raised_exception",
         [
             custom_exceptions.WorkspaceNotFound(workspace_id="workspace_404"),
-            custom_exceptions.DeletedWorkspaceFound(workspace_id="workspace_1"),
+            custom_exceptions.WorkspaceIsDeleted(workspace_id="workspace_1"),
             custom_exceptions.UserNotWorkspaceOwner(user_id="user_2"),
             custom_exceptions.UserNotFound(user_id="user_2"),
             custom_exceptions.InactiveUser(user_id="user_2"),

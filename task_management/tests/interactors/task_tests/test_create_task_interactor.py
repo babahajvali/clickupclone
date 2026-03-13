@@ -4,7 +4,7 @@ from unittest.mock import create_autospec, patch
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
+    ListIsDeleted,
     EmptyTaskTitle,
     ListNotFound,
     ModificationNotAllowed,
@@ -124,7 +124,7 @@ class TestCreateTaskInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFound) as exc:
+        with pytest.raises(ListIsDeleted) as exc:
             with create_task_lock_mock():
                 self.interactor.create_task(create_task_dto=task_data)
 

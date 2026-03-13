@@ -41,8 +41,7 @@ def create_folder_mock(mocker):
 
 def create_folder_lock_mock(mocker):
     return mocker.patch(
-        "task_management.interactors.folders.create_folder_interactor."
-        "CreateFolderInteractor._get_create_folder_lock",
+        "task_management.interactors.folders.create_folder_interactor.redis_lock",
         return_value=nullcontext(),
     )
 

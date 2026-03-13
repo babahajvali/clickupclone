@@ -2,7 +2,8 @@ from unittest.mock import create_autospec
 
 import pytest
 
-from task_management.exceptions.custom_exceptions import DeletedListFound, ListNotFound
+from task_management.exceptions.custom_exceptions import ListIsDeleted, \
+    ListNotFound
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
@@ -55,7 +56,7 @@ class TestGetListViewsInteractor:
             "List", (), {"is_deleted": True}
         )()
 
-        with pytest.raises(DeletedListFound):
+        with pytest.raises(ListIsDeleted):
             self.interactor.get_list_views("list_id")
 
     def test_get_views_for_nonexistent_list_raises_exception(self):

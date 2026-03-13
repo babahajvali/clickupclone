@@ -57,7 +57,7 @@ class UpdateFolderMutation(graphene.Mutation):
         except custom_exceptions.FolderNotFound as e:
             return FolderNotFoundType(folder_id=e.folder_id)
 
-        except custom_exceptions.DeletedFolderException as e:
+        except custom_exceptions.FolderIsDeleted as e:
             return DeletedFolderType(folder_id=e.folder_id)
 
         except custom_exceptions.ModificationNotAllowed as e:
@@ -66,5 +66,5 @@ class UpdateFolderMutation(graphene.Mutation):
         except custom_exceptions.UserNotWorkspaceMember as e:
             return UserNotWorkspaceMemberType(user_id=e.user_id)
 
-        except custom_exceptions.NothingToUpdateFolderException as e:
+        except custom_exceptions.NothingToUpdateFolder as e:
             return NothingToUpdateFolderType(folder_id=e.folder_id)

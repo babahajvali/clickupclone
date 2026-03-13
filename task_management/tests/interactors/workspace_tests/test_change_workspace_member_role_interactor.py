@@ -6,7 +6,7 @@ from task_management.exceptions.custom_exceptions import (
     UnexpectedRole,
     ModificationNotAllowed,
     InactiveUser,
-    DeletedWorkspaceFound,
+    WorkspaceIsDeleted,
     UserNotWorkspaceMember, InactiveWorkspaceMember,
 )
 from task_management.exceptions.enums import Role
@@ -92,7 +92,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             self._mock_deleted_workspace()
         )
 
-        with pytest.raises(DeletedWorkspaceFound) as exc:
+        with pytest.raises(WorkspaceIsDeleted) as exc:
             self.interactor.change_member_role(
                 workspace_id="workspace123",
                 user_id="user123",

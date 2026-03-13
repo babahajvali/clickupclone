@@ -3,7 +3,7 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
-    DeletedListFound,
+    ListIsDeleted,
     ListNotFound,
 )
 from task_management.interactors.dtos import TaskDTO
@@ -61,5 +61,5 @@ class TestGetListTasksInteractor:
     def test_get_list_tasks_deleted_list(self):
         self.list_storage.get_list.return_value = make_list(is_deleted=True)
 
-        with pytest.raises(DeletedListFound):
+        with pytest.raises(ListIsDeleted):
             self.interactor.get_tasks_for_list(list_id="list_1")

@@ -31,5 +31,5 @@ def get_task_assignees_resolver(root, info, params):
         return TaskAssigneesType(assignees=result)
     except custom_exceptions.TaskNotFound as e:
         return TaskNotFoundType(task_id=e.task_id)
-    except custom_exceptions.DeletedTaskFound as e:
+    except custom_exceptions.TaskIsDeleted as e:
         return DeletedTaskType(task_id=e.task_id)
