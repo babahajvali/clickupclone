@@ -16,11 +16,11 @@ class UserStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user_data: CreateUserDTO) -> UserDTO:
+    def create_user(self, create_user_dto: CreateUserDTO) -> UserDTO:
         pass
 
     @abstractmethod
-    def update_user(self, user_data: UpdateUserDTO) -> UserDTO:
+    def update_user(self, update_user_dto: UpdateUserDTO) -> UserDTO:
         pass
 
     @abstractmethod

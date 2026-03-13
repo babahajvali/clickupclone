@@ -20,7 +20,7 @@ class UpdateUserInteractor(UserValidationMixin):
         self.check_user_is_active(user_id=update_user_dto.user_id)
         self._check_update_user_properties(update_user_dto=update_user_dto)
 
-        return self.user_storage.update_user(user_data=update_user_dto)
+        return self.user_storage.update_user(update_user_dto=update_user_dto)
 
     def _check_update_user_properties(self,
                                       update_user_dto: UpdateUserDTO) -> None:

@@ -74,7 +74,7 @@ class TestFolderCreationHandler:
 
         add_permission.assert_called_once()
         called_permission_dto = add_permission.call_args.kwargs[
-            "permission_data"]
+            "create_folder_permission_dto"]
 
         snapshot.assert_match(
             repr(called_permission_dto),

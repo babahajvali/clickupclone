@@ -1,4 +1,5 @@
 from unittest.mock import create_autospec
+
 import pytest
 
 from task_management.exceptions.custom_exceptions import (
@@ -52,7 +53,7 @@ class TestCreateUser:
         )
 
         user_storage.create_user.assert_called_once_with(
-            user_data=user_input_data
+            create_user_dto=user_input_data
         )
 
     # ---------- USERNAME EXISTS ----------

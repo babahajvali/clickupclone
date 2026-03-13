@@ -20,7 +20,7 @@ class CreateUserInteractor:
             phone_number=create_user_dto.phone_number,
         )
 
-        return self.user_storage.create_user(user_data=create_user_dto)
+        return self.user_storage.create_user(create_user_dto=create_user_dto)
 
     def _check_username_not_taken(self, username: str) -> None:
         is_username_taken = self.user_storage.check_username_exists(

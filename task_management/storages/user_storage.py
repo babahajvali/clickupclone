@@ -11,71 +11,74 @@ from task_management.models import User, PasswordResetToken
 class UserStorage(UserStorageInterface):
 
     @staticmethod
-    def _convert_user_to_dto(data: User) -> UserDTO:
+    def _convert_user_to_dto(user_obj: User) -> UserDTO:
         return UserDTO(
-            user_id=data.user_id,
-            username=data.username,
-            email=data.email,
-            password=data.password,
-            full_name=data.full_name,
-            phone_number=data.phone_number,
-            image_url=data.image_url,
-            is_active=data.is_active,
-            gender=data.gender,
+            user_id=user_obj.user_id,
+            username=user_obj.username,
+            email=user_obj.email,
+            password=user_obj.password,
+            full_name=user_obj.full_name,
+            phone_number=user_obj.phone_number,
+            image_url=user_obj.image_url,
+            is_active=user_obj.is_active,
+            gender=user_obj.gender,
         )
 
     def get_user(self, user_id: str) -> UserDTO | None:
 
-        user_data = User.objects.filter(user_id=user_id).first()
-        if user_data is None:
+        user_obj = User.objects.filter(user_id=user_id).first()
+        if user_obj is None:
             return None
 
-        return self._convert_user_to_dto(data=user_data)
+        return self._convert_user_to_dto(user_obj=user_obj)
 
     def get_user_by_email(self, email: str) -> UserDTO | None:
 
-        user_data = User.objects.filter(email=email).first()
+        user_obj = User.objects.filter(email=email).first()
 
-        if user_data is None:
+        if user_obj is None:
             return None
 
-        return self._convert_user_to_dto(data=user_data)
+        return self._convert_user_to_dto(user_obj=user_obj)
 
-    def create_user(self, user_data: CreateUserDTO) -> UserDTO:
+    def create_user(self, create_user_dto: CreateUserDTO) -> UserDTO:
         user_obj = User.objects.create(
-            username=user_data.username, full_name=user_data.full_name,
-            email=user_data.email, phone_number=user_data.phone_number,
-            image_url=user_data.image_url,
-            password=make_password(user_data.password),
-            gender=user_data.gender.value,
+            username=create_user_dto.username,
+            full_name=create_user_dto.full_name,
+            email=create_user_dto.email,
+            phone_number=create_user_dto.phone_number,
+            image_url=create_user_dto.image_url,
+            password=make_password(create_user_dto.password),
+            gender=create_user_dto.gender.value,
         )
 
-        return self._convert_user_to_dto(data=user_obj)
+        return self._convert_user_to_dto(user_obj=user_obj)
 
-    def update_user(self, user_data: UpdateUserDTO) -> UserDTO:
-        user_obj = User.objects.get(user_id=user_data.user_id)
-        if user_data.username:
-            user_obj.username = user_data.username
-        if user_data.email:
-            user_obj.email = user_data.email
-        if user_data.phone_number:
-            user_obj.phone_number = user_data.phone_number
-        if user_data.gender:
-            user_obj.gender = user_data.gender
-        if user_data.full_name:
-            user_obj.full_name = user_data.full_name
-        user_obj.image_url = user_data.image_url
+    def update_user(self, update_user_dto: UpdateUserDTO) -> UserDTO:
 
-        user_obj.save()
+        user_properties = {}
+        if update_user_dto.username is not None:
+            user_properties['username'] = update_user_dto.username
+        if update_user_dto.email is not None:
+            user_properties['email'] = update_user_dto.email
+        if update_user_dto.phone_number is not None:
+            user_properties['phone_number'] = update_user_dto.phone_number
+        if update_user_dto.gender is not None:
+            user_properties['gender'] = update_user_dto.gender.value
+        if update_user_dto.full_name is not None:
+            user_properties['full_name'] = update_user_dto.full_name
+        if update_user_dto.image_url is not None:
+            user_properties['image_url'] = update_user_dto.image_url
 
-        return self._convert_user_to_dto(data=user_obj)
+        User.objects.filter(user_id=update_user_dto.user_id).update(
+            **user_properties)
+
+        return self.get_user(user_id=update_user_dto.user_id)
 
     def block_user(self, user_id: str) -> UserDTO:
-        user_obj = User.objects.get(user_id=user_id)
-        user_obj.is_active = False
-        user_obj.save()
+        User.objects.filter(user_id=user_id).update(is_active=False)
 
-        return self._convert_user_to_dto(data=user_obj)
+        return self.get_user(user_id=user_id)
 
     def check_username_exists(self, username: str) -> bool:
         return User.objects.filter(username=username).exists()
@@ -129,7 +132,8 @@ class UserStorage(UserStorageInterface):
             )
 
         except Exception as e:
-            raise Exception(f"Failed to create password reset token: {str(e)}") from e
+            raise Exception(
+                f"Failed to create password reset token: {str(e)}") from e
 
     def get_reset_token(self, token: str) -> PasswordResetTokenDTO | None:
         try:
@@ -152,11 +156,10 @@ class UserStorage(UserStorageInterface):
 
     def used_reset_token(self, token: str) -> bool:
 
-        token_data = PasswordResetToken.objects.get(token=token)
-        token_data.is_used = True
-        token_data.save()
+        updated = PasswordResetToken.objects.filter(token=token).update(
+            is_used=True)
 
-        return token_data.is_used
+        return updated > 0
 
     def update_user_password(self, user_id: str, new_password: str) -> UserDTO:
         try:

@@ -61,7 +61,7 @@ class TestUpdateUser:
         )
 
         user_storage.update_user.assert_called_once_with(
-            user_data=updated_user
+            update_user_dto=updated_user
         )
 
     def test_update_user_raises_username_exception(self, snapshot):
