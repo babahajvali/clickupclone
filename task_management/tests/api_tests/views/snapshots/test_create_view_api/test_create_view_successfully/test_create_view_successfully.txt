@@ -1,0 +1,12 @@
+{
+  "data": {
+    "createView": {
+      "__typename": "ViewType",
+      "viewId": "view_1",
+      "name": "List View",
+      "description": "Main list view",
+      "viewType": "LIST",
+      "createdBy": "user_1"
+    }
+  }
+}

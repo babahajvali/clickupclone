@@ -10,27 +10,29 @@ from task_management.models import Template, Space, Folder
 class TemplateStorage(TemplateStorageInterface):
 
     @staticmethod
-    def _convert_template_to_dto(data: Template) -> TemplateDTO:
+    def _convert_template_to_dto(template_obj: Template) -> TemplateDTO:
         return TemplateDTO(
-            template_id=data.template_id,
-            name=data.name,
-            description=data.description,
-            list_id=data.list.list_id,
-            created_by=data.list.created_by.user_id,
+            template_id=template_obj.template_id,
+            name=template_obj.name,
+            description=template_obj.description,
+            list_id=template_obj.list_id,
+            created_by=template_obj.list.created_by_id,
         )
 
     def get_template(self, template_id: str) -> TemplateDTO:
-        template_data = Template.objects.get(template_id=template_id)
+        template_obj = Template.objects.get(template_id=template_id)
 
-        return self._convert_template_to_dto(data=template_data)
+        return self._convert_template_to_dto(template_obj=template_obj)
 
-    def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
+    def create_template(
+            self, create_template_dto: CreateTemplateDTO) -> TemplateDTO:
 
         template_obj = Template.objects.create(
-            name=template_data.name, description=template_data.description,
-            list_id=template_data.list_id)
+            name=create_template_dto.name,
+            description=create_template_dto.description,
+            list_id=create_template_dto.list_id)
 
-        return self._convert_template_to_dto(data=template_obj)
+        return self._convert_template_to_dto(template_obj=template_obj)
 
     def validate_template_exists(self, template_id: str) -> bool:
         return Template.objects.filter(template_id=template_id).exists()
@@ -39,32 +41,30 @@ class TemplateStorage(TemplateStorageInterface):
             self, template_id: str, name: Optional[str],
             description: Optional[str]) -> TemplateDTO:
 
-        template_data = Template.objects.get(template_id=template_id)
+        template_properties = {}
 
-        is_name_provided = name is not None
-        if is_name_provided:
-            template_data.name = name
+        if name is not None:
+            template_properties["name"] = name
 
-        is_description_provided = description is not None
-        if is_description_provided:
-            template_data.description = description
+        if description is not None:
+            template_properties["description"] = description
 
-        template_data.save()
+        Template.objects.filter(template_id=template_id).update(
+            **template_properties)
 
-        return self._convert_template_to_dto(data=template_data)
+        return self.get_template(template_id=template_id)
 
     def get_workspace_id_from_template_id(
             self, template_id: str) -> str | None:
-        list_data = Template.objects.select_related("list").values(
-            "list__entity_type",
-            "list__entity_id",
+        template_obj = Template.objects.select_related("list").values(
+            "list__entity_type", "list__entity_id",
         ).filter(template_id=template_id).first()
 
-        if list_data is None:
+        if template_obj is None:
             return None
 
-        entity_type = list_data["list__entity_type"]
-        entity_id = list_data["list__entity_id"]
+        entity_type = template_obj["list__entity_type"]
+        entity_id = template_obj["list__entity_id"]
 
         if entity_type == ListEntityType.SPACE.value:
             return str(Space.objects.values_list(

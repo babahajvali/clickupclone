@@ -16,9 +16,8 @@ def get_list_views_resolver(root, info, params):
         view_storage=view_storage,
     )
 
-    view_output = interactor.get_list_views(list_id=params.list_id)
-
     try:
+        view_output = interactor.get_list_views(list_id=params.list_id)
 
         result = [ListViewType(
             id=each.id,

@@ -6,6 +6,7 @@ from task_management.graphql.types.error_types import ViewNotFoundType, \
 from task_management.graphql.types.input_types import UpdateViewInputParams
 from task_management.graphql.types.response_types import UpdateViewResponse
 from task_management.graphql.types.types import ViewType
+from task_management.interactors.dtos import UpdateViewDTO
 from task_management.interactors.views.update_view_interactor import \
     UpdateViewInteractor
 from task_management.storages import ViewStorage
@@ -26,13 +27,13 @@ class UpdateViewMutation(graphene.Mutation):
         )
 
         try:
-
-            view_id = params.view_id
-            name = params.name
-            description = params.description
-
             result = interactor.update_view(
-                view_id=view_id, name=name, description=description)
+                update_view_dto=UpdateViewDTO(
+                    view_id=params.view_id,
+                    name=params.name,
+                    description=params.description,
+                )
+            )
 
             return ViewType(
                 view_id=str(result.view_id),

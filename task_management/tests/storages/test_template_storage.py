@@ -84,7 +84,7 @@ class TestTemplateStorage:
         storage = TemplateStorage()
 
         # Act
-        result = storage.create_template(template_data=dto)
+        result = storage.create_template(create_template_dto=dto)
 
         # Assert
         snapshot.assert_match(

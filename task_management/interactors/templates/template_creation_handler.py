@@ -24,23 +24,29 @@ class TemplateCreationHandler:
         self.workspace_storage = workspace_storage
 
     @transaction.atomic
-    def handle_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
-        template_obj = self._create_template(template_data=template_data)
+    def handle_template_creation(
+            self, create_template_dto: CreateTemplateDTO) -> TemplateDTO:
+        template_dto = self._create_template(
+            create_template_dto=create_template_dto
+        )
 
         self._create_template_fixed_fields(
-            template_id=template_obj.template_id,
-            user_id=template_obj.created_by)
+            template_id=template_dto.template_id,
+            user_id=template_dto.created_by)
 
-        return template_obj
+        return template_dto
 
-    def _create_template(self, template_data: CreateTemplateDTO):
-        template_interactor = CreateTemplateInteractor(
+    def _create_template(
+            self, create_template_dto: CreateTemplateDTO) -> TemplateDTO:
+        create_template_interactor = CreateTemplateInteractor(
             template_storage=self.template_storage,
             list_storage=self.list_storage,
             workspace_storage=self.workspace_storage
         )
 
-        return template_interactor.create_template(template_data=template_data)
+        return create_template_interactor.create_template(
+            create_template_dto=create_template_dto
+        )
 
     def _create_template_fixed_fields(self, template_id: str, user_id: str):
         fixed_fields = []
@@ -55,4 +61,5 @@ class TemplateCreationHandler:
                 created_by_user_id=user_id
             )
             fixed_fields.append(create_field_dto)
+
         self.field_storage.create_bulk_fields(create_field_dtos=fixed_fields)

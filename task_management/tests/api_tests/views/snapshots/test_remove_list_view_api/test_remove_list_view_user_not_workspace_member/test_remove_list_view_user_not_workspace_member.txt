@@ -1,0 +1,8 @@
+{
+  "data": {
+    "removeListView": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "user_1"
+    }
+  }
+}

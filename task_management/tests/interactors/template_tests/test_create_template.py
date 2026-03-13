@@ -61,7 +61,9 @@ class TestCreateTemplateInteractor:
             "WorkspaceMember", (), {"is_active": True, "role": Role.MEMBER}
         )()
 
-        result = self.interactor.create_template(create_template_dto)
+        result = self.interactor.create_template(
+            create_template_dto=create_template_dto
+        )
 
         snapshot.assert_match(
             repr(result),
@@ -80,7 +82,9 @@ class TestCreateTemplateInteractor:
 
         # Act & Assert
         with pytest.raises(Exception):
-            self.interactor.create_template(create_template_dto)
+            self.interactor.create_template(
+                create_template_dto=create_template_dto
+            )
 
         self.template_storage.create_template.assert_not_called()
 
@@ -100,6 +104,8 @@ class TestCreateTemplateInteractor:
             make_permission(Role.GUEST))
 
         with pytest.raises(ModificationNotAllowed):
-            self.interactor.create_template(create_template_dto)
+            self.interactor.create_template(
+                create_template_dto=create_template_dto
+            )
 
         self.template_storage.create_template.assert_not_called()

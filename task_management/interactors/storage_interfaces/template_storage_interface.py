@@ -11,7 +11,8 @@ class TemplateStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def create_template(self, template_data: CreateTemplateDTO) -> TemplateDTO:
+    def create_template(
+            self, create_template_dto: CreateTemplateDTO) -> TemplateDTO:
         pass
 
     @abstractmethod

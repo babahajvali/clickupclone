@@ -70,7 +70,7 @@ class TestViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.create_view(create_view_data=dto)
+        result = storage.create_view(create_view_dto=dto)
 
         # Assert
         snapshot.assert_match(

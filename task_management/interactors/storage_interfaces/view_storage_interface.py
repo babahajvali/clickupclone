@@ -26,11 +26,11 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def check_view_exists(self, view_id: str) -> bool:
+    def is_view_exists(self, view_id: str) -> bool:
         pass
 
     @abstractmethod
-    def apply_view_for_list(
+    def create_list_view(
             self, list_id: str, view_id: str, user_id: str) -> ListViewDTO:
         pass
 

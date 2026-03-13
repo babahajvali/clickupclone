@@ -1,0 +1,16 @@
+{
+  "data": {
+    "getListViews": {
+      "__typename": "ListViewsType",
+      "listViews": [
+        {
+          "id": 1,
+          "listId": "12345678-1234-5678-1234-567812345678",
+          "viewId": "12345678-1234-5678-1234-567812345679",
+          "appliedBy": "user_1",
+          "isActive": true
+        }
+      ]
+    }
+  }
+}

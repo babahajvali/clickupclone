@@ -10,7 +10,7 @@ class ViewValidationMixin:
         super().__init__(**kwargs)
 
     def check_view_exist(self, view_id: str):
-        is_exists = self.view_storage.check_view_exists(view_id=view_id)
+        is_exists = self.view_storage.is_view_exists(view_id=view_id)
 
         if not is_exists:
             raise ViewNotFound(view_id=view_id)

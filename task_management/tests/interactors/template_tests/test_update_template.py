@@ -11,7 +11,7 @@ from task_management.interactors.dtos import WorkspaceMemberDTO, TemplateDTO
 from task_management.interactors.storage_interfaces import \
     TemplateStorageInterface, WorkspaceStorageInterface
 from task_management.interactors.templates.update_template_interactor import \
-    TemplateInteractor
+    UpdateTemplateInteractor
 
 
 def make_permission(role: Role) -> WorkspaceMemberDTO:
@@ -45,7 +45,7 @@ class TestUpdateTemplateInteractor:
         self.template_storage = create_autospec(TemplateStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = TemplateInteractor(
+        self.interactor = UpdateTemplateInteractor(
             template_storage=self.template_storage,
             workspace_storage=self.workspace_storage,
         )

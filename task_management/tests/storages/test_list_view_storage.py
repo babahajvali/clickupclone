@@ -20,9 +20,9 @@ class TestListViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.apply_view_for_list(list_id=str(list_id),
-                                             view_id=str(view_id),
-                                             user_id=str(user_id))
+        result = storage.create_list_view(list_id=str(list_id),
+                                          view_id=str(view_id),
+                                          user_id=str(user_id))
 
         # Assert
         snapshot.assert_match(repr(result),

@@ -29,12 +29,12 @@ class TestCreateViewInteractor:
             view_id="d7ab7928-09e4-49e6-ac62-b2c82648ee38",
             name="be",
             description="Raise study modern miss dog Democrat quickly.",
-            view_type="lists",
+            view_type=ViewType.LIST,
             created_by="9466e472-6b5f-4241-b323-ca74d3447490",
         )
         self.view_storage.create_view.return_value = expected_result
 
-        result = self.interactor.create_view(create_view_data=create_data)
+        result = self.interactor.create_view(create_view_dto=create_data)
 
         assert result == expected_result
         self.view_storage.create_view.assert_called_once_with(create_data)
@@ -48,4 +48,4 @@ class TestCreateViewInteractor:
         )
 
         with pytest.raises(ViewTypeNotFound):
-            self.interactor.create_view(create_view_data=create_data)
+            self.interactor.create_view(create_view_dto=create_data)

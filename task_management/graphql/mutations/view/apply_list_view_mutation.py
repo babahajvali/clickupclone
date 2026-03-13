@@ -7,8 +7,8 @@ from task_management.graphql.types.error_types import \
 from task_management.graphql.types.input_types import ApplyListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
-from task_management.interactors.views.add_list_view_interactor import \
-    AddListViewInteractor
+from task_management.interactors.views.create_list_view_interactor import \
+    CreateListViewInteractor
 from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
 
 
@@ -24,7 +24,7 @@ class ApplyListViewMutation(graphene.Mutation):
         view_storage = ViewStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = AddListViewInteractor(
+        interactor = CreateListViewInteractor(
             list_storage=list_storage,
             view_storage=view_storage,
             workspace_storage=workspace_storage
@@ -32,7 +32,7 @@ class ApplyListViewMutation(graphene.Mutation):
 
         try:
 
-            result = interactor.apply_view_for_list(
+            result = interactor.create_list_view(
                 list_id=params.list_id, view_id=params.view_id,
                 user_id=info.context.user_id)
 

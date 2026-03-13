@@ -1,0 +1,8 @@
+{
+  "data": {
+    "applyListView": {
+      "__typename": "UserNotWorkspaceMemberType",
+      "userId": "user_1"
+    }
+  }
+}

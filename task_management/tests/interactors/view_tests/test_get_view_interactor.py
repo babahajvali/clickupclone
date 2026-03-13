@@ -7,7 +7,8 @@ from task_management.interactors.dtos import ViewDTO
 from task_management.interactors.storage_interfaces.view_storage_interface import (
     ViewStorageInterface,
 )
-from task_management.interactors.views.get_view_interactor import GetViewInteractor
+from task_management.interactors.views.get_view_interactor import \
+    GetViewInteractor
 
 
 class TestGetViewInteractor:
@@ -23,7 +24,7 @@ class TestGetViewInteractor:
             view_type="list",
             created_by="user_1",
         )
-        self.view_storage.check_view_exists.return_value = True
+        self.view_storage.is_view_exists.return_value = True
         self.view_storage.get_view.return_value = expected
 
         result = self.interactor.get_view(view_id="view_1")
@@ -31,7 +32,7 @@ class TestGetViewInteractor:
         assert result == expected
 
     def test_get_view_not_found(self):
-        self.view_storage.check_view_exists.return_value = False
+        self.view_storage.is_view_exists.return_value = False
 
         with pytest.raises(ViewNotFound):
             self.interactor.get_view(view_id="view_404")
