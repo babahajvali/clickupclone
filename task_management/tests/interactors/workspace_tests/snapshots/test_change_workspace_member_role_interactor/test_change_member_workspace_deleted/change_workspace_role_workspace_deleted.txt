@@ -1,1 +1,1 @@
-DeletedWorkspaceFound()
+WorkspaceIsDeleted()

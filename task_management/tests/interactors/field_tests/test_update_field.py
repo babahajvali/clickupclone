@@ -203,7 +203,7 @@ class TestUpdateFieldInteractor:
             "test_update_field_without_updates.txt",
         )
 
-    def test_update_field_inactive(self, snapshot):
+    def test_update_field_inactive(self):
         # Arrange
         self._setup_update_field_dependencies()
         inactive_field = self._get_field_dto()
@@ -215,10 +215,7 @@ class TestUpdateFieldInteractor:
         with pytest.raises(FieldIsDeleted) as exc:
             self.interactor.update_field(dto, user_id="user_1")
 
-        snapshot.assert_match(
-            repr(exc.value),
-            "test_update_field_inactive.txt",
-        )
+        assert repr(exc.value) == "FieldIsDeleted()"
 
     def test_update_field_empty_name(self, snapshot):
         # Arrange

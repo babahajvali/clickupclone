@@ -225,7 +225,7 @@ class TestReorderFieldInteractor:
             "reorder_field_template_mismatch.txt"
         )
 
-    def test_reorder_field_inactive(self, snapshot):
+    def test_reorder_field_inactive(self):
         # Arrange
         self.template_storage.validate_template_exists.return_value = True
         self.field_storage.get_fields.return_value = [
@@ -241,7 +241,7 @@ class TestReorderFieldInteractor:
                 user_id="user_1"
             )
 
-        snapshot.assert_match(repr(exc.value), "reorder_field_inactive.txt")
+        assert repr(exc.value) == "FieldIsDeleted()"
 
     def test_reorder_field_invalid_order_low(self, snapshot):
         self._setup_dependencies(fields_count=3)

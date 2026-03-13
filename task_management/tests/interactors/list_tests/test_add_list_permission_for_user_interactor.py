@@ -4,7 +4,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
-    InvalidPermission,
+    InvalidPermission as InvalidPermissionException,
     UserAlreadyHasListPermission,
     UserNotListMember,
 )
@@ -20,7 +20,7 @@ from task_management.interactors.lists.create_list_permission_interactor import 
 from task_management.interactors.storage_interfaces import ListStorageInterface
 
 
-class InvalidPermission:
+class InvalidPermissionValue:
     value = "INVALID"
 
 
@@ -134,10 +134,12 @@ class TestAddListPermissionForUserInteractor:
         dto = CreateListPermissionDTO(
             list_id="list_1",
             user_id="user_1",
-            permission_type=InvalidPermission,
+            permission_type=InvalidPermissionValue,
             added_by="admin",
         )
 
-        with pytest.raises(InvalidPermission):
+        with pytest.raises(InvalidPermissionException) as exc:
             self.interactor.create_list_permission(
                 list_permission_dto=dto)
+
+        assert repr(exc.value) == "InvalidPermission()"

@@ -7,10 +7,10 @@ from task_management.mixins import TaskValidationMixin, UserValidationMixin, \
     WorkspaceValidationMixin
 
 
-class AddTaskAssigneeInteractor(
-        TaskValidationMixin,
-        UserValidationMixin,
-        WorkspaceValidationMixin):
+class CreateTaskAssigneeInteractor(
+    TaskValidationMixin,
+    UserValidationMixin,
+    WorkspaceValidationMixin):
 
     def __init__(
             self, task_storage: TaskStorageInterface,
@@ -26,7 +26,7 @@ class AddTaskAssigneeInteractor(
         self.workspace_storage = workspace_storage
 
     @invalidate_interactor_cache(cache_name="list_task_assignees")
-    def add_task_assignee(
+    def create_task_assignee(
             self, task_id: str, user_id: str, assigned_by: str) \
             -> TaskAssigneeDTO:
         self.check_task_not_deleted(task_id=task_id)

@@ -82,7 +82,7 @@ class TestTransferWorkspaceInteractor:
             "transfer_workspace_success.txt",
         )
 
-    def test_transfer_workspace_deleted_workspace(self, snapshot):
+    def test_transfer_workspace_deleted_workspace(self):
         self.workspace_storage.get_workspace.return_value = (
             make_workspace_model(is_deleted=True)
         )
@@ -94,10 +94,7 @@ class TestTransferWorkspaceInteractor:
                 new_user_id="new_user",
             )
 
-        snapshot.assert_match(
-            repr(exc.value),
-            "transfer_workspace_deleted_workspace.txt",
-        )
+        assert repr(exc.value) == "WorkspaceIsDeleted()"
 
     def test_transfer_workspace_not_owner(self, snapshot):
         self.workspace_storage.get_workspace.return_value = (

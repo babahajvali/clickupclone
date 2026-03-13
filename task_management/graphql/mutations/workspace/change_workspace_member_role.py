@@ -39,7 +39,7 @@ class ChangeMemberRoleMutation(graphene.Mutation):
             except ValueError:
                 return UnexpectedRoleType(role=params.role)
 
-            result = interactor.change_member_role(
+            result = interactor.change_workspace_member_role(
                 workspace_id=params.workspace_id,
                 user_id=params.user_id,
                 role=role,

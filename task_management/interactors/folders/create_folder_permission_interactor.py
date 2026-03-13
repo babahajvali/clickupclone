@@ -7,7 +7,7 @@ from task_management.interactors.storage_interfaces import \
 from task_management.mixins import FolderValidationMixin
 
 
-class AddFolderPermissionForUserInteractor(
+class CreateFolderPermissionInteractor(
     FolderValidationMixin,
 ):
 
@@ -18,22 +18,22 @@ class AddFolderPermissionForUserInteractor(
         )
         self.folder_storage = folder_storage
 
-    def add_user_for_folder_permission(
-            self, permission_data: CreateFolderPermissionDTO) \
+    def create_folder_permission(
+            self, create_folder_permission_dto: CreateFolderPermissionDTO) \
             -> UserFolderPermissionDTO:
         self.check_folder_not_deleted(
-            folder_id=permission_data.folder_id
+            folder_id=create_folder_permission_dto.folder_id
         )
         self.check_user_has_edit_access_folder_permission(
-            folder_id=permission_data.folder_id,
-            user_id=permission_data.added_by
+            folder_id=create_folder_permission_dto.folder_id,
+            user_id=create_folder_permission_dto.added_by
         )
         self._check_permission_type_is_valid(
-            permission=permission_data.permission_type.value
+            permission=create_folder_permission_dto.permission_type.value
         )
 
         return self.folder_storage.create_folder_users_permissions(
-            users_permission_data=[permission_data])[0]
+            users_permission_data=[create_folder_permission_dto])[0]
 
     @staticmethod
     def _check_permission_type_is_valid(permission: str):

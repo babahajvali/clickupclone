@@ -118,7 +118,7 @@ class TestCreateTaskInteractor:
             "test_create_task_list_not_found.txt",
         )
 
-    def test_create_task_list_inactive(self, snapshot):
+    def test_create_task_list_inactive(self):
         task_data = make_create_task_dto()
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_deleted": True}
@@ -128,10 +128,7 @@ class TestCreateTaskInteractor:
             with create_task_lock_mock():
                 self.interactor.create_task(create_task_dto=task_data)
 
-        snapshot.assert_match(
-            repr(exc.value),
-            "test_create_task_list_inactive.txt",
-        )
+        assert repr(exc.value) == "ListIsDeleted()"
 
     def test_create_task_empty_title(self):
         task_data = make_create_task_dto(name="   ")

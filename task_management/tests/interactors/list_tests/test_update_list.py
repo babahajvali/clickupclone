@@ -141,7 +141,7 @@ class TestUpdateList:
         # Assert
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
-    def test_update_list_inactive(self, snapshot):
+    def test_update_list_inactive(self):
         # Arrange
         list_data = self._get_list_dto()
         list_data.is_deleted = True
@@ -157,7 +157,7 @@ class TestUpdateList:
             )
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
+        assert repr(exc.value) == "ListIsDeleted()"
 
     def test_update_list_permission_denied(self, snapshot):
         # Arrange

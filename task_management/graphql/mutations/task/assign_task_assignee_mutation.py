@@ -9,8 +9,8 @@ from task_management.graphql.types.input_types import \
 from task_management.graphql.types.response_types import \
     CreateTaskAssigneeResponse
 from task_management.graphql.types.types import TaskAssigneeType
-from task_management.interactors.tasks.add_task_assignee_interactor import \
-    AddTaskAssigneeInteractor
+from task_management.interactors.tasks.create_task_assignee_interactor import \
+    CreateTaskAssigneeInteractor
 from task_management.storages import UserStorage, TaskStorage, WorkspaceStorage
 
 
@@ -26,14 +26,14 @@ class AddTaskAssigneeMutation(graphene.Mutation):
         task_storage = TaskStorage()
         workspace_storage = WorkspaceStorage()
 
-        interactor = AddTaskAssigneeInteractor(
+        interactor = CreateTaskAssigneeInteractor(
             user_storage=user_storage,
             task_storage=task_storage,
             workspace_storage=workspace_storage
         )
 
         try:
-            result = interactor.add_task_assignee(
+            result = interactor.create_task_assignee(
                 task_id=params.task_id, user_id=params.user_id,
                 assigned_by=info.context.user_id)
 

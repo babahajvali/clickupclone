@@ -28,7 +28,7 @@ class ChangeWorkspaceMemberRoleInteractor(
 
     @invalidate_interactor_cache(cache_name="user_workspaces")
     @invalidate_interactor_cache(cache_name='validate_permission')
-    def change_member_role(
+    def change_workspace_member_role(
             self, workspace_id: str, user_id: str, role: Role,
             changed_by: str) -> WorkspaceMemberDTO:
         self._validate_change_member_role_request(

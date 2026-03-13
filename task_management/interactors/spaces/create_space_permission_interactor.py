@@ -8,7 +8,7 @@ from task_management.mixins import SpaceValidationMixin, \
     WorkspaceValidationMixin
 
 
-class AddSpacePermissionForUserInteractor(
+class CreateSpacePermissionInteractor(
     SpaceValidationMixin, WorkspaceValidationMixin):
     """
     Add Space Permission For User Interactor grants space-level access.
@@ -35,7 +35,7 @@ class AddSpacePermissionForUserInteractor(
         self.space_storage = space_storage
         self.workspace_storage = workspace_storage
 
-    def add_user_for_space_permission(
+    def create_space_permission(
             self, create_space_permission_dto: CreateUserSpacePermissionDTO) \
             -> UserSpacePermissionDTO:
         """Grant a space permission entry for a user."""

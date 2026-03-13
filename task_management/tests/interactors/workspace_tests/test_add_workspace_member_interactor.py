@@ -89,7 +89,7 @@ class TestAddWorkspaceMemberInteractor:
             "add_workspace_member_invalid_role.txt"
         )
 
-    def test_add_member_workspace_deleted(self, snapshot):
+    def test_add_member_workspace_deleted(self):
         dto = AddMemberToWorkspaceDTOFactory()
 
         self.workspace_storage.get_workspace.return_value = (
@@ -99,10 +99,7 @@ class TestAddWorkspaceMemberInteractor:
         with pytest.raises(WorkspaceIsDeleted) as exc:
             self.interactor.create_workspace_member(dto)
 
-        snapshot.assert_match(
-            repr(exc.value),
-            "add_workspace_member_workspace_deleted.txt"
-        )
+        assert repr(exc.value) == "WorkspaceIsDeleted()"
 
     def test_add_member_user_inactive(self, snapshot):
         dto = AddMemberToWorkspaceDTOFactory()

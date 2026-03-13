@@ -75,7 +75,7 @@ class TestGetFolderLists:
         # Assert
         snapshot.assert_match(repr(exc.value), "folder_not_found.txt")
 
-    def test_get_folder_lists_inactive(self, snapshot):
+    def test_get_folder_lists_inactive(self):
         # Arrange
         self._setup_folder_lists_dependencies(folder_active=False)
 
@@ -84,4 +84,4 @@ class TestGetFolderLists:
             self.interactor.get_folder_lists(folder_id="folder_1")
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "folder_inactive.txt")
+        assert repr(exc.value) == "FolderIsDeleted()"

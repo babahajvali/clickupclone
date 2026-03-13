@@ -5,7 +5,7 @@ import pytest
 from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     UserNotSpaceMember,
-    InvalidPermission,
+    InvalidPermission as InvalidPermissionException,
 )
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
@@ -13,8 +13,8 @@ from task_management.interactors.dtos import (
     SpaceDTO,
     UserSpacePermissionDTO,
 )
-from task_management.interactors.spaces.add_space_permission_for_user_interactor import (
-    AddSpacePermissionForUserInteractor,
+from task_management.interactors.spaces.create_space_permission_interactor import (
+    CreateSpacePermissionInteractor,
 )
 from task_management.interactors.storage_interfaces import (
     SpaceStorageInterface,
@@ -22,7 +22,7 @@ from task_management.interactors.storage_interfaces import (
 )
 
 
-class InvalidPermission:
+class InvalidPermissionValue:
     value = "INVALID"
 
 
@@ -66,7 +66,7 @@ class TestAddSpacePermissionForUser:
         self.space_storage = create_autospec(SpaceStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
-        self.interactor = AddSpacePermissionForUserInteractor(
+        self.interactor = CreateSpacePermissionInteractor(
             space_storage=self.space_storage,
             workspace_storage=self.workspace_storage,
         )
@@ -90,7 +90,7 @@ class TestAddSpacePermissionForUser:
             added_by="admin",
         )
 
-        result = self.interactor.add_user_for_space_permission(
+        result = self.interactor.create_space_permission(
             create_space_permission_dto=dto)
 
         snapshot.assert_match(repr(result), "add_space_permission_success.txt")
@@ -105,7 +105,7 @@ class TestAddSpacePermissionForUser:
         )
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.add_user_for_space_permission(
+            self.interactor.create_space_permission(
                 create_space_permission_dto=dto)
 
         snapshot.assert_match(
@@ -123,26 +123,24 @@ class TestAddSpacePermissionForUser:
         )
 
         with pytest.raises(UserNotSpaceMember) as exc:
-            self.interactor.add_user_for_space_permission(
+            self.interactor.create_space_permission(
                 create_space_permission_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "add_space_permission_actor_not_member.txt"
         )
 
-    def test_add_space_permission_unexpected_permission(self, snapshot):
+    def test_add_space_permission_unexpected_permission(self):
         self._setup_dependencies()
         dto = CreateUserSpacePermissionDTO(
             space_id="space_1",
             user_id="user_1",
-            permission_type=InvalidPermission,
+            permission_type=InvalidPermissionValue,
             added_by="admin",
         )
 
-        with pytest.raises(InvalidPermission) as exc:
-            self.interactor.add_user_for_space_permission(
+        with pytest.raises(InvalidPermissionException) as exc:
+            self.interactor.create_space_permission(
                 create_space_permission_dto=dto)
 
-        snapshot.assert_match(
-            repr(exc.value), "add_space_permission_unexpected_permission.txt"
-        )
+        assert repr(exc.value) == "InvalidPermission()"

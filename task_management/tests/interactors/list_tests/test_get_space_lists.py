@@ -73,7 +73,7 @@ class TestGetSpaceLists:
         # Assert
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
-    def test_get_space_lists_inactive(self, snapshot):
+    def test_get_space_lists_inactive(self):
         # Arrange
         self._setup_space_lists_dependencies(space_active=False)
 
@@ -82,4 +82,4 @@ class TestGetSpaceLists:
             self.interactor.get_space_lists(space_id="space_1")
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
+        assert repr(exc.value) == "SpaceIsDeleted()"

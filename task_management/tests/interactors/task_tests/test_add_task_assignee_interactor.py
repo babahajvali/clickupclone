@@ -17,8 +17,8 @@ from task_management.interactors.storage_interfaces import (
     UserStorageInterface,
     WorkspaceStorageInterface,
 )
-from task_management.interactors.tasks.add_task_assignee_interactor import (
-    AddTaskAssigneeInteractor,
+from task_management.interactors.tasks.create_task_assignee_interactor import (
+    CreateTaskAssigneeInteractor,
 )
 
 
@@ -48,7 +48,7 @@ class TestAddTaskAssigneeInteractor:
         self.task_storage = create_autospec(TaskStorageInterface)
         self.user_storage = create_autospec(UserStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
-        self.interactor = AddTaskAssigneeInteractor(
+        self.interactor = CreateTaskAssigneeInteractor(
             task_storage=self.task_storage,
             user_storage=self.user_storage,
             workspace_storage=self.workspace_storage,
@@ -70,7 +70,7 @@ class TestAddTaskAssigneeInteractor:
     def test_assign_task_assignee_success(self):
         self._setup_dependencies()
 
-        result = self.interactor.add_task_assignee(
+        result = self.interactor.create_task_assignee(
             task_id="task_1",
             user_id="user_2",
             assigned_by="user_1",
@@ -83,7 +83,7 @@ class TestAddTaskAssigneeInteractor:
         self._setup_dependencies(role=Role.GUEST)
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.add_task_assignee(
+            self.interactor.create_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
@@ -96,7 +96,7 @@ class TestAddTaskAssigneeInteractor:
         self.user_storage.get_user.return_value = None
 
         with pytest.raises(UserNotFound) as exc:
-            self.interactor.add_task_assignee(
+            self.interactor.create_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
@@ -109,7 +109,7 @@ class TestAddTaskAssigneeInteractor:
         self.task_storage.get_task.return_value = None
 
         with pytest.raises(TaskNotFound) as exc:
-            self.interactor.add_task_assignee(
+            self.interactor.create_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
@@ -124,23 +124,23 @@ class TestAddTaskAssigneeInteractor:
         )()
 
         with pytest.raises(InactiveUser):
-            self.interactor.add_task_assignee(
+            self.interactor.create_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
             )
 
-    def test_assign_task_assignee_deleted_task(self, snapshot):
+    def test_assign_task_assignee_deleted_task(self):
         self._setup_dependencies()
         self.task_storage.get_task.return_value = type(
             "Task", (), {"is_deleted": True, "list_id": "list_1"}
         )()
 
         with pytest.raises(TaskIsDeleted) as e:
-            self.interactor.add_task_assignee(
+            self.interactor.create_task_assignee(
                 task_id="task_1",
                 user_id="user_2",
                 assigned_by="user_1",
             )
 
-        snapshot.assert_match(repr(e.value), "deleted_task_found.txt")
+        assert repr(e.value) == "TaskIsDeleted()"

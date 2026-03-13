@@ -4,15 +4,15 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import \
     ModificationNotAllowed, \
-    InvalidPermission, UserNotFolderMember
+    InvalidPermission as InvalidPermissionException, UserNotFolderMember
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import (
     CreateFolderPermissionDTO,
     FolderDTO,
     UserFolderPermissionDTO,
 )
-from task_management.interactors.folders.add_folder_permission_for_user_interactor import (
-    AddFolderPermissionForUserInteractor,
+from task_management.interactors.folders.create_folder_permission_interactor import (
+    CreateFolderPermissionInteractor,
 )
 from task_management.interactors.storage_interfaces import \
     FolderStorageInterface
@@ -53,7 +53,7 @@ def make_editor_permission(permission_type=PermissionType.FULL_EDIT):
     )
 
 
-class InvalidPermission:
+class InvalidPermissionValue:
     value = "INVALID"
 
 
@@ -61,7 +61,7 @@ class TestAddFolderPermissionForUserInteractor:
     def setup_method(self):
         self.folder_storage = create_autospec(FolderStorageInterface)
 
-        self.interactor = AddFolderPermissionForUserInteractor(
+        self.interactor = CreateFolderPermissionInteractor(
             folder_storage=self.folder_storage,
         )
 
@@ -84,8 +84,8 @@ class TestAddFolderPermissionForUserInteractor:
             added_by="admin",
         )
 
-        result = self.interactor.add_user_for_folder_permission(
-            permission_data=dto
+        result = self.interactor.create_folder_permission(
+            create_folder_permission_dto=dto
         )
 
         snapshot.assert_match(repr(result),
@@ -101,7 +101,8 @@ class TestAddFolderPermissionForUserInteractor:
         )
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.add_user_for_folder_permission(permission_data=dto)
+            self.interactor.create_folder_permission(
+                create_folder_permission_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "add_folder_permission_permission_denied.txt"
@@ -118,24 +119,24 @@ class TestAddFolderPermissionForUserInteractor:
         )
 
         with pytest.raises(UserNotFolderMember) as exc:
-            self.interactor.add_user_for_folder_permission(permission_data=dto)
+            self.interactor.create_folder_permission(
+                create_folder_permission_dto=dto)
 
         snapshot.assert_match(
             repr(exc.value), "add_folder_permission_actor_not_member.txt"
         )
 
-    def test_add_folder_permission_unexpected_permission(self, snapshot):
+    def test_add_folder_permission_unexpected_permission(self):
         self._setup_dependencies()
         dto = CreateFolderPermissionDTO(
             folder_id="folder_1",
             user_id="user_1",
-            permission_type=InvalidPermission,
+            permission_type=InvalidPermissionValue,
             added_by="admin",
         )
 
-        with pytest.raises(InvalidPermission) as exc:
-            self.interactor.add_user_for_folder_permission(permission_data=dto)
+        with pytest.raises(InvalidPermissionException) as exc:
+            self.interactor.create_folder_permission(
+                create_folder_permission_dto=dto)
 
-        snapshot.assert_match(
-            repr(exc.value), "add_folder_permission_unexpected_permission.txt"
-        )
+        assert repr(exc.value) == "InvalidPermission()"

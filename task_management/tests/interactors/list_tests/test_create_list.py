@@ -163,7 +163,7 @@ class TestCreateList:
         # Assert
         snapshot.assert_match(repr(exc.value), "space_not_found.txt")
 
-    def test_create_list_space_inactive(self, snapshot):
+    def test_create_list_space_inactive(self):
         # Arrange
         self._setup_create_list_dependencies(space_active=False)
 
@@ -181,7 +181,7 @@ class TestCreateList:
             self.interactor.create_list(create_list_dto=dto)
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "space_inactive.txt")
+        assert repr(exc.value) == "SpaceIsDeleted()"
 
     def test_create_list_folder_not_found(self, snapshot):
         # Arrange
@@ -203,7 +203,7 @@ class TestCreateList:
         # Assert
         snapshot.assert_match(repr(exc.value), "folder_not_found.txt")
 
-    def test_create_list_folder_inactive(self, snapshot):
+    def test_create_list_folder_inactive(self):
         # Arrange
         self._setup_create_list_dependencies(folder_active=False)
 
@@ -222,7 +222,7 @@ class TestCreateList:
             self.interactor.create_list(create_list_dto=dto)
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "folder_inactive.txt")
+        assert repr(exc.value) == "FolderIsDeleted()"
 
     def test_create_list_permission_denied(self, snapshot):
         # Arrange

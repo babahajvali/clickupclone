@@ -104,7 +104,7 @@ class TestSetListPublic:
         # Assert
         snapshot.assert_match(repr(exc.value), "list_not_found.txt")
 
-    def test_set_list_public_inactive(self, snapshot):
+    def test_set_list_public_inactive(self):
         # Arrange
         list_data = self._get_list_dto()
         list_data.is_deleted = True
@@ -119,7 +119,7 @@ class TestSetListPublic:
             )
 
         # Assert
-        snapshot.assert_match(repr(exc.value), "list_inactive.txt")
+        assert repr(exc.value) == "ListIsDeleted()"
 
     def test_set_list_public_permission_denied(self, snapshot):
         # Arrange

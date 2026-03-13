@@ -76,7 +76,7 @@ class TestUpdateFolderInteractor:
 
         snapshot.assert_match(repr(result), "update_folder_success.txt")
 
-    def test_update_folder_nothing_to_update(self, snapshot):
+    def test_update_folder_nothing_to_update(self):
         self._setup_dependencies()
 
         with pytest.raises(NothingToUpdateFolder) as exc:
@@ -87,9 +87,7 @@ class TestUpdateFolderInteractor:
                 description=None,
             )
 
-        snapshot.assert_match(
-            repr(exc.value), "update_folder_nothing_to_update.txt"
-        )
+        assert repr(exc.value) == "NothingToUpdateFolder()"
 
     def test_update_folder_not_found(self, snapshot):
         self._setup_dependencies()

@@ -78,7 +78,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
 
         self.workspace_storage.update_the_member_role.return_value = expected
 
-        result = self.interactor.change_member_role(
+        result = self.interactor.change_workspace_member_role(
             workspace_id="workspace123",
             user_id="user123",
             role=Role.ADMIN,
@@ -87,23 +87,20 @@ class TestChangeWorkspaceMemberRoleInteractor:
 
         assert result == expected
 
-    def test_change_member_workspace_deleted(self, snapshot):
+    def test_change_member_workspace_deleted(self):
         self.workspace_storage.get_workspace.return_value = (
             self._mock_deleted_workspace()
         )
 
         with pytest.raises(WorkspaceIsDeleted) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=Role.ADMIN,
                 changed_by="admin123"
             )
 
-        snapshot.assert_match(
-            repr(exc.value),
-            "change_workspace_role_workspace_deleted.txt"
-        )
+        assert repr(exc.value) == "WorkspaceIsDeleted()"
 
     def test_change_member_user_inactive(self, snapshot):
         self.workspace_storage.get_workspace.return_value = (
@@ -114,7 +111,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         )
 
         with pytest.raises(InactiveUser) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=Role.ADMIN,
@@ -139,7 +136,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         )()
 
         with pytest.raises(InactiveWorkspaceMember) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=Role.ADMIN,
@@ -165,7 +162,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         ]
 
         with pytest.raises(UserNotWorkspaceMember) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=Role.ADMIN,
@@ -190,7 +187,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         ]
 
         with pytest.raises(ModificationNotAllowed) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=Role.ADMIN,
@@ -215,7 +212,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
         ]
 
         with pytest.raises(UnexpectedRole) as exc:
-            self.interactor.change_member_role(
+            self.interactor.change_workspace_member_role(
                 workspace_id="workspace123",
                 user_id="user123",
                 role=type("Role", (), {"value": "INVALID"})(),

@@ -2,11 +2,11 @@ from unittest.mock import create_autospec, patch
 
 from task_management.exceptions.enums import PermissionType
 from task_management.interactors.dtos import CreateFolderDTO, FolderDTO
+from task_management.interactors.folders.create_folder_permission_interactor import (
+    CreateFolderPermissionInteractor,
+)
 from task_management.interactors.folders.folder_creation_handler import (
     FolderCreationHandler,
-)
-from task_management.interactors.folders.add_folder_permission_for_user_interactor import (
-    AddFolderPermissionForUserInteractor,
 )
 from task_management.interactors.storage_interfaces import (
     FolderStorageInterface,
@@ -65,16 +65,16 @@ class TestFolderCreationHandler:
 
     def test_create_folder_permission_for_user_builds_dto(self, snapshot):
         with patch.object(
-                AddFolderPermissionForUserInteractor,
-                "add_user_for_folder_permission"
+                CreateFolderPermissionInteractor,
+                "create_folder_permission"
         ) as add_permission:
-
             self.handler._create_folder_permission_for_user(
                 folder_id="folder_1", user_id="user_1"
             )
 
         add_permission.assert_called_once()
-        called_permission_dto = add_permission.call_args.kwargs["permission_data"]
+        called_permission_dto = add_permission.call_args.kwargs[
+            "permission_data"]
 
         snapshot.assert_match(
             repr(called_permission_dto),
