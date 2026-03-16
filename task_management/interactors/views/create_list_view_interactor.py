@@ -25,7 +25,9 @@ class CreateListViewInteractor(
 
     def create_list_view(
             self, create_list_view_dto: CreateListViewDTO) -> ListViewDTO:
-        self.check_view_exist(view_type=create_list_view_dto.view_type.value)
+        self.check_view_type(view_type=create_list_view_dto.view_type.value)
+        self.check_list_view_name_not_empty(
+            name=create_list_view_dto.view_name)
         self.check_list_not_deleted(list_id=create_list_view_dto.list_id)
         self._check_user_has_edit_access_to_list(
             user_id=create_list_view_dto.created_by,

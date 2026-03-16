@@ -78,6 +78,8 @@ from task_management.graphql.mutations.view.apply_list_view_mutation import \
     ApplyListViewMutation
 from task_management.graphql.mutations.view.remove_list_view_mutation import \
     RemoveListViewMutation
+from task_management.graphql.mutations.view.update_list_view_mutation import \
+    UpdateListViewMutation
 from task_management.graphql.mutations.workspace.add_workspace_member_mutation import \
     AddMemberToWorkspaceMutation
 from task_management.graphql.mutations.workspace.change_workspace_member_role import \
@@ -283,3 +285,7 @@ class UpdateAccount(graphene.ObjectType):
 class AddUserForListPermission(graphene.ObjectType):
     add_list_permission_for_user = AddListPermissionForUserMutation.Field(
         required=True)
+
+
+class UpdateListView(graphene.ObjectType):
+    update_list_view = UpdateListViewMutation.Field(required=True)

@@ -33,5 +33,5 @@ class CreateWorkspaceInteractor(
         )
 
         return self.workspace_storage.create_workspace(
-            create_workspace_sto=create_workspace_dto
+            create_workspace_dto=create_workspace_dto
         )

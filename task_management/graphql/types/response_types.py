@@ -35,7 +35,8 @@ from task_management.graphql.types.error_types import \
     MaxValueLessThanMinValueType, \
     TextValueExceedsMaxLengthType, InvalidNumberFieldValueType, \
     NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
-    DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType
+    DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType, \
+    EmptyViewNameType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -749,6 +750,17 @@ class RemoveListViewResponse(graphene.Union):
             ModificationNotAllowedType,
             ListViewNotFound,
             UserNotWorkspaceMemberType
+        )
+
+
+class UpdateListViewResponse(graphene.Union):
+    class Meta:
+        types = (
+            ListViewType,
+            ListViewNotFound,
+            ModificationNotAllowedType,
+            UserNotWorkspaceMemberType,
+            EmptyViewNameType
         )
 
 

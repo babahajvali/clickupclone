@@ -17,7 +17,7 @@ class WorkspaceStorageInterface(ABC):
 
     @abstractmethod
     def create_workspace(
-            self, create_workspace_sto: CreateWorkspaceDTO) -> WorkspaceDTO:
+            self, create_workspace_dto: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass
 
     @abstractmethod

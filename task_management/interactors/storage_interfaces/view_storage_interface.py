@@ -31,3 +31,8 @@ class ViewStorageInterface(ABC):
     @abstractmethod
     def get_list_view_by_id(self, list_view_id: int) -> ListViewDTO:
         pass
+
+    @abstractmethod
+    def update_list_view(
+            self, list_view_id: int, view_name: str) -> ListViewDTO:
+        pass

@@ -168,7 +168,8 @@ class TaskFieldValueAdmin(admin.ModelAdmin):
 
 @admin.register(ListView)
 class ListViewAdmin(admin.ModelAdmin):
-    list_display = ('list', 'view_type', 'is_active', 'created_by', 'created_at')
+    list_display = ('list', 'view_type', 'id', 'is_active', 'created_by',
+                    'created_at', 'view_name')
     list_filter = ('view_type', 'is_active', 'created_at')
     search_fields = ('list__name', 'view_type')
     readonly_fields = ('created_at',)

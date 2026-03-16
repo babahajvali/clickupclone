@@ -328,6 +328,11 @@ class RemoveListViewInputParams(graphene.InputObjectType):
     list_view_id = graphene.Int(required=True)
 
 
+class UpdateListViewInputParams(graphene.InputObjectType):
+    list_view_id = graphene.Int(required=True)
+    view_name = graphene.String(required=True)
+
+
 class GetListViewsInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
 

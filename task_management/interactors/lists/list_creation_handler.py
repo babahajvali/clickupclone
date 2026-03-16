@@ -8,7 +8,7 @@ from task_management.interactors.dtos import (
     CreateTemplateDTO,
     UserListPermissionDTO,
     ListViewDTO,
-    TemplateDTO,
+    TemplateDTO, CreateListViewDTO,
 )
 from task_management.interactors.lists.create_list_interactor import (
     CreateListInteractor,
@@ -57,13 +57,16 @@ class ListCreationHandler:
         self._create_default_template(
             name=list_dto.name, list_id=list_dto.list_id,
             user_id=list_dto.created_by)
-        view_id = self.view_storage.get_list_view_id(
-            view_type=ViewType.LIST.value)
+
+        create_list_view_dto = CreateListViewDTO(
+            list_id=list_dto.list_id,
+            view_name="List",
+            view_type=ViewType.LIST,
+            created_by=list_dto.created_by,
+        )
 
         self._create_default_list_view(
-            list_id=list_dto.list_id,
-            view_id=view_id,
-            user_id=list_dto.created_by,
+            create_list_view_dto=create_list_view_dto
         )
 
         return list_dto
@@ -112,7 +115,7 @@ class ListCreationHandler:
         )
 
     def _create_default_list_view(
-            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
+            self, create_list_view_dto: CreateListViewDTO) -> ListViewDTO:
         return self.view_storage.create_list_view(
-            list_id=list_id, view_id=view_id, user_id=user_id
+            create_list_view_dto=create_list_view_dto
         )

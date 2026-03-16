@@ -9,6 +9,7 @@ class ListView(models.Model):
         on_delete=models.CASCADE,
         related_name='list_views'
     )
+    view_name = models.CharField(max_length=255, null=True, blank=True)
     view_type = models.CharField(
         max_length=50, choices=ViewType.get_list_of_tuples())
     is_active = models.BooleanField(default=True)

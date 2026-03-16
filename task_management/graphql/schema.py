@@ -12,7 +12,7 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     RemoveTaskAssignee, UpdateField, CreateField, DeleteField, \
     ReorderField, ApplyListView, RemoveListView, UpdateFieldValue, \
     ForgotPassword, ResetPassword, ValidateResetToken, UpdateAccount, \
-    AddUserForListPermission
+    AddUserForListPermission, UpdateListView
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
@@ -36,7 +36,7 @@ MUTATION_CLASSES = [
     ReorderListInFolder, SetListVisibility, ReorderListInSpace, CreateTask,
     UpdateTask, ReorderTask, DeleteTask, AddMemberToWorkspace,
     TaskAssignee, ChangeWorkspaceMemberRole, RemoveMemberFromWorkspace,
-    RemoveTaskAssignee, UpdateField, CreateField, DeleteField,
+    RemoveTaskAssignee, UpdateField, CreateField, DeleteField, UpdateListView,
     ReorderField, ApplyListView, RemoveListView, ResetPassword,
     UpdateFieldValue, ForgotPassword, ValidateResetToken, UpdateAccount,
     AddUserForListPermission]

@@ -10,7 +10,7 @@ class ViewStorage(ViewStorageInterface):
     def _convert_list_view_to_dto(list_view_obj: ListView) -> ListViewDTO:
         return ListViewDTO(
             id=list_view_obj.pk,
-            view_name=list_view_obj.view_type.capitalize(),
+            view_name=list_view_obj.view_name,
             list_id=list_view_obj.list_id,
             view_type=list_view_obj.view_type,
             created_by=list_view_obj.created_by_id,
@@ -20,6 +20,7 @@ class ViewStorage(ViewStorageInterface):
     def create_list_view(
             self, create_list_view_dto: CreateListViewDTO) -> ListViewDTO:
         list_view_obj = ListView.objects.create(
+            view_name=create_list_view_dto.view_name,
             list_id=create_list_view_dto.list_id,
             view_type=create_list_view_dto.view_type.value,
             created_by_id=create_list_view_dto.created_by)
@@ -55,3 +56,9 @@ class ViewStorage(ViewStorageInterface):
         list_view_dto = ListView.objects.filter(pk=list_view_id).first()
 
         return self._convert_list_view_to_dto(list_view_obj=list_view_dto)
+
+    def update_list_view(
+            self, list_view_id: int, view_name: str) -> ListViewDTO:
+        ListView.objects.filter(pk=list_view_id).update(view_name=view_name)
+
+        return self.get_list_view_by_id(list_view_id=list_view_id)

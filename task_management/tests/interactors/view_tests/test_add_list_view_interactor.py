@@ -110,7 +110,7 @@ class TestAddListViewInteractor:
         )
 
         with pytest.raises(ViewNotFound):
-            self.interactor.check_view_exist("INVALID_VIEW_TYPE")
+            self.interactor.check_view_type("INVALID_VIEW_TYPE")
 
     def test_apply_view_for_nonexistent_list_raises_exception(self):
         self.view_storage.get_list_view.return_value = None
