@@ -26,6 +26,18 @@ class FolderStorage(FolderStorageInterface):
             is_private=folder_obj.is_private,
         )
 
+    @staticmethod
+    def _convert_folder_permission_to_dto(
+            folder_permission_obj: FolderPermission) -> UserFolderPermissionDTO:
+        return UserFolderPermissionDTO(
+            id=folder_permission_obj.pk,
+            folder_id=folder_permission_obj.folder_id,
+            user_id=folder_permission_obj.user_id,
+            permission_type=folder_permission_obj.permission_type,
+            is_active=folder_permission_obj.is_active,
+            added_by=folder_permission_obj.added_by_id,
+        )
+
     def get_folder(self, folder_id: str) -> FolderDTO | None:
 
         folder_obj = Folder.objects.filter(folder_id=folder_id).first()
@@ -152,14 +164,9 @@ class FolderStorage(FolderStorageInterface):
             permissions_to_create
         )
 
-        return [UserFolderPermissionDTO(
-            id=permission_obj.pk,
-            folder_id=permission_obj.folder_id,
-            user_id=permission_obj.user_id,
-            permission_type=permission_obj.permission_type,
-            is_active=permission_obj.is_active,
-            added_by=permission_obj.added_by_id,
-        ) for permission_obj in created_permissions]
+        return [self._convert_folder_permission_to_dto(
+            folder_permission_obj=permission_obj) for permission_obj in
+            created_permissions]
 
     def get_user_folder_permission(
             self, folder_id: str, user_id: str) -> UserFolderPermissionDTO:
@@ -172,11 +179,5 @@ class FolderStorage(FolderStorageInterface):
         if permission_obj is None:
             return None
 
-        return UserFolderPermissionDTO(
-            id=permission_obj.pk,
-            folder_id=permission_obj.folder_id,
-            user_id=permission_obj.user_id,
-            permission_type=permission_obj.permission_type,
-            is_active=permission_obj.is_active,
-            added_by=permission_obj.added_by_id,
-        )
+        return self._convert_folder_permission_to_dto(
+            folder_permission_obj=permission_obj)
