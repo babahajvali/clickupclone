@@ -21,9 +21,10 @@ def get_list_views_resolver(root, info, params):
 
         result = [ListViewType(
             id=each.id,
-            view_id=each.view_id,
+            view_name=each.view_name,
+            view_id=each.view_type,
             list_id=each.list_id,
-            applied_by=each.applied_by,
+            created_by=each.created_by,
             is_active=each.is_active
         ) for each in view_output]
 

@@ -76,12 +76,8 @@ from task_management.graphql.mutations.user.validate_reset_token_mutation import
     ValidateResetTokenMutation
 from task_management.graphql.mutations.view.apply_list_view_mutation import \
     ApplyListViewMutation
-from task_management.graphql.mutations.view.create_view_mutation import \
-    CreateViewMutation
 from task_management.graphql.mutations.view.remove_list_view_mutation import \
     RemoveListViewMutation
-from task_management.graphql.mutations.view.update_view_mutation import \
-    UpdateViewMutation
 from task_management.graphql.mutations.workspace.add_workspace_member_mutation import \
     AddMemberToWorkspaceMutation
 from task_management.graphql.mutations.workspace.change_workspace_member_role import \
@@ -218,10 +214,6 @@ class ReorderTask(graphene.ObjectType):
     reorder_task = ReorderTaskMutation.Field(required=True)
 
 
-class CreateView(graphene.ObjectType):
-    create_view = CreateViewMutation.Field(required=True)
-
-
 class AddMemberToWorkspace(graphene.ObjectType):
     add_member_to_workspace = AddMemberToWorkspaceMutation.Field(required=True)
 
@@ -242,10 +234,6 @@ class TaskAssignee(graphene.ObjectType):
 
 class RemoveTaskAssignee(graphene.ObjectType):
     remove_task_assignee = RemoveTaskAssigneeMutation.Field(required=True)
-
-
-class UpdateView(graphene.ObjectType):
-    update_view = UpdateViewMutation.Field(required=True)
 
 
 class CreateField(graphene.ObjectType):

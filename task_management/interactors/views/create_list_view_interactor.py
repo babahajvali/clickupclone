@@ -1,4 +1,4 @@
-from task_management.interactors.dtos import ListViewDTO
+from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO
 from task_management.interactors.storage_interfaces import \
     ListStorageInterface, ViewStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import ListValidationMixin, \
@@ -24,19 +24,15 @@ class CreateListViewInteractor(
         self.workspace_storage = workspace_storage
 
     def create_list_view(
-            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
-        list_view_data = self.view_storage.get_list_view(
-            list_id=list_id, view_id=view_id)
-        if list_view_data:
-            return list_view_data
-
-        self.check_view_exist(view_id=view_id)
-        self.check_list_not_deleted(list_id=list_id)
+            self, create_list_view_dto: CreateListViewDTO) -> ListViewDTO:
+        self.check_view_exist(view_type=create_list_view_dto.view_type.value)
+        self.check_list_not_deleted(list_id=create_list_view_dto.list_id)
         self._check_user_has_edit_access_to_list(
-            user_id=user_id, list_id=list_id)
+            user_id=create_list_view_dto.created_by,
+            list_id=create_list_view_dto.list_id)
 
         return self.view_storage.create_list_view(
-            view_id=view_id, list_id=list_id, user_id=user_id)
+            create_list_view_dto=create_list_view_dto)
 
     def _check_user_has_edit_access_to_list(
             self, list_id: str, user_id: str) -> None:

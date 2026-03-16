@@ -3,13 +3,12 @@
     "getViews": {
       "__typename": "ViewsType",
       "views": [
-        {
-          "viewId": "view_1",
-          "name": "List View",
-          "description": "Main list view",
-          "viewType": "LIST",
-          "createdBy": "user_1"
-        }
+        "TABLE",
+        "CALENDAR",
+        "BOARD",
+        "DASHBOARD",
+        "LIST",
+        "GANTT"
       ]
     }
   }

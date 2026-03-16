@@ -8,8 +8,9 @@ from task_management.exceptions.custom_exceptions import (
     ModificationNotAllowed,
     ViewNotFound,
 )
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import ListViewDTO, WorkspaceMemberDTO
+from task_management.exceptions.enums import Role, ViewType
+from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO, \
+    WorkspaceMemberDTO
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import (
@@ -51,27 +52,31 @@ class TestAddListViewInteractor:
             Role.ADMIN
         )
         self.view_storage.get_list_view.return_value = None
-        self.view_storage.is_view_exists.return_value = True
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_deleted": False}
         )()
         expected = ListViewDTO(
             id=1,
+            view_name="Table",
             list_id="list_id",
-            view_id="view_id",
-            applied_by="user_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id",
             is_active=True,
         )
         self.view_storage.create_list_view.return_value = expected
 
-        result = self.interactor.create_list_view("view_id", "list_id",
-                                                  "user_id")
+        create_dto = CreateListViewDTO(
+            view_name="Table",
+            list_id="list_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id"
+        )
+        result = self.interactor.create_list_view(create_dto)
 
         assert result == expected
 
     def test_apply_view_without_permission_raises_exception(self):
         self.view_storage.get_list_view.return_value = None
-        self.view_storage.is_view_exists.return_value = True
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_deleted": False}
         )()
@@ -79,8 +84,14 @@ class TestAddListViewInteractor:
             Role.GUEST
         )
 
+        create_dto = CreateListViewDTO(
+            view_name="Table",
+            list_id="list_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id"
+        )
         with pytest.raises(ModificationNotAllowed):
-            self.interactor.create_list_view("view_id", "list_id", "user_id")
+            self.interactor.create_list_view(create_dto)
 
     def test_apply_view_for_nonexistent_view_raises_exception(self):
         self.view_storage.get_list_view.return_value = None
@@ -90,31 +101,47 @@ class TestAddListViewInteractor:
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_deleted": False}
         )()
-        self.view_storage.is_view_exists.return_value = False
+
+        create_dto = CreateListViewDTO(
+            view_name="Invalid",
+            list_id="list_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id"
+        )
 
         with pytest.raises(ViewNotFound):
-            self.interactor.create_list_view("view_id", "list_id", "user_id")
+            self.interactor.check_view_exist("INVALID_VIEW_TYPE")
 
     def test_apply_view_for_nonexistent_list_raises_exception(self):
         self.view_storage.get_list_view.return_value = None
         self.workspace_storage.get_workspace_member.return_value = make_permission(
             Role.ADMIN
         )
-        self.view_storage.is_view_exists.return_value = True
         self.list_storage.get_list.return_value = None
 
+        create_dto = CreateListViewDTO(
+            view_name="Table",
+            list_id="list_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id"
+        )
         with pytest.raises(ListNotFound):
-            self.interactor.create_list_view("view_id", "list_id", "user_id")
+            self.interactor.create_list_view(create_dto)
 
     def test_apply_view_for_inactive_list_raises_exception(self):
         self.view_storage.get_list_view.return_value = None
         self.workspace_storage.get_workspace_member.return_value = make_permission(
             Role.ADMIN
         )
-        self.view_storage.is_view_exists.return_value = True
         self.list_storage.get_list.return_value = type(
             "List", (), {"is_deleted": True}
         )()
 
+        create_dto = CreateListViewDTO(
+            view_name="Table",
+            list_id="list_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id"
+        )
         with pytest.raises(ListIsDeleted):
-            self.interactor.create_list_view("view_id", "list_id", "user_id")
+            self.interactor.create_list_view(create_dto)

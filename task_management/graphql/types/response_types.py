@@ -11,7 +11,7 @@ from task_management.graphql.types.error_types import \
     FieldNameAlreadyExistsType, ModificationNotAllowedType, \
     InvalidFieldConfigType, InvalidFieldDefaultValueType, \
     DeletedTaskType, DeletedListType, DeletedSpaceType, \
-    DeletedFolderType, ViewTypeNotFoundType, DeletedWorkspaceType, \
+    DeletedFolderType, DeletedWorkspaceType, \
     UserNotWorkspaceOwnerType, UnexpectedRoleType, EmailNotFound, \
     IncorrectPassword, InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
@@ -26,7 +26,7 @@ from task_management.graphql.types.error_types import \
     FieldNotBelongsToTemplateType, ResourceLockedType, \
     EmptyFolderNameType, NothingToUpdateFolderType, EmptyListNameType, \
     EmptySpaceNameType, EmptyTaskTitleType, NothingToUpdateTaskType, \
-    EmptyViewNameType, NothingToUpdateViewType, EmptyWorkspaceNameType, \
+    EmptyWorkspaceNameType, \
     InvalidWorkspaceIdsFoundType, WorkspaceMemberIdNotFoundType, \
     TextDefaultValueExceedsMaxLengthType, \
     NumberDefaultValueBelowMinimumType, \
@@ -37,7 +37,7 @@ from task_management.graphql.types.error_types import \
     NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
     DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType
 from task_management.graphql.types.types import AccountType, UserType, \
-    FieldType, TaskType, ListType, ViewType, FolderType, \
+    FieldType, TaskType, ListType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
     UserFolderPermissionType, UserListPermissionType, \
     WorkspaceSpacesType, SpaceFoldersType, ListsType, TasksType, \
@@ -191,24 +191,6 @@ class UpdateListResponse(graphene.Union):
             NothingToUpdateListType,
             UserNotWorkspaceMemberType,
             ModificationNotAllowedType
-        )
-
-
-class CreateViewResponse(graphene.Union):
-    class Meta:
-        types = (
-            ViewType,
-            ViewTypeNotFoundType,
-            EmptyViewNameType
-        )
-
-
-class UpdateViewResponse(graphene.Union):
-    class Meta:
-        types = (
-            ViewType,
-            ViewNotFoundType,
-            NothingToUpdateViewType
         )
 
 

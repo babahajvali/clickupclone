@@ -318,14 +318,14 @@ class GetFieldsInputParams(graphene.InputObjectType):
     field_ids = graphene.List(graphene.String, required=True)
 
 
-class ApplyListViewInputParams(graphene.InputObjectType):
-    view_id = graphene.String(required=True)
+class CreateListViewInputParams(graphene.InputObjectType):
+    view_name = graphene.String(required=True)
+    view_type = graphene.String(required=True)
     list_id = graphene.String(required=True)
 
 
 class RemoveListViewInputParams(graphene.InputObjectType):
-    list_id = graphene.String(required=True)
-    view_id = graphene.String(required=True)
+    list_view_id = graphene.Int(required=True)
 
 
 class GetListViewsInputParams(graphene.InputObjectType):

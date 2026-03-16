@@ -2,11 +2,11 @@ from types import SimpleNamespace
 
 import pytest
 
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import ListViewDTO
 from task_management.tests.api_tests.views import BaseGetListViews
 
 LIST_ID = "12345678-1234-5678-1234-567812345678"
-VIEW_ID = "12345678-1234-5678-1234-567812345679"
 MISSING_LIST_ID = "12345678-1234-5678-1234-567812345680"
 
 
@@ -25,9 +25,10 @@ def get_list_views_mock(mocker):
 def make_list_view_dto() -> ListViewDTO:
     return ListViewDTO(
         id=1,
+        view_name="Table",
         list_id=LIST_ID,
-        view_id=VIEW_ID,
-        applied_by="user_1",
+        view_type=ViewType.TABLE,
+        created_by="user_1",
         is_active=True,
     )
 

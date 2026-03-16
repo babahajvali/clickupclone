@@ -76,14 +76,15 @@ class BaseUpdateView(BaseViewGraphQLTestCase):
 
 class BaseApplyListView(BaseViewGraphQLTestCase):
     QUERY = """
-    mutation ApplyListView($params: ApplyListViewInputParams!) {
+    mutation ApplyListView($params: CreateListViewInputParams!) {
       applyListView(params: $params) {
         ... on ListViewType {
           __typename
           id
+          viewName
           listId
-          viewId
-          appliedBy
+          viewType
+          createdBy
           isActive
         }
         ... on ListNotFoundType {
@@ -118,9 +119,10 @@ class BaseRemoveListView(BaseViewGraphQLTestCase):
         ... on ListViewType {
           __typename
           id
+          viewName
           listId
-          viewId
-          appliedBy
+          viewType
+          createdBy
           isActive
         }
         ... on ModificationNotAllowedType {
@@ -129,8 +131,7 @@ class BaseRemoveListView(BaseViewGraphQLTestCase):
         }
         ... on ListViewNotFound {
           __typename
-          listId
-          viewId
+          listViewId
         }
         ... on UserNotWorkspaceMemberType {
           __typename
@@ -147,13 +148,7 @@ class BaseGetViews(BaseViewGraphQLTestCase):
       getViews {
         ... on ViewsType {
           __typename
-          views {
-            viewId
-            name
-            description
-            viewType
-            createdBy
-          }
+          views
         }
       }
     }
@@ -168,9 +163,10 @@ class BaseGetListViews(BaseViewGraphQLTestCase):
           __typename
           listViews {
             id
+            viewName
             listId
-            viewId
-            appliedBy
+            viewType
+            createdBy
             isActive
           }
         }

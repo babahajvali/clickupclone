@@ -2,13 +2,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from task_management.exceptions.enums import Role
+from task_management.exceptions.enums import Role, ViewType
 from task_management.interactors.dtos import ListViewDTO, WorkspaceMemberDTO
 from task_management.tests.api_tests.views import BaseRemoveListView
 
 LIST_ID = "12345678-1234-5678-1234-567812345678"
-VIEW_ID = "12345678-1234-5678-1234-567812345679"
-MISSING_VIEW_ID = "12345678-1234-5678-1234-567812345681"
+LIST_VIEW_ID = 1
+MISSING_LIST_VIEW_ID = 999
 
 
 def is_list_view_exist_mock(mocker):
@@ -50,9 +50,10 @@ def make_workspace_member_dto(role=Role.ADMIN) -> WorkspaceMemberDTO:
 def make_removed_list_view_dto() -> ListViewDTO:
     return ListViewDTO(
         id=1,
+        view_name="Table",
         list_id=LIST_ID,
-        view_id=VIEW_ID,
-        applied_by="user_1",
+        view_type=ViewType.TABLE,
+        created_by="user_1",
         is_active=False,
     )
 
@@ -62,12 +63,14 @@ class TestRemoveListViewAPI(BaseRemoveListView):
     def test_remove_list_view_successfully(self, snapshot, mocker):
         is_list_view_exist_mock(mocker).return_value = True
         get_workspace_id_by_list_id_mock(mocker).return_value = "workspace_1"
-        get_workspace_member_mock(mocker).return_value = make_workspace_member_dto()
-        remove_list_view_mock(mocker).return_value = make_removed_list_view_dto()
+        get_workspace_member_mock(
+            mocker).return_value = make_workspace_member_dto()
+        remove_list_view_mock(
+            mocker).return_value = make_removed_list_view_dto()
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listViewId": LIST_VIEW_ID}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -77,7 +80,8 @@ class TestRemoveListViewAPI(BaseRemoveListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": MISSING_VIEW_ID}},
+            variables={
+                "params": {"listViewId": MISSING_LIST_VIEW_ID}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -85,25 +89,27 @@ class TestRemoveListViewAPI(BaseRemoveListView):
     def test_remove_list_view_no_edit_access(self, snapshot, mocker):
         is_list_view_exist_mock(mocker).return_value = True
         get_workspace_id_by_list_id_mock(mocker).return_value = "workspace_1"
-        get_workspace_member_mock(mocker).return_value = make_workspace_member_dto(
+        get_workspace_member_mock(
+            mocker).return_value = make_workspace_member_dto(
             role=Role.GUEST
         )
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listViewId": LIST_VIEW_ID}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
 
-    def test_remove_list_view_user_not_workspace_member(self, snapshot, mocker):
+    def test_remove_list_view_user_not_workspace_member(self, snapshot,
+                                                        mocker):
         is_list_view_exist_mock(mocker).return_value = True
         get_workspace_id_by_list_id_mock(mocker).return_value = "workspace_1"
         get_workspace_member_mock(mocker).return_value = None
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listViewId": LIST_VIEW_ID}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )

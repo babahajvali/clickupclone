@@ -2,8 +2,7 @@
   "data": {
     "removeListView": {
       "__typename": "ListViewNotFound",
-      "listId": "12345678-1234-5678-1234-567812345678",
-      "viewId": "12345678-1234-5678-1234-567812345681"
+      "listViewId": "999"
     }
   }
 }

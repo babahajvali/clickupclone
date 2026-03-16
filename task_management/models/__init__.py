@@ -9,7 +9,7 @@ from task_management.models.task import Task, TaskAssignee
 from task_management.models.task_field_value import TaskFieldValue
 from task_management.models.template_view import Template
 from task_management.models.user import User, PasswordResetToken
-from task_management.models.view import View, ListView
+from task_management.models.view import ListView
 from task_management.models.workspace import Workspace, WorkspaceMember
 
 __all__ = [
@@ -23,7 +23,6 @@ __all__ = [
     "Folder",
     "List",
     "Template",
-    "View",
     "ListView",
     "Field",
     "TaskFieldValue",

@@ -332,8 +332,7 @@ class UserDoesNotHaveAccountPermissionType(graphene.ObjectType):
 
 
 class ListViewNotFound(graphene.ObjectType):
-    list_id = graphene.String(required=True)
-    view_id = graphene.String(required=True)
+    list_view_id = graphene.String(required=True)
 
 
 class AccountMemberNotFoundType(graphene.ObjectType):

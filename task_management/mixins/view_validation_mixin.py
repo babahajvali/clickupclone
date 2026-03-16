@@ -1,5 +1,6 @@
 from task_management.exceptions.custom_exceptions import ViewNotFound, \
     EmptyViewName
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.storage_interfaces import ViewStorageInterface
 
 
@@ -9,11 +10,11 @@ class ViewValidationMixin:
         self.view_storage = view_storage
         super().__init__(**kwargs)
 
-    def check_view_exist(self, view_id: str):
-        is_exists = self.view_storage.is_view_exists(view_id=view_id)
+    def check_view_exist(self, view_type: str):
+        existed_views = ViewType.get_values()
 
-        if not is_exists:
-            raise ViewNotFound(view_id=view_id)
+        if view_type not in existed_views:
+            raise ViewNotFound(view_type=view_type)
 
     @staticmethod
     def check_view_name_not_empty(name: str):

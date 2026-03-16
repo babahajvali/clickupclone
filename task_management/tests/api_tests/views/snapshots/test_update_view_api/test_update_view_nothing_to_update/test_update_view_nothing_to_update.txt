@@ -1,8 +1,0 @@
-{
-  "data": {
-    "updateView": {
-      "__typename": "NothingToUpdateViewType",
-      "viewId": "12345678-1234-5678-1234-567812345679"
-    }
-  }
-}

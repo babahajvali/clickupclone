@@ -1,8 +1,17 @@
 {
-  "data": {
-    "removeListView": {
-      "__typename": "UserNotWorkspaceMemberType",
-      "userId": "user_1"
+  "errors": [
+    {
+      "message": "'NoneType' object has no attribute 'pk'",
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "removeListView"
+      ]
     }
-  }
+  ],
+  "data": null
 }

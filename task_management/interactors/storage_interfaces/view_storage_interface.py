@@ -1,41 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
-from task_management.interactors.dtos import CreateViewDTO, ViewDTO, \
-    ListViewDTO
+from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO
 
 
 class ViewStorageInterface(ABC):
 
     @abstractmethod
-    def get_all_views(self) -> list[ViewDTO]:
-        pass
-
-    @abstractmethod
-    def get_view(self, view_id: str) -> ViewDTO:
-        pass
-
-    @abstractmethod
-    def create_view(self, create_view_data: CreateViewDTO) -> ViewDTO:
-        pass
-
-    @abstractmethod
-    def update_view(
-            self, view_id: str, name: Optional[str],
-            description: Optional[str]) -> ViewDTO:
-        pass
-
-    @abstractmethod
-    def is_view_exists(self, view_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def create_list_view(
-            self, list_id: str, view_id: str, user_id: str) -> ListViewDTO:
+            self, create_list_view_dto: CreateListViewDTO) -> ListViewDTO:
         pass
 
     @abstractmethod
-    def remove_list_view(self, view_id: str, list_id: str, ):
+    def remove_list_view(self, list_view_id: int) -> ListViewDTO:
         # set the is_active is false
         pass
 
@@ -45,13 +21,13 @@ class ViewStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_list_view_exist(self, list_id: str, view_id: str) -> bool:
+    def is_list_view_exist(self, list_view_id: int) -> bool:
         pass
 
     @abstractmethod
-    def get_list_view(self, list_id: str, view_id: str) -> ListViewDTO:
+    def get_list_view(self, list_id: str, view_type: str) -> ListViewDTO:
         pass
 
     @abstractmethod
-    def get_list_view_id(self, view_type: str) -> str:
+    def get_list_view_by_id(self, list_view_id: int) -> ListViewDTO:
         pass

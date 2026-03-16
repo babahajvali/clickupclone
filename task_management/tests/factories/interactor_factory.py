@@ -7,7 +7,7 @@ from task_management.interactors.dtos import CreateFieldDTO, FieldDTO, \
     CreateTemplateDTO, TemplateDTO, CreateListDTO, \
     UpdateListDTO, ListDTO, CreateTaskDTO, UpdateTaskDTO, TaskDTO, \
     TaskAssigneeDTO, UserTasksDTO, CreateFolderDTO, UpdateFolderDTO, \
-    CreateViewDTO, UpdateViewDTO, ViewDTO, ListViewDTO, RemoveListViewDTO, \
+    ListViewDTO, RemoveListViewDTO, \
     CreateSpaceDTO, SpaceDTO, CreateWorkspaceDTO, WorkspaceDTO, \
     CreateWorkspaceMemberDTO, WorkspaceMemberDTO, AccountDTO, \
     CreateAccountMemberDTO, AccountMemberDTO, FolderDTO
@@ -189,43 +189,14 @@ class FolderDTOFactory(factory.Factory):
     is_private = False
 
 
-class CreateViewDTOFactory(factory.Factory):
-    class Meta:
-        model = CreateViewDTO
-
-    name = factory.Faker('word')
-    description = factory.Faker('sentence')
-    view_type = factory.Iterator(['lists', 'board', 'calendar', 'table'])
-    created_by = factory.Faker('uuid4')
-
-
-class UpdateViewDTOFactory(factory.Factory):
-    class Meta:
-        model = UpdateViewDTO
-
-    view_id = factory.Faker('uuid4')
-    name = factory.Faker('word')
-    description = factory.Faker('sentence')
-
-
-class ViewDTOFactory(factory.Factory):
-    class Meta:
-        model = ViewDTO
-
-    view_id = factory.Faker('uuid4')
-    name = factory.Faker('word')
-    description = factory.Faker('sentence')
-    view_type = factory.Iterator(['lists', 'board', 'calendar', 'table'])
-    created_by = factory.Faker('uuid4')
-
-
 class ListViewDTOFactory(factory.Factory):
     class Meta:
         model = ListViewDTO
 
     id = factory.Sequence(lambda n: n + 1)
+    view_name = factory.Faker('word')
     list_id = factory.Faker('uuid4')
-    view_id = factory.Faker('uuid4')
+    view_type = factory.Faker('uuid4')
     applied_by = factory.Faker('uuid4')
     is_active = True
 
@@ -235,8 +206,9 @@ class RemoveListViewDTOFactory(factory.Factory):
         model = RemoveListViewDTO
 
     id = factory.Sequence(lambda n: n + 1)
+    view_name = factory.Faker('word')
     list_id = factory.Faker('uuid4')
-    view_id = factory.Faker('uuid4')
+    view_type = factory.Faker('uuid4')
     removed_by = factory.Faker('uuid4')
     is_active = False
 

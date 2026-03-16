@@ -3,14 +3,7 @@ import pytest
 from task_management.tests.api_tests.accounts import BaseCreateAccount
 from task_management.tests.factories.api_factory import AccountDTOFactory, \
     UserDTOFactory
-from task_management.tests.factories.storage_factory import UserFactory, \
-    ViewFactory
-
-
-def get_list_view_id_mock(mocker):
-    return mocker.patch(
-        'task_management.storages.view_storage.ViewStorage.get_list_view_id'
-    )
+from task_management.tests.factories.storage_factory import UserFactory
 
 
 def get_user_data_mock(mocker):
@@ -34,9 +27,6 @@ class TestCreateAccountAPI(BaseCreateAccount):
         fixed_account_id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 
         UserFactory(user_id=user_id, is_active=True)
-        view = ViewFactory(created_by_id=user_id)
-        list_view_mock = get_list_view_id_mock(mocker=mocker)
-        list_view_mock.return_value = str(view.view_id)
 
         account_mock = get_create_account_mock(mocker=mocker)
         account_mock.return_value = AccountDTOFactory(

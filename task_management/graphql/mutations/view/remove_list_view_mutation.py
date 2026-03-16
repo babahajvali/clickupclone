@@ -31,16 +31,17 @@ class RemoveListViewMutation(graphene.Mutation):
         )
 
         try:
-            result = interactor.remove_view_for_list(
-                list_id=params.list_id, view_id=params.view_id,
+            list_view_dto = interactor.remove_view_for_list(
+                list_view_id=params.list_view_id,
                 user_id=info.context.user_id)
 
             return ListViewType(
-                id=result.id,
-                view_id=result.view_id,
-                list_id=result.list_id,
-                applied_by=result.applied_by,
-                is_active=result.is_active
+                id=list_view_dto.id,
+                view_name=list_view_dto.view_name,
+                view_type=list_view_dto.view_type,
+                list_id=list_view_dto.list_id,
+                created_by=list_view_dto.created_by,
+                is_active=list_view_dto.is_active
             )
 
         except custom_exceptions.ModificationNotAllowed as e:
@@ -50,4 +51,4 @@ class RemoveListViewMutation(graphene.Mutation):
             return UserNotWorkspaceMemberType(user_id=e.user_id)
 
         except custom_exceptions.ListViewNotFound as e:
-            return ListViewNotFound(list_id=e.list_id, view_id=e.view_id)
+            return ListViewNotFound(list_view_id=e.list_view_id)

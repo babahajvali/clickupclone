@@ -8,7 +8,7 @@ from task_management.exceptions.enums import Gender, ViewType, FieldType
 from task_management.exceptions.enums import ListEntityType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
-    Task, Template, View, ListView, TaskAssignee, Field, TaskFieldValue,
+    Task, Template, ListView, TaskAssignee, Field, TaskFieldValue,
     WorkspaceMember, SpacePermission, FolderPermission, ListPermission
 )
 
@@ -143,25 +143,14 @@ class TemplateFactory(DjangoModelFactory):
     list = factory.SubFactory(ListFactory)
 
 
-class ViewFactory(DjangoModelFactory):
-    class Meta:
-        model = View
-
-    view_id = factory.LazyFunction(uuid.uuid4)
-    name = factory.Faker("word")
-    description = factory.Faker("sentence")
-    view_type = ViewType.LIST.value
-    created_by = factory.SubFactory(UserFactory)
-
-
 class ListViewFactory(DjangoModelFactory):
     class Meta:
         model = ListView
 
     list = factory.SubFactory(ListFactory)
-    view = factory.SubFactory(ViewFactory)
+    view_type = ViewType.TABLE.value
     is_active = True
-    applied_by = factory.SubFactory(UserFactory)
+    created_by = factory.SubFactory(UserFactory)
 
 
 class FieldFactory(DjangoModelFactory):

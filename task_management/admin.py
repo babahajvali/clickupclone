@@ -4,7 +4,7 @@ from task_management.models import (
     User, Account, Workspace, WorkspaceMember,
     Space, SpacePermission, Folder, FolderPermission,
     List, ListPermission, Task, TaskAssignee,
-    Template, Field, TaskFieldValue, View, ListView
+    Template, Field, TaskFieldValue, ListView
 )
 from task_management.models.user import PasswordResetToken
 
@@ -166,22 +166,13 @@ class TaskFieldValueAdmin(admin.ModelAdmin):
     raw_id_fields = ('field', 'task', 'created_by')
 
 
-@admin.register(View)
-class ViewAdmin(admin.ModelAdmin):
-    list_display = ('name', 'view_id', 'view_type', 'created_by', 'created_at')
-    list_filter = ('view_type', 'created_at')
-    search_fields = ('name', 'description')
-    readonly_fields = ('view_id', 'created_at', 'updated_at')
-    raw_id_fields = ('created_by',)
-
-
 @admin.register(ListView)
 class ListViewAdmin(admin.ModelAdmin):
-    list_display = ('list', 'view', 'is_active', 'applied_by', 'created_at')
-    list_filter = ('is_active', 'created_at')
-    search_fields = ('list__name', 'view__name')
+    list_display = ('list', 'view_type', 'is_active', 'created_by', 'created_at')
+    list_filter = ('view_type', 'is_active', 'created_at')
+    search_fields = ('list__name', 'view_type')
     readonly_fields = ('created_at',)
-    raw_id_fields = ('list', 'view', 'applied_by')
+    raw_id_fields = ('list', 'created_by')
 
 
 @admin.register(PasswordResetToken)

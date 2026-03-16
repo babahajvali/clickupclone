@@ -163,16 +163,8 @@ class FieldsType(graphene.ObjectType):
     fields = graphene.List(FieldType)
 
 
-class ViewType(graphene.ObjectType):
-    view_id = graphene.String(required=True)
-    name = graphene.String(required=True)
-    description = graphene.String(required=True)
-    view_type = graphene.String(required=True)
-    created_by = graphene.String(required=True)
-
-
 class ViewsType(graphene.ObjectType):
-    views = graphene.List(ViewType)
+    views = graphene.List(graphene.String, required=True)
 
 
 class UserSpacePermissionType(graphene.ObjectType):
@@ -204,9 +196,10 @@ class UserListPermissionType(graphene.ObjectType):
 
 class ListViewType(graphene.ObjectType):
     id = graphene.Int(required=True)
+    view_name = graphene.String(required=True)
     list_id = graphene.String(required=True)
-    view_id = graphene.String(required=True)
-    applied_by = graphene.String(required=True)
+    view_type = graphene.String(required=True)
+    created_by = graphene.String(required=True)
     is_active = graphene.Boolean(required=True)
 
 

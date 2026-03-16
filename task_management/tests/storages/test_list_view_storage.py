@@ -1,9 +1,10 @@
 import pytest
 
 from task_management.exceptions.enums import ViewType
+from task_management.interactors.dtos import CreateListViewDTO
 from task_management.storages.view_storage import ViewStorage
 from task_management.tests.factories.storage_factory import ListViewFactory, \
-    ListFactory, ViewFactory, UserFactory
+    ListFactory, UserFactory
 
 
 class TestListViewStorage:
@@ -12,17 +13,20 @@ class TestListViewStorage:
     def test_apply_view_for_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        view_id = "12345678-1234-5678-1234-567812345679"
         user_id = "12345678-1234-5678-1234-567812345680"
         ListFactory(list_id=list_id)
-        ViewFactory(view_id=view_id)
         UserFactory(user_id=user_id)
         storage = ViewStorage()
 
+        create_dto = CreateListViewDTO(
+            view_name="Table View",
+            list_id=list_id,
+            view_type=ViewType.TABLE,
+            created_by=user_id
+        )
+
         # Act
-        result = storage.create_list_view(list_id=str(list_id),
-                                          view_id=str(view_id),
-                                          user_id=str(user_id))
+        result = storage.create_list_view(create_list_view_dto=create_dto)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -32,18 +36,16 @@ class TestListViewStorage:
     def test_remove_view_for_list_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        view_id = "12345678-1234-5678-1234-567812345679"
         user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
-        view = ViewFactory(view_id=view_id)
         user = UserFactory(user_id=user_id)
-        ListViewFactory(list=list_obj, view=view, applied_by=user,
-                        is_active=True)
+        list_view = ListViewFactory(list=list_obj,
+                                    view_type=ViewType.TABLE.value,
+                                    created_by=user, is_active=True)
         storage = ViewStorage()
 
         # Act
-        result = storage.remove_list_view(view_id=str(view_id),
-                                          list_id=str(list_id))
+        result = storage.remove_list_view(list_view_id=list_view.id)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -53,21 +55,15 @@ class TestListViewStorage:
     def test_get_list_views_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        view_id1 = "12345678-1234-5678-1234-567812345679"
-        view_id2 = "12345678-1234-5678-1234-567812345680"
-        view_id3 = "12345678-1234-5678-1234-567812345681"
         user_id = "12345678-1234-5678-1234-567812345680"
         list_obj = ListFactory(list_id=list_id)
-        view1 = ViewFactory(view_id=view_id1, view_type=ViewType.TABLE.value)
-        view2 = ViewFactory(view_id=view_id2, view_type=ViewType.GANTT.value)
-        view3 = ViewFactory(view_id=view_id3)
         user = UserFactory(user_id=user_id)
-        ListViewFactory(list=list_obj, view=view1, applied_by=user,
-                        is_active=True)
-        ListViewFactory(list=list_obj, view=view2, applied_by=user,
-                        is_active=True)
-        ListViewFactory(list=list_obj, view=view3, applied_by=user,
-                        is_active=False)
+        ListViewFactory(list=list_obj, view_type=ViewType.TABLE.value,
+                        created_by=user, is_active=True)
+        ListViewFactory(list=list_obj, view_type=ViewType.BOARD.value,
+                        created_by=user, is_active=True)
+        ListViewFactory(list=list_obj, view_type=ViewType.CALENDAR.value,
+                        created_by=user, is_active=False)
         storage = ViewStorage()
 
         # Act
@@ -93,16 +89,15 @@ class TestListViewStorage:
     def test_is_list_view_exist_success(self, snapshot):
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
-        view_id = "12345678-1234-5678-1234-567812345679"
         list_obj = ListFactory(list_id=list_id)
-        view = ViewFactory(view_id=view_id)
         user = UserFactory()
-        ListViewFactory(list=list_obj, view=view, applied_by=user)
+        list_view = ListViewFactory(list=list_obj,
+                                    view_type=ViewType.TABLE.value,
+                                    created_by=user)
         storage = ViewStorage()
 
         # Act
-        result = storage.is_list_view_exist(list_id=str(list_id),
-                                            view_id=str(view_id))
+        result = storage.is_list_view_exist(list_view_id=list_view.id)
 
         # Assert
         snapshot.assert_match(repr(result),
@@ -116,9 +111,8 @@ class TestListViewStorage:
         storage = ViewStorage()
 
         # Act
-        result = storage.is_list_view_exist(list_id=str(list_id),
-                                            view_id=str(view_id))
+        result = storage.is_list_view_exist(list_view_id=1)
 
         # Assert
-        snapshot.assert_match(repr(result),
-                              "test_is_list_view_exist_failure.txt")
+        snapshot.assert_match(
+            repr(result), "test_is_list_view_exist_failure.txt")

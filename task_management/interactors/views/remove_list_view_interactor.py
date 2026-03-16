@@ -17,20 +17,22 @@ class RemoveListViewInteractor(WorkspaceValidationMixin):
         self.workspace_storage = workspace_storage
 
     def remove_view_for_list(
-            self, view_id: str, list_id: str, user_id: str) -> ListViewDTO:
-        self._check_list_view_exist(list_id=list_id, view_id=view_id)
+            self, list_view_id: int, user_id: str) -> ListViewDTO:
+        self._check_list_view_exist(list_view_id=list_view_id)
+        list_view_dto = self.view_storage.get_list_view_by_id(
+            list_view_id=list_view_id)
         self._check_user_has_edit_access_to_list(
-            user_id=user_id, list_id=list_id)
+            user_id=user_id, list_id=list_view_dto.list_id)
 
         return self.view_storage.remove_list_view(
-            view_id=view_id, list_id=list_id)
+            list_view_id=list_view_id)
 
-    def _check_list_view_exist(self, list_id: str, view_id: str) -> None:
+    def _check_list_view_exist(self, list_view_id: int) -> None:
         list_view_dto = self.view_storage.is_list_view_exist(
-            list_id=list_id, view_id=view_id)
+            list_view_id=list_view_id)
 
         if not list_view_dto:
-            raise ListViewNotFound(view_id=view_id, list_id=list_id)
+            raise ListViewNotFound(list_view_id=list_view_id)
 
     def _check_user_has_edit_access_to_list(
             self, list_id: str, user_id: str) -> None:

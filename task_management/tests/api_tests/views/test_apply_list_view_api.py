@@ -2,14 +2,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from task_management.exceptions.enums import Role
+from task_management.exceptions.enums import Role, ViewType
 from task_management.interactors.dtos import ListViewDTO, WorkspaceMemberDTO
 from task_management.tests.api_tests.views import BaseApplyListView
 
 LIST_ID = "12345678-1234-5678-1234-567812345678"
-VIEW_ID = "12345678-1234-5678-1234-567812345679"
+VIEW_TYPE = "TABLE"
+VIEW_NAME = "Table"
 MISSING_LIST_ID = "12345678-1234-5678-1234-567812345680"
-MISSING_VIEW_ID = "12345678-1234-5678-1234-567812345681"
+INVALID_VIEW_TYPE = "INVALID"
 
 
 def get_list_view_mock(mocker):
@@ -20,7 +21,7 @@ def get_list_view_mock(mocker):
 
 def check_view_exists_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.is_view_exists"
+        "task_management.interactors.views.create_list_view_interactor.CreateListViewInteractor.check_view_exist"
     )
 
 
@@ -52,9 +53,10 @@ def apply_view_mock(mocker):
 def make_list_view_dto() -> ListViewDTO:
     return ListViewDTO(
         id=1,
+        view_name="Table",
         list_id=LIST_ID,
-        view_id=VIEW_ID,
-        applied_by="user_1",
+        view_type=ViewType.TABLE,
+        created_by="user_1",
         is_active=True,
     )
 
@@ -79,12 +81,13 @@ class TestApplyListViewAPI(BaseApplyListView):
             "List", (), {"is_deleted": False}
         )()
         get_workspace_id_by_list_id_mock(mocker).return_value = "workspace_1"
-        get_workspace_member_mock(mocker).return_value = make_workspace_member_dto()
+        get_workspace_member_mock(
+            mocker).return_value = make_workspace_member_dto()
         apply_view_mock(mocker).return_value = make_list_view_dto()
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -96,7 +99,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": MISSING_LIST_ID, "viewId": VIEW_ID}},
+            variables={
+                "params": {"listId": MISSING_LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -110,7 +114,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": MISSING_VIEW_ID}},
+            variables={
+                "params": {"listId": LIST_ID, "viewType": INVALID_VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -124,7 +129,7 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -136,13 +141,14 @@ class TestApplyListViewAPI(BaseApplyListView):
             "List", (), {"is_deleted": False}
         )()
         get_workspace_id_by_list_id_mock(mocker).return_value = "workspace_1"
-        get_workspace_member_mock(mocker).return_value = make_workspace_member_dto(
+        get_workspace_member_mock(
+            mocker).return_value = make_workspace_member_dto(
             role=Role.GUEST
         )
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -158,7 +164,7 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewId": VIEW_ID}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )

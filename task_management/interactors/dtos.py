@@ -164,30 +164,6 @@ class ListDTO:
 
 
 @dataclass
-class CreateViewDTO:
-    name: str
-    description: str
-    view_type: ViewType
-    created_by: str
-
-
-@dataclass
-class UpdateViewDTO:
-    view_id: str
-    name: str
-    description: str
-
-
-@dataclass
-class ViewDTO:
-    view_id: str
-    name: str
-    description: str
-    view_type: ViewType
-    created_by: str
-
-
-@dataclass
 class CreateFolderDTO:
     name: str
     description: str
@@ -216,19 +192,29 @@ class FolderDTO:
 
 
 @dataclass
+class CreateListViewDTO:
+    view_name: str
+    list_id: str
+    view_type: ViewType
+    created_by: str
+
+
+@dataclass
 class ListViewDTO:
     id: int
+    view_name: str
     list_id: str
-    view_id: str
-    applied_by: str
+    view_type: ViewType
+    created_by: str
     is_active: bool
 
 
 @dataclass
 class RemoveListViewDTO:
     id: int
+    view_name: str
     list_id: str
-    view_id: str
+    view_type: ViewType
     removed_by: str
     is_active: bool
 

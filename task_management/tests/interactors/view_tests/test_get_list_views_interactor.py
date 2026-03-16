@@ -4,6 +4,7 @@ import pytest
 
 from task_management.exceptions.custom_exceptions import ListIsDeleted, \
     ListNotFound
+from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
@@ -32,16 +33,18 @@ class TestGetListViewsInteractor:
         expected = [
             ListViewDTO(
                 id=2,
+                view_name="Table",
                 list_id="list_1",
-                view_id="view_1",
-                applied_by="user_1",
+                view_type=ViewType.TABLE,
+                created_by="user_1",
                 is_active=True,
             ),
             ListViewDTO(
                 id=3,
+                view_name="Board",
                 list_id="list_1",
-                view_id="view_2",
-                applied_by="user_2",
+                view_type=ViewType.BOARD,
+                created_by="user_2",
                 is_active=True,
             ),
         ]

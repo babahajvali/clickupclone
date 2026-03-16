@@ -1,1 +1,1 @@
-None
+ListViewDTO(id=1, view_name='Table', list_id=UUID('12345678-1234-5678-1234-567812345678'), view_type='TABLE', created_by=UUID('12345678-1234-5678-1234-567812345680'), is_active=False)

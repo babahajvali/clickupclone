@@ -3,9 +3,10 @@ from unittest.mock import create_autospec
 import pytest
 
 from task_management.exceptions.custom_exceptions import ModificationNotAllowed
-from task_management.exceptions.enums import Role
-from task_management.interactors.dtos import RemoveListViewDTO, WorkspaceMemberDTO
-from task_management.interactors.storage_interfaces import WorkspaceStorageInterface
+from task_management.exceptions.enums import Role, ViewType
+from task_management.interactors.dtos import ListViewDTO, WorkspaceMemberDTO
+from task_management.interactors.storage_interfaces import \
+    WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
 )
@@ -45,16 +46,17 @@ class TestRemoveListViewInteractor:
         self.workspace_storage.get_workspace_member.return_value = make_permission(
             Role.ADMIN
         )
-        expected = RemoveListViewDTO(
+        expected = ListViewDTO(
             id=1,
+            view_name="Table",
             list_id="list_id",
-            view_id="view_id",
-            removed_by="user_id",
+            view_type=ViewType.TABLE,
+            created_by="user_id",
             is_active=False,
         )
         self.view_storage.remove_list_view.return_value = expected
 
-        result = self.interactor.remove_view_for_list("view_id", "list_id", "user_id")
+        result = self.interactor.remove_view_for_list(1, "user_id")
 
         assert result == expected
 
@@ -65,4 +67,4 @@ class TestRemoveListViewInteractor:
         )
 
         with pytest.raises(ModificationNotAllowed):
-            self.interactor.remove_view_for_list("view_id", "list_id", "user_id")
+            self.interactor.remove_view_for_list(1, "user_id")

@@ -277,8 +277,8 @@ class ViewTypeNotFound(Exception):
 
 
 class ViewNotFound(Exception):
-    def __init__(self, view_id: str):
-        self.view_id = view_id
+    def __init__(self, view_type: str):
+        self.view_type = view_type
 
 
 class WorkspaceNotFound(Exception):
@@ -453,9 +453,8 @@ class UserNotAccountOwner(Exception):
 
 
 class ListViewNotFound(Exception):
-    def __init__(self, list_id: str, view_id: str):
-        self.list_id = list_id
-        self.view_id = view_id
+    def __init__(self, list_view_id: int):
+        self.list_view_id = list_view_id
 
 
 class InvalidResetToken(Exception):
