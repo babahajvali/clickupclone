@@ -1,19 +1,17 @@
 {
-  "errors": [
-    {
-      "message": "ListViewType.__init__() got an unexpected keyword argument 'view_id'",
-      "locations": [
+  "data": {
+    "getListViews": {
+      "__typename": "ListViewsType",
+      "listViews": [
         {
-          "line": 3,
-          "column": 7
+          "id": 1,
+          "viewName": "Table",
+          "listId": "12345678-1234-5678-1234-567812345678",
+          "viewType": "ViewType.TABLE",
+          "createdBy": "user_1",
+          "isActive": true
         }
-      ],
-      "path": [
-        "getListViews"
       ]
     }
-  ],
-  "data": {
-    "getListViews": null
   }
 }

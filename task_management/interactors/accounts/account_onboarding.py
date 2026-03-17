@@ -50,8 +50,8 @@ class AccountOnboardingHandler:
 
         return account_dto
 
-    def _create_account(self, name: str, created_by: str,
-                        description: Optional[str]):
+    def _create_account(
+            self, name: str, created_by: str, description: Optional[str]):
         """ First create the accounts interactor
         and the create accounts based on input data
         """
@@ -62,8 +62,8 @@ class AccountOnboardingHandler:
         return account_interactor.create_account(
             name=name, created_by=created_by, description=description)
 
-    def _create_default_workspace(self, owner_id: str, account_id: str,
-                                  name: str):
+    def _create_default_workspace(
+            self, owner_id: str, account_id: str, name: str):
         """ Create default workspaces
         create the workspaces interactor
         then create the workspaces

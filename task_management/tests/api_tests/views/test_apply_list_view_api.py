@@ -21,7 +21,7 @@ def get_list_view_mock(mocker):
 
 def check_view_exists_mock(mocker):
     return mocker.patch(
-        "task_management.interactors.views.create_list_view_interactor.CreateListViewInteractor.check_view_exist"
+        "task_management.interactors.views.create_list_view_interactor.CreateListViewInteractor.check_view_type"
     )
 
 
@@ -87,7 +87,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE,
+                                  "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -100,7 +101,8 @@ class TestApplyListViewAPI(BaseApplyListView):
         self.execute_schema(
             query=self.QUERY,
             variables={
-                "params": {"listId": MISSING_LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
+                "params": {"listId": MISSING_LIST_ID, "viewType": VIEW_TYPE,
+                           "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -115,7 +117,8 @@ class TestApplyListViewAPI(BaseApplyListView):
         self.execute_schema(
             query=self.QUERY,
             variables={
-                "params": {"listId": LIST_ID, "viewType": INVALID_VIEW_TYPE, "viewName": VIEW_NAME}},
+                "params": {"listId": LIST_ID, "viewType": INVALID_VIEW_TYPE,
+                           "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -129,7 +132,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE,
+                                  "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -148,7 +152,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE,
+                                  "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
@@ -164,7 +169,8 @@ class TestApplyListViewAPI(BaseApplyListView):
 
         self.execute_schema(
             query=self.QUERY,
-            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE, "viewName": VIEW_NAME}},
+            variables={"params": {"listId": LIST_ID, "viewType": VIEW_TYPE,
+                                  "viewName": VIEW_NAME}},
             snapshot=snapshot,
             context=SimpleNamespace(user_id="user_1"),
         )
