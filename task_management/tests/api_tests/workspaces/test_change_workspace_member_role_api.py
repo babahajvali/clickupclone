@@ -30,7 +30,7 @@ def get_user_mock(mocker):
 def update_member_role_mock(mocker):
     return mocker.patch(
         "task_management.storages.workspace_storage."
-        "WorkspaceStorage.update_the_member_role"
+        "WorkspaceStorage.update_workspace_member_role"
     )
 
 
@@ -45,7 +45,8 @@ def make_workspace_dto(is_deleted=False) -> WorkspaceDTO:
     )
 
 
-def make_workspace_member_dto(role=Role.ADMIN, user_id="user_2") -> WorkspaceMemberDTO:
+def make_workspace_member_dto(role=Role.ADMIN,
+                              user_id="user_2") -> WorkspaceMemberDTO:
     return WorkspaceMemberDTO(
         id=1,
         workspace_id="workspace_1",
@@ -69,7 +70,8 @@ class TestChangeWorkspaceMemberRoleAPI(BaseChangeWorkspaceMemberRole):
             make_workspace_member_dto(role=Role.ADMIN),
             make_workspace_member_dto(role=Role.ADMIN, user_id="owner_1"),
         ]
-        update_member_role_mock(mocker).return_value = make_workspace_member_dto(
+        update_member_role_mock(
+            mocker).return_value = make_workspace_member_dto(
             role=Role.MEMBER
         )
 
@@ -107,7 +109,8 @@ class TestChangeWorkspaceMemberRoleAPI(BaseChangeWorkspaceMemberRole):
 
     def test_change_workspace_member_role_workspace_deleted(
             self, snapshot, mocker):
-        get_workspace_mock(mocker).return_value = make_workspace_dto(is_deleted=True)
+        get_workspace_mock(mocker).return_value = make_workspace_dto(
+            is_deleted=True)
 
         self.execute_schema(
             query=self.QUERY,
