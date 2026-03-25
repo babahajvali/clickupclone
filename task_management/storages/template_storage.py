@@ -19,8 +19,11 @@ class TemplateStorage(TemplateStorageInterface):
             created_by=template_obj.list.created_by_id,
         )
 
-    def get_template(self, template_id: str) -> TemplateDTO:
-        template_obj = Template.objects.get(template_id=template_id)
+    def get_template(self, template_id: str) -> TemplateDTO | None:
+        template_obj = Template.objects.filter(template_id=template_id).first()
+
+        if template_obj is None:
+            return None
 
         return self._convert_template_to_dto(template_obj=template_obj)
 

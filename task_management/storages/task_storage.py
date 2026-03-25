@@ -19,8 +19,8 @@ class TaskStorage(TaskStorageInterface):
             description=task_data.description,
             order=task_data.order,
             is_deleted=task_data.is_deleted,
-            created_by=task_data.created_by.user_id,
-            list_id=task_data.list.list_id,
+            created_by=task_data.created_by_id,
+            list_id=task_data.list_id,
         )
 
     @staticmethod
@@ -28,10 +28,10 @@ class TaskStorage(TaskStorageInterface):
             assignee_data: TaskAssignee) -> TaskAssigneeDTO:
         return TaskAssigneeDTO(
             assign_id=assignee_data.assign_id,
-            task_id=assignee_data.task.task_id,
-            user_id=assignee_data.user.user_id,
+            task_id=assignee_data.task_id,
+            user_id=assignee_data.user_id,
             is_active=assignee_data.is_active,
-            assigned_by=assignee_data.assigned_by.user_id,
+            assigned_by=assignee_data.assigned_by_id,
         )
 
     def create_task(self, task_data: CreateTaskDTO, order: int) -> TaskDTO:
@@ -53,19 +53,17 @@ class TaskStorage(TaskStorageInterface):
             self, task_id: str, title: Optional[str],
             description: Optional[str]) -> TaskDTO:
 
-        task_data = Task.objects.get(task_id=task_id)
+        task_properties = {}
 
-        is_title_provided = title is not None
-        if is_title_provided:
-            task_data.title = title
+        if title is not None:
+            task_properties['title'] = title
 
-        is_description_provided = description is not None
-        if is_description_provided:
-            task_data.description = description
+        if description is not None:
+            task_properties['description'] = description
 
-        task_data.save()
+        Task.objects.filter(task_id=task_id).update(**task_properties)
 
-        return self._convert_task_to_dto(task_data=task_data)
+        return self.get_task(task_id=task_id)
 
     def get_task(self, task_id: str) -> TaskDTO | None:
         task_data = Task.objects.filter(task_id=task_id).first()
@@ -105,15 +103,14 @@ class TaskStorage(TaskStorageInterface):
                 list_tasks]
 
     def delete_task(self, task_id: str) -> TaskDTO:
-        task_data = Task.objects.get(task_id=task_id)
-        task_data.is_deleted = True
-        task_data.save()
-        current_order = task_data.order
-        Task.objects.filter(
-            list_id=task_data.list.list_id, is_deleted=False,
-            order__gt=current_order).update(order=F("order") - 1)
+        Task.objects.filter(task_id=task_id).update(is_deleted=True)
 
-        return self._convert_task_to_dto(task_data=task_data)
+        task_dto = self.get_task(task_id=task_id)
+        Task.objects.filter(
+            list_id=task_dto.list_id, is_deleted=False,
+            order__gt=task_dto.order).update(order=F("order") - 1)
+
+        return task_dto
 
     def task_filter_data(self, filter_data: FilterDTO):
         active_tasks = Task.objects.filter(
@@ -144,11 +141,9 @@ class TaskStorage(TaskStorageInterface):
 
     def reorder_task(
             self, list_id: str, new_order: int, task_id: str) -> TaskDTO:
-        task_data = Task.objects.get(task_id=task_id)
-        task_data.order = new_order
-        task_data.save()
+        Task.objects.filter(task_id=task_id).update(order=new_order)
 
-        return self._convert_task_to_dto(task_data=task_data)
+        return self.get_task(task_id=task_id)
 
     def shift_tasks_down(
             self, list_id: str, current_order: int, new_order: int):
@@ -180,11 +175,10 @@ class TaskStorage(TaskStorageInterface):
             assignee_data=assignment_data)
 
     def remove_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
-        assignee_data.is_active = False
-        assignee_data.save(update_fields=["is_active"])
+        TaskAssignee.objects.filter(assign_id=assign_id).update(
+            is_active=False)
 
-        return self._convert_task_assignee_to_dto(assignee_data=assignee_data)
+        return self.get_task_assignee(assign_id=assign_id)
 
     def get_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
         assignee_data = TaskAssignee.objects.filter(
@@ -235,11 +229,9 @@ class TaskStorage(TaskStorageInterface):
         return self._convert_task_assignee_to_dto(assignee_data=assignee_data)
 
     def reassign_task_assignee(self, assign_id: str) -> TaskAssigneeDTO:
-        assignee_data = TaskAssignee.objects.get(assign_id=assign_id)
-        assignee_data.is_active = True
-        assignee_data.save(update_fields=["is_active"])
+        TaskAssignee.objects.filter(assign_id=assign_id).update(is_active=True)
 
-        return self._convert_task_assignee_to_dto(assignee_data=assignee_data)
+        return self.get_task_assignee(assign_id=assign_id)
 
     def get_assignees_for_list_tasks(
             self, list_id: str) -> List[TaskAssigneeDTO]:
