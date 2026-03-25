@@ -137,11 +137,11 @@ class WorkspaceHandler:
 
     def change_permissions_for_user_in_transfer(
             self, workspace_id: str, user_id: str, new_user_id: str):
-        self.workspace_storage.update_the_member_role(
+        self.workspace_storage.update_workspace_member_role(
             workspace_id=workspace_id, user_id=new_user_id,
             role=Role.OWNER.value)
 
-        return self.workspace_storage.update_the_member_role(
+        return self.workspace_storage.update_workspace_member_role(
             workspace_id=workspace_id, user_id=user_id, role=Role.MEMBER.value)
 
     def handle_workspace_deletion(

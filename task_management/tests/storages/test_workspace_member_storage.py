@@ -127,9 +127,10 @@ class TestWorkspaceMemberStorage:
         storage = WorkspaceStorage()
 
         # Act
-        result = storage.update_the_member_role(workspace_id=str(workspace_id),
-                                                user_id=str(user_id),
-                                                role="ADMIN")
+        result = storage.update_workspace_member_role(
+            workspace_id=str(workspace_id),
+            user_id=str(user_id),
+            role="ADMIN")
 
         # Assert
         snapshot.assert_match(repr(result),

@@ -38,7 +38,7 @@ class ChangeWorkspaceMemberRoleInteractor(
             changed_by=changed_by,
         )
 
-        return self.workspace_storage.update_the_member_role(
+        return self.workspace_storage.update_workspace_member_role(
             workspace_id=workspace_id,
             user_id=user_id,
             role=role.value,

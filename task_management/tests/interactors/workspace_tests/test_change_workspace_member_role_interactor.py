@@ -76,7 +76,7 @@ class TestChangeWorkspaceMemberRoleInteractor:
             # for permission check (changed_by)
         ]
 
-        self.workspace_storage.update_the_member_role.return_value = expected
+        self.workspace_storage.update_workspace_member_role.return_value = expected
 
         result = self.interactor.change_workspace_member_role(
             workspace_id="workspace123",

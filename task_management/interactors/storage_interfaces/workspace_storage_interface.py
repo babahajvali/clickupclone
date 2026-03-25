@@ -12,10 +12,6 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def is_workspace_exists(self, workspace_id: str) -> bool:
-        pass
-
-    @abstractmethod
     def create_workspace(
             self, create_workspace_dto: CreateWorkspaceDTO) -> WorkspaceDTO:
         pass
@@ -73,7 +69,7 @@ class WorkspaceStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def update_the_member_role(
+    def update_workspace_member_role(
             self, workspace_id: str, user_id: str, role: str) \
             -> WorkspaceMemberDTO:
         # change the member role
@@ -87,12 +83,6 @@ class WorkspaceStorageInterface(ABC):
     @abstractmethod
     def get_active_user_workspaces(
             self, user_id: str) -> list[WorkspaceMemberDTO]:
-        pass
-
-    @abstractmethod
-    def re_add_member_to_workspace(
-            self, workspace_member_data: CreateWorkspaceMemberDTO) -> \
-            WorkspaceMemberDTO:
         pass
 
     @abstractmethod
