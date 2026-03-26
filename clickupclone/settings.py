@@ -33,12 +33,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     'corsheaders',
     'task_management',
     "graphene_django",
@@ -181,3 +183,9 @@ CORS_ALLOW_HEADERS = [
 JWT_SECRET_KEY = SECRET_KEY
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
