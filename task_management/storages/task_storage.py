@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from django.db.models import F
+from django.db.models import F, Q
 
 from task_management.exceptions.enums import ListEntityType
 from task_management.interactors.dtos import CreateTaskDTO, TaskDTO, \
@@ -113,23 +113,53 @@ class TaskStorage(TaskStorageInterface):
         return task_dto
 
     def task_filter_data(self, filter_data: FilterDTO):
+        # AND case format
+
+        # active_tasks = Task.objects.filter(
+        #     list_id=filter_data.list_id, is_deleted=False).prefetch_related(
+        #     "task_assignees", "task_field_values",
+        # )
+        #
+        # if filter_data.assignees:
+        #     active_tasks = active_tasks.filter(
+        #         task_assignees__user_id__in=filter_data.assignees,
+        #         task_assignees__is_active=True
+        #     )
+        #
+        # if filter_data.field_filters:
+        #     for field_id, values in filter_data.field_filters.items():
+        #         active_tasks = active_tasks.filter(
+        #             task_field_values__field_id=field_id,
+        #             task_field_values__value__in=values
+        #         )
+        #
+        # active_tasks = active_tasks.distinct().order_by('order')
+        #
+        # return active_tasks[
+        #     filter_data.offset - 1: filter_data.offset - 1 + filter_data.limit]
+
         active_tasks = Task.objects.filter(
             list_id=filter_data.list_id, is_deleted=False).prefetch_related(
             "task_assignees", "task_field_values",
         )
 
+        q = Q()
+
         if filter_data.assignees:
-            active_tasks = active_tasks.filter(
+            q |= Q(
                 task_assignees__user_id__in=filter_data.assignees,
                 task_assignees__is_active=True
             )
 
         if filter_data.field_filters:
             for field_id, values in filter_data.field_filters.items():
-                active_tasks = active_tasks.filter(
+                q |= Q(
                     task_field_values__field_id=field_id,
                     task_field_values__value__in=values
                 )
+
+        if q:
+            active_tasks = active_tasks.filter(q)
 
         active_tasks = active_tasks.distinct().order_by('order')
 
