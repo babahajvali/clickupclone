@@ -12,7 +12,7 @@ from task_management.graphql.types.types import WorkspaceType
 from task_management.interactors.workspaces.workspace_handler import \
     WorkspaceHandler
 from task_management.storages import WorkspaceStorage, UserStorage, \
-    AccountStorage, SpaceStorage, FolderStorage, ListStorage, ViewStorage, \
+    AccountStorage, SpaceStorage, FolderStorage, ListStorage, ListViewStorage, \
     TemplateStorage, FieldStorage
 
 
@@ -30,7 +30,7 @@ class TransferWorkspaceMutation(graphene.Mutation):
         space_storage = SpaceStorage()
         folder_storage = FolderStorage()
         list_storage = ListStorage()
-        view_storage = ViewStorage()
+        view_storage = ListViewStorage()
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
 

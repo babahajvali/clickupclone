@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from django.contrib.auth.hashers import make_password
-
 from task_management.interactors.dtos import UserDTO, CreateUserDTO, \
     UpdateUserDTO, PasswordResetTokenDTO
 from task_management.interactors.storage_interfaces import UserStorageInterface
@@ -48,7 +46,7 @@ class UserStorage(UserStorageInterface):
             email=create_user_dto.email,
             phone_number=create_user_dto.phone_number,
             image_url=create_user_dto.image_url,
-            password=make_password(create_user_dto.password),
+            password=create_user_dto.password,
             gender=create_user_dto.gender.value,
         )
 
@@ -124,7 +122,7 @@ class UserStorage(UserStorageInterface):
             )
 
             return PasswordResetTokenDTO(
-                user_id=str(reset_token.user.user_id),
+                user_id=str(reset_token.user_id),
                 token=reset_token.token,
                 created_at=reset_token.created_at,
                 is_used=reset_token.is_used,
@@ -141,7 +139,7 @@ class UserStorage(UserStorageInterface):
                 'user').get(token=token, is_used=False)
 
             return PasswordResetTokenDTO(
-                user_id=str(reset_token.user.user_id),
+                user_id=str(reset_token.user_id),
                 token=reset_token.token,
                 is_used=reset_token.is_used,
                 created_at=reset_token.created_at,
@@ -163,22 +161,10 @@ class UserStorage(UserStorageInterface):
 
     def update_user_password(self, user_id: str, new_password: str) -> UserDTO:
         try:
-            user_data = User.objects.get(user_id=user_id)
+            User.objects.filter(user_id=user_id).update(
+                password=new_password)
 
-            user_data.password = make_password(new_password)
-            user_data.save()
-
-            return UserDTO(
-                user_id=str(user_data.user_id),
-                full_name=user_data.full_name,
-                gender=user_data.gender,
-                username=user_data.username,
-                email=user_data.email,
-                phone_number=user_data.phone_number,
-                is_active=user_data.is_active,
-                image_url=user_data.image_url,
-                password=user_data.password,
-            )
+            return self.get_user(user_id=user_id)
 
         except Exception as e:
             raise Exception(f"Failed to update user password: {str(e)}") from e

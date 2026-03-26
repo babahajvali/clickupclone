@@ -15,7 +15,7 @@ INVALID_VIEW_TYPE = "INVALID"
 
 def get_list_view_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.get_list_view"
+        "task_management.storages.list_view_storage.ListViewStorage.get_list_view"
     )
 
 
@@ -46,7 +46,7 @@ def get_workspace_member_mock(mocker):
 
 def apply_view_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.create_list_view"
+        "task_management.storages.list_view_storage.ListViewStorage.create_list_view"
     )
 
 

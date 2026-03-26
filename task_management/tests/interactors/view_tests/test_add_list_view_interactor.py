@@ -16,8 +16,8 @@ from task_management.interactors.storage_interfaces import \
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
 )
-from task_management.interactors.storage_interfaces.view_storage_interface import (
-    ViewStorageInterface,
+from task_management.interactors.storage_interfaces.list_view_storage_interface import (
+    ListViewStorageInterface,
 )
 from task_management.interactors.views.create_list_view_interactor import (
     CreateListViewInteractor,
@@ -38,7 +38,7 @@ def make_permission(role: Role) -> WorkspaceMemberDTO:
 class TestAddListViewInteractor:
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.view_storage = create_autospec(ViewStorageInterface)
+        self.view_storage = create_autospec(ListViewStorageInterface)
         self.workspace_storage = create_autospec(WorkspaceStorageInterface)
 
         self.interactor = CreateListViewInteractor(

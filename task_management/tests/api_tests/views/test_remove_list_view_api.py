@@ -13,7 +13,7 @@ MISSING_LIST_VIEW_ID = 999
 
 def is_list_view_exist_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.is_list_view_exist"
+        "task_management.storages.list_view_storage.ListViewStorage.is_list_view_exist"
     )
 
 
@@ -32,7 +32,7 @@ def get_workspace_id_by_list_id_mock(mocker):
 
 def remove_list_view_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.remove_list_view"
+        "task_management.storages.list_view_storage.ListViewStorage.remove_list_view"
     )
 
 

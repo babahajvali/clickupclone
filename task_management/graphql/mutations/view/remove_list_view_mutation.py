@@ -9,7 +9,8 @@ from task_management.graphql.types.response_types import RemoveListViewResponse
 from task_management.graphql.types.types import ListViewType
 from task_management.interactors.views.remove_list_view_interactor import \
     RemoveListViewInteractor
-from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
+from task_management.storages import ListStorage, ListViewStorage, \
+    WorkspaceStorage
 
 
 class RemoveListViewMutation(graphene.Mutation):
@@ -21,7 +22,7 @@ class RemoveListViewMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        view_storage = ViewStorage()
+        view_storage = ListViewStorage()
         workspace_storage = WorkspaceStorage()
 
         interactor = RemoveListViewInteractor(

@@ -9,8 +9,8 @@ from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
 )
-from task_management.interactors.storage_interfaces.view_storage_interface import (
-    ViewStorageInterface,
+from task_management.interactors.storage_interfaces.list_view_storage_interface import (
+    ListViewStorageInterface,
 )
 from task_management.interactors.views.get_list_views_interactor import (
     GetListViewsInteractor,
@@ -20,7 +20,7 @@ from task_management.interactors.views.get_list_views_interactor import (
 class TestGetListViewsInteractor:
     def setup_method(self):
         self.list_storage = create_autospec(ListStorageInterface)
-        self.view_storage = create_autospec(ViewStorageInterface)
+        self.view_storage = create_autospec(ListViewStorageInterface)
         self.interactor = GetListViewsInteractor(
             list_storage=self.list_storage,
             view_storage=self.view_storage,

@@ -2,14 +2,14 @@ from typing import Optional
 
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces import \
-    ViewStorageInterface, ListStorageInterface, WorkspaceStorageInterface
+    ListViewStorageInterface, ListStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import ViewValidationMixin, \
     WorkspaceValidationMixin
 
 
 class UpdateListViewInteractor(ViewValidationMixin, WorkspaceValidationMixin):
 
-    def __init__(self, view_storage: ViewStorageInterface,
+    def __init__(self, view_storage: ListViewStorageInterface,
                  list_storage: ListStorageInterface,
                  workspace_storage: WorkspaceStorageInterface):
         super().__init__(

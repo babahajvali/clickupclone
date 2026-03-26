@@ -1,10 +1,13 @@
+from task_management.interactors.storage_interfaces.account_storage_interface import \
+    AccountStorageInterface
 from task_management.interactors.storage_interfaces.field_storage_interface import \
     FieldStorageInterface
 from task_management.interactors.storage_interfaces.folder_storage_interface import \
     FolderStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import \
     ListStorageInterface
-
+from task_management.interactors.storage_interfaces.list_view_storage_interface import \
+    ListViewStorageInterface
 from task_management.interactors.storage_interfaces.space_storage_interface import \
     SpaceStorageInterface
 from task_management.interactors.storage_interfaces.task_storage_interface import \
@@ -13,13 +16,8 @@ from task_management.interactors.storage_interfaces.template_storage_interface i
     TemplateStorageInterface
 from task_management.interactors.storage_interfaces.user_storage_interface import \
     UserStorageInterface
-from task_management.interactors.storage_interfaces.view_storage_interface import \
-    ViewStorageInterface
 from task_management.interactors.storage_interfaces.workspace_storage_interface import \
     WorkspaceStorageInterface
-
-from task_management.interactors.storage_interfaces.account_storage_interface import \
-    AccountStorageInterface
 
 __all__ = [
     "AccountStorageInterface",
@@ -31,5 +29,5 @@ __all__ = [
     "TaskStorageInterface",
     "FieldStorageInterface",
     "TemplateStorageInterface",
-    "ViewStorageInterface",
+    "ListViewStorageInterface",
 ]

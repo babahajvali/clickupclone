@@ -18,7 +18,7 @@ def get_list_mock(mocker):
 
 def get_list_views_mock(mocker):
     return mocker.patch(
-        "task_management.storages.view_storage.ViewStorage.get_list_views"
+        "task_management.storages.list_view_storage.ListViewStorage.get_list_views"
     )
 
 

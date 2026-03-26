@@ -2,7 +2,7 @@ import pytest
 
 from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import CreateListViewDTO
-from task_management.storages.view_storage import ViewStorage
+from task_management.storages.list_view_storage import ListViewStorage
 from task_management.tests.factories.storage_factory import ListViewFactory, \
     ListFactory, UserFactory
 
@@ -16,7 +16,7 @@ class TestListViewStorage:
         user_id = "12345678-1234-5678-1234-567812345680"
         ListFactory(list_id=list_id)
         UserFactory(user_id=user_id)
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         create_dto = CreateListViewDTO(
             view_name="Table View",
@@ -42,7 +42,7 @@ class TestListViewStorage:
         list_view = ListViewFactory(list=list_obj,
                                     view_type=ViewType.TABLE.value,
                                     created_by=user, is_active=True)
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         # Act
         result = storage.remove_list_view(list_view_id=list_view.id)
@@ -64,7 +64,7 @@ class TestListViewStorage:
                         created_by=user, is_active=True)
         ListViewFactory(list=list_obj, view_type=ViewType.CALENDAR.value,
                         created_by=user, is_active=False)
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         # Act
         result = storage.get_list_views(list_id=str(list_id))
@@ -77,7 +77,7 @@ class TestListViewStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         ListFactory(list_id=list_id)
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         # Act
         result = storage.get_list_views(list_id=str(list_id))
@@ -94,7 +94,7 @@ class TestListViewStorage:
         list_view = ListViewFactory(list=list_obj,
                                     view_type=ViewType.TABLE.value,
                                     created_by=user)
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         # Act
         result = storage.is_list_view_exist(list_view_id=list_view.id)
@@ -108,7 +108,7 @@ class TestListViewStorage:
         # Arrange
         list_id = "12345678-1234-5678-1234-567812345678"
         view_id = "12345678-1234-5678-1234-567812345679"
-        storage = ViewStorage()
+        storage = ListViewStorage()
 
         # Act
         result = storage.is_list_view_exist(list_view_id=1)

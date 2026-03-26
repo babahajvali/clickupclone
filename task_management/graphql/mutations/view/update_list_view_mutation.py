@@ -8,7 +8,8 @@ from task_management.graphql.types.response_types import UpdateListViewResponse
 from task_management.graphql.types.types import ListViewType
 from task_management.interactors.views.update_list_view_intercator import \
     UpdateListViewInteractor
-from task_management.storages import ListStorage, ViewStorage, WorkspaceStorage
+from task_management.storages import ListStorage, ListViewStorage, \
+    WorkspaceStorage
 
 
 class UpdateListViewMutation(graphene.Mutation):
@@ -20,7 +21,7 @@ class UpdateListViewMutation(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         list_storage = ListStorage()
-        view_storage = ViewStorage()
+        view_storage = ListViewStorage()
         workspace_storage = WorkspaceStorage()
 
         update_list_view_interactor = UpdateListViewInteractor(

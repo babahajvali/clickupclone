@@ -20,7 +20,7 @@ from task_management.interactors.storage_interfaces import (
     TemplateStorageInterface,
     FieldStorageInterface,
     WorkspaceStorageInterface,
-    ViewStorageInterface,
+    ListViewStorageInterface,
 )
 from task_management.interactors.templates.template_creation_handler import (
     TemplateCreationHandler,
@@ -36,7 +36,7 @@ class ListCreationHandler:
             template_storage: TemplateStorageInterface,
             field_storage: FieldStorageInterface,
             workspace_storage: WorkspaceStorageInterface,
-            view_storage: ViewStorageInterface):
+            view_storage: ListViewStorageInterface):
         self.list_storage = list_storage
         self.space_storage = space_storage
         self.folder_storage = folder_storage

@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import ListViewDTO
 from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, ViewStorageInterface, WorkspaceStorageInterface
+    ListStorageInterface, ListViewStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import WorkspaceValidationMixin, \
     ViewValidationMixin
 
@@ -9,7 +9,7 @@ class RemoveListViewInteractor(WorkspaceValidationMixin, ViewValidationMixin):
 
     def __init__(
             self, list_storage: ListStorageInterface,
-            view_storage: ViewStorageInterface,
+            view_storage: ListViewStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
         super().__init__(
             workspace_storage=workspace_storage,

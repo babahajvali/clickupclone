@@ -1,10 +1,11 @@
 from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO
-from task_management.interactors.storage_interfaces import ViewStorageInterface
+from task_management.interactors.storage_interfaces import \
+    ListViewStorageInterface
 
 from task_management.models import ListView
 
 
-class ViewStorage(ViewStorageInterface):
+class ListViewStorage(ListViewStorageInterface):
 
     @staticmethod
     def _convert_list_view_to_dto(list_view_obj: ListView) -> ListViewDTO:

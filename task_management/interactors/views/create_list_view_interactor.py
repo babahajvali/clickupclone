@@ -1,6 +1,6 @@
 from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO
 from task_management.interactors.storage_interfaces import \
-    ListStorageInterface, ViewStorageInterface, WorkspaceStorageInterface
+    ListStorageInterface, ListViewStorageInterface, WorkspaceStorageInterface
 from task_management.mixins import ListValidationMixin, \
     WorkspaceValidationMixin, ViewValidationMixin
 
@@ -12,7 +12,7 @@ class CreateListViewInteractor(
 
     def __init__(
             self, list_storage: ListStorageInterface,
-            view_storage: ViewStorageInterface,
+            view_storage: ListViewStorageInterface,
             workspace_storage: WorkspaceStorageInterface):
         super().__init__(
             list_storage=list_storage,

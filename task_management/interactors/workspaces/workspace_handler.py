@@ -12,7 +12,7 @@ from task_management.interactors.storage_interfaces import \
     SpaceStorageInterface, UserStorageInterface, \
     WorkspaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
-    AccountStorageInterface, ViewStorageInterface
+    AccountStorageInterface, ListViewStorageInterface
 from task_management.interactors.workspaces.create_workspace_interactor import \
     CreateWorkspaceInteractor
 from task_management.interactors.workspaces.delete_workspace_interactor import \
@@ -31,7 +31,7 @@ class WorkspaceHandler:
             field_storage: FieldStorageInterface,
             folder_storage: FolderStorageInterface,
             account_storage: AccountStorageInterface,
-            view_storage: ViewStorageInterface):
+            view_storage: ListViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.space_storage = space_storage

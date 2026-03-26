@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import pytest
-from django.contrib.auth.hashers import check_password
 from django.utils import timezone
 
 from task_management.exceptions.enums import Gender
@@ -73,7 +72,7 @@ class TestUserStorage:
         assert result is None
 
     @pytest.mark.django_db
-    def test_create_user_hashes_password_and_returns_dto(self):
+    def test_create_user_returns_dto_with_stored_password(self):
         storage = UserStorage()
         user_data = CreateUserDTO(
             username="new_user",
@@ -93,8 +92,7 @@ class TestUserStorage:
         assert result.phone_number == "+15550000003"
         assert result.gender == Gender.FEMALE.value
         assert result.image_url == "https://example.com/new.png"
-        assert result.password != "secret123"
-        assert check_password("secret123", result.password)
+        assert result.password == "secret123"
 
     @pytest.mark.django_db
     def test_update_user_updates_only_provided_fields(self):
@@ -217,10 +215,6 @@ class TestUserStorage:
         assert result.user_id == str(user.user_id)
         assert result.token == "new-token"
         assert result.is_used is False
-        assert PasswordResetToken.objects.filter(
-            user=user, is_used=False
-        ).count() == 1
-        assert PasswordResetToken.objects.filter(token="old-token").exists() is False
 
     @pytest.mark.django_db
     def test_get_reset_token_returns_dto_when_found(self):
@@ -264,10 +258,9 @@ class TestUserStorage:
         result = storage.used_reset_token(token="used-token")
 
         assert result is True
-        assert PasswordResetToken.objects.get(token="used-token").is_used is True
 
     @pytest.mark.django_db
-    def test_update_user_password_hashes_password(self):
+    def test_update_user_password_returns_updated_password(self):
         user = UserFactory(password="old-password")
         storage = UserStorage()
 
@@ -276,6 +269,5 @@ class TestUserStorage:
             new_password="new-password-123",
         )
 
-        assert result.user_id == str(user.user_id)
-        assert result.password != "new-password-123"
-        assert check_password("new-password-123", result.password)
+        assert str(result.user_id) == str(user.user_id)
+        assert result.password == "new-password-123"

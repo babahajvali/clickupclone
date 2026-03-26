@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO
 
 
-class ViewStorageInterface(ABC):
+class ListViewStorageInterface(ABC):
 
     @abstractmethod
     def create_list_view(

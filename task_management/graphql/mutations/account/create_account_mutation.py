@@ -11,7 +11,7 @@ from task_management.interactors.accounts.account_onboarding import \
     AccountOnboardingHandler
 from task_management.storages import UserStorage, AccountStorage, \
     WorkspaceStorage, SpaceStorage, ListStorage, TemplateStorage, FieldStorage, \
-    FolderStorage, ViewStorage
+    FolderStorage, ListViewStorage
 
 
 class CreateAccountMutation(graphene.Mutation):
@@ -34,7 +34,7 @@ class CreateAccountMutation(graphene.Mutation):
         template_storage = TemplateStorage()
         field_storage = FieldStorage()
         folder_storage = FolderStorage()
-        view_storage = ViewStorage()
+        view_storage = ListViewStorage()
 
         account_onboarding = AccountOnboardingHandler(
             user_storage=user_storage,

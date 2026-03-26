@@ -1,12 +1,13 @@
 from task_management.exceptions.custom_exceptions import ViewNotFound, \
     EmptyViewName, ListViewNotFound
 from task_management.exceptions.enums import ViewType
-from task_management.interactors.storage_interfaces import ViewStorageInterface
+from task_management.interactors.storage_interfaces import \
+    ListViewStorageInterface
 
 
 class ViewValidationMixin:
 
-    def __init__(self, view_storage: ViewStorageInterface, **kwargs):
+    def __init__(self, view_storage: ListViewStorageInterface, **kwargs):
         self.view_storage = view_storage
         super().__init__(**kwargs)
 

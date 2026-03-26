@@ -4,12 +4,12 @@ from task_management.graphql.types.error_types import ListNotFoundType, \
 from task_management.graphql.types.types import ListViewType, ListViewsType
 from task_management.interactors.views.get_list_views_interactor import \
     GetListViewsInteractor
-from task_management.storages import ListStorage, ViewStorage
+from task_management.storages import ListStorage, ListViewStorage
 
 
 def get_list_views_resolver(root, info, params):
     list_storage = ListStorage()
-    view_storage = ViewStorage()
+    view_storage = ListViewStorage()
 
     interactor = GetListViewsInteractor(
         list_storage=list_storage,

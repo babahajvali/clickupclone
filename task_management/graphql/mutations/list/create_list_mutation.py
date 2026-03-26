@@ -12,7 +12,7 @@ from task_management.interactors.dtos import CreateListDTO
 from task_management.interactors.lists.list_creation_handler import \
     ListCreationHandler
 from task_management.storages import ListStorage, FolderStorage, SpaceStorage, \
-    WorkspaceStorage, FieldStorage, TemplateStorage, ViewStorage
+    WorkspaceStorage, FieldStorage, TemplateStorage, ListViewStorage
 
 
 class CreateListMutation(graphene.Mutation):
@@ -29,7 +29,7 @@ class CreateListMutation(graphene.Mutation):
         workspace_storage = WorkspaceStorage()
         field_storage = FieldStorage()
         template_storage = TemplateStorage()
-        view_storage = ViewStorage()
+        view_storage = ListViewStorage()
 
         interactor = ListCreationHandler(
             list_storage=list_storage,

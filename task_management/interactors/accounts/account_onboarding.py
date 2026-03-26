@@ -9,7 +9,7 @@ from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface, UserStorageInterface, AccountStorageInterface, \
     SpaceStorageInterface, ListStorageInterface, \
     TemplateStorageInterface, FieldStorageInterface, FolderStorageInterface, \
-    ViewStorageInterface
+    ListViewStorageInterface
 
 
 class AccountOnboardingHandler:
@@ -27,7 +27,7 @@ class AccountOnboardingHandler:
             template_storage: TemplateStorageInterface,
             field_storage: FieldStorageInterface,
             folder_storage: FolderStorageInterface,
-            view_storage: ViewStorageInterface):
+            view_storage: ListViewStorageInterface):
         self.workspace_storage = workspace_storage
         self.user_storage = user_storage
         self.account_storage = account_storage
