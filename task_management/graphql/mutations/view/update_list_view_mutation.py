@@ -6,7 +6,7 @@ from task_management.graphql.types.error_types import ListViewNotFound, \
 from task_management.graphql.types.input_types import UpdateListViewInputParams
 from task_management.graphql.types.response_types import UpdateListViewResponse
 from task_management.graphql.types.types import ListViewType
-from task_management.interactors.views.update_list_view_intercator import \
+from task_management.interactors.list_views.update_list_view_intercator import \
     UpdateListViewInteractor
 from task_management.storages import ListStorage, ListViewStorage, \
     WorkspaceStorage

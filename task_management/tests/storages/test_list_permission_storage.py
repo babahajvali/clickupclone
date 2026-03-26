@@ -20,7 +20,7 @@ class TestListPermissionStorage:
         user = UserFactory(user_id=user_id)
         added_by = UserFactory(user_id=added_by_id)
         ListPermissionFactory(list=list_obj, user=user, added_by=added_by,
-                              permission_type="views")
+                              permission_type="list_views")
         storage = ListStorage()
 
         # Act

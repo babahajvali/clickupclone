@@ -1,15 +1,14 @@
 {
-  "data": {
-    "getViews": {
-      "__typename": "ViewsType",
-      "views": [
-        "TABLE",
-        "CALENDAR",
-        "BOARD",
-        "DASHBOARD",
-        "LIST",
-        "GANTT"
+  "errors": [
+    {
+      "message": "Cannot query field 'list_views' on type 'ViewsType'. Did you mean 'views'?",
+      "locations": [
+        {
+          "line": 6,
+          "column": 11
+        }
       ]
     }
-  }
+  ],
+  "data": null
 }

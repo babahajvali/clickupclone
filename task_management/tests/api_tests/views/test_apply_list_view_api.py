@@ -21,7 +21,7 @@ def get_list_view_mock(mocker):
 
 def check_view_exists_mock(mocker):
     return mocker.patch(
-        "task_management.interactors.views.create_list_view_interactor.CreateListViewInteractor.check_view_type"
+        "task_management.interactors.list_views.create_list_view_interactor.CreateListViewInteractor.check_view_type"
     )
 
 

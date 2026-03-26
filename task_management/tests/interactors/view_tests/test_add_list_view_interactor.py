@@ -11,6 +11,9 @@ from task_management.exceptions.custom_exceptions import (
 from task_management.exceptions.enums import Role, ViewType
 from task_management.interactors.dtos import ListViewDTO, CreateListViewDTO, \
     WorkspaceMemberDTO
+from task_management.interactors.list_views.create_list_view_interactor import (
+    CreateListViewInteractor,
+)
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import (
@@ -18,9 +21,6 @@ from task_management.interactors.storage_interfaces.list_storage_interface impor
 )
 from task_management.interactors.storage_interfaces.list_view_storage_interface import (
     ListViewStorageInterface,
-)
-from task_management.interactors.views.create_list_view_interactor import (
-    CreateListViewInteractor,
 )
 
 

@@ -6,14 +6,14 @@ from task_management.exceptions.custom_exceptions import ListIsDeleted, \
     ListNotFound
 from task_management.exceptions.enums import ViewType
 from task_management.interactors.dtos import ListViewDTO
+from task_management.interactors.list_views.get_list_views_interactor import (
+    GetListViewsInteractor,
+)
 from task_management.interactors.storage_interfaces.list_storage_interface import (
     ListStorageInterface,
 )
 from task_management.interactors.storage_interfaces.list_view_storage_interface import (
     ListViewStorageInterface,
-)
-from task_management.interactors.views.get_list_views_interactor import (
-    GetListViewsInteractor,
 )
 
 

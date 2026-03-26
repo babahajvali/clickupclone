@@ -9,7 +9,7 @@ from task_management.graphql.types.input_types import CreateListViewInputParams
 from task_management.graphql.types.response_types import ApplyListViewResponse
 from task_management.graphql.types.types import ListViewType
 from task_management.interactors.dtos import CreateListViewDTO
-from task_management.interactors.views.create_list_view_interactor import \
+from task_management.interactors.list_views.create_list_view_interactor import \
     CreateListViewInteractor
 from task_management.storages import ListStorage, ListViewStorage, \
     WorkspaceStorage

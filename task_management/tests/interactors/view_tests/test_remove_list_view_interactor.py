@@ -5,6 +5,9 @@ import pytest
 from task_management.exceptions.custom_exceptions import ModificationNotAllowed
 from task_management.exceptions.enums import Role, ViewType
 from task_management.interactors.dtos import ListViewDTO, WorkspaceMemberDTO
+from task_management.interactors.list_views.remove_list_view_interactor import (
+    RemoveListViewInteractor,
+)
 from task_management.interactors.storage_interfaces import \
     WorkspaceStorageInterface
 from task_management.interactors.storage_interfaces.list_storage_interface import (
@@ -12,9 +15,6 @@ from task_management.interactors.storage_interfaces.list_storage_interface impor
 )
 from task_management.interactors.storage_interfaces.list_view_storage_interface import (
     ListViewStorageInterface,
-)
-from task_management.interactors.views.remove_list_view_interactor import (
-    RemoveListViewInteractor,
 )
 
 

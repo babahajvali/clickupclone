@@ -2,7 +2,7 @@ from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import ListNotFoundType, \
     DeletedListType
 from task_management.graphql.types.types import ListViewType, ListViewsType
-from task_management.interactors.views.get_list_views_interactor import \
+from task_management.interactors.list_views.get_list_views_interactor import \
     GetListViewsInteractor
 from task_management.storages import ListStorage, ListViewStorage
 

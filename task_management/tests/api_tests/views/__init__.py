@@ -148,7 +148,7 @@ class BaseGetViews(BaseViewGraphQLTestCase):
       getViews {
         ... on ViewsType {
           __typename
-          views
+          list_views
         }
       }
     }
