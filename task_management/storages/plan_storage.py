@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from task_management.exceptions.custom_exceptions import PlanNotFoundException
 from task_management.interactors.dtos import PlanDTO
-from task_management.interactors.storage_interface.plan_storage_interface import (
+from task_management.interactors.storage_interfaces.plan_storage_interface import (
     PlanStorageInterface,
 )
 from task_management.models import Plan

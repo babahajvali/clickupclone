@@ -6,7 +6,7 @@ from django.utils import timezone
 from task_management.exceptions.custom_exceptions import \
     SubscriptionNotFoundException
 from task_management.interactors.dtos import PlanDTO, SubscriptionDTO
-from task_management.interactors.storage_interface.subscription_storage_interface import (
+from task_management.interactors.storage_interfaces.subscription_storage_interface import (
     SubscriptionStorageInterface,
 )
 from task_management.models import Subscription

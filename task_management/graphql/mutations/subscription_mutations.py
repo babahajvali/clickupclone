@@ -10,42 +10,29 @@ from task_management.graphql.types.input_types import (
     CancelSubscriptionInput,
     CreateCheckoutSessionInput,
 )
+from task_management.graphql.types.response_types import \
+    CreateCheckoutSessionOutput, CancelSubscriptionOutput
 from task_management.graphql.types.subscription_types import (
     CheckoutSessionType,
     InvalidSubscriptionOwnerType,
     PlanNotFoundType,
     StripeCheckoutErrorType,
     SubscriptionNotFoundType,
-    SubscriptionType,
-)
-from task_management.interactors.cancel_subscription_interactor import (
-    CancelSubscriptionInteractor,
-)
-from task_management.interactors.create_checkout_session_interactor import (
-    CreateCheckoutSessionInteractor,
 )
 from task_management.interactors.dtos import (
     CancelSubscriptionDTO,
     CreateCheckoutSessionDTO,
 )
+from task_management.interactors.payments.cancel_subscription_interactor import (
+    CancelSubscriptionInteractor,
+)
+from task_management.interactors.payments.create_checkout_session_interactor import (
+    CreateCheckoutSessionInteractor,
+)
 from task_management.models import Subscription
 from task_management.storages.customer_storage import CustomerStorage
 from task_management.storages.plan_storage import PlanStorage
 from task_management.storages.subscription_storage import SubscriptionStorage
-
-
-class CreateCheckoutSessionOutput(graphene.Union):
-    class Meta:
-        types = (CheckoutSessionType, PlanNotFoundType, StripeCheckoutErrorType)
-
-
-class CancelSubscriptionOutput(graphene.Union):
-    class Meta:
-        types = (
-            SubscriptionType,
-            SubscriptionNotFoundType,
-            InvalidSubscriptionOwnerType,
-        )
 
 
 class CreateCheckoutSession(graphene.Mutation):
@@ -99,7 +86,8 @@ class CancelSubscription(graphene.Mutation):
                 )
             )
         except SubscriptionNotFoundException as exc:
-            return SubscriptionNotFoundType(subscription_id=exc.subscription_id)
+            return SubscriptionNotFoundType(
+                subscription_id=exc.subscription_id)
         except InvalidSubscriptionOwnerException as exc:
             return InvalidSubscriptionOwnerType(
                 user_id=exc.user_id,
@@ -107,8 +95,3 @@ class CancelSubscription(graphene.Mutation):
             )
 
         return Subscription.objects.get(subscription_id=result.subscription_id)
-
-
-class SubscriptionMutations(graphene.ObjectType):
-    create_checkout_session = CreateCheckoutSession.Field()
-    cancel_subscription = CancelSubscription.Field()

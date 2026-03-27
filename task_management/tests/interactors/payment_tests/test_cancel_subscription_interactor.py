@@ -2,24 +2,26 @@ from unittest.mock import Mock
 
 import pytest
 
-from task_management.interactors.cancel_subscription_interactor import (
+from task_management.interactors.dtos import CancelSubscriptionDTO
+from task_management.interactors.payments.cancel_subscription_interactor import (
     CancelSubscriptionInteractor,
 )
-from task_management.interactors.dtos import CancelSubscriptionDTO
 from task_management.storages.subscription_storage import SubscriptionStorage
 from task_management.tests.factories.storage_factory import SubscriptionFactory
 
 
 @pytest.mark.django_db
 def test_cancel_subscription_schedules_cancellation(monkeypatch):
-    subscription = SubscriptionFactory(status="active", cancel_at_period_end=False)
+    subscription = SubscriptionFactory(status="active",
+                                       cancel_at_period_end=False)
     stripe_modify = Mock()
     monkeypatch.setattr(
         "task_management.interactors.cancel_subscription_interactor.stripe.Subscription.modify",
         stripe_modify,
     )
 
-    interactor = CancelSubscriptionInteractor(subscription_storage=SubscriptionStorage())
+    interactor = CancelSubscriptionInteractor(
+        subscription_storage=SubscriptionStorage())
 
     result = interactor.cancel_subscription(
         CancelSubscriptionDTO(

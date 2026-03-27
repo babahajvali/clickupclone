@@ -6,13 +6,13 @@ from django.conf import settings
 from django.utils import timezone
 
 from task_management.exceptions.custom_exceptions import StripeWebhookException
-from task_management.interactors.storage_interface.payment_storage_interface import (
+from task_management.interactors.storage_interfaces.payment_storage_interface import (
     PaymentStorageInterface,
 )
-from task_management.interactors.storage_interface.plan_storage_interface import (
+from task_management.interactors.storage_interfaces.plan_storage_interface import (
     PlanStorageInterface,
 )
-from task_management.interactors.storage_interface.subscription_storage_interface import (
+from task_management.interactors.storage_interfaces.subscription_storage_interface import (
     SubscriptionStorageInterface,
 )
 
@@ -86,8 +86,8 @@ class WebhookHandlerInteractor:
 
         if session.get("payment_status") == "paid":
             payment_intent_id = (
-                session.get("payment_intent")
-                or f"checkout_session_{session['id']}"
+                    session.get("payment_intent")
+                    or f"checkout_session_{session['id']}"
             )
             amount_total = session.get("amount_total")
             currency = session.get("currency")

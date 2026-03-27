@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from task_management.interactors.webhook_handler_interactor import (
+from task_management.interactors.payments.webhook_handler_interactor import (
     WebhookHandlerInteractor,
 )
 from task_management.models import Subscription
@@ -85,7 +85,8 @@ def test_subscription_created_is_idempotent(monkeypatch):
     )
     monkeypatch.setattr(
         "task_management.interactors.webhook_handler_interactor.stripe.Customer.retrieve",
-        lambda customer_id: {"id": customer_id, "metadata": {"user_id": str(user.user_id)}},
+        lambda customer_id: {"id": customer_id,
+                             "metadata": {"user_id": str(user.user_id)}},
     )
     monkeypatch.setattr(
         "task_management.interactors.webhook_handler_interactor.stripe.Subscription.retrieve",
@@ -98,8 +99,10 @@ def test_subscription_created_is_idempotent(monkeypatch):
 
     assert first["status"] == "success"
     assert second["status"] == "skipped"
-    assert Subscription.objects.filter(stripe_subscription_id="sub_created").count() == 1
-    created_subscription = Subscription.objects.get(stripe_subscription_id="sub_created")
+    assert Subscription.objects.filter(
+        stripe_subscription_id="sub_created").count() == 1
+    created_subscription = Subscription.objects.get(
+        stripe_subscription_id="sub_created")
     assert created_subscription.user_id == user.user_id
     assert created_subscription.plan_id == plan.plan_id
 
@@ -149,7 +152,8 @@ def test_checkout_completed_creates_initial_payment(monkeypatch):
     result = handler.handle_webhook_event(json.dumps(event), "sig")
 
     assert result["status"] == "success"
-    subscription = Subscription.objects.get(stripe_subscription_id="sub_checkout")
+    subscription = Subscription.objects.get(
+        stripe_subscription_id="sub_checkout")
     assert subscription.payments.count() == 1
     payment = subscription.payments.get()
     assert payment.stripe_payment_intent_id == "pi_checkout"

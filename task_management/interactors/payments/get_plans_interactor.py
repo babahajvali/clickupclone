@@ -1,7 +1,7 @@
 from typing import List
 
 from task_management.interactors.dtos import PlanDTO
-from task_management.interactors.storage_interface.plan_storage_interface import (
+from task_management.interactors.storage_interfaces.plan_storage_interface import (
     PlanStorageInterface,
 )
 

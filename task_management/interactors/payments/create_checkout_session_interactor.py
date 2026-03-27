@@ -11,10 +11,10 @@ from task_management.interactors.dtos import (
     CheckoutSessionResponseDTO,
     CreateCheckoutSessionDTO,
 )
-from task_management.interactors.storage_interface.customer_storage_interface import (
+from task_management.interactors.storage_interfaces.customer_storage_interface import (
     CustomerStorageInterface,
 )
-from task_management.interactors.storage_interface.plan_storage_interface import (
+from task_management.interactors.storage_interfaces.plan_storage_interface import (
     PlanStorageInterface,
 )
 from task_management.models import User

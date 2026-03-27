@@ -1,7 +1,7 @@
 from typing import List
 
 from task_management.interactors.dtos import PaymentDTO
-from task_management.interactors.storage_interface.payment_storage_interface import (
+from task_management.interactors.storage_interfaces.payment_storage_interface import (
     PaymentStorageInterface,
 )
 

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from task_management.interactors.storage_interface.customer_storage_interface import (
+from task_management.interactors.storage_interfaces.customer_storage_interface import (
     CustomerStorageInterface,
 )
 from task_management.models import Customer, User
@@ -22,14 +22,17 @@ class CustomerStorage(CustomerStorageInterface):
             return None
         return self._convert_to_dict(customer)
 
-    def get_customer_by_stripe_id(self, stripe_customer_id: str) -> Optional[dict]:
+    def get_customer_by_stripe_id(self, stripe_customer_id: str) -> Optional[
+        dict]:
         try:
-            customer = Customer.objects.get(stripe_customer_id=stripe_customer_id)
+            customer = Customer.objects.get(
+                stripe_customer_id=stripe_customer_id)
         except Customer.DoesNotExist:
             return None
         return self._convert_to_dict(customer)
 
-    def update_payment_method(self, customer_id: str, payment_method: str) -> dict:
+    def update_payment_method(self, customer_id: str,
+                              payment_method: str) -> dict:
         customer = Customer.objects.get(customer_id=customer_id)
         customer.default_payment_method = payment_method
         customer.save(update_fields=["default_payment_method", "updated_at"])

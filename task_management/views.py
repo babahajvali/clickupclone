@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from task_management.exceptions.custom_exceptions import StripeWebhookException
-from task_management.interactors.webhook_handler_interactor import (
+from task_management.interactors.payments.webhook_handler_interactor import (
     WebhookHandlerInteractor,
 )
 from task_management.storages.payment_storage import PaymentStorage

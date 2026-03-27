@@ -5,11 +5,12 @@ from task_management.graphql.types.subscription_types import (
     PlanType,
     SubscriptionType,
 )
-from task_management.interactors.get_payment_history_interactor import (
+from task_management.interactors.payments.get_payment_history_interactor import (
     GetPaymentHistoryInteractor,
 )
-from task_management.interactors.get_plans_interactor import GetPlansInteractor
-from task_management.interactors.get_subscription_details_interactor import (
+from task_management.interactors.payments.get_plans_interactor import \
+    GetPlansInteractor
+from task_management.interactors.payments.get_subscription_details_interactor import (
     GetSubscriptionDetailsInteractor,
 )
 from task_management.models import Payment, Plan, Subscription
@@ -35,14 +36,18 @@ class SubscriptionQueries(graphene.ObjectType):
         interactor = GetSubscriptionDetailsInteractor(
             subscription_storage=SubscriptionStorage()
         )
-        subscription_dto = interactor.get_user_subscription(user_id=str(user_id))
+        subscription_dto = interactor.get_user_subscription(
+            user_id=str(user_id))
         if subscription_dto is None:
             return None
-        return Subscription.objects.get(subscription_id=subscription_dto.subscription_id)
+        return Subscription.objects.get(
+            subscription_id=subscription_dto.subscription_id)
 
     @staticmethod
     def resolve_get_my_payments(root, info):
         user_id = info.context.user_id
-        interactor = GetPaymentHistoryInteractor(payment_storage=PaymentStorage())
-        payment_ids = [payment.payment_id for payment in interactor.get_user_payments(user_id=str(user_id))]
+        interactor = GetPaymentHistoryInteractor(
+            payment_storage=PaymentStorage())
+        payment_ids = [payment.payment_id for payment in
+                       interactor.get_user_payments(user_id=str(user_id))]
         return Payment.objects.filter(payment_id__in=payment_ids)

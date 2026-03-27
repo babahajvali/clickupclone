@@ -5,8 +5,9 @@ from django.utils import timezone
 from task_management.exceptions.custom_exceptions import (
     InvalidSubscriptionOwnerException,
 )
-from task_management.interactors.dtos import CancelSubscriptionDTO, SubscriptionDTO
-from task_management.interactors.storage_interface.subscription_storage_interface import (
+from task_management.interactors.dtos import CancelSubscriptionDTO, \
+    SubscriptionDTO
+from task_management.interactors.storage_interfaces.subscription_storage_interface import (
     SubscriptionStorageInterface,
 )
 
@@ -17,7 +18,8 @@ class CancelSubscriptionInteractor:
     def __init__(self, subscription_storage: SubscriptionStorageInterface):
         self.subscription_storage = subscription_storage
 
-    def cancel_subscription(self, cancel_data: CancelSubscriptionDTO) -> SubscriptionDTO:
+    def cancel_subscription(self,
+                            cancel_data: CancelSubscriptionDTO) -> SubscriptionDTO:
         subscription = self.subscription_storage.get_subscription_by_id(
             subscription_id=cancel_data.subscription_id
         )
