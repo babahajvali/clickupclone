@@ -95,3 +95,8 @@ class CancelSubscription(graphene.Mutation):
             )
 
         return Subscription.objects.get(subscription_id=result.subscription_id)
+
+
+class SubscriptionMutations(graphene.ObjectType):
+    create_checkout_session = CreateCheckoutSession.Field()
+    cancel_subscription = CancelSubscription.Field()

@@ -1,8 +1,5 @@
 import graphene
 
-from task_management.graphql.mutations.subscription_mutations import \
-    CreateCheckoutSession, CancelSubscription
-
 
 class AccountType(graphene.ObjectType):
     account_id = graphene.String(required=True)
@@ -255,8 +252,3 @@ class PasswordResetResponseType(graphene.ObjectType):
 
 class ValidateResetTokenType(graphene.ObjectType):
     is_valid = graphene.Boolean()
-
-
-class SubscriptionMutations(graphene.ObjectType):
-    create_checkout_session = CreateCheckoutSession.Field()
-    cancel_subscription = CancelSubscription.Field()

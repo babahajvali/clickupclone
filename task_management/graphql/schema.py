@@ -19,8 +19,9 @@ from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetFields, GetListViews, \
     GetUserWorkspaces, GetWorkspaceMembers, GetUserTasks, \
     GetAccounts, GetUserWithEmail
+from task_management.graphql.mutations.subscription_mutations import \
+    SubscriptionMutations
 from task_management.graphql.subscription_queries import SubscriptionQueries
-from task_management.graphql.types.types import SubscriptionMutations
 
 QUERY_CLASSES = [
     GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace, GetSpaceFolders,
