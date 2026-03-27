@@ -386,3 +386,13 @@ class AddListPermissionForUserInputParams(graphene.InputObjectType):
     list_id = graphene.String(required=True)
     user_id = graphene.String(required=True)
     permission = graphene.String(required=True)
+
+
+class CreateCheckoutSessionInput(graphene.InputObjectType):
+    plan_id = graphene.String(required=True)
+    success_url = graphene.String()
+    cancel_url = graphene.String()
+
+
+class CancelSubscriptionInput(graphene.InputObjectType):
+    subscription_id = graphene.String(required=True)

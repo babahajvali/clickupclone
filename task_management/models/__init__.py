@@ -4,6 +4,7 @@ from task_management.models.folder import Folder
 from task_management.models.list import List
 from task_management.models.permissions import ListPermission, \
     FolderPermission, SpacePermission
+from task_management.models.payment_models import Plan, Customer, Subscription, Payment
 from task_management.models.space import Space
 from task_management.models.task import Task, TaskAssignee
 from task_management.models.task_field_value import TaskFieldValue
@@ -29,5 +30,9 @@ __all__ = [
     "FolderPermission",
     "SpacePermission",
     "TaskAssignee",
-    "PasswordResetToken"
+    "PasswordResetToken",
+    "Plan",
+    "Customer",
+    "Subscription",
+    "Payment",
 ]

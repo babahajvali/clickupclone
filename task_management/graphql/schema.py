@@ -13,19 +13,22 @@ from task_management.graphql.mutations import CreateAccount, CreateUser, \
     ReorderField, ApplyListView, RemoveListView, UpdateFieldValue, \
     ForgotPassword, ResetPassword, ValidateResetToken, UpdateAccount, \
     AddUserForListPermission, UpdateListView
+from task_management.graphql.mutations.subscription_mutations import \
+    SubscriptionMutations
 from task_management.graphql.queries import GetUser, GetWorkspace, \
     GetWorkspaceSpaces, GetSpace, GetSpaceFolders, GetFolder, GetList, \
     GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask, GetListTasks, \
     GetTaskAssignees, GetViews, GetTemplateFields, GetFields, GetListViews, \
     GetUserWorkspaces, GetWorkspaceMembers, GetUserTasks, \
     GetAccounts, GetUserWithEmail
+from task_management.graphql.subscription_queries import SubscriptionQueries
 
 QUERY_CLASSES = [
     GetUser, GetWorkspace, GetWorkspaceSpaces, GetSpace, GetSpaceFolders,
     GetFolder, GetList, GetFolderLists, GetSpaceLists, GetTaskFilters, GetTask,
     GetListTasks, GetTaskAssignees, GetViews, GetTemplateFields, GetFields,
     GetListViews, GetUserWorkspaces, GetWorkspaceMembers,
-    GetUserTasks, GetAccounts, GetUserWithEmail]
+    GetUserTasks, GetAccounts, GetUserWithEmail, SubscriptionQueries]
 
 MUTATION_CLASSES = [
     CreateAccount, CreateUser, UpdateUser, BlockUser, UserLogin, DeleteAccount,
@@ -39,7 +42,7 @@ MUTATION_CLASSES = [
     RemoveTaskAssignee, UpdateField, CreateField, DeleteField, UpdateListView,
     ReorderField, ApplyListView, RemoveListView, ResetPassword,
     UpdateFieldValue, ForgotPassword, ValidateResetToken, UpdateAccount,
-    AddUserForListPermission]
+    AddUserForListPermission, SubscriptionMutations]
 
 
 class Query(*QUERY_CLASSES, graphene.ObjectType):

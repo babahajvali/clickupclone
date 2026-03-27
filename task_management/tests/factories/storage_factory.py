@@ -1,15 +1,18 @@
 import uuid
+from datetime import timedelta
 
 import factory
 from factory.django import DjangoModelFactory
 from faker import Faker
+from django.utils import timezone
 
 from task_management.exceptions.enums import Gender, ViewType, FieldType
 from task_management.exceptions.enums import ListEntityType
 from task_management.models import (
     User, Account, Workspace, Space, Folder, List,
     Task, Template, ListView, TaskAssignee, Field, TaskFieldValue,
-    WorkspaceMember, SpacePermission, FolderPermission, ListPermission
+    WorkspaceMember, SpacePermission, FolderPermission, ListPermission,
+    Plan, Customer, Subscription, Payment
 )
 
 faker = Faker()
@@ -210,3 +213,58 @@ class ListPermissionFactory(DjangoModelFactory):
     permission_type = "list_views"
     is_active = True
     added_by = factory.SubFactory(UserFactory)
+
+
+class PlanFactory(DjangoModelFactory):
+    class Meta:
+        model = Plan
+
+    plan_id = factory.LazyFunction(uuid.uuid4)
+    plan_name = "pro"
+    stripe_price_id = factory.Sequence(lambda n: f"price_{n}")
+    price = "9.99"
+    currency = "USD"
+    billing_period = "month"
+    features = {}
+    is_active = True
+
+
+class CustomerFactory(DjangoModelFactory):
+    class Meta:
+        model = Customer
+
+    customer_id = factory.LazyFunction(uuid.uuid4)
+    user = factory.SubFactory(UserFactory)
+    stripe_customer_id = factory.Sequence(lambda n: f"cus_{n}")
+    default_payment_method = None
+
+
+class SubscriptionFactory(DjangoModelFactory):
+    class Meta:
+        model = Subscription
+
+    subscription_id = factory.LazyFunction(uuid.uuid4)
+    user = factory.SubFactory(UserFactory)
+    plan = factory.SubFactory(PlanFactory)
+    stripe_subscription_id = factory.Sequence(lambda n: f"sub_{n}")
+    status = "active"
+    current_period_start = factory.LazyFunction(timezone.now)
+    current_period_end = factory.LazyAttribute(
+        lambda obj: obj.current_period_start + timedelta(days=30)
+    )
+    cancel_at_period_end = False
+    canceled_at = None
+
+
+class PaymentFactory(DjangoModelFactory):
+    class Meta:
+        model = Payment
+
+    payment_id = factory.LazyFunction(uuid.uuid4)
+    user = factory.SubFactory(UserFactory)
+    subscription = factory.SubFactory(SubscriptionFactory)
+    stripe_payment_intent_id = factory.Sequence(lambda n: f"pi_{n}")
+    amount = "9.99"
+    currency = "USD"
+    status = "succeeded"
+    payment_method = "card"

@@ -4,7 +4,8 @@ from task_management.models import (
     User, Account, Workspace, WorkspaceMember,
     Space, SpacePermission, Folder, FolderPermission,
     List, ListPermission, Task, TaskAssignee,
-    Template, Field, TaskFieldValue, ListView
+    Template, Field, TaskFieldValue, ListView,
+    Plan, Customer, Subscription, Payment,
 )
 from task_management.models.user import PasswordResetToken
 
@@ -188,3 +189,88 @@ class PasswordResetTokenAdmin(admin.ModelAdmin):
         return f"{obj.token[:20]}..."
 
     token_preview.short_description = 'Token'
+
+
+@admin.register(Plan)
+class PlanAdmin(admin.ModelAdmin):
+    list_display = (
+        "plan_name",
+        "billing_period",
+        "price",
+        "currency",
+        "stripe_price_id",
+        "is_active",
+        "created_at",
+    )
+    list_filter = ("plan_name", "billing_period", "is_active", "created_at")
+    search_fields = ("stripe_price_id", "plan_name")
+    readonly_fields = ("plan_id", "created_at", "updated_at")
+    ordering = ("plan_name", "billing_period", "price")
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "stripe_customer_id",
+        "default_payment_method",
+        "created_at",
+    )
+    list_filter = ("created_at", "updated_at")
+    search_fields = ("user__username", "user__email", "stripe_customer_id")
+    readonly_fields = ("customer_id", "created_at", "updated_at")
+    raw_id_fields = ("user",)
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = (
+        "subscription_id",
+        "user",
+        "plan",
+        "status",
+        "cancel_at_period_end",
+        "current_period_end",
+        "created_at",
+    )
+    list_filter = (
+        "status",
+        "cancel_at_period_end",
+        "plan",
+        "created_at",
+        "current_period_end",
+    )
+    search_fields = (
+        "subscription_id",
+        "stripe_subscription_id",
+        "user__username",
+        "user__email",
+    )
+    readonly_fields = ("subscription_id", "created_at", "updated_at")
+    raw_id_fields = ("user", "plan")
+    ordering = ("-created_at",)
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = (
+        "payment_id",
+        "user",
+        "subscription",
+        "amount",
+        "currency",
+        "status",
+        "payment_method",
+        "created_at",
+    )
+    list_filter = ("status", "currency", "payment_method", "created_at")
+    search_fields = (
+        "payment_id",
+        "stripe_payment_intent_id",
+        "user__username",
+        "user__email",
+        "subscription__stripe_subscription_id",
+    )
+    readonly_fields = ("payment_id", "created_at", "updated_at")
+    raw_id_fields = ("user", "subscription")
+    ordering = ("-created_at",)

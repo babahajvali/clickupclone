@@ -546,3 +546,29 @@ class ResourceLocked(Exception):
 
     def __str__(self):
         return self.message
+
+
+class SubscriptionNotFoundException(Exception):
+    def __init__(self, subscription_id: str):
+        self.subscription_id = subscription_id
+
+
+class PlanNotFoundException(Exception):
+    def __init__(self, plan_id: str):
+        self.plan_id = plan_id
+
+
+class StripeCheckoutException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class StripeWebhookException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
+
+class InvalidSubscriptionOwnerException(Exception):
+    def __init__(self, user_id: str, subscription_id: str):
+        self.user_id = user_id
+        self.subscription_id = subscription_id

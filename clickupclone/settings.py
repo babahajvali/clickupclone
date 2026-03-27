@@ -181,3 +181,14 @@ CORS_ALLOW_HEADERS = [
 JWT_SECRET_KEY = SECRET_KEY
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_LIFETIME_HOURS = 24
+
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_dummy")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "whsec_dummy")
+STRIPE_SUCCESS_URL = os.environ.get(
+    "STRIPE_SUCCESS_URL",
+    "http://localhost:3000/payment/success",
+)
+STRIPE_CANCEL_URL = os.environ.get(
+    "STRIPE_CANCEL_URL",
+    "http://localhost:3000/payment/cancel",
+)

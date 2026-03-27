@@ -433,3 +433,61 @@ class PasswordResetTokenDTO:
     is_used: bool
     created_at: datetime
     expires_at: datetime
+
+
+@dataclass
+class PlanDTO:
+    plan_id: str
+    plan_name: str
+    stripe_price_id: str
+    price: float
+    currency: str
+    billing_period: str
+    features: dict
+    is_active: bool
+
+
+@dataclass
+class SubscriptionDTO:
+    subscription_id: str
+    user_id: str
+    plan: Optional[PlanDTO]
+    stripe_subscription_id: str
+    status: str
+    current_period_start: datetime
+    current_period_end: datetime
+    cancel_at_period_end: bool
+    canceled_at: Optional[datetime]
+
+
+@dataclass
+class PaymentDTO:
+    payment_id: str
+    user_id: str
+    subscription_id: Optional[str]
+    stripe_payment_intent_id: str
+    amount: float
+    currency: str
+    status: str
+    payment_method: Optional[str]
+    created_at: datetime
+
+
+@dataclass
+class CreateCheckoutSessionDTO:
+    user_id: str
+    plan_id: str
+    success_url: Optional[str]
+    cancel_url: Optional[str]
+
+
+@dataclass
+class CheckoutSessionResponseDTO:
+    session_id: str
+    checkout_url: str
+
+
+@dataclass
+class CancelSubscriptionDTO:
+    user_id: str
+    subscription_id: str
