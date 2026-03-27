@@ -37,6 +37,9 @@ from task_management.graphql.types.error_types import \
     NumberValueBelowMinimumType, NumberValueExceedsMaximumType, \
     DropdownOptionNotAllowedType, NothingToUpdateListType, InvalidFieldIdsType, \
     EmptyViewNameType
+from task_management.graphql.types.subscription_types import \
+    CheckoutSessionType, PlanNotFoundType, StripeCheckoutErrorType, \
+    SubscriptionType, SubscriptionNotFoundType, InvalidSubscriptionOwnerType
 from task_management.graphql.types.types import AccountType, UserType, \
     FieldType, TaskType, ListType, FolderType, \
     SpaceType, WorkspaceType, WorkspaceMemberType, UserSpacePermissionType, \
@@ -871,3 +874,18 @@ class AddListPermissionForUserResponse(graphene.Union):
                  UserHaveAlreadyListPermissionType,
                  UserNotListMemberType,
                  ModificationNotAllowedType)
+
+
+class CreateCheckoutSessionOutput(graphene.Union):
+    class Meta:
+        types = (CheckoutSessionType, PlanNotFoundType,
+                 StripeCheckoutErrorType)
+
+
+class CancelSubscriptionOutput(graphene.Union):
+    class Meta:
+        types = (
+            SubscriptionType,
+            SubscriptionNotFoundType,
+            InvalidSubscriptionOwnerType,
+        )
