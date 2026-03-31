@@ -53,6 +53,7 @@ class CreateTemplateInputParams(graphene.InputObjectType):
 class UserLoginInputParams(graphene.InputObjectType):
     email = graphene.String(required=True)
     password = graphene.String(required=True)
+    captcha_token = graphene.String(required=True)
 
 
 class TransferAccountInputParams(graphene.InputObjectType):

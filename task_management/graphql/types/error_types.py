@@ -267,6 +267,10 @@ class IncorrectPassword(graphene.ObjectType):
     password = graphene.String(required=True)
 
 
+class CaptchaValidationFailedType(graphene.ObjectType):
+    message = graphene.String(required=True)
+
+
 class UsernameAlreadyExists(graphene.ObjectType):
     username = graphene.String(required=True)
 

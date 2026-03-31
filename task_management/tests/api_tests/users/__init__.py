@@ -125,6 +125,10 @@ class BaseUserLogin(GraphQLBaseTestCase):
           __typename
           password
         }
+        ... on CaptchaValidationFailedType {
+          __typename
+          message
+        }
         ... on InactiveUserType {
           __typename
           userId

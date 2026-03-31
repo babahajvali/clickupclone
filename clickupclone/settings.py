@@ -192,3 +192,9 @@ STRIPE_CANCEL_URL = os.environ.get(
     "STRIPE_CANCEL_URL",
     "http://localhost:3000/payment/cancel",
 )
+
+CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY", "")
+CAPTCHA_VERIFY_URL = os.environ.get(
+    "CAPTCHA_VERIFY_URL",
+    "https://www.google.com/recaptcha/api/siteverify",
+)

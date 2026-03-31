@@ -1,17 +1,19 @@
 from datetime import datetime, timedelta
+
 import graphene
 import jwt
 from django.conf import settings
 
 from task_management.exceptions import custom_exceptions
 from task_management.graphql.types.error_types import EmailNotFound, \
-    IncorrectPassword, InactiveUserType
+    IncorrectPassword, InactiveUserType, CaptchaValidationFailedType
 from task_management.graphql.types.input_types import UserLoginInputParams
 from task_management.graphql.types.response_types import UserLoginResponse
 from task_management.graphql.types.types import UserType
 from task_management.interactors.user.user_login_interactor import \
     UserLoginInteractor
 from task_management.storages import UserStorage
+from task_management.utils.captcha_utils import verify_captcha_token
 
 
 class UserLoginMutation(graphene.Mutation):
@@ -22,6 +24,17 @@ class UserLoginMutation(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, params):
+        remote_ip = None
+        if hasattr(info.context, "META"):
+            remote_ip = info.context.META.get("REMOTE_ADDR")
+
+        is_valid_captcha, captcha_message = verify_captcha_token(
+            token=params.captcha_token,
+            remote_ip=remote_ip,
+        )
+        if not is_valid_captcha:
+            return CaptchaValidationFailedType(message=captcha_message)
+
         user_storage = UserStorage()
         interactor = UserLoginInteractor(user_storage=user_storage)
 

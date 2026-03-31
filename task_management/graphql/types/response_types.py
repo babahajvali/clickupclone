@@ -13,7 +13,8 @@ from task_management.graphql.types.error_types import \
     DeletedTaskType, DeletedListType, DeletedSpaceType, \
     DeletedFolderType, DeletedWorkspaceType, \
     UserNotWorkspaceOwnerType, UnexpectedRoleType, EmailNotFound, \
-    IncorrectPassword, InactiveWorkspaceMemberType, \
+    IncorrectPassword, CaptchaValidationFailedType, \
+    InactiveWorkspaceMemberType, \
     InvalidOrderType, UnsupportedVisibilityType, InvalidOffset, \
     InvalidLimitType, TaskAssigneeNotFoundType, ListViewNotFound, \
     InvalidResetToken, ResetTokenExpired, InvalidFieldValue, \
@@ -372,6 +373,7 @@ class UserLoginResponse(graphene.Union):
             UserType,
             EmailNotFound,
             IncorrectPassword,
+            CaptchaValidationFailedType,
             InactiveUserType,
         )
 

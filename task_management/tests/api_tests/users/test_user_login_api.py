@@ -21,6 +21,14 @@ def generate_access_token_mock(mocker):
     )
 
 
+def verify_captcha_token_mock(mocker):
+    return mocker.patch(
+        "task_management.graphql.mutations.user.user_login_mutation."
+        "verify_captcha_token",
+        return_value=(True, ""),
+    )
+
+
 def make_user_dto(password="plain_password", is_active=True) -> UserDTO:
     return UserDTO(
         user_id="user_1",
@@ -40,11 +48,13 @@ class TestUserLoginAPI(BaseUserLogin):
     def test_user_login_successfully(self, snapshot, mocker):
         get_user_by_email_mock(mocker).return_value = make_user_dto()
         generate_access_token_mock(mocker)
+        verify_captcha_token_mock(mocker)
 
         variables = {
             "params": {
                 "email": "test@example.com",
                 "password": "plain_password",
+                "captchaToken": "captcha-token",
             }
         }
 
@@ -57,11 +67,13 @@ class TestUserLoginAPI(BaseUserLogin):
 
     def test_user_login_email_not_found(self, snapshot, mocker):
         get_user_by_email_mock(mocker).return_value = None
+        verify_captcha_token_mock(mocker)
 
         variables = {
             "params": {
                 "email": "missing@example.com",
                 "password": "plain_password",
+                "captchaToken": "captcha-token",
             }
         }
 
@@ -76,11 +88,34 @@ class TestUserLoginAPI(BaseUserLogin):
         get_user_by_email_mock(mocker).return_value = make_user_dto(
             password="different_password",
         )
+        verify_captcha_token_mock(mocker)
 
         variables = {
             "params": {
                 "email": "test@example.com",
                 "password": "plain_password",
+                "captchaToken": "captcha-token",
+            }
+        }
+
+        self.execute_schema(
+            query=self.QUERY,
+            variables=variables,
+            snapshot=snapshot,
+            context=SimpleNamespace(user_id="user_1"),
+        )
+
+    def test_user_login_invalid_captcha(self, snapshot, mocker):
+        verify_captcha_token_mock(mocker).return_value = (
+            False,
+            "CAPTCHA validation failed.",
+        )
+
+        variables = {
+            "params": {
+                "email": "test@example.com",
+                "password": "plain_password",
+                "captchaToken": "invalid-captcha-token",
             }
         }
 

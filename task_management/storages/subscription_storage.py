@@ -15,8 +15,8 @@ from task_management.models import Subscription
 class SubscriptionStorage(SubscriptionStorageInterface):
     ACTIVE_STATUSES = ("active", "trialing", "past_due", "incomplete")
 
-    def create_or_update_subscription(self,
-                                      subscription_data: dict) -> SubscriptionDTO:
+    def create_or_update_subscription(
+            self, subscription_data: dict) -> SubscriptionDTO:
         defaults = {
             "user_id": subscription_data["user_id"],
             "plan_id": subscription_data["plan_id"],
@@ -43,8 +43,8 @@ class SubscriptionStorage(SubscriptionStorageInterface):
                 subscription_id=subscription_id) from exc
         return self._convert_to_dto(subscription)
 
-    def get_subscription_by_user_id(self, user_id: str) -> Optional[
-        SubscriptionDTO]:
+    def get_subscription_by_user_id(
+            self, user_id: str) -> Optional[SubscriptionDTO]:
         subscription = (
             Subscription.objects.select_related("plan")
             .filter(user_id=user_id, status__in=self.ACTIVE_STATUSES)
