@@ -1,0 +1,8 @@
+{
+  "data": {
+    "userLogin": {
+      "__typename": "CaptchaValidationFailedType",
+      "message": "CAPTCHA validation failed."
+    }
+  }
+}
