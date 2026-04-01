@@ -158,6 +158,21 @@ class FieldType(graphene.ObjectType):
     is_required = graphene.Boolean(required=True)
     created_by = graphene.String(required=True)
 
+    @classmethod
+    def from_dto(cls, field_dto):
+        return cls(
+            field_id=field_dto.field_id,
+            field_type=field_dto.field_type.value,
+            description=field_dto.description,
+            template_id=field_dto.template_id,
+            field_name=field_dto.field_name,
+            is_deleted=field_dto.is_deleted,
+            order=field_dto.order,
+            config=field_dto.config,
+            is_required=field_dto.is_required,
+            created_by=field_dto.created_by,
+        )
+
 
 class FieldsType(graphene.ObjectType):
     fields = graphene.List(FieldType)

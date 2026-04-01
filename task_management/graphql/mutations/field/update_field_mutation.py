@@ -1,16 +1,7 @@
 import graphene
 
-from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import FieldNotFoundType, \
-    FieldNameAlreadyExistsType, \
-    ModificationNotAllowedType, ResourceLockedType, InvalidFieldConfigType, \
-    NothingToUpdateFieldType, DeletedFieldType, \
-    EmptyFieldNameType, MissingFieldConfigType, DropdownOptionsMissingType, \
-    EmptyDropdownOptionsType, \
-    UserNotWorkspaceMemberType, TextDefaultValueExceedsMaxLengthType, \
-    NumberDefaultValueBelowMinimumType, NumberDefaultValueAboveMaximumType, \
-    DropdownDefaultValueNotInOptionsType, DuplicateDropdownOptionsType, \
-    MaxValueLessThanMinValueType
+from task_management.graphql.mutations.field.exception_handlers import (
+    handle_field_exceptions, UPDATE_FIELD_EXCEPTIONS)
 from task_management.graphql.types.input_types import UpdateFieldInputParams
 from task_management.graphql.types.response_types import UpdateFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -27,6 +18,7 @@ class UpdateFieldMutation(graphene.Mutation):
     Output = UpdateFieldResponse
 
     @staticmethod
+    @handle_field_exceptions(UPDATE_FIELD_EXCEPTIONS)
     def mutate(root, info, params):
         field_storage = FieldStorage()
         workspace_storage = WorkspaceStorage()
@@ -36,96 +28,17 @@ class UpdateFieldMutation(graphene.Mutation):
             workspace_storage=workspace_storage,
         )
 
-        try:
-            update_field_dto = UpdateFieldDTO(
-                field_id=params.field_id,
-                description=params.description,
-                field_name=params.field_name,
-                config=params.config,
-                is_required=params.is_required
-            )
+        update_field_dto = UpdateFieldDTO(
+            field_id=params.field_id,
+            description=params.description,
+            field_name=params.field_name,
+            config=params.config,
+            is_required=params.is_required
+        )
 
-            field_dto = interactor.update_field(
-                update_field_dto=update_field_dto,
-                user_id=info.context.user_id
-            )
+        field_dto = interactor.update_field(
+            update_field_dto=update_field_dto,
+            user_id=info.context.user_id
+        )
 
-            return FieldType(
-                field_id=field_dto.field_id,
-                field_type=field_dto.field_type.value,
-                description=field_dto.description,
-                template_id=field_dto.template_id,
-                field_name=field_dto.field_name,
-                order=field_dto.order,
-                config=field_dto.config,
-                is_deleted=field_dto.is_deleted,
-                is_required=field_dto.is_required,
-                created_by=field_dto.created_by
-            )
-
-        except custom_exceptions.FieldNotFound as e:
-            return FieldNotFoundType(field_id=e.field_id)
-
-        except custom_exceptions.FieldIsDeleted as e:
-            return DeletedFieldType(field_id=e.field_id)
-
-        except custom_exceptions.FieldNameAlreadyExists as e:
-            return FieldNameAlreadyExistsType(field_name=e.field_name)
-
-        except custom_exceptions.EmptyFieldName as e:
-            return EmptyFieldNameType(field_name=e.field_name)
-
-        except custom_exceptions.EmptyDropdownConfig as e:
-            return MissingFieldConfigType(field_type=e.field_type)
-
-        except custom_exceptions.DropdownOptionsEmpty as e:
-            return DropdownOptionsMissingType(message=e.message)
-
-        except custom_exceptions.EmptyDropdownOptions as e:
-            return EmptyDropdownOptionsType(message=e.message)
-
-        except custom_exceptions.UserNotWorkspaceMember as e:
-            return UserNotWorkspaceMemberType(user_id=e.user_id)
-
-        except custom_exceptions.ModificationNotAllowed as e:
-            return ModificationNotAllowedType(user_id=e.user_id)
-
-        except custom_exceptions.ResourceLocked as e:
-            return ResourceLockedType(message=e.message)
-
-        except custom_exceptions.UnexpectedFieldConfigKeys as e:
-            return InvalidFieldConfigType(
-                field_type=e.field_type,
-                invalid_keys=e.invalid_keys,
-                message=e.message
-            )
-
-        except custom_exceptions.TextDefaultValueExceedsMaxLength as e:
-            return TextDefaultValueExceedsMaxLengthType(message=e.message)
-
-        except custom_exceptions.NumberDefaultValueBelowMinimum as e:
-            return NumberDefaultValueBelowMinimumType(message=e.message)
-
-        except custom_exceptions.NumberValueBelowMinimum as e:
-            return NumberDefaultValueBelowMinimumType(message=e.message)
-
-        except custom_exceptions.NumberDefaultValueAboveMaximum as e:
-            return NumberDefaultValueAboveMaximumType(message=e.message)
-
-        except custom_exceptions.NumberValueExceedsMaximum as e:
-            return NumberDefaultValueAboveMaximumType(message=e.message)
-
-        except custom_exceptions.DropdownDefaultValueNotInOptions as e:
-            return DropdownDefaultValueNotInOptionsType(message=e.message)
-
-        except custom_exceptions.DuplicateDropdownOptions as e:
-            return DuplicateDropdownOptionsType(message=e.message)
-
-        except custom_exceptions.NothingToUpdateField as e:
-            return NothingToUpdateFieldType(field_id=e.field_id)
-
-        except custom_exceptions.MaxValueLessThanMinValue as e:
-            return MaxValueLessThanMinValueType(
-                field_type=e.field_type,
-                message=e.message,
-            )
+        return FieldType.from_dto(field_dto)

@@ -17,20 +17,8 @@ def get_fields_resolver(root, info, params):
     try:
         fields_dto = interactor.get_fields(field_ids=field_ids)
 
-        result = [FieldType(
-            field_id=field_dto.field_id,
-            field_type=field_dto.field_type.value,
-            description=field_dto.description,
-            template_id=field_dto.template_id,
-            field_name=field_dto.field_name,
-            order=field_dto.order,
-            config=field_dto.config,
-            is_deleted=field_dto.is_deleted,
-            is_required=field_dto.is_required,
-            created_by=field_dto.created_by
-        ) for field_dto in fields_dto]
-
-        return FieldsType(fields=result)
+        return FieldsType(
+            fields=[FieldType.from_dto(f) for f in fields_dto])
 
     except custom_exceptions.InvalidFieldIdsFound as e:
         return InvalidFieldIdsType(field_ids=e.field_ids)

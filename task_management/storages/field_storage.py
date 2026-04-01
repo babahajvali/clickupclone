@@ -50,7 +50,7 @@ class FieldStorage(FieldStorageInterface):
             excluded_field_id: Optional[str]) -> bool:
 
         field_obj = Field.objects.filter(
-            field_name=field_name, template_id=template_id)
+            field_name=field_name, template_id=template_id, is_deleted=False)
 
         if excluded_field_id:
             field_obj = field_obj.exclude(field_id=excluded_field_id)
@@ -71,8 +71,7 @@ class FieldStorage(FieldStorageInterface):
 
         return [str(field_id) for field_id in existing_field_ids]
 
-    def update_field(
-            self, update_field_dto: UpdateFieldDTO) -> FieldDTO:
+    def update_field(self, update_field_dto: UpdateFieldDTO) -> FieldDTO:
 
         field_properties = {}
         if update_field_dto.field_name is not None:
@@ -157,10 +156,10 @@ class FieldStorage(FieldStorageInterface):
             template_id=template_id, is_deleted=False).count()
 
     @transaction.atomic
-    def delete_field(self, field_id: str):
-        Field.objects.filter(field_id=field_id).update(is_deleted=True)
-
+    def delete_field(self, field_id: str) -> FieldDTO:
         field_dto = self.get_fields(field_ids=[field_id])[0]
+
+        Field.objects.filter(field_id=field_id).update(is_deleted=True)
 
         Field.objects.filter(
             template_id=field_dto.template_id,

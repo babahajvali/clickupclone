@@ -1,10 +1,7 @@
 import graphene
 
-from task_management.exceptions import custom_exceptions
-from task_management.graphql.types.error_types import FieldNotFoundType, \
-    FieldNotBelongsToTemplateType, TemplateNotFoundType, \
-    ModificationNotAllowedType, ResourceLockedType, InvalidOrderType, \
-    DeletedFieldType, UserNotWorkspaceMemberType
+from task_management.graphql.mutations.field.exception_handlers import (
+    handle_field_exceptions, REORDER_FIELD_EXCEPTIONS)
 from task_management.graphql.types.input_types import ReorderFieldInputParams
 from task_management.graphql.types.response_types import ReorderFieldResponse
 from task_management.graphql.types.types import FieldType
@@ -21,6 +18,7 @@ class ReorderFieldMutation(graphene.Mutation):
     Output = ReorderFieldResponse
 
     @staticmethod
+    @handle_field_exceptions(REORDER_FIELD_EXCEPTIONS)
     def mutate(root, info, params):
         field_storage = FieldStorage()
         template_storage = TemplateStorage()
@@ -32,50 +30,11 @@ class ReorderFieldMutation(graphene.Mutation):
             workspace_storage=workspace_storage,
         )
 
-        try:
-            field_dto = interactor.reorder_field(
-                field_id=params.field_id,
-                template_id=params.template_id,
-                new_order=params.new_order,
-                user_id=info.context.user_id
-            )
+        field_dto = interactor.reorder_field(
+            field_id=params.field_id,
+            template_id=params.template_id,
+            new_order=params.new_order,
+            user_id=info.context.user_id
+        )
 
-            return FieldType(
-                field_id=field_dto.field_id,
-                field_type=field_dto.field_type.value,
-                description=field_dto.description,
-                template_id=field_dto.template_id,
-                field_name=field_dto.field_name,
-                is_deleted=field_dto.is_deleted,
-                order=field_dto.order,
-                config=field_dto.config,
-                is_required=field_dto.is_required,
-                created_by=field_dto.created_by
-            )
-
-        except custom_exceptions.FieldNotFound as e:
-            return FieldNotFoundType(field_id=e.field_id)
-
-        except custom_exceptions.FieldNotBelongsToTemplate as e:
-            return FieldNotBelongsToTemplateType(
-                field_id=e.field_id,
-                template_id=e.template_id,
-            )
-
-        except custom_exceptions.FieldIsDeleted as e:
-            return DeletedFieldType(field_id=e.field_id)
-
-        except custom_exceptions.TemplateNotFound as e:
-            return TemplateNotFoundType(template_id=e.template_id)
-
-        except custom_exceptions.ModificationNotAllowed as e:
-            return ModificationNotAllowedType(user_id=e.user_id)
-
-        except custom_exceptions.ResourceLocked as e:
-            return ResourceLockedType(message=e.message)
-
-        except custom_exceptions.InvalidOrder as e:
-            return InvalidOrderType(order=e.order)
-
-        except custom_exceptions.UserNotWorkspaceMember as e:
-            return UserNotWorkspaceMemberType(user_id=e.user_id)
+        return FieldType.from_dto(field_dto)

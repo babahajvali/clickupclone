@@ -1,76 +1,86 @@
 import json
-import time
 
 from django.core.cache import cache
 from django.http import JsonResponse
+from django.utils.deprecation import MiddlewareMixin
 
 RATE_LIMIT = 5
-WINDOW_SIZE = 2  # seconds
-COOLDOWN_PERIOD = 60  # seconds
+WINDOW_SIZE = 2
+COOLDOWN_PERIOD = 60
 
 
-class RateLimitMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+class RateLimitMiddleware(MiddlewareMixin):
 
-    def __call__(self, request):
+    def process_request(self, request):
         if not request.path.startswith("/graphql"):
-            return self.get_response(request)
+            return None
 
         try:
             data = json.loads(request.body.decode("utf-8"))
-            query = data.get("query", "")
-        except Exception:
-            return self.get_response(request)
+        except json.JSONDecodeError:
+            return None
 
-        if "userLogin" not in query:
-            return self.get_response(request)
+        operation_name = data.get("operationName")
 
-        if hasattr(request, "user") and request.user.is_authenticated:
-            identifier = f"user:{request.user.id}"
-        else:
-            identifier = f"ip:{self._get_ip(request)}"
+        if operation_name != "UserLogin":
+            return None
 
-        block_key = f"rl:login:block:{identifier}"
-        window_key = f"rl:login:window:{identifier}"
+        identifier = self._get_identifier(request, data)
+
+        block_key = f"rl:block:{identifier}"
+        counter_key = f"rl:count:{identifier}"
 
         if cache.get(block_key):
-            retry_after = COOLDOWN_PERIOD
-            get_ttl = getattr(cache, "ttl", None)
-            if callable(get_ttl):
-                retry_after = get_ttl(block_key) or COOLDOWN_PERIOD
+            retry_after = self._get_ttl(block_key) or COOLDOWN_PERIOD
             return self.too_many_requests_response(retry_after)
 
-        now = time.time()
+        try:
+            current_count = cache.incr(counter_key)
+        except ValueError:
+            cache.set(counter_key, 1, timeout=WINDOW_SIZE)
+            current_count = 1
 
-        timestamps = cache.get(window_key) or []
-
-        cutoff = now - WINDOW_SIZE
-        timestamps = [ts for ts in timestamps if ts > cutoff]
-
-        if len(timestamps) >= RATE_LIMIT:
+        if current_count > RATE_LIMIT:
             cache.set(block_key, 1, timeout=COOLDOWN_PERIOD)
-            cache.delete(window_key)
+            cache.delete(counter_key)
             return self.too_many_requests_response(COOLDOWN_PERIOD)
 
-        timestamps.append(now)
-        cache.set(window_key, timestamps, timeout=WINDOW_SIZE)
+        return None
 
-        return self.get_response(request)
+    def _get_identifier(self, request, data):
+        ip = self._get_ip(request)
+        variables = data.get("variables", {}) or {}
+
+        username = (
+                variables.get("username")
+                or variables.get("email")
+                or "anonymous"
+        )
+
+        return f"{username}:{ip}"
 
     @staticmethod
     def _get_ip(request):
         x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+
         if x_forwarded_for:
             return x_forwarded_for.split(",")[0].strip()
-        return request.META.get("REMOTE_ADDR")
+
+        return request.META.get("REMOTE_ADDR", "unknown")
+
+    @staticmethod
+    def _get_ttl(key):
+        try:
+            return cache.ttl(key)
+        except Exception:
+            return None
 
     @staticmethod
     def too_many_requests_response(retry_after_seconds):
         response = JsonResponse(
             {
                 "error": "Too Many Requests",
-                "message": "You have exceeded the rate limit for login attempts.",
+                "message": "Too many login attempts. Try again later.",
                 "retry_after_seconds": retry_after_seconds,
             },
             status=429,

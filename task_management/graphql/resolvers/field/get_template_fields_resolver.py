@@ -25,22 +25,8 @@ def get_fields_for_template_resolver(root, info, params):
         fields_dto = interactor.get_template_fields(
             template_id=template_id)
 
-        fields_output = [
-            FieldType(
-                field_id=field_dto.field_id,
-                field_type=field_dto.field_type.value,
-                description=field_dto.description,
-                template_id=field_dto.template_id,
-                field_name=field_dto.field_name,
-                order=field_dto.order,
-                config=field_dto.config,
-                is_deleted=field_dto.is_deleted,
-                is_required=field_dto.is_required,
-                created_by=field_dto.created_by
-            ) for field_dto in fields_dto
-        ]
-
-        return FieldsType(fields=fields_output)
+        return FieldsType(
+            fields=[FieldType.from_dto(field) for field in fields_dto])
 
     except custom_exceptions.TemplateNotFound as e:
         return TemplateNotFoundType(template_id=e.template_id)
